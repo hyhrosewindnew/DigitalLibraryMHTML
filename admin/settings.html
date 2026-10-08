@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>系统设置</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 系统设置 */
+    body {
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --primary-hover: #1d4ed8;
+      --primary-dark:#0e63e6;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --text: #1f2937;
+      --text-secondary: #6b7280;
+      --text-light: #9ca3af;
+      --text-2:#5a6474;
+      --text-3:#8b95a5;
+      --radius: 10px;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    #main-content { padding: 16px 20px 28px; }
+    /* 面包屑 */
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .breadcrumb-bar a { color: var(--primary); text-decoration: none; font-size: 24px; font-weight: 500; }
+    .breadcrumb-bar a:hover { text-decoration: underline; }
+    .crumb-sep { color: var(--text-light); font-size: 20px; }
+    .crumb-current { color: var(--text); font-size: 24px; font-weight: 500; }
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 40px;
+    scroll-behavior: smooth;
+  }
+  .content::-webkit-scrollbar { width: 8px; }
+  .content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+  .content::-webkit-scrollbar-track { background: transparent; }
+
+  .content-inner {
+    width: 100%;
+  }
+
+  /* -------- 模块 -------- */
+  .module {
+    margin-bottom: 34px;
+    scroll-margin-top: 16px;
+  }
+  .module:last-child { margin-bottom: 0; }
+
+  .module-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .module-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 3px;
+  }
+  .module-title h2 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+  .module-title .m-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .module-title .m-desc {
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin-left: 2px;
+  }
+
+  /* ============================================================
+     卡片与表单
+     ============================================================ */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 24px;
+    margin-bottom: 14px;
+  }
+  .section:last-child { margin-bottom: 0; }
+
+  .section-head {
+    padding: 17px 0 14px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .section-head h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  .section-head p {
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-light);
+    align-items: start;
+  }
+  .form-row:last-child { border-bottom: none; }
+
+  .form-label {
+    font-size: 13.5px;
+    color: #374151;
+    padding-top: 9px;
+    line-height: 1.4;
+  }
+  .form-label .req { color: var(--danger); margin-left: 2px; }
+
+  .form-control { min-width: 0; }
+  .hint {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .input, .select, .textarea {
+    width: 100%;
+    max-width: 420px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 13.5px;
+    color: var(--text);
+    background: #fff;
+    transition: border-color .18s, box-shadow .18s;
+  }
+  .input::placeholder, .textarea::placeholder { color: #c0c4cc; }
+  .input:focus, .select:focus, .textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+  }
+  .textarea {
+    resize: vertical;
+    min-height: 76px;
+    max-width: 620px;
+    line-height: 1.6;
+  }
+  .input.wide, .select.wide { max-width: 620px; }
+
+  .select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+    cursor: pointer;
+  }
+
+  .input-group { display: flex; max-width: 220px; }
+  .input-group .input {
+    border-radius: 7px 0 0 7px;
+    border-right: none;
+    max-width: none;
+  }
+  .input-group .suffix {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 0 7px 7px 0;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  /* -------- 开关 -------- */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #d1d5db;
+    border-radius: 999px;
+    transition: .25s;
+  }
+  .slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .25s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+  .switch input:checked + .slider { background: var(--primary); }
+  .switch input:checked + .slider::before { transform: translateX(18px); }
+  .switch input:focus-visible + .slider {
+    box-shadow: 0 0 0 3px rgba(37,99,235,.2);
+  }
+  .switch-row { align-items: center; }
+  .switch-row .form-label { padding-top: 0; }
+  .switch-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .switch-line .state {
+    font-size: 12.5px;
+    color: var(--text-light);
+  }
+
+  /* -------- 复选组 -------- */
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    padding-top: 6px;
+  }
+  .checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13.5px;
+    color: #374151;
+    cursor: pointer;
+    user-select: none;
+  }
+  .checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+
+  /* -------- 按钮 -------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: .18s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 4px 12px rgba(37,99,235,.25);
+  }
+  .btn-default {
+    background: #fff;
+    color: #374151;
+    border-color: var(--border);
+  }
+  .btn-default:hover {
+    border-color: #cbd5e1;
+    background: #f9fafb;
+  }
+  .btn-sm { padding: 5px 12px; font-size: 12.5px; }
+
+  .btn-text {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 5px;
+    transition: .15s;
+  }
+  .btn-text:hover { background: var(--primary-light); }
+  .btn-text.danger { color: var(--danger); }
+  .btn-text.danger:hover { background: #fef2f2; }
+
+  /* -------- 表格 -------- */
+  .table-wrap {
+    padding: 16px 0;
+    overflow-x: auto;
+  }
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    min-width: 680px;
+  }
+  .table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #f9fafb;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .table th:first-child { border-radius: 7px 0 0 7px; }
+  .table th:last-child { border-radius: 0 7px 7px 0; }
+  .table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-light);
+    color: #374151;
+  }
+  .table tr:last-child td { border-bottom: none; }
+  .table .actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+  .badge-green { background: #ecfdf5; color: #059669; }
+  .badge-gray { background: #f3f4f6; color: #6b7280; }
+
+  /* -------- IP 白名单 -------- */
+  .ip-intro {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 14px 0 0;
+  }
+  .ip-add-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    padding: 14px 16px;
+    background: #fafbfc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .ip-add-form .form-item {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ip-add-form .form-item label {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+  }
+  .ip-add-form .form-item .req {
+    color: var(--danger);
+    margin-left: 2px;
+  }
+  .ip-add-form .input {
+    width: 100%;
+    height: 34px;
+    max-width: none;
+  }
+
+  .ip-list-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  .ip-list-head b {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .ip-list {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+  }
+  .ip-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+  .ip-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13.5px;
+    transition: background .15s;
+  }
+  .ip-row:last-child { border-bottom: none; }
+  .ip-row:hover { background: #fafbfc; }
+  .ip-row .ip-range {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--text);
+    flex: 0 0 auto;
+    letter-spacing: -.2px;
+  }
+  .ip-row .ip-range .dash {
+    color: var(--text-light);
+    margin: 0 4px;
+  }
+  .ip-row .ip-note {
+    color: var(--text-light);
+    font-size: 12.5px;
+    flex: 1;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ip-row button {
+    color: var(--danger);
+    font-size: 12.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: .15s;
+    flex-shrink: 0;
+  }
+  .ip-row button:hover { background: #fef2f2; }
+
+  /* -------- 底部操作栏 -------- */
+  .action-bar {
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 12px 28px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,.03);
+  }
+  .action-bar-inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .action-bar .tip {
+    font-size: 12.5px;
+    color: var(--text-light);
+  }
+  .action-bar .btns {
+    display: flex;
+    gap: 10px;
+  }
+
+  /* -------- Toast -------- */
+  .toast {
+    position: fixed;
+    top: 74px;
+    left: 50%;
+    transform: translate(-50%, -14px);
+    background: #111827;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: .28s cubic-bezier(.4,0,.2,1);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.22);
+    max-width: 90vw;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  .toast::before {
+    content: '✓';
+    font-weight: 700;
+    font-size: 14px;
+    color: #4ade80;
+  }
+  .toast.error::before { content: '✕'; color: #fca5a5; }
+  .toast.warning::before { content: '!'; color: #fbbf24; }
+
+  /* ============================================================
+     响应式
+     ============================================================ */
+  @media (max-width: 900px) {
+    .sidebar {
+      width: 68px;
+    }
+    .logo span { display: none; }
+    .logo { padding: 0; justify-content: center; }
+    .menu-item {
+      justify-content: center;
+      padding: 11px 0;
+    }
+    .menu-item span:not(.ico) { display: none; }
+    .topbar-user .name { display: none; }
+    .content { padding: 18px 16px 32px; }
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .form-label { padding-top: 0; }
+    .action-bar { padding: 12px 16px; }
+    .action-bar .tip { display: none; }
+    .ip-add-form .form-item { min-width: 100%; }
+    .breadcrumb-bar { padding: 0 12px; }
+  }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<div id="app-shell" style="background-color: var(--lib-bg);">
+<!-- 顶部导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-2">
+<span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+<span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden items-center sm:flex">
+<i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+<input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+</div>
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">系统设置</span>
+</nav>
+
+    <!-- 内容滚动区 -->
+    <div class="content" id="content">
+      <div class="content-inner">
+
+        <!-- ============================================================
+             01 基本信息
+             ============================================================ -->
+        <section class="module" id="mod-basic">
+          <div class="module-title">
+            <span class="m-num">01</span>
+            <h2>基本信息</h2>
+            <span class="m-desc">系统名称、标识与联系方式</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>基础信息</h3>
+                <p>系统名称与标识将展示在登录页、浏览器标题及各类通知中</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">系统名称<span class="req">*</span></label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="数字图书馆管理平台">
+                <div class="hint">建议不超过 20 个字符</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">图书馆名称<span class="req">*</span></label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="市立数字图书馆">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">系统简介</label>
+              <div class="form-control">
+                <textarea class="textarea">面向读者提供电子资源检索、在线借阅、预约续借等一站式服务的数字图书馆综合管理平台。</textarea>
+                <div class="hint">将显示在系统登录页与关于页面</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>联系方式</h3>
+                <p>读者遇到问题时可联系的信息，会展示在前台页面底部</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">联系电话</label>
+              <div class="form-control">
+                <input class="input" type="text" value="010-8888 6666">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">电子邮箱</label>
+              <div class="form-control">
+                <input class="input" type="email" value="service@digilib.edu.cn">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">联系地址</label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="北京市海淀区中关村南大街 33 号 图书馆大楼 3 层">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">官方网站</label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="https://www.digilib.edu.cn">
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>版权与备案</h3>
+                <p>用于页面底部的版权声明信息</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">ICP 备案号</label>
+              <div class="form-control">
+                <input class="input" type="text" value="京ICP备2024000000号-1">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">版权信息</label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="© 2024 市立数字图书馆 版权所有">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             02 借阅规则
+             ============================================================ -->
+        <section class="module" id="mod-borrow">
+          <div class="module-title">
+            <span class="m-num">02</span>
+            <h2>借阅规则</h2>
+            <span class="m-desc">借阅额度、期限与逾期处理</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>借阅参数</h3>
+                <p>此处设置的是全馆默认值，读者类型可单独覆盖</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">默认借阅期限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="30">
+                  <span class="suffix">天</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">单次最大借阅量</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="5">
+                  <span class="suffix">册</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">最大续借次数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="2">
+                  <span class="suffix">次</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">每次续借时长</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="15">
+                  <span class="suffix">天</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">到期提醒提前量</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="3">
+                  <span class="suffix">天</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>逾期与罚金</h3>
+                <p>设置逾期规则与罚金计算方式</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">启用逾期罚金</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">罚金标准</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="0.20">
+                  <span class="suffix">元 / 册 / 天</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">单册罚金上限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="20">
+                  <span class="suffix">元</span>
+                </div>
+                <div class="hint">达到上限后不再继续累计罚金</div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">逾期停借</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">逾期后暂停借阅权限</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">停借时长</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="7">
+                  <span class="suffix">天</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>借阅行为</h3>
+                <p>控制读者可使用的借阅相关功能</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">允许代借</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                  <span class="state">已关闭</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">允许跨馆借阅</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">自动续借</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                  <span class="state">已关闭</span>
+                </div>
+                <div class="hint">开启后，图书到期前系统将自动为读者办理续借（被预约的图书除外）</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             03 预约规则
+             ============================================================ -->
+        <section class="module" id="mod-reserve">
+          <div class="module-title">
+            <span class="m-num">03</span>
+            <h2>预约规则</h2>
+            <span class="m-desc">图书、座位与研修室预约策略</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>图书预约规则</h3>
+                <p>读者对已借出图书进行预约的相关规则</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">允许图书预约</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">预约保留时长</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="3">
+                  <span class="suffix">天</span>
+                </div>
+                <div class="hint">读者预约的图书到馆后，超过该时长未取则自动取消预约</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">最大预约册数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="3">
+                  <span class="suffix">册</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">取消预约时限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="1">
+                  <span class="suffix">天</span>
+                </div>
+                <div class="hint">到馆前至少提前多久可取消预约</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">违约停用天数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="7">
+                  <span class="suffix">天</span>
+                </div>
+                <div class="hint">预约到馆后未取累计达到 3 次，暂停预约权限</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>座位预约规则</h3>
+                <p>读者预约阅览座位、自习座位的相关规则</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">允许座位预约</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">可提前预约天数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="1">
+                  <span class="suffix">天</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">单次最长使用时长</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="4">
+                  <span class="suffix">小时</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">签到时限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="30">
+                  <span class="suffix">分钟</span>
+                </div>
+                <div class="hint">预约开始后多久内需签到，否则自动释放座位</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">爽约惩罚</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="3">
+                  <span class="suffix">次</span>
+                </div>
+                <div class="hint">累计爽约次数达到后暂停座位预约权限 7 天</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">每日预约上限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="2">
+                  <span class="suffix">次</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>研修室预约规则</h3>
+                <p>读者预约研修间、讨论室等空间的相关规则</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">允许研修室预约</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">可提前预约天数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="3">
+                  <span class="suffix">天</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">单次最长使用时长</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="4">
+                  <span class="suffix">小时</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">最少使用人数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="2">
+                  <span class="suffix">人</span>
+                </div>
+                <div class="hint">实际签到人数不足时，管理员可取消该次预约</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">签到时限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="30">
+                  <span class="suffix">分钟</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">需要审核</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                  <span class="state">已关闭</span>
+                </div>
+                <div class="hint">开启后需管理员审核通过才可使用</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">取消预约时限</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="24">
+                  <span class="suffix">小时</span>
+                </div>
+                <div class="hint">开始前至少提前多久可取消</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             04 用户与权限
+             ============================================================ -->
+        <section class="module" id="mod-user">
+          <div class="module-title">
+            <span class="m-num">04</span>
+            <h2>用户与权限</h2>
+            <span class="m-desc">读者类型与注册认证策略</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>读者类型</h3>
+                <p>不同类型的读者可享受不同的借阅额度与期限</p>
+              </div>
+              <button class="btn btn-default btn-sm" onclick="toast('已打开新增读者类型弹窗')">＋ 新增类型</button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:16%">类型名称</th>
+                    <th style="width:12%">可借册数</th>
+                    <th style="width:12%">借阅期限</th>
+                    <th style="width:12%">续借次数</th>
+                    <th style="width:12%">预约上限</th>
+                    <th style="width:10%">状态</th>
+                    <th style="width:16%">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>学生</td>
+                    <td>5 册</td>
+                    <td>30 天</td>
+                    <td>2 次</td>
+                    <td>3 册</td>
+                    <td><span class="badge badge-green">启用</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">编辑</button>
+                        <button class="btn-text danger">删除</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>教师</td>
+                    <td>20 册</td>
+                    <td>90 天</td>
+                    <td>3 次</td>
+                    <td>5 册</td>
+                    <td><span class="badge badge-green">启用</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">编辑</button>
+                        <button class="btn-text danger">删除</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>临时读者</td>
+                    <td>2 册</td>
+                    <td>15 天</td>
+                    <td>1 次</td>
+                    <td>1 册</td>
+                    <td><span class="badge badge-green">启用</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">编辑</button>
+                        <button class="btn-text danger">删除</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>校友</td>
+                    <td>3 册</td>
+                    <td>30 天</td>
+                    <td>1 次</td>
+                    <td>2 册</td>
+                    <td><span class="badge badge-green">启用</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">编辑</button>
+                        <button class="btn-text danger">删除</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>校外读者</td>
+                    <td>1 册</td>
+                    <td>7 天</td>
+                    <td>0 次</td>
+                    <td>0 册</td>
+                    <td><span class="badge badge-gray">停用</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">编辑</button>
+                        <button class="btn-text danger">删除</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>注册与认证</h3>
+                <p>控制读者账号的注册方式与实名认证要求</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">开放自助注册</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">邮箱验证</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">注册时需验证邮箱</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">手机号绑定</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">实名认证</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                  <span class="state">已关闭</span>
+                </div>
+                <div class="hint">开启后读者需上传证件信息并审核通过后方可借阅</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">账号审核方式</label>
+              <div class="form-control">
+                <select class="select">
+                  <option>自动通过</option>
+                  <option selected>管理员人工审核</option>
+                  <option>邮箱验证后自动通过</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             05 通知设置
+             ============================================================ -->
+        <section class="module" id="mod-notify">
+          <div class="module-title">
+            <span class="m-num">05</span>
+            <h2>通知设置</h2>
+            <span class="m-desc">邮件通知与通知事件</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>邮件通知</h3>
+                <p>用于发送借阅提醒、逾期通知与密码找回邮件</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">启用邮件通知</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">SMTP 服务器</label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="smtp.digilib.edu.cn">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">端口</label>
+              <div class="form-control">
+                <div class="input-group" style="max-width:220px;">
+                  <input class="input" type="number" value="465">
+                  <span class="suffix">SSL</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">发件人邮箱</label>
+              <div class="form-control">
+                <input class="input wide" type="email" value="noreply@digilib.edu.cn">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">发件人名称</label>
+              <div class="form-control">
+                <input class="input wide" type="text" value="市立数字图书馆">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label"></label>
+              <div class="form-control">
+                <button class="btn btn-default btn-sm" onclick="toast('测试邮件已发送，请查收')">发送测试邮件</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>通知事件</h3>
+                <p>选择需要向读者推送的事件类型</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">借阅成功通知</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">到期提醒</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">逾期催还提醒</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">预约到馆通知</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">座位 / 研修室预约确认</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">系统公告推送</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             06 安全设置
+             ============================================================ -->
+        <section class="module" id="mod-security">
+          <div class="module-title">
+            <span class="m-num">06</span>
+            <h2>安全设置</h2>
+            <span class="m-desc">密码策略、登录防护与访问控制</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>密码策略</h3>
+                <p>适用于管理员与后台操作账号</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">最小密码长度</label>
+              <div class="form-control">
+                <div class="input-group" style="max-width:220px;">
+                  <input class="input" type="number" value="8">
+                  <span class="suffix">位</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">复杂度要求</label>
+              <div class="form-control">
+                <div class="checkbox-group">
+                  <label class="checkbox"><input type="checkbox" checked> 大写字母</label>
+                  <label class="checkbox"><input type="checkbox" checked> 小写字母</label>
+                  <label class="checkbox"><input type="checkbox" checked> 数字</label>
+                  <label class="checkbox"><input type="checkbox"> 特殊字符</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">密码有效期</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="90">
+                  <span class="suffix">天</span>
+                </div>
+                <div class="hint">填 0 表示密码永不过期</div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">首次登录强制改密</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>登录安全</h3>
+                <p>防止暴力破解与账号盗用</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">失败锁定次数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="5">
+                  <span class="suffix">次</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">锁定时长</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="30">
+                  <span class="suffix">分钟</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">会话超时时间</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="120">
+                  <span class="suffix">分钟</span>
+                </div>
+                <div class="hint">超过该时长无操作将自动退出登录</div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">图形验证码</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">登录时需输入验证码</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">双因素认证</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                  <span class="state">已关闭</span>
+                </div>
+                <div class="hint">开启后管理员登录需额外输入动态验证码</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 校园网 IP 白名单 -->
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>校园网 IP 白名单</h3>
+              </div>
+            </div>
+
+            <p class="ip-intro">
+              以下 IP 段内的校园网用户可直接访问已授权资源，无需登录认证。列表对所有电子资源生效。
+            </p>
+
+            <div class="ip-add-form">
+              <div class="form-item">
+                <label>起始 IP <span class="req">*</span></label>
+                <input class="input" id="ipStart" placeholder="如：10.0.0.0">
+              </div>
+              <div class="form-item">
+                <label>结束 IP（可选）</label>
+                <input class="input" id="ipEnd" placeholder="如：10.0.0.255">
+              </div>
+              <div class="form-item">
+                <label>备注</label>
+                <input class="input" id="ipNote" placeholder="如：教学楼 A 区">
+              </div>
+              <button class="btn btn-primary" onclick="addIpRange()">添加</button>
+            </div>
+
+            <div class="ip-list-head">
+              <span>已配置 <b id="ipCount">0</b> 条 IP 段</span>
+              <span>支持单 IP 或网段（起止 IP）</span>
+            </div>
+
+            <div class="ip-list" id="ipList"></div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>访问控制</h3>
+                <p>限制后台管理入口的访问来源</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">允许校外访问后台</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">操作日志记录</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">记录所有后台操作行为</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             07 数据备份
+             ============================================================ -->
+        <section class="module" id="mod-backup">
+          <div class="module-title">
+            <span class="m-num">07</span>
+            <h2>数据备份</h2>
+            <span class="m-desc">自动备份策略与历史备份记录</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>自动备份</h3>
+                <p>定期备份书目数据、读者信息与借阅记录</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">启用自动备份</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                  <span class="state">已开启</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">备份频率</label>
+              <div class="form-control">
+                <select class="select" style="max-width:220px;">
+                  <option>每天</option>
+                  <option selected>每周</option>
+                  <option>每月</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">执行时间</label>
+              <div class="form-control">
+                <input class="input" type="time" value="02:30" style="max-width:180px;">
+                <div class="hint">建议选择业务低峰时段执行</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">备份保留份数</label>
+              <div class="form-control">
+                <div class="input-group">
+                  <input class="input" type="number" value="10">
+                  <span class="suffix">份</span>
+                </div>
+                <div class="hint">超出份数的历史备份将被自动清理</div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">存储位置</label>
+              <div class="form-control">
+                <select class="select wide">
+                  <option selected>本地服务器（/data/backup）</option>
+                  <option>阿里云 OSS</option>
+                  <option>腾讯云 COS</option>
+                  <option>FTP 远程服务器</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>备份记录</h3>
+                <p>最近 5 次备份任务执行情况</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="toast('备份任务已提交，正在后台执行…')">立即备份</button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:34%">备份文件</th>
+                    <th style="width:14%">大小</th>
+                    <th style="width:22%">备份时间</th>
+                    <th style="width:14%">状态</th>
+                    <th style="width:16%">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>backup_20240612_023000.sql</td>
+                    <td>248.6 MB</td>
+                    <td>2024-06-12 02:30</td>
+                    <td><span class="badge badge-green">成功</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">下载</button>
+                        <button class="btn-text">还原</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>backup_20240605_023000.sql</td>
+                    <td>245.1 MB</td>
+                    <td>2024-06-05 02:30</td>
+                    <td><span class="badge badge-green">成功</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">下载</button>
+                        <button class="btn-text">还原</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>backup_20240529_023000.sql</td>
+                    <td>241.8 MB</td>
+                    <td>2024-05-29 02:30</td>
+                    <td><span class="badge badge-green">成功</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">下载</button>
+                        <button class="btn-text">还原</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>backup_20240522_023000.sql</td>
+                    <td>—</td>
+                    <td>2024-05-22 02:30</td>
+                    <td><span class="badge badge-gray">失败</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">查看日志</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>backup_20240515_023000.sql</td>
+                    <td>238.4 MB</td>
+                    <td>2024-05-15 02:30</td>
+                    <td><span class="badge badge-green">成功</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn-text">下载</button>
+                        <button class="btn-text">还原</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             08 界面与语言
+             ============================================================ -->
+        <section class="module" id="mod-ui">
+          <div class="module-title">
+            <span class="m-num">08</span>
+            <h2>界面与语言</h2>
+            <span class="m-desc">主题外观与区域格式偏好</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>界面外观</h3>
+                <p>自定义后台的主题色与显示偏好</p>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">紧凑模式</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                  <span class="state">减小表格与列表的行高</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row switch-row">
+              <label class="form-label">侧边栏默认折叠</label>
+              <div class="form-control">
+                <div class="switch-line">
+                  <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h3>语言与区域</h3>
+                <p>影响日期、时间与数字的显示格式</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">界面语言</label>
+              <div class="form-control">
+                <select class="select" style="max-width:260px;">
+                  <option selected>简体中文</option>
+                  <option>繁體中文</option>
+                  <option>English</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">时区</label>
+              <div class="form-control">
+                <select class="select wide">
+                  <option selected>(GMT+08:00) 北京，上海，香港</option>
+                  <option>(GMT+09:00) 东京，首尔</option>
+                  <option>(GMT+00:00) 伦敦，都柏林</option>
+                  <option>(GMT-08:00) 洛杉矶，温哥华</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">日期格式</label>
+              <div class="form-control">
+                <select class="select" style="max-width:260px;">
+                  <option selected>YYYY-MM-DD</option>
+                  <option>YYYY年MM月DD日</option>
+                  <option>DD/MM/YYYY</option>
+                  <option>MM/DD/YYYY</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">每页显示条数</label>
+              <div class="form-control">
+                <select class="select" style="max-width:220px;">
+                  <option>10 条 / 页</option>
+                  <option selected>20 条 / 页</option>
+                  <option>50 条 / 页</option>
+                  <option>100 条 / 页</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+    </main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      lucide.createIcons();
+      const form = document.getElementById('settings-form');
+      const originalValues = {};
+      Array.from(form.elements).forEach(function (el) {
+        if (el.name) originalValues[el.name] = el.value;
+      });
+      form.addEventListener('reset', function () {
+        setTimeout(function () {
+          Object.keys(originalValues).forEach(function (key) {
+            const el = form.elements[key];
+            if (el) el.value = originalValues[key];
+          });
+        }, 0);
+      });
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        alert('设置已保存');
+      });
+      const importBtn = document.querySelector('[data-dom-id="btn-import-cards"]');
+      const fileInput = document.getElementById('card-import-file');
+      if (importBtn && fileInput) {
+        importBtn.addEventListener('click', function () {
+          fileInput.click();
+        });
+        fileInput.addEventListener('change', function () {
+          if (fileInput.files.length) alert('已选择文件：' + fileInput.files[0].name);
+        });
+      }
+      const saveHoursBtn = document.querySelector('[data-dom-id="btn-save-hours"]');
+      if (saveHoursBtn) {
+        saveHoursBtn.addEventListener('click', function () {
+          alert('开放时间已保存');
+        });
+      }
+    });
+  </script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+    [data-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      background-color: currentColor;
+    }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+
+  <script>
+/* =========================================================
+     左侧一级导航切换（演示）
+     ========================================================= */
+  document.querySelectorAll('.sidebar .menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar .menu-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      const name = item.querySelector('span:not(.ico)')?.textContent || '';
+      if (name !== '系统设置') {
+        toast(`已切换到「${name}」（演示）`, 'warning');
+      }
+    });
+  });
+
+  /* =========================================================
+     顶部二级导航（锚点）—— 点击滚动到对应模块
+     ========================================================= */
+  const anchorNav = document.getElementById('anchorNav');
+  const contentEl = document.getElementById('content');
+  const anchorItems = anchorNav.querySelectorAll('.anchor-item');
+
+  anchorItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const targetId = item.dataset.target;
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      const targetTop = target.offsetTop - 8;
+      contentEl.scrollTo({ top: targetTop, behavior: 'smooth' });
+      setActiveAnchor(targetId);
+    });
+  });
+
+  function setActiveAnchor(targetId) {
+    anchorItems.forEach(i => {
+      i.classList.toggle('active', i.dataset.target === targetId);
+    });
+    const activeItem = anchorNav.querySelector('.anchor-item.active');
+    if (activeItem) {
+      const navRect = anchorNav.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+      if (itemRect.left < navRect.left || itemRect.right > navRect.right) {
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }
+
+  /* =========================================================
+     滚动监听：自动高亮当前模块
+     ========================================================= */
+  const modules = Array.from(document.querySelectorAll('.module'));
+  let scrollTicking = false;
+
+  contentEl.addEventListener('scroll', () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      const scrollTop = contentEl.scrollTop;
+      const offset = 40;
+
+      let current = modules[0];
+      for (const m of modules) {
+        if (m.offsetTop - offset <= scrollTop) {
+          current = m;
+        } else {
+          break;
+        }
+      }
+      if (current) setActiveAnchor(current.id);
+      scrollTicking = false;
+    });
+  });
+
+  /* =========================================================
+     开关状态文字联动
+     ========================================================= */
+  document.querySelectorAll('.switch input').forEach(input => {
+    input.addEventListener('change', () => {
+      const line = input.closest('.switch-line');
+      if (!line) return;
+      const state = line.querySelector('.state');
+      if (!state) return;
+      if (state.textContent === '已开启' || state.textContent === '已关闭') {
+        state.textContent = input.checked ? '已开启' : '已关闭';
+      }
+    });
+  });
+
+  /* =========================================================
+     IP 白名单数据
+     ========================================================= */
+  let ipWhitelist = [
+    { id: 1, start: '10.10.0.0',    end: '10.10.255.255',  note: '教学楼 A 区' },
+    { id: 2, start: '192.168.20.0', end: '192.168.20.255', note: '图书馆无线网' },
+    { id: 3, start: '172.16.50.10', end: '',               note: '数据中心专线' }
+  ];
+  let nextIpId = 4;
+
+  function renderIpList() {
+    const box = document.getElementById('ipList');
+    const countEl = document.getElementById('ipCount');
+    countEl.textContent = ipWhitelist.length;
+
+    if (!ipWhitelist.length) {
+      box.innerHTML = '<div class="ip-empty">暂无 IP 段，请在上方添加</div>';
+      return;
+    }
+
+    box.innerHTML = ipWhitelist.map(item => {
+      const range = item.end
+        ? `${esc(item.start)}<span class="dash">~</span>${esc(item.end)}`
+        : esc(item.start);
+      return `
+        <div class="ip-row">
+          <span class="ip-range">${range}</span>
+          <span class="ip-note">${esc(item.note || '')}</span>
+          <button onclick="removeIpRange(${item.id})">删除</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function addIpRange() {
+    const startInput = document.getElementById('ipStart');
+    const endInput   = document.getElementById('ipEnd');
+    const noteInput  = document.getElementById('ipNote');
+
+    const start = startInput.value.trim();
+    const end   = endInput.value.trim();
+    const note  = noteInput.value.trim();
+
+    if (!start) {
+      toast('请输入起始 IP', 'error');
+      startInput.focus();
+      return;
+    }
+    if (!isValidIp(start)) {
+      toast('起始 IP 格式不正确', 'error');
+      startInput.focus();
+      return;
+    }
+    if (end && !isValidIp(end)) {
+      toast('结束 IP 格式不正确', 'error');
+      endInput.focus();
+      return;
+    }
+    if (end) {
+      const toNum = ip => ip.split('.').reduce((acc, n) => acc * 256 + Number(n), 0);
+      if (toNum(end) < toNum(start)) {
+        toast('结束 IP 不能小于起始 IP', 'error');
+        endInput.focus();
+        return;
+      }
+    }
+
+    const dup = ipWhitelist.some(item =>
+      item.start === start && (item.end || '') === end
+    );
+    if (dup) {
+      toast('该 IP 段已存在', 'error');
+      return;
+    }
+
+    ipWhitelist.push({ id: nextIpId++, start, end, note });
+    startInput.value = '';
+    endInput.value = '';
+    noteInput.value = '';
+    renderIpList();
+    startInput.focus();
+    toast('IP 段已添加');
+  }
+
+  function removeIpRange(id) {
+    const item = ipWhitelist.find(x => x.id === id);
+    if (!item) return;
+    const label = item.end ? `${item.start} ~ ${item.end}` : item.start;
+    if (!confirm(`确定要删除 IP 段「${label}」吗？`)) return;
+    ipWhitelist = ipWhitelist.filter(x => x.id !== id);
+    renderIpList();
+    toast('IP 段已删除');
+  }
+
+  function isValidIp(str) {
+    if (!str) return false;
+    const parts = str.split('.');
+    if (parts.length !== 4) return false;
+    return parts.every(p => /^\d+$/.test(p) && Number(p) >= 0 && Number(p) <= 255);
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* =========================================================
+     保存 / 重置
+     ========================================================= */
+  function saveSettings() {
+    toast('系统设置已保存并生效');
+  }
+
+  function resetSettings() {
+    if (confirm('确定要放弃当前修改，恢复为上次保存的设置吗？')) {
+      toast('已恢复为上次保存的设置', 'warning');
+    }
+  }
+
+  /* =========================================================
+     Toast
+     ========================================================= */
+  let toastTimer = null;
+  function toast(msg, type = 'success') {
+    let el = document.querySelector('.toast');
+    if (el) el.remove();
+    el = document.createElement('div');
+    el.className = 'toast' + (type === 'error' ? ' error' : type === 'warning' ? ' warning' : '');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 2200);
+  }
+
+  /* =========================================================
+     初始化
+     ========================================================= */
+  renderIpList();
+  setActiveAnchor('mod-basic');
+  </script>
+</body>
+</html>
+

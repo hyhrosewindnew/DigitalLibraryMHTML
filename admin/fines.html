@@ -1,0 +1,2136 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>罚款缴费 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 罚款缴费 */
+    body {
+      --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#eff6ff;
+      --border:#e5e9f0; --text:#1f2937; --text-2:#6b7280; --text-3:#9ca3af;
+      --bg:#f0f2f5; --radius:8px; --success:#16a34a; --warning:#d97706; --danger:#dc2626;
+    }
+    .content{flex:1;padding:18px 24px 32px}
+.card{background:#fff;border:1px solid #e5e9f0;border-radius:var(--radius);box-shadow:0 1px 2px rgba(15,23,42,.04);overflow:hidden}
+.card + .card{margin-top:14px}
+
+.page-pos{background:linear-gradient(135deg,#fef2f2,#fff7ed);border:1px solid #fed7aa;border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.page-pos .ico{width:38px;height:38px;border-radius:10px;background:#fff;display:grid;place-items:center;font-size:18px;flex-shrink:0;color:#dc2626;box-shadow:0 2px 6px rgba(220,38,38,.1)}
+.page-pos .info{flex:1;min-width:0}
+.page-pos .title{font-size:14px;font-weight:600;color:#7f1d1d;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.page-pos .desc{font-size:12.5px;color:#9a3412;line-height:1.6}
+.page-pos .desc .q{background:#fff;border:1px solid #fed7aa;padding:1px 6px;border-radius:4px;color:#9a3412;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;margin:0 2px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px}
+.stat-card{background:#fff;border:1px solid #e5e9f0;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.stat-card .ico{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.stat-card .ico.red{background:#fef2f2;color:#dc2626}
+.stat-card .ico.green{background:#ecfdf5;color:#059669}
+.stat-card .ico.amber{background:#fffbeb;color:#b45309}
+.stat-card .ico.blue{background:#eff6ff;color:#2563eb}
+.stat-card .ico.gray{background:#f1f5f9;color:#64748b}
+.stat-card .info{flex:1;min-width:0}
+.stat-card .l{font-size:12px;color:#64748b;font-weight:500;margin-bottom:3px}
+.stat-card .v{font-size:22px;font-weight:700;color:#1f2937;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat-card .v.green{color:#059669}
+.stat-card .v.red{color:#dc2626}
+.stat-card .v.amber{color:#b45309}
+.stat-card .sub{font-size:11.5px;color:#9ca3af;margin-top:4px}
+
+.filter-bar{display:flex;flex-wrap:wrap;gap:14px 16px;padding:16px 20px;align-items:flex-end}
+.filter-item{display:flex;flex-direction:column;gap:6px;min-width:130px;flex:1 1 130px}
+.filter-item label{font-size:12.5px;color:#64748b;font-weight:500}
+.filter-item.search{flex:1 1 280px;min-width:240px}
+.filter-item.dates{flex:0 1 auto;min-width:auto}
+.filter-actions{display:flex;gap:10px;margin-left:auto;flex-shrink:0;padding-bottom:0}
+
+input[type=text],input[type=date],input[type=number],select{width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;color:#1f2937;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:#9ca3af}
+input:focus,select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.date-range{display:flex;align-items:center;gap:6px}
+.date-range input{width:140px}
+.date-sep{color:#9ca3af;font-size:12px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 15px;border-radius:8px;border:1px solid #e5e9f0;background:#fff;color:#1f2937;font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;user-select:none}
+.btn:hover{border-color:#c3cfdf;background:#f8fafc}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:#2563eb;border-color:#2563eb;color:#fff}
+.btn-primary:hover{background:#1d4ed8;border-color:#1d4ed8}
+.btn-success{background:#10b981;border-color:#10b981;color:#fff}
+.btn-success:hover{background:#059669;border-color:#059669}
+.btn-info{background:#0891b2;border-color:#0891b2;color:#fff}
+.btn-info:hover{background:#067a99;border-color:#067a99}
+.btn-warn{background:#f59e0b;border-color:#f59e0b;color:#fff}
+.btn-warn:hover{background:#d97706;border-color:#d97706}
+.btn-danger{background:#ef4444;border-color:#ef4444;color:#fff}
+.btn-danger:hover{background:#dc2626;border-color:#dc2626}
+.btn-ghost{background:#fff;color:#2563eb;border-color:#bfdbfe}
+.btn-ghost:hover{background:#eff6ff;border-color:#93c5fd}
+.btn-sm{height:28px;padding:0 12px;font-size:12.5px}
+
+.quick-row{padding:0 20px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.quick-label{font-size:12px;color:#9ca3af;margin-right:2px}
+.chip{padding:5px 12px;border:1px solid #e5e9f0;border-radius:15px;font-size:12.5px;color:#4b5563;cursor:pointer;background:#fff;transition:.15s;user-select:none;display:inline-flex;align-items:center;gap:6px;line-height:20px}
+.chip:hover{border-color:#bfdbfe;color:#2563eb}
+.chip.active{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:500}
+.chip .cnt{font-size:11px;color:#9ca3af;font-weight:400}
+.chip.active .cnt{color:rgba(255,255,255,.85)}
+.chip.danger.active{background:#ef4444;border-color:#ef4444}
+.chip.green.active{background:#10b981;border-color:#10b981}
+.chip.gray.active{background:#64748b;border-color:#64748b}
+.chip.orange.active{background:#c2410c;border-color:#c2410c}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid #e5e9f0;flex-wrap:wrap}
+.toolbar-left{display:flex;gap:10px;flex-wrap:wrap}
+.toolbar-right{font-size:13px;color:#64748b}
+.toolbar-right b{color:#1f2937;font-weight:600}
+
+.batch-bar{display:none;align-items:center;gap:12px;padding:10px 20px;background:#eff6ff;border-bottom:1px solid #dbeafe;font-size:13px;color:#1e40af;flex-wrap:wrap}
+.batch-bar.show{display:flex}
+.batch-bar b{font-weight:600}
+.batch-bar .bb-spacer{flex:1}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;min-width:1420px;border-collapse:collapse;font-size:13px}
+thead th{background:#f8fafc;color:#64748b;font-weight:600;font-size:12.5px;text-align:left;padding:12px 14px;white-space:nowrap;border-bottom:1px solid #e5e9f0;letter-spacing:.3px;position:sticky;top:0;z-index:1}
+tbody td{padding:12px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle;font-size:13px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#f8fafc}
+
+input[type=checkbox]{width:16px;height:16px;accent-color:#2563eb;cursor:pointer;vertical-align:middle}
+
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:-.2px}
+.sub{color:#9ca3af;font-size:12px;margin-top:2px}
+
+.user-cell{display:flex;align-items:center;gap:9px}
+.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:600;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+.avatar.f{background:linear-gradient(135deg,#f472b6,#ec4899)}
+.user-name{font-weight:500;color:#111827;line-height:1.35}
+.user-sub{font-size:11.5px;color:#9ca3af;line-height:1.35;margin-top:2px}
+
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;line-height:18px;white-space:nowrap;font-weight:500}
+.t-stu{background:#eff6ff;color:#2563eb}
+.t-tea{background:#f5f3ff;color:#7c3aed}
+.t-tmp{background:#fff7ed;color:#ea580c}
+.t-alu{background:#ecfeff;color:#0891b2}
+.t-out{background:#f3f4f6;color:#4b5563}
+
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap}
+.status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-pending{background:#fff8e5;color:#9b6f00}
+.s-paid{background:#ecfdf5;color:#047857}
+.s-partial{background:#eff6ff;color:#1d4ed8}
+.s-reduced{background:#f5f3ff;color:#7c3aed}
+.s-cancelled{background:#f0f2f5;color:#64748b}
+.s-refunded{background:#fff7ed;color:#c2410c}
+.s-overdue{background:#fef2f2;color:#dc2626}
+
+.fine-amount{font-variant-numeric:tabular-nums;font-weight:600;font-size:13.5px;color:#dc2626}
+.fine-amount.paid{color:#047857}
+.fine-amount.cancelled{color:#9ca3af;text-decoration:line-through}
+.fine-amount.refunded{color:#c2410c;text-decoration:line-through}
+.fine-breakdown{font-size:11px;color:#9ca3af;margin-top:3px;line-height:1.5}
+
+.type-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;line-height:18px;font-weight:500;white-space:nowrap}
+.tt-overdue{background:#fef2f2;color:#dc2626}
+.tt-lost{background:#fff1f2;color:#9f1239}
+.tt-damaged{background:#fffbeb;color:#b45309}
+.tt-seat{background:#eef2ff;color:#4338ca}
+.tt-room{background:#ecfeff;color:#0891b2}
+.tt-device{background:#fdf4ff;color:#a21caf}
+
+.pay-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:11.5px;font-weight:500;line-height:18px}
+.pay-cash{background:#fff7ed;color:#c2410c}
+.pay-wechat{background:#ecfdf5;color:#047857}
+.pay-alipay{background:#eff6ff;color:#1d4ed8}
+.pay-card{background:#f5f3ff;color:#7c3aed}
+.pay-bank{background:#f1f5f9;color:#475569}
+.pay-none{background:#fef2f2;color:#9ca3af}
+
+.ops{white-space:nowrap}
+.link{color:#2563eb;cursor:pointer;font-size:12.5px;user-select:none}
+.link:hover{text-decoration:underline}
+.link.disabled{color:#cbd5e1;cursor:not-allowed}
+.link.disabled:hover{text-decoration:none}
+.link.danger{color:#dc2626}
+.link.warn{color:#f59e0b}
+.link.refund{color:#c2410c}
+
+.empty{padding:60px 20px;text-align:center;color:#9ca3af;font-size:13px}
+.empty .big{font-size:34px;display:block;margin-bottom:10px;opacity:.5}
+
+.pager{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;font-size:13px;color:#64748b;flex-wrap:wrap;border-top:1px solid #e5e9f0}
+.pager-info b{color:#1f2937;font-weight:600}
+.pager-btns{display:flex;gap:6px;align-items:center}
+.pager-btn{min-width:33px;height:33px;padding:0 9px;border:1px solid #e5e9f0;background:#fff;border-radius:7px;cursor:pointer;font-size:13px;color:#1f2937;transition:.15s}
+.pager-btn:hover:not(:disabled):not(.active){border-color:#2563eb;color:#2563eb}
+.pager-btn.active{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:500}
+.pager-btn:disabled{opacity:.45;cursor:not-allowed}
+.pager-dots{padding:0 4px;color:#9ca3af}
+.page-size-select{height:33px;padding:0 8px;border:1px solid #e5e9f0;border-radius:7px;background:#fff;font-size:13px;color:#1f2937;cursor:pointer;outline:none;margin-left:6px}
+
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:12px;width:100%;max-width:640px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(15,23,42,.25);animation:pop .18s cubic-bezier(.34,1.3,.64,1)}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-header{padding:16px 22px;border-bottom:1px solid #e5e9f0;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:600;flex-shrink:0}
+.modal-header.danger{border-bottom-color:#fecaca;background:linear-gradient(135deg,#fef2f2,#fff)}
+.modal-header.danger span{color:#dc2626}
+.modal-header.success{border-bottom-color:#a7f3d0;background:linear-gradient(135deg,#ecfdf5,#fff)}
+.modal-header.success span{color:#047857}
+.modal-header.warn{border-bottom-color:#fde68a;background:linear-gradient(135deg,#fffbeb,#fff)}
+.modal-header.warn span{color:#b45309}
+.icon-btn{width:30px;height:30px;border:none;background:none;border-radius:7px;cursor:pointer;color:#9ca3af;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.15s}
+.icon-btn:hover{background:#f1f5f9;color:#1f2937}
+.modal-body{padding:20px 22px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 22px;border-top:1px solid #e5e9f0;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12.5px;color:#4b5563;font-weight:500}
+.field label .req{color:#ef4444;margin-left:2px}
+.field input,.field select,.field textarea{width:100%}
+.field input:disabled,.field select:disabled{background:#f8fafc;color:#9ca3af;cursor:not-allowed}
+.field textarea{min-height:64px;resize:vertical;line-height:1.5;font-family:inherit;font-size:13px;border:1px solid #e5e9f0;border-radius:8px;padding:8px 11px;color:#1f2937;outline:none}
+.field .hint{font-size:11px;color:#9ca3af;margin-top:2px}
+
+.detail-grid{display:grid;grid-template-columns:96px 1fr;row-gap:11px;font-size:13px}
+.detail-grid dt{color:#64748b;font-size:12.5px}
+.detail-grid dd{color:#1f2937;word-break:break-all}
+
+.detail-sec{margin-top:18px}
+.detail-sec:first-child{margin-top:0}
+.detail-sec h4{font-size:13px;font-weight:600;color:#111827;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.detail-sec h4::before{content:'';width:3px;height:13px;border-radius:2px;background:#2563eb}
+
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:#e8edf5;border-radius:1px}
+.tl-item{position:relative;padding-bottom:14px;font-size:12.5px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-19px;top:4px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #cbd5e1}
+.tl-item.done::before{border-color:#22c55e;background:#22c55e}
+.tl-item.active::before{border-color:#2563eb;background:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.tl-item.warn::before{border-color:#f59e0b;background:#f59e0b}
+.tl-item.danger::before{border-color:#ef4444;background:#ef4444}
+.tl-item .tl-t{color:#111827;font-weight:500}
+.tl-item .tl-d{color:#9ca3af;font-size:11.5px;margin-top:3px}
+.tl-item .tl-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;margin-left:6px;background:#eef2f7;color:#475569}
+.tl-item .tl-tag.green{background:#f0fdf4;color:#047857}
+.tl-item .tl-tag.red{background:#fef2f2;color:#dc2626}
+
+.breakdown-list{display:flex;flex-direction:column;gap:8px}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f8fafc;border:1px solid #eef2f7;border-radius:7px}
+.breakdown-row .bl-l{display:flex;align-items:center;gap:10px}
+.breakdown-row .bl-ico{width:32px;height:32px;border-radius:8px;background:#fff;display:grid;place-items:center;font-size:15px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.breakdown-row .bl-info{font-size:12.5px}
+.breakdown-row .bl-info b{font-weight:600;color:#111827;display:block}
+.breakdown-row .bl-info span{color:#64748b;font-size:11.5px}
+.breakdown-row .bl-v{font-variant-numeric:tabular-nums;font-weight:600;color:#dc2626;font-size:13.5px}
+
+.summary-card{padding:18px 20px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1px solid #fde68a;border-radius:10px;display:flex;gap:18px;align-items:center}
+.summary-card .sc-l{font-size:12px;color:#9a3412;font-weight:500}
+.summary-card .sc-v{font-size:30px;font-weight:700;color:#dc2626;font-variant-numeric:tabular-nums;line-height:1}
+.summary-card .sc-sub{font-size:11.5px;color:#9a3412;margin-top:4px}
+
+.tip-box{margin-top:14px;padding:11px 14px;border-radius:7px;font-size:12.5px;line-height:1.6;border:1px solid #e5e9f0;background:#f8fafc;color:#4b5563}
+.tip-box.warn{border-color:#fde68a;background:#fffbeb;color:#92400e}
+.tip-box.err{border-color:#fecaca;background:#fef2f2;color:#991b1b}
+.tip-box.ok{border-color:#a7f3d0;background:#f0fdf4;color:#065f46}
+
+.confirm-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+.confirm-icon.warn{background:#fff8e5;color:#9b6f00}
+.confirm-icon.danger{background:#fef2f2;color:#dc2626}
+.confirm-icon.success{background:#ecfdf5;color:#047857}
+.confirm-icon.info{background:#eff6ff;color:#2563eb}
+
+.pay-method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pay-method{padding:12px;border:1px solid #e5e9f0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;background:#fff;transition:.15s}
+.pay-method:hover{border-color:#bfdbfe;background:#f8fafc}
+.pay-method.active{border-color:#2563eb;background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.12)}
+.pay-method input{margin:0}
+.pay-method .pm-ico{width:28px;height:28px;border-radius:7px;background:#f1f5f9;display:grid;place-items:center;font-size:14px;flex-shrink:0}
+.pay-method.active .pm-ico{background:#dbeafe}
+.pay-method .pm-l{font-size:13px;font-weight:500;color:#1f2937}
+.pay-method.active .pm-l{color:#1d4ed8}
+
+.rc-form{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin-bottom:16px}
+.rc-form .full{grid-column:1/-1}
+
+/* ====== Toast 提示 ====== */
+#toastWrap{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:9px;align-items:center;pointer-events:none;width:max-content;max-width:90vw}
+.toast{padding:10px 18px;border-radius:8px;background:#1f2937;color:#fff;font-size:13px;line-height:1.5;box-shadow:0 10px 28px rgba(15,23,42,.24);animation:toastIn .22s cubic-bezier(.34,1.3,.64,1);max-width:80vw;word-break:break-all}
+.toast.warn{background:#d97706}
+.toast.error{background:#dc2626}
+.toast.ok,.toast.success{background:#059669}
+.toast.out{opacity:0;transform:translateY(-10px);transition:opacity .3s,transform .3s}
+@keyframes toastIn{from{opacity:0;transform:translateY(-12px) scale(.96)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">罚款缴费</span>
+</nav>
+
+<div class="page-pos">
+        <div class="ico">⚠️</div>
+        <div class="info">
+          <div class="title">罚款缴费 · 业务工作台</div>
+          <div class="desc">
+            用于办理读者<span class="q">滞纳金</span>、<span class="q">遗失赔偿</span>、<span class="q">损坏赔偿</span>、<span class="q">违约扣款</span> 的登记 / 收款 / 减免 / 退费 / 撤销。
+            包含：<span class="q">现金</span>、<span class="q">微信</span>、<span class="q">支付宝</span>、<span class="q">校园卡</span>、<span class="q">银行转账</span> 等支付方式。
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid" id="statsGrid"></div>
+
+      <div class="card">
+        <div class="filter-bar">
+          <div class="filter-item search">
+            <label>关键字</label>
+            <input type="text" id="kw" placeholder="罚单号 / 借阅单号 / 读者姓名 / 学号 / 书名" onkeydown="if(event.key==='Enter')doSearch()">
+          </div>
+
+          <div class="filter-item">
+            <label>罚款类型</label>
+            <select id="fType" onchange="onFilter()">
+              <option value="">全部类型</option>
+              <option value="overdue">滞纳金</option>
+              <option value="lost">遗失赔偿</option>
+              <option value="damaged">损坏赔偿</option>
+              <option value="seat">座位违约</option>
+              <option value="room">研修室违约</option>
+              <option value="device">设备损坏</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>缴纳状态</label>
+            <select id="fStatus" onchange="onFilter()">
+              <option value="">全部状态</option>
+              <option value="pending">待缴费</option>
+              <option value="partial">部分缴纳</option>
+              <option value="paid">已缴费</option>
+              <option value="reduced">已减免</option>
+              <option value="cancelled">已撤销</option>
+              <option value="refunded">已退费</option>
+              <option value="overdue">已逾期</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>支付方式</label>
+            <select id="fPay" onchange="onFilter()">
+              <option value="">全部方式</option>
+              <option value="现金">现金</option>
+              <option value="微信">微信</option>
+              <option value="支付宝">支付宝</option>
+              <option value="校园卡">校园卡</option>
+              <option value="银行转账">银行转账</option>
+            </select>
+          </div>
+
+          <div class="filter-item dates">
+            <label>开单日期范围</label>
+            <div class="date-range">
+              <input type="date" id="fDateFrom" onchange="onFilter()" title="起始日期">
+              <span class="date-sep">至</span>
+              <input type="date" id="fDateTo" onchange="onFilter()" title="结束日期">
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+            <button class="btn" onclick="resetFilter()">重置</button>
+            <button class="btn btn-ghost" onclick="exportList()">📤 导出</button>
+          </div>
+        </div>
+
+        <div class="quick-row">
+          <span class="quick-label">快捷筛选：</span>
+          <span class="chip active" data-quick="" onclick="setQuick(this,'')">全部 <span class="cnt" id="c-all">0</span></span>
+          <span class="chip danger" data-quick="pending" onclick="setQuick(this,'pending')">待缴费 <span class="cnt" id="c-pending">0</span></span>
+          <span class="chip" data-quick="partial" onclick="setQuick(this,'partial')">部分缴纳 <span class="cnt" id="c-partial">0</span></span>
+          <span class="chip green" data-quick="paid" onclick="setQuick(this,'paid')">已缴费 <span class="cnt" id="c-paid">0</span></span>
+          <span class="chip" data-quick="reduced" onclick="setQuick(this,'reduced')">已减免 <span class="cnt" id="c-reduced">0</span></span>
+          <span class="chip orange" data-quick="refunded" onclick="setQuick(this,'refunded')">已退费 <span class="cnt" id="c-refunded">0</span></span>
+          <span class="chip gray" data-quick="cancelled" onclick="setQuick(this,'cancelled')">已撤销 <span class="cnt" id="c-cancelled">0</span></span>
+          <span class="chip danger" data-quick="overdue" onclick="setQuick(this,'overdue')">已逾期 <span class="cnt" id="c-overdue">0</span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="btn btn-success" onclick="openPayModal()">💰 登记缴费</button>
+            <button class="btn btn-warn" onclick="batchReduce()">✂️ 批量减免</button>
+            <button class="btn btn-info" onclick="batchNotice()">📢 催缴通知</button>
+            <button class="btn btn-ghost" onclick="openCreateModal()">＋ 新增罚单</button>
+          </div>
+          <div class="toolbar-right">
+            已选 <b id="selInfo" style="color:#2563eb;font-weight:600;margin:0 4px">0</b> 条
+          </div>
+        </div>
+
+        <div class="batch-bar" id="batchBar">
+          <span>已选择 <b id="selCount">0</b> 条罚单</span>
+          <button class="btn btn-sm" onclick="batchPrint()">🖨️ 打印凭条</button>
+          <button class="btn btn-sm" onclick="batchNotice()">📢 批量催缴</button>
+          <div class="bb-spacer"></div>
+          <button class="btn btn-sm" onclick="clearSelection()">取消选择</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:38px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
+                <th style="width:140px">罚单号</th>
+                <th style="width:200px">读者信息</th>
+                <th style="width:100px">罚款类型</th>
+                <th style="width:148px">金额</th>
+                <th style="width:100px">状态</th>
+                <th style="width:108px">支付方式</th>
+                <th style="width:104px">开单日期</th>
+                <th style="width:104px">截止日期</th>
+                <th style="width:148px">关联单据</th>
+                <th style="width:196px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="pager">
+          <div class="pager-info">
+            共 <b id="totalNum">0</b> 条记录
+            <select class="page-size-select" id="pageSize" onchange="changePageSize(this.value)">
+              <option value="10">10 条/页</option>
+              <option value="20">20 条/页</option>
+              <option value="50">50 条/页</option>
+            </select>
+          </div>
+          <div class="pager-btns" id="pagerCtrl"></div>
+        </div>
+      </div>
+</main>
+
+<!-- 登记缴费 -->
+<div class="modal" id="payMask">
+  <div class="modal-box">
+    <div class="modal-header success"><span>💰 登记缴费</span><button class="icon-btn" onclick="closeModal('payMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>罚单号</label>
+          <input type="text" id="payNo" placeholder="选择待缴罚单后自动带出" disabled style="background:#f8fafc">
+        </div>
+        <div class="field">
+          <label>读者姓名 / 学号<span class="req">*</span></label>
+          <input type="text" id="payReader" placeholder="输入读者姓名 / 学号后回车" onkeydown="if(event.key==='Enter'){event.preventDefault();loadPayReader()}">
+        </div>
+        <div class="field full">
+          <label>读者学号</label>
+          <input type="text" id="payCertNo" placeholder="如：2022010301" disabled style="background:#f8fafc">
+        </div>
+        <div class="field full" id="payPendingBox">
+          <div class="tip-box warn">请先输入读者姓名 / 学号（如 2022010301），按回车加载待缴罚单</div>
+        </div>
+        <div class="field">
+          <label>应缴金额</label>
+          <input type="text" id="payTotalAmount" disabled value="￥0.00" style="background:#f8fafc;font-weight:600;color:#dc2626">
+        </div>
+        <div class="field">
+          <label>本次实缴金额<span class="req">*</span></label>
+          <input type="number" id="payActualAmount" min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="field full">
+          <label>支付方式<span class="req">*</span></label>
+          <div class="pay-method-grid">
+            <label class="pay-method" data-pm="微信"><input type="radio" name="payMethod" value="微信" checked><div class="pm-ico">💚</div><div class="pm-l">微信支付</div></label>
+            <label class="pay-method" data-pm="支付宝"><input type="radio" name="payMethod" value="支付宝"><div class="pm-ico">💙</div><div class="pm-l">支付宝</div></label>
+            <label class="pay-method" data-pm="校园卡"><input type="radio" name="payMethod" value="校园卡"><div class="pm-ico">💳</div><div class="pm-l">校园卡</div></label>
+            <label class="pay-method" data-pm="现金"><input type="radio" name="payMethod" value="现金"><div class="pm-ico">💵</div><div class="pm-l">现金</div></label>
+            <label class="pay-method" data-pm="银行转账"><input type="radio" name="payMethod" value="银行转账"><div class="pm-ico">🏦</div><div class="pm-l">银行转账</div></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>交易流水号</label>
+          <input type="text" id="payTradeNo" placeholder="选填（如微信/支付宝交易号）">
+        </div>
+        <div class="field">
+          <label>收款人</label>
+          <input type="text" id="payReceiver" value="王管理员" placeholder="经办人姓名">
+        </div>
+        <div class="field full">
+          <label>备注</label>
+          <textarea id="payRemark" placeholder="选填（如读者减免申请等）"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('payMask')">取消</button>
+      <button class="btn btn-success" onclick="confirmPay()">✓ 确认缴费</button>
+    </div>
+  </div>
+</div>
+
+<!-- 新增罚单 -->
+<div class="modal" id="createMask">
+  <div class="modal-box">
+    <div class="modal-header"><span>＋ 新增罚单</span><button class="icon-btn" onclick="closeModal('createMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>读者姓名 / 学号<span class="req">*</span></label>
+          <input type="text" id="crReader" placeholder="输入学号或姓名后回车" onkeydown="if(event.key==='Enter'){event.preventDefault();loadCreateReader()}">
+        </div>
+        <div class="field">
+          <label>读者信息</label>
+          <input type="text" id="crReaderInfo" disabled style="background:#f8fafc" placeholder="自动带出">
+        </div>
+        <div class="field">
+          <label>罚款类型<span class="req">*</span></label>
+          <select id="crType">
+            <option value="overdue">滞纳金</option>
+            <option value="lost">遗失赔偿</option>
+            <option value="damaged">损坏赔偿</option>
+            <option value="seat">座位违约</option>
+            <option value="room">研修室违约</option>
+            <option value="device">设备损坏</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>应缴金额（元）<span class="req">*</span></label>
+          <input type="number" id="crAmount" min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="field full">
+          <label>事项描述<span class="req">*</span></label>
+          <input type="text" id="crDesc" placeholder="如：《人类简史》逾期 12 天">
+        </div>
+        <div class="field">
+          <label>开单日期</label>
+          <input type="date" id="crOpenDate">
+        </div>
+        <div class="field">
+          <label>截止日期<span class="req">*</span></label>
+          <input type="date" id="crDueDate">
+        </div>
+        <div class="field">
+          <label>经办人</label>
+          <input type="text" id="crOperator" value="王管理员">
+        </div>
+        <div class="field">
+          <label>备注</label>
+          <input type="text" id="crRemark" placeholder="选填">
+        </div>
+      </div>
+      <div class="tip-box">提示：应缴金额可参考 — 滞纳金 0.2 元/天（单册封顶 20 元）；遗失赔偿＝书价＋5 元加工费；损坏赔偿＝定价 × 损坏比例。</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('createMask')">取消</button>
+      <button class="btn btn-primary" onclick="confirmCreate()">✓ 创建罚单</button>
+    </div>
+  </div>
+</div>
+
+<!-- 减免 -->
+<div class="modal" id="reduceMask">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header warn"><span>✂️ 减免罚单</span><button class="icon-btn" onclick="closeModal('reduceMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="confirm-icon warn"><i class="fas fa-hand-holding-usd"></i></div>
+      <div style="font-size:15px;font-weight:600;color:#111827;margin-bottom:6px">申请减免</div>
+      <div style="font-size:13px;color:#6b7280;line-height:1.7;margin-bottom:14px" id="reduceQuestion">确认要减免该罚单吗？</div>
+      <div class="tip-box warn" id="reduceDetail" style="display:none"></div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">减免金额<span style="color:#ef4444;margin-left:2px">*</span></label>
+        <input type="number" id="reduceAmount" min="0" step="0.01" placeholder="0.00" style="width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;outline:none">
+        <div class="hint" style="font-size:11.5px;color:#9ca3af;margin-top:4px">
+          <span style="color:#dc2626;font-weight:600">输入 0 表示全额减免剩余欠款</span>；也可输入具体金额做部分减免
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">减免理由<span style="color:#ef4444;margin-left:2px">*</span></label>
+        <textarea id="reduceReason" rows="2" placeholder="如：读者家庭困难申请 / 首次违约减半 / 系统原因误罚..." style="width:100%;border:1px solid #e5e9f0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:inherit;resize:vertical;outline:none"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('reduceMask')">取消</button>
+      <button class="btn btn-warn" onclick="confirmReduce()">确认减免</button>
+    </div>
+  </div>
+</div>
+
+<!-- 退费（下拉选择原因） -->
+<div class="modal" id="refundMask">
+  <div class="modal-box" style="max-width:560px">
+    <div class="modal-header warn"><span>↩️ 办理退费</span><button class="icon-btn" onclick="closeModal('refundMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="confirm-icon warn"><i class="fas fa-undo-alt"></i></div>
+      <div style="font-size:15px;font-weight:600;color:#111827;margin-bottom:6px">退款给读者</div>
+      <div style="font-size:13px;color:#6b7280;line-height:1.7;margin-bottom:14px" id="refundQuestion">确认要为该读者办理退费吗？</div>
+      <div class="tip-box warn" id="refundDetail"></div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">退费金额<span style="color:#ef4444;margin-left:2px">*</span></label>
+        <input type="number" id="refundAmount" min="0" step="0.01" placeholder="0.00" style="width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;outline:none">
+        <div class="hint" id="refundHint" style="font-size:11.5px;color:#9ca3af;margin-top:4px"></div>
+      </div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">退费方式<span style="color:#ef4444;margin-left:2px">*</span></label>
+        <div class="pay-method-grid">
+          <label class="pay-method" data-rm="微信"><input type="radio" name="refundMethod" value="微信" checked><div class="pm-ico">💚</div><div class="pm-l">微信退款</div></label>
+          <label class="pay-method" data-rm="支付宝"><input type="radio" name="refundMethod" value="支付宝"><div class="pm-ico">💙</div><div class="pm-l">支付宝退款</div></label>
+          <label class="pay-method" data-rm="校园卡"><input type="radio" name="refundMethod" value="校园卡"><div class="pm-ico">💳</div><div class="pm-l">退回校园卡</div></label>
+          <label class="pay-method" data-rm="现金"><input type="radio" name="refundMethod" value="现金"><div class="pm-ico">💵</div><div class="pm-l">现金退还</div></label>
+          <label class="pay-method" data-rm="银行转账"><input type="radio" name="refundMethod" value="银行转账"><div class="pm-ico">🏦</div><div class="pm-l">银行转账</div></label>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">退费原因<span style="color:#ef4444;margin-left:2px">*</span></label>
+        <select id="refundReasonSelect" onchange="toggleReasonInput('refund')" style="width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;outline:none;margin-bottom:8px">
+          <option value="">请选择退费原因</option>
+          <option value="图书找回">图书找回</option>
+          <option value="系统误判">系统误判</option>
+          <option value="重复收费">重复收费</option>
+          <option value="读者申诉成立">读者申诉成立</option>
+          <option value="其他">其他（自定义输入）</option>
+        </select>
+        <input type="text" id="refundReasonCustom" placeholder="请输入自定义退费原因" style="display:none;width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;outline:none">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('refundMask')">取消</button>
+      <button class="btn btn-warn" onclick="confirmRefund()">确认退费</button>
+    </div>
+  </div>
+</div>
+
+<!-- 撤销（下拉选择原因） -->
+<div class="modal" id="cancelMask">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header danger"><span>🚫 撤销罚单</span><button class="icon-btn" onclick="closeModal('cancelMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="confirm-icon danger"><i class="fas fa-ban"></i></div>
+      <div style="font-size:15px;font-weight:600;color:#111827;margin-bottom:6px" id="cancelQuestion">确认撤销该罚单？</div>
+      <div style="font-size:13px;color:#6b7280;line-height:1.7">撤销后该罚单不再计入应收金额，且不可恢复；若已产生收款，请先办理退费。</div>
+      <div class="tip-box err" id="cancelDetail" style="margin-top:14px"></div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">撤销原因<span style="color:#ef4444;margin-left:2px">*</span></label>
+        <select id="cancelReasonSelect" onchange="toggleReasonInput('cancel')" style="width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;outline:none;margin-bottom:8px">
+          <option value="">请选择撤销原因</option>
+          <option value="系统误开罚单">系统误开罚单</option>
+          <option value="读者申诉成立">读者申诉成立</option>
+          <option value="重复开单">重复开单</option>
+          <option value="其他">其他（自定义输入）</option>
+        </select>
+        <input type="text" id="cancelReasonCustom" placeholder="请输入自定义撤销原因" style="display:none;width:100%;height:36px;border:1px solid #e5e9f0;border-radius:8px;padding:0 12px;font-size:13px;outline:none">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('cancelMask')">取消</button>
+      <button class="btn btn-danger" onclick="confirmCancel()">确认撤销</button>
+    </div>
+  </div>
+</div>
+
+<!-- 催缴通知 -->
+<div class="modal" id="noticeMask">
+  <div class="modal-box" style="max-width:580px">
+    <div class="modal-header"><span>📢 发送催缴通知</span><button class="icon-btn" onclick="closeModal('noticeMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="tip-box warn" id="noticeSummary"></div>
+      <div style="font-size:13px;font-weight:600;color:#374151;margin:14px 0 8px">催缴方式</div>
+      <label class="pay-method" style="padding:10px 12px"><input type="checkbox" checked id="chSms"><div class="pm-ico">📱</div><div class="pm-l">短信</div></label>
+      <label class="pay-method" style="margin-top:8px;padding:10px 12px"><input type="checkbox" checked id="chEmail"><div class="pm-ico">📧</div><div class="pm-l">邮件</div></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('noticeMask')">取消</button>
+      <button class="btn btn-primary" onclick="confirmNotice()">发送催缴</button>
+    </div>
+  </div>
+</div>
+
+<!-- 详情 -->
+<div class="modal" id="detailMask">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>罚款详情</span>
+      <button class="icon-btn" onclick="closeModal('detailMask')">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('detailMask')">关闭</button>
+      <button class="btn btn-ghost" onclick="printReceipt()">🖨️ 打印凭条</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通用确认 -->
+<div class="modal" id="confirmMask">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-header danger"><span id="confirmTitle">操作确认</span><button class="icon-btn" onclick="closeModal('confirmMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="confirm-icon" id="confirmIcon"><i class="fas fa-exclamation-triangle"></i></div>
+      <div style="font-size:15px;font-weight:600;color:#111827;margin-bottom:6px" id="confirmQuestion">确认操作？</div>
+      <div style="font-size:13px;color:#6b7280;line-height:1.7" id="confirmText"></div>
+      <div class="tip-box" id="confirmDetail" style="display:none;margin-top:12px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('confirmMask')">取消</button>
+      <button class="btn btn-primary" id="confirmOkBtn">确定</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastWrap"></div>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function pad2(n){ return String(n).padStart(2,'0'); }
+function fmtDate(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function todayStr(){ return fmtDate(new Date()); }
+function addDaysStr(base,n){ const d=new Date(base+'T00:00:00'); d.setDate(d.getDate()+n); return fmtDate(d); }
+function diffDays(a,b){ return Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/86400000); }
+function nowStr(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
+function typeKey(t){ return {'学生':'stu','教师':'tea','临时':'tmp','校友':'alu','校外读者':'out'}[t]||'out'; }
+
+const TYPE_LABEL = {
+  overdue:'滞纳金', lost:'遗失赔偿', damaged:'损坏赔偿', seat:'座位违约', room:'研修室违约', device:'设备损坏'
+};
+const TYPE_TAG = {
+  overdue:'tt-overdue', lost:'tt-lost', damaged:'tt-damaged', seat:'tt-seat', room:'tt-room', device:'tt-device'
+};
+const TYPE_EMOJI = {overdue:'⏰', lost:'📕', damaged:'🔧', seat:'💺', room:'🏛️', device:'🔌'};
+const TYPE_DESC = {
+  overdue:'逾期归还图书产生的滞纳金（按 0.2 元/天计算，单册封顶 20 元）',
+  lost:'图书遗失赔偿（含图书定价 + 加工费）',
+  damaged:'图书损坏赔偿（按损坏比例 × 定价计算，可选加工费）',
+  seat:'座位预约违约（未签到 / 暂离超时 / 未签离等）',
+  room:'研修室预约违约（未签到 / 人数不足取消等）',
+  device:'损坏图书馆设备赔偿（按设备采购价 + 维修费）'
+};
+const STATUS_LABEL = {
+  pending:'待缴费', partial:'部分缴纳', paid:'已缴费', reduced:'已减免', cancelled:'已撤销', refunded:'已退费', overdue:'已逾期'
+};
+const STATUS_CLASS = {
+  pending:'s-pending', partial:'s-partial', paid:'s-paid', reduced:'s-reduced', cancelled:'s-cancelled', refunded:'s-refunded', overdue:'s-overdue'
+};
+const PAY_LABEL = {
+  '现金':'现金', '微信':'微信', '支付宝':'支付宝', '校园卡':'校园卡', '银行转账':'银行转账', '':'未支付'
+};
+const PAY_CLASS = {
+  '现金':'pay-cash', '微信':'pay-wechat', '支付宝':'pay-alipay', '校园卡':'pay-card', '银行转账':'pay-bank', '':'pay-none'
+};
+const PAY_EMOJI = {'现金':'💵','微信':'💚','支付宝':'💙','校园卡':'💳','银行转账':'🏦'};
+
+const READERS = {
+  '2022010301':{name:'陈思远',gender:'男',type:'学生',dept:'计算机科学与技术学院',phone:'13801234567',email:'chensy@stu.edu.cn'},
+  '2023051208':{name:'李婉清',gender:'女',type:'学生',dept:'外国语学院',phone:'13912345678',email:'liwq@stu.edu.cn'},
+  '2023012245':{name:'何静怡',gender:'女',type:'学生',dept:'经济管理学院',phone:'13012345678',email:'hejy@stu.edu.cn'},
+  '2023070822':{name:'周雨桐',gender:'女',type:'学生',dept:'文学院',phone:'13412345678',email:'zhouyt@stu.edu.cn'},
+  '2023090245':{name:'许诗涵',gender:'女',type:'学生',dept:'外国语学院',phone:'17612345678',email:'xush@stu.edu.cn'},
+  '2022031966':{name:'高文博',gender:'男',type:'学生',dept:'机械工程学院',phone:'18512345678',email:'gaowb@stu.edu.cn'},
+  '2021060889':{name:'马天宇',gender:'男',type:'学生',dept:'电子信息工程学院',phone:'18712345678',email:'maty@stu.edu.cn'},
+  '2021070145':{name:'韩明辉',gender:'男',type:'学生',dept:'计算机科学与技术学院',phone:'18112345678',email:'hanmh@stu.edu.cn'},
+  'T20160128':{name:'王振宇',gender:'男',type:'教师',dept:'电子信息工程学院',phone:'13701234567',email:'wangzy@edu.cn'},
+  'T20190456':{name:'赵敏',gender:'女',type:'教师',dept:'经济管理学院',phone:'13612345678',email:'zhaomin@edu.cn'},
+  'T20200678':{name:'唐雅琴',gender:'女',type:'教师',dept:'文学院',phone:'18212345678',email:'tangyq@edu.cn'},
+  'T20170412':{name:'沈立诚',gender:'男',type:'教师',dept:'机械工程学院',phone:'17512345678',email:'shenlc@edu.cn'},
+  'L20240312':{name:'郑晓岚',gender:'女',type:'临时',dept:'图书馆',phone:'13212345678',email:'zhengxl@edu.cn'},
+  'A20150123':{name:'林晓彤',gender:'女',type:'校友',dept:'计算机科学与技术学院',phone:'18612345678',email:'linxt@alumni.edu.cn'},
+  'O20210101':{name:'邓伟成',gender:'男',type:'校外读者',dept:'社会读者',phone:'17712345678',email:'dengwc@163.com'}
+};
+
+/* ========== 罚单种子数据 ==========
+   [类型, 学号, 描述, 应缴, 已缴, 状态, 支付方式, 开单日偏移, 截止日偏移]
+   状态含：pending / partial / paid / reduced / cancelled / refunded / overdue
+*/
+const RAW = [
+  ['overdue',  '2022010301', '《人类简史》逾期 12 天',            12*0.2,        0,     'pending', '',        -5,   7],
+  ['overdue',  '2023051208', '《活着》逾期 5 天',                  5*0.2,         0,     'pending', '',        -3,   10],
+  ['overdue',  '2023012245', '《经济学原理》逾期 8 天',            8*0.2,         0,     'partial', '微信',     -2,   12],
+  ['overdue',  '2023070822', '《围城》逾期 22 天（封顶 20）',     20,             0,     'overdue', '',        -10,  -3],
+  ['overdue',  '2023090245', '《三体》逾期 4 天',                  4*0.2,         4*0.2, 'paid',    '微信',     -5,   14],
+  ['overdue',  '2022031966', '《白夜行》逾期 15 天（封顶 20）',   20,             20,    'paid',    '支付宝',   -7,   10],
+  ['overdue',  '2021060889', '《平凡的世界》逾期 6 天',            6*0.2,         6*0.2, 'paid',    '校园卡',   -8,   14],
+  ['overdue',  '2021070145', '《乌合之众》逾期 18 天',            18*0.2,        0,     'overdue', '',        -15,  -5],
+  ['overdue',  'T20160128',  '《万历十五年》逾期 3 天',            3*0.2,         3*0.2, 'paid',    '校园卡',   -4,   12],
+  ['lost',     '2022010301', '《算法导论》遗失',                  128+5,         0,     'pending', '',        -3,   14],
+  ['lost',     '2023051208', '《百年孤独》遗失',                  55+5,          0,     'pending', '',        -5,   14],
+  ['lost',     '2021070145', '《三体》遗失',                      93+5,          98,    'paid',    '微信',     -10,  -2],
+  ['damaged',  'T20190456',  '《万历十五年》封面丢失（赔 90%）',  35*0.9,        31.5,  'paid',    '微信',     -6,   8],
+  ['damaged',  '2023012245', '《中国哲学简史》装订破损（赔 20%）', 39*0.2,         7.8,  'paid',    '支付宝',   -8,   6],
+  ['damaged',  '2023070822', '《活着》水浸（赔 70%）',             45*0.7,        0,     'pending', '',        -2,   14],
+  ['damaged',  '2023090245', '《围城》页面破损（赔 10%）',        36*0.1,         0,     'pending', '',        -4,   10],
+  ['seat',     '2022010301', '总馆2F A-102 座位 未签到',          5,              0,     'pending', '',        -1,   7],
+  ['seat',     '2023051208', '总馆3F C-032 座位 暂离超时',        8,              8,     'paid',    '校园卡',   -2,   5],
+  ['seat',     '2021070145', '总馆2F B-215 座位 未签离',          10,             0,     'overdue', '',        -3,   -1],
+  ['seat',     '2023090245', '南馆1F A-003 座位 未签到',          5,              0,     'reduced', '',        -2,   7],
+  ['room',     '2023012245', '总馆2F 研讨间2 未签到',             10,             0,     'pending', '',        -1,   5],
+  ['room',     '2023070822', '总馆2F 研讨间3 人数不足取消',       5,              0,     'pending', '',        -3,   7],
+  ['room',     '2021070145', '总馆2F 研讨间4 逾期未签退',         15,             0,     'overdue', '',        -5,   -2],
+  ['room',     'L20240312',  '南馆1F 研讨间A 未签到',             5,              5,     'paid',    '现金',     -2,   5],
+  ['device',   '2023090245', '损坏耳机1个（赔 50% + 加工费）',   200*0.5+30,    0,     'pending', '',        -1,   14],
+  ['device',   '2022031966', '损坏电源插座（赔 80%）',           150*0.8,        120,   'paid',    '银行转账', -10,   -3],
+  ['device',   '2021060889', '损坏键盘1个',                      350+30,         0,     'pending', '',        -3,   14],
+  ['lost',     '2021070145', '《枪炮、病菌与钢铁》遗失（已退费）',78+5,           0,     'refunded','现金',     -15,  -2],
+  ['overdue',  'A20150123',  '《新概念英语》逾期 7 天',            7*0.2,         1.4,   'partial', '微信',     -1,   12],
+  ['lost',     'O20210101',  '《百年孤独》遗失',                  55+5,          0,     'pending', '',        -1,   14],
+  /* ===== 已撤销示例 ===== */
+  ['overdue',  '2023012245', '《资本论》逾期 3 天（系统重复计费，已撤销）', 0.6,  0,     'cancelled','',        -4,   8],
+  ['seat',     '2023051208', '总馆2F A-205 座位 未签到（闸机误判，已撤销）', 5,  0,     'cancelled','',        -6,   5],
+  ['device',   'T20190456',  '损坏投影仪遥控器（读者申诉成功，已撤销）',   120,  0,     'cancelled','',        -9,   2],
+  /* ===== 已退费示例 ===== */
+  ['lost',     '2023012245', '《国富论》遗失（图书已找回，全额退费）',     62,   0,     'refunded', '微信',    -12,  -1],
+  ['damaged',  '2022031966', '《机械制图》封面破损（误判，已退费）',       42*0.3,0,     'refunded', '支付宝',  -8,   6]
+];
+
+function buildFines(){
+  const list = [];
+  const today = todayStr();
+  RAW.forEach((r, i) => {
+    const [type, certNo, desc, total, paid, status, payMethod, openOff, dueOff] = r;
+    const reader = READERS[certNo];
+    if(!reader) return;
+    const openDate = addDaysStr(today, openOff);
+    const dueDate = addDaysStr(today, dueOff);
+    const seq = String(i+1).padStart(3,'0');
+    const isReduced = status === 'reduced';
+    const reducedAmt = isReduced ? Number((total - paid).toFixed(2)) : 0;
+
+    list.push({
+      id: 'FJ' + openDate.replace(/-/g,'') + seq,
+      type, certNo, desc,
+      totalAmount: Number(total.toFixed(2)),
+      paidAmount: Number(paid.toFixed(2)),
+      reducedAmount: reducedAmt,
+      refundedAmount: status === 'refunded' ? Number(total.toFixed(2)) : 0,
+      status, payMethod, openDate, dueDate,
+      operator:'王管理员',
+      flow:[
+        {actor:'系统', act:'生成罚单', time:openDate + ' 08:30:00', comment: TYPE_DESC[type]}
+      ]
+    });
+    const last = list[list.length-1];
+
+    // 缴费流水（已退费的罚单历史上也缴过款）
+    if(status === 'paid' || status === 'partial' || status === 'refunded'){
+      const payTime = addDaysStr(today, openOff + 1) + ' 09:15:00';
+      const paidAmt = status === 'refunded' ? total : paid;
+      last.flow.push({actor:'王管理员', act:'登记缴费', time:payTime, comment:'收款 ' + payMethod + ' ￥' + paidAmt.toFixed(2)});
+    }
+    if(isReduced){
+      const rt = addDaysStr(today, openOff + 2) + ' 10:00:00';
+      last.flow.push({actor:'李主管', act:'减免罚金', time:rt, comment:'申请：' + reader.name + '；减免金额：￥' + reducedAmt.toFixed(2)});
+    }
+    if(status === 'refunded'){
+      const rt = addDaysStr(today, openOff + 2) + ' 10:00:00';
+      last.flow.push({actor:'李主管', act:'办理退费', time:rt, comment:'退款方式：' + (payMethod || '原路退回') + '；退款金额：￥' + total.toFixed(2) + '；原因：业务复核后退回款项'});
+    }
+    if(status === 'cancelled'){
+      const ct = addDaysStr(today, openOff + 1) + ' 14:20:00';
+      last.flow.push({actor:'李主管', act:'撤销罚单', time:ct, comment:'原因：业务复核确认无需收取，予以撤销'});
+    }
+  });
+  return list;
+}
+
+let fines = buildFines();
+let selected = new Set();
+let state = { page:1, pageSize:10, keyword:'', type:'', status:'', pay:'', dateFrom:'', dateTo:'', quick:'' };
+
+/* ============ Toast ============ */
+function toast(msg, type){
+  const wrap = $('toastWrap');
+  if(!wrap) { console.log(msg); return; }
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' '+type : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, 2600);
+}
+
+/* ============ 工具 ============ */
+function findReaderCert(kw){
+  if(!kw) return null;
+  kw = String(kw).trim();
+  if(READERS[kw]) return kw;
+  const keys = Object.keys(READERS);
+  return keys.find(k => READERS[k].name === kw)
+      || keys.find(k => READERS[k].name.indexOf(kw) >= 0)
+      || keys.find(k => READERS[k].phone === kw)
+      || null;
+}
+function genFineId(openDate){
+  const prefix = 'FJ' + openDate.replace(/-/g,'');
+  let max = 0;
+  fines.forEach(f => {
+    if(f.id.indexOf(prefix) === 0){
+      const n = parseInt(f.id.slice(prefix.length), 10);
+      if(!isNaN(n) && n > max) max = n;
+    }
+  });
+  return prefix + String(max + 1).padStart(3,'0');
+}
+function dueStatus(f){
+  if(f.status === 'paid' || f.status === 'reduced' || f.status === 'cancelled' || f.status === 'refunded') return 'ok';
+  return diffDays(todayStr(), f.dueDate) > 0 ? 'overdue' : 'ok';
+}
+function remainingDays(f){ return diffDays(f.dueDate, todayStr()); }
+/* 可缴费：待缴 / 部分缴纳 / 逾期 */
+function isPayable(f){ return f.status === 'pending' || f.status === 'partial' || f.status === 'overdue'; }
+/* 可减免：未结清且未作废 */
+function isReducible(f){ return isPayable(f); }
+/* 可退费：已有实收款，且未处于已退费状态 */
+function isRefundable(f){ return Number(f.paidAmount) > 0.01 && f.status !== 'refunded'; }
+/* 可撤销：尚无实收款（已缴费的必须先退费） */
+function isCancellable(f){
+  return Number(f.paidAmount) <= 0.01
+      && (f.status === 'pending' || f.status === 'overdue' || f.status === 'reduced');
+}
+/* 计算剩余应缴金额（扣除已缴和已减免） */
+function getRemainAmount(f) {
+  const remain = f.totalAmount - f.paidAmount - (f.reducedAmount || 0);
+  return remain < 0 ? 0 : remain;
+}
+
+/* ============ 筛选 / 渲染 ============ */
+function getFiltered(){
+  const k = state.keyword.trim().toLowerCase();
+  return fines.filter(f => {
+    if(state.quick){
+      if(state.quick === 'pending' && !(f.status === 'pending' || f.status === 'overdue')) return false;
+      if(state.quick === 'partial' && f.status !== 'partial') return false;
+      if(state.quick === 'paid' && f.status !== 'paid') return false;
+      if(state.quick === 'reduced' && f.status !== 'reduced') return false;
+      if(state.quick === 'refunded' && f.status !== 'refunded') return false;
+      if(state.quick === 'cancelled' && f.status !== 'cancelled') return false;
+      if(state.quick === 'overdue' && f.status !== 'overdue') return false;
+    }
+    if(state.type && f.type !== state.type) return false;
+    if(state.status && f.status !== state.status) return false;
+    if(state.pay && f.payMethod !== state.pay) return false;
+    if(state.dateFrom && f.openDate < state.dateFrom) return false;
+    if(state.dateTo && f.openDate > state.dateTo) return false;
+    if(k){
+      const reader = READERS[f.certNo];
+      const hay = (f.id + ' ' + f.desc + ' ' + f.certNo + ' ' + (reader ? reader.name : '')).toLowerCase();
+      if(hay.indexOf(k) === -1) return false;
+    }
+    return true;
+  });
+}
+
+function updateStats(){
+  const list = fines;
+  const pending = list.filter(f => f.status === 'pending').length;
+  const overdueF = list.filter(f => f.status === 'overdue').length;
+  const paid = list.filter(f => f.status === 'paid').length;
+  const partial = list.filter(f => f.status === 'partial').length;
+  const refunded = list.filter(f => f.status === 'refunded').length;
+  const cancelled = list.filter(f => f.status === 'cancelled').length;
+
+  /* 应收 / 待收 只统计仍然有效的罚单（排除已撤销、已退费） */
+  const activeList = list.filter(f => f.status !== 'cancelled' && f.status !== 'refunded');
+  const totalAmount = activeList.reduce((s,f) => s + f.totalAmount, 0);
+  const paidAmount = list.reduce((s,f) => s + f.paidAmount, 0);
+  const pendingAmount = activeList
+    .filter(f => isPayable(f))
+    .reduce((s,f) => s + getRemainAmount(f), 0);
+  const overdueAmount = list.filter(f => f.status === 'overdue').reduce((s,f) => s + f.totalAmount, 0);
+
+  $('c-all').textContent = list.length;
+  $('c-pending').textContent = pending + overdueF;
+  $('c-partial').textContent = partial;
+  $('c-paid').textContent = paid + partial;
+  $('c-reduced').textContent = list.filter(f => f.status === 'reduced').length;
+  $('c-refunded').textContent = refunded;
+  $('c-cancelled').textContent = cancelled;
+  $('c-overdue').textContent = overdueF;
+
+  $('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="ico red">⚠️</div><div class="info"><div class="l">待收金额</div><div class="v red">￥${pendingAmount.toFixed(2)}</div><div class="sub">${pending + overdueF + partial} 条待处理</div></div></div>
+    <div class="stat-card"><div class="ico green">💰</div><div class="info"><div class="l">已收金额</div><div class="v green">￥${paidAmount.toFixed(2)}</div><div class="sub">${paid + partial} 笔已到账</div></div></div>
+    <div class="stat-card"><div class="ico amber">📊</div><div class="info"><div class="l">应收总额</div><div class="v amber">￥${totalAmount.toFixed(2)}</div><div class="sub">有效罚单 ${activeList.length} 条</div></div></div>
+    <div class="stat-card"><div class="ico blue">⏰</div><div class="info"><div class="l">已逾期</div><div class="v">${overdueF}</div><div class="sub">金额 ￥${overdueAmount.toFixed(2)}</div></div></div>
+    <div class="stat-card"><div class="ico gray">🚫</div><div class="info"><div class="l">已撤销 / 已退费</div><div class="v">${cancelled} / ${refunded}</div><div class="sub">不计入应收</div></div></div>
+  `;
+}
+
+function setQuick(el, q){
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state.quick = q;
+  state.page = 1;
+  renderTable();
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / state.pageSize));
+  if(state.page > pages) state.page = pages;
+  const start = (state.page - 1) * state.pageSize;
+  const rows = list.slice(start, start + state.pageSize);
+  const tbody = $('tbody');
+
+  if(!rows.length){
+    tbody.innerHTML = `<tr><td colspan="11"><div class="empty"><span class="big">📭</span>没有找到符合条件的罚单</div></td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(f => {
+      const reader = READERS[f.certNo];
+      const remaining = remainingDays(f);
+      const typeLabel = TYPE_LABEL[f.type];
+      const payLabel = PAY_LABEL[f.payMethod] || '未支付';
+      const payCls = PAY_CLASS[f.payMethod] || 'pay-none';
+      const payEmoji = PAY_EMOJI[f.payMethod] || '';
+      const remainingDaysTxt = isPayable(f) ? (remaining > 0 ? `<span style="color:#b45309">剩 ${remaining} 天</span>` : `<span style="color:#dc2626;font-weight:600">已逾期 ${-remaining} 天</span>`) : '';
+
+      const isVoid = f.status === 'cancelled' || f.status === 'refunded';
+      const amountCls = f.status === 'paid' ? 'paid'
+        : f.status === 'cancelled' ? 'cancelled'
+        : f.status === 'refunded' ? 'refunded' : '';
+      const showAmount = isVoid ? f.totalAmount : getRemainAmount(f);
+
+      let breakdownTxt;
+      if(f.status === 'cancelled') breakdownTxt = '已撤销 · 无需缴费';
+      else if(f.status === 'refunded') breakdownTxt = '已退费 ￥' + (f.refundedAmount || f.totalAmount).toFixed(2) + ' · 款项已退回';
+      else if(f.paidAmount > 0 || (f.reducedAmount || 0) > 0) {
+        const parts = [];
+        if (f.paidAmount > 0) parts.push('已收 ￥' + f.paidAmount.toFixed(2));
+        if (f.reducedAmount > 0) parts.push('已减 ￥' + f.reducedAmount.toFixed(2));
+        const rem = getRemainAmount(f);
+        if (rem > 0.01) parts.push('欠 ￥' + rem.toFixed(2));
+        else parts.push('已结清');
+        breakdownTxt = parts.join(' · ');
+      }
+      else breakdownTxt = remainingDaysTxt || '未缴';
+
+      return `
+      <tr>
+        <td><input type="checkbox" ${selected.has(f.id)?'checked':''} onchange="toggleRow('${f.id}',this)"></td>
+        <td><div class="mono" style="color:#1f2937;font-weight:600">${esc(f.id)}</div><div class="sub" style="margin-top:3px">经办：${esc(f.operator)}</div></td>
+        <td>
+          <div class="user-cell">
+            <div class="avatar ${reader.gender==='女'?'f':''}">${esc(reader.name[0])}</div>
+            <div style="min-width:0">
+              <div class="user-name">${esc(reader.name)}</div>
+              <div class="user-sub"><span class="tag t-${typeKey(reader.type)}">${reader.type}</span> <span class="mono">${esc(f.certNo)}</span></div>
+            </div>
+          </div>
+        </td>
+        <td><span class="type-tag ${TYPE_TAG[f.type]}">${TYPE_EMOJI[f.type]} ${typeLabel}</span></td>
+        <td>
+          <div class="fine-amount ${amountCls}">￥${showAmount.toFixed(2)}</div>
+          <div class="fine-breakdown">${breakdownTxt}</div>
+        </td>
+        <td><span class="status ${STATUS_CLASS[f.status]}">${STATUS_LABEL[f.status]}</span></td>
+        <td><span class="pay-tag ${payCls}">${payEmoji ? payEmoji + ' ' : ''}${payLabel}</span></td>
+        <td><div class="mono" style="font-size:12.5px">${f.openDate}</div><div class="sub" style="margin-top:3px">截止 ${f.dueDate}</div></td>
+        <td><div class="mono" style="font-size:12.5px">${f.dueDate}</div><div style="margin-top:3px">${remainingDaysTxt}</div></td>
+        <td><div style="font-size:12.5px;color:#374151;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(f.desc)}">${esc(f.desc)}</div></td>
+        <td class="ops">
+          ${isPayable(f)   ? `<span class="link" onclick="openPayFor('${f.id}')">缴费</span>`      : `<span class="link disabled" title="无需缴费">缴费</span>`}
+          ${isReducible(f) ? `<span class="link warn" onclick="openReduceFor('${f.id}')">减免</span>` : `<span class="link disabled" title="状态不允许减免">减免</span>`}
+          ${isRefundable(f)? `<span class="link refund" onclick="openRefundFor('${f.id}')">退费</span>` : `<span class="link disabled" title="没有可退金额">退费</span>`}
+          ${isCancellable(f)?`<span class="link danger" onclick="openCancelFor('${f.id}')">撤销</span>` : `<span class="link disabled" title="已产生收款，请先办理退费">撤销</span>`}
+          <span class="link" onclick="openDetail('${f.id}')">详情</span>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  $('totalNum').textContent = total;
+  renderPager(total, pages);
+  updateBatchBar();
+  updateStats();
+  const allChecked = rows.length > 0 && rows.every(f => selected.has(f.id));
+  $('checkAll').checked = allChecked;
+  $('selInfo').textContent = selected.size;
+}
+
+function renderPager(total, pages){
+  let h = '<button class="pager-btn" '+(state.page===1?'disabled':'')+' onclick="gotoPage('+(state.page-1)+')">‹</button>';
+  const show = [];
+  if(pages <= 7){ for(let i=1;i<=pages;i++) show.push(i); }
+  else {
+    show.push(1);
+    if(state.page > 3) show.push('...');
+    for(let i=Math.max(2,state.page-1); i<=Math.min(pages-1,state.page+1); i++) show.push(i);
+    if(state.page < pages-2) show.push('...');
+    show.push(pages);
+  }
+  show.forEach(p => {
+    if(p === '...') h += '<span class="pager-dots">···</span>';
+    else h += '<button class="pager-btn '+(p===state.page?'active':'')+'" onclick="gotoPage('+p+')">'+p+'</button>';
+  });
+  h += '<button class="pager-btn" '+(state.page===pages?'disabled':'')+' onclick="gotoPage('+(state.page+1)+')">›</button>';
+  $('pagerCtrl').innerHTML = h;
+}
+
+function gotoPage(p){ state.page = p; renderTable(); document.querySelector('.table-wrap').scrollTop = 0; }
+function changePageSize(v){ state.pageSize = parseInt(v); state.page = 1; renderTable(); }
+function doSearch(){ state.keyword = $('kw').value; state.page = 1; renderTable(); }
+
+function onFilter(){
+  state.type = $('fType').value;
+  state.status = $('fStatus').value;
+  state.pay = $('fPay').value;
+  state.dateFrom = $('fDateFrom').value;
+  state.dateTo = $('fDateTo').value;
+  state.page = 1;
+  renderTable();
+}
+
+function resetFilter(){
+  $('kw').value = ''; $('fType').value = ''; $('fStatus').value = '';
+  $('fPay').value = ''; $('fDateFrom').value = ''; $('fDateTo').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.querySelector('.chip[data-quick=""]').classList.add('active');
+  state = { page:1, pageSize:state.pageSize, keyword:'', type:'', status:'', pay:'', dateFrom:'', dateTo:'', quick:'' };
+  renderTable();
+  toast('筛选条件已重置');
+}
+
+function exportList(){
+  const list = getFiltered();
+  if(!list.length){ toast('当前筛选条件下没有数据，无法导出', 'warn'); return; }
+  const today = todayStr();
+  let csv = '\ufeff罚款缴费记录报表,生成时间,' + nowStr() + '\n';
+  csv += '筛选条件,';
+  if(state.keyword) csv += '关键字:' + state.keyword + ' ';
+  if(state.type) csv += '类型:' + TYPE_LABEL[state.type] + ' ';
+  if(state.status) csv += '状态:' + STATUS_LABEL[state.status] + ' ';
+  if(state.pay) csv += '支付方式:' + state.pay + ' ';
+  if(state.dateFrom || state.dateTo) csv += '开单日期:' + (state.dateFrom||'不限') + '~' + (state.dateTo||'不限') + ' ';
+  if(!state.keyword && !state.type && !state.status && !state.pay && !state.dateFrom && !state.dateTo) csv += '全部记录';
+  csv += '\n导出条数,' + list.length + '\n\n';
+  csv += '罚单号,读者,读者类型,罚款类型,描述,应缴金额,已缴金额,已减免,已退金额,欠款,状态,支付方式,开单日期,截止日期\n';
+  list.forEach(f => {
+    const reader = READERS[f.certNo];
+    const isVoid = f.status === 'cancelled' || f.status === 'refunded';
+    csv += [
+      f.id,
+      reader.name, reader.type,
+      TYPE_LABEL[f.type],
+      '"' + f.desc.replace(/"/g,'""') + '"',
+      f.totalAmount.toFixed(2),
+      f.paidAmount.toFixed(2),
+      (f.reducedAmount || 0).toFixed(2),
+      (f.refundedAmount || 0).toFixed(2),
+      isVoid ? '0.00' : getRemainAmount(f).toFixed(2),
+      STATUS_LABEL[f.status],
+      PAY_LABEL[f.payMethod] || '未支付',
+      f.openDate, f.dueDate
+    ].join(',') + '\n';
+  });
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '罚款缴费记录_' + today + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('已导出 ' + list.length + ' 条罚单（含应收 / 实收 / 已减 / 已退 / 欠款）', 'ok');
+}
+
+function toggleRow(id, el){
+  if(el.checked) selected.add(id); else selected.delete(id);
+  updateBatchBar();
+  const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+  $('checkAll').checked = rows.length > 0 && rows.every(f => selected.has(f.id));
+  $('selInfo').textContent = selected.size;
+}
+function toggleAll(el){
+  const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+  rows.forEach(f => { el.checked ? selected.add(f.id) : selected.delete(f.id); });
+  renderTable();
+}
+function clearSelection(){ selected.clear(); renderTable(); }
+function updateBatchBar(){
+  $('selCount').textContent = selected.size;
+  $('batchBar').classList.toggle('show', selected.size > 0);
+}
+
+/* ============ 登记缴费 ============ */
+let payTarget = null;
+
+function selectPayFine(id){
+  const f = fines.find(x => x.id === id);
+  if(!f) return;
+  applyPayTarget(f);
+  renderPayPendingList(f.certNo);
+  setTimeout(() => $('payActualAmount').focus(), 60);
+}
+
+function applyPayTarget(f){
+  payTarget = f;
+  $('payNo').value = f.id;
+  $('payReader').value = READERS[f.certNo].name;
+  $('payCertNo').value = f.certNo;
+  const remain = getRemainAmount(f);
+  $('payTotalAmount').value = '￥' + remain.toFixed(2);
+  $('payActualAmount').value = remain > 0 ? remain.toFixed(2) : '0.00';
+  $('payActualAmount').max = remain.toFixed(2);
+  $('payTradeNo').value = '';
+  $('payRemark').value = '';
+}
+
+function renderPayPendingList(certNo){
+  const reader = READERS[certNo];
+  const pend = fines.filter(f => f.certNo === certNo && isPayable(f));
+  if(!pend.length){
+    payTarget = null;
+    $('payNo').value = '';
+    $('payTotalAmount').value = '￥0.00';
+    $('payActualAmount').value = '';
+    $('payPendingBox').innerHTML = '<div class="tip-box ok">读者「' + esc(reader.name) + '」当前没有待缴罚单 ✅</div>';
+    return;
+  }
+  const totalRemain = pend.reduce((s,f) => s + getRemainAmount(f), 0);
+  const rows = pend.map(f => {
+    const remain = getRemainAmount(f);
+    const sel = payTarget && payTarget.id === f.id;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-top:1px solid #eef2f7;background:${sel ? '#eff6ff' : '#fff'}">
+      <span class="type-tag ${TYPE_TAG[f.type]}">${TYPE_EMOJI[f.type]} ${TYPE_LABEL[f.type]}</span>
+      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;color:#374151" title="${esc(f.desc)}">${esc(f.desc)}</span>
+      <span class="mono" style="font-size:12px;color:#9ca3af">截止 ${f.dueDate}</span>
+      <span style="font-weight:600;color:#dc2626;font-variant-numeric:tabular-nums">￥${remain.toFixed(2)}</span>
+      ${sel
+        ? '<span class="link" style="color:#2563eb;font-weight:600;cursor:default">已选</span>'
+        : `<span class="link" onclick="selectPayFine('${f.id}')">选择</span>`}
+    </div>`;
+  }).join('');
+
+  $('payPendingBox').innerHTML = `
+    <div style="border:1px solid #bfdbfe;border-radius:7px;overflow:hidden">
+      <div style="padding:9px 12px;background:#eff6ff;font-size:12.5px;color:#1e40af">
+        读者 <b>${esc(reader.name)}</b>（${esc(certNo)}）共有 <b>${pend.length}</b> 条待缴罚单，合计 <b>￥${totalRemain.toFixed(2)}</b>${payTarget ? '' : '，请点击「选择」指定本次缴费罚单'}
+      </div>
+      ${rows}
+    </div>`;
+}
+
+function loadPayReader(){
+  const kw = $('payReader').value.trim();
+  if(!kw){ toast('请输入读者姓名或学号', 'warn'); $('payReader').focus(); return; }
+  const certNo = findReaderCert(kw);
+  if(!certNo){
+    $('payCertNo').value = '';
+    $('payPendingBox').innerHTML = '<div class="tip-box err">未找到读者「' + esc(kw) + '」，请核对姓名 / 学号</div>';
+    toast('未找到读者：' + kw, 'error');
+    return;
+  }
+  const reader = READERS[certNo];
+  $('payReader').value = reader.name;
+  $('payCertNo').value = certNo;
+
+  const pend = fines.filter(f => f.certNo === certNo && isPayable(f));
+  if(!pend.length){
+    payTarget = null;
+    $('payNo').value = '';
+    $('payTotalAmount').value = '￥0.00';
+    $('payActualAmount').value = '';
+    $('payPendingBox').innerHTML = '<div class="tip-box ok">读者「' + esc(reader.name) + '」当前没有待缴罚单 ✅</div>';
+    toast('该读者暂无待缴罚单', 'warn');
+    return;
+  }
+  if(pend.length === 1){
+    applyPayTarget(pend[0]);
+  } else {
+    payTarget = null;
+    $('payNo').value = '';
+    $('payTotalAmount').value = '￥0.00';
+    $('payActualAmount').value = '';
+  }
+  renderPayPendingList(certNo);
+  toast('已匹配读者：' + reader.name + '，待缴 ' + pend.length + ' 条', 'ok');
+}
+
+function openPayModal(){
+  payTarget = null;
+  $('payNo').value = '';
+  $('payReader').value = '';
+  $('payCertNo').value = '';
+  $('payTotalAmount').value = '￥0.00';
+  $('payActualAmount').value = '';
+  $('payActualAmount').max = '';
+  $('payTradeNo').value = '';
+  $('payRemark').value = '';
+  $('payReceiver').value = '王管理员';
+  $('payPendingBox').innerHTML = '<div class="tip-box warn">请先输入读者姓名 / 学号（如 2022010301），按回车加载待缴罚单</div>';
+  resetPayMethod('微信');
+  $('payMask').classList.add('show');
+  setTimeout(() => $('payReader').focus(), 100);
+}
+
+function resetPayMethod(m){
+  const grid = document.querySelector('#payMask .pay-method-grid');
+  if(!grid) return;
+  grid.querySelectorAll('.pay-method').forEach(x => x.classList.remove('active'));
+  let label = grid.querySelector('.pay-method[data-pm="' + m + '"]');
+  if(!label) label = grid.querySelector('.pay-method');
+  if(label){
+    label.classList.add('active');
+    const radio = label.querySelector('input');
+    if(radio) radio.checked = true;
+  }
+}
+
+function openPayFor(id){
+  const f = fines.find(x => x.id === id);
+  if(!f) return;
+  if(!isPayable(f)){ toast('该罚单当前状态无需缴费', 'warn'); return; }
+  $('payMask').classList.add('show');
+  resetPayMethod('微信');
+  applyPayTarget(f);
+  renderPayPendingList(f.certNo);
+  setTimeout(() => $('payActualAmount').focus(), 100);
+}
+
+/* 支付方式卡片选中态（限定在当前卡片组内切换，避免两个弹窗互相影响） */
+document.querySelectorAll('.pay-method input[type=radio]').forEach(input => {
+  input.addEventListener('change', () => {
+    const grid = input.closest('.pay-method-grid') || document;
+    grid.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
+    if(input.checked) input.closest('.pay-method').classList.add('active');
+  });
+});
+
+function confirmPay(){
+  if(!payTarget){ toast('请先输入读者并选择要缴费的罚单', 'error'); $('payReader').focus(); return; }
+  const actual = parseFloat($('payActualAmount').value);
+  if(isNaN(actual) || actual <= 0){ toast('请输入有效的缴费金额', 'error'); $('payActualAmount').focus(); return; }
+  const remain = getRemainAmount(payTarget);
+  if(actual > remain + 0.01){ toast('实缴金额超过欠款 ￥' + remain.toFixed(2), 'error'); return; }
+  const payMethodEl = document.querySelector('#payMask input[name=payMethod]:checked');
+  if(!payMethodEl){ toast('请选择支付方式', 'error'); return; }
+  const payMethod = payMethodEl.value;
+  const tradeNo = $('payTradeNo').value.trim();
+  const remark = $('payRemark').value.trim();
+  const receiver = $('payReceiver').value.trim() || '王管理员';
+
+  payTarget.paidAmount = Number((payTarget.paidAmount + actual).toFixed(2));
+  const remainAfter = getRemainAmount(payTarget);
+  if(remainAfter < 0.01) payTarget.status = 'paid';
+  else if(payTarget.paidAmount > 0.01) payTarget.status = 'partial';
+  payTarget.payMethod = payMethod;
+  payTarget.flow.push({
+    actor: receiver, act: '登记缴费', time: nowStr(),
+    comment: '收款 ' + payMethod + ' ￥' + actual.toFixed(2)
+      + (tradeNo ? ' · 流水号 ' + tradeNo : '')
+      + (remark ? ' · ' + remark : '')
+  });
+
+  closeModal('payMask');
+  toast('登记缴费成功，实收 ￥' + actual.toFixed(2) + (payTarget.status === 'paid' ? ' · 已结清' : ' · 剩余 ￥' + remainAfter.toFixed(2)), 'ok');
+  payTarget = null;
+  renderTable();
+}
+
+/* ============ 退费 ============ */
+let refundTarget = null;
+
+/* 处理下拉选择与自定义输入切换 */
+function toggleReasonInput(type) {
+  const sel = $(type + 'ReasonSelect');
+  const input = $(type + 'ReasonCustom');
+  if (!sel || !input) return;
+  if (sel.value === '其他') {
+    input.style.display = 'block';
+    input.focus();
+  } else {
+    input.style.display = 'none';
+    input.value = '';
+  }
+}
+
+function resetRefundMethod(m){
+  const grid = document.querySelector('#refundMask .pay-method-grid');
+  if(!grid) return;
+  grid.querySelectorAll('.pay-method').forEach(x => x.classList.remove('active'));
+  let label = grid.querySelector('.pay-method[data-rm="' + m + '"]');
+  if(!label) label = grid.querySelector('.pay-method');
+  if(label){
+    label.classList.add('active');
+    const radio = label.querySelector('input');
+    if(radio) radio.checked = true;
+  }
+}
+
+function openRefundFor(id){
+  const f = fines.find(x => x.id === id);
+  if(!f) return;
+  if(!isRefundable(f)){ toast('该罚单当前没有可退金额', 'warn'); return; }
+  refundTarget = f;
+  const reader = READERS[f.certNo];
+  const max = Number(f.paidAmount.toFixed(2));
+
+  $('refundQuestion').textContent = '确认为「' + reader.name + '」办理退费吗？';
+  $('refundDetail').innerHTML =
+      '<b>罚单号：</b>' + esc(f.id) + '<br>'
+    + '<b>读者：</b>' + esc(reader.name) + '（' + esc(f.certNo) + '）<br>'
+    + '<b>罚款类型：</b>' + TYPE_LABEL[f.type] + '（' + esc(f.desc) + '）<br>'
+    + '<b>应缴金额：</b>￥' + f.totalAmount.toFixed(2) + '<br>'
+    + '<b>已收金额（最大可退）：</b>￥' + max.toFixed(2) + '<br>'
+    + '<b>原收款方式：</b>' + (f.payMethod || '—');
+  $('refundHint').textContent = '最多可退 ￥' + max.toFixed(2) + '；全额退费后罚单状态将变为「已退费」，部分退费则变为「部分缴纳」';
+  $('refundAmount').value = max.toFixed(2);
+  $('refundAmount').max = max.toFixed(2);
+  $('refundReasonSelect').value = '';
+  $('refundReasonCustom').value = '';
+  $('refundReasonCustom').style.display = 'none';
+  resetRefundMethod(f.payMethod || '微信');
+  $('refundMask').classList.add('show');
+  setTimeout(() => $('refundAmount').focus(), 100);
+}
+
+function confirmRefund(){
+  if(!refundTarget) return;
+  const amt = parseFloat($('refundAmount').value);
+  if(isNaN(amt) || amt <= 0){ toast('请输入有效的退费金额（> 0）', 'error'); $('refundAmount').focus(); return; }
+  const max = refundTarget.paidAmount;
+  if(amt > max + 0.01){ toast('退费金额不能超过已收金额 ￥' + max.toFixed(2), 'error'); return; }
+
+  // 获取退费原因（下拉选择 + 自定义输入）
+  const sel = $('refundReasonSelect').value;
+  let reason = sel;
+  if (sel === '其他') {
+    const custom = $('refundReasonCustom').value.trim();
+    if (!custom) { toast('请输入自定义退费原因', 'error'); $('refundReasonCustom').focus(); return; }
+    reason = custom;
+  }
+  if (!reason) { toast('请选择或输入退费原因', 'error'); $('refundReasonSelect').focus(); return; }
+
+  const mEl = document.querySelector('#refundMask input[name=refundMethod]:checked');
+  const method = mEl ? mEl.value : '原路退回';
+  const reader = READERS[refundTarget.certNo];
+
+  refundTarget.paidAmount = Number((refundTarget.paidAmount - amt).toFixed(2));
+  refundTarget.refundedAmount = Number(((refundTarget.refundedAmount || 0) + amt).toFixed(2));
+  if(refundTarget.paidAmount < 0.01){
+    refundTarget.paidAmount = 0;
+    refundTarget.status = 'refunded';
+  } else {
+    refundTarget.status = 'partial';
+  }
+  refundTarget.flow.push({
+    actor: '王管理员', act: '办理退费', time: nowStr(),
+    comment: '退款方式：' + method + ' · 退款 ￥' + amt.toFixed(2) + ' · 原因：' + reason
+      + '（读者：' + reader.name + '）'
+  });
+
+  const fullRefund = refundTarget.status === 'refunded';
+  closeModal('refundMask');
+  toast('退费成功，已退回 ￥' + amt.toFixed(2) + (fullRefund ? ' · 该罚单已全额退费' : ' · 剩余已收 ￥' + refundTarget.paidAmount.toFixed(2)), 'ok');
+  refundTarget = null;
+  renderTable();
+}
+
+/* ============ 撤销 ============ */
+let cancelTarget = null;
+
+function openCancelFor(id){
+  const f = fines.find(x => x.id === id);
+  if(!f) return;
+  if(!isCancellable(f)){
+    toast(f.paidAmount > 0 ? '该罚单已产生收款，请先办理退费后再撤销' : '该罚单当前状态不可撤销', 'warn');
+    return;
+  }
+  cancelTarget = f;
+  const reader = READERS[f.certNo];
+  $('cancelQuestion').textContent = '确认撤销罚单 ' + f.id + ' 吗？';
+  $('cancelDetail').innerHTML =
+      '<b>读者：</b>' + esc(reader.name) + '（' + esc(f.certNo) + '）<br>'
+    + '<b>罚款类型：</b>' + TYPE_LABEL[f.type] + '<br>'
+    + '<b>应缴金额：</b>￥' + f.totalAmount.toFixed(2) + '<br>'
+    + '<b>事项描述：</b>' + esc(f.desc);
+  $('cancelReasonSelect').value = '';
+  $('cancelReasonCustom').value = '';
+  $('cancelReasonCustom').style.display = 'none';
+  $('cancelMask').classList.add('show');
+  setTimeout(() => $('cancelReasonSelect').focus(), 100);
+}
+
+function confirmCancel(){
+  if(!cancelTarget) return;
+
+  // 获取撤销原因（下拉选择 + 自定义输入）
+  const sel = $('cancelReasonSelect').value;
+  let reason = sel;
+  if (sel === '其他') {
+    const custom = $('cancelReasonCustom').value.trim();
+    if (!custom) { toast('请输入自定义撤销原因', 'error'); $('cancelReasonCustom').focus(); return; }
+    reason = custom;
+  }
+  if (!reason) { toast('请选择或输入撤销原因', 'error'); $('cancelReasonSelect').focus(); return; }
+
+  cancelTarget.status = 'cancelled';
+  cancelTarget.flow.push({
+    actor: '王管理员', act: '撤销罚单', time: nowStr(),
+    comment: '原因：' + reason
+  });
+
+  closeModal('cancelMask');
+  toast('已撤销罚单 ' + cancelTarget.id + '，该笔金额不再计入应收', 'ok');
+  cancelTarget = null;
+  renderTable();
+}
+
+/* ============ 新增罚单 ============ */
+let createReaderCert = null;
+
+function openCreateModal(){
+  createReaderCert = null;
+  $('crReader').value = '';
+  $('crReaderInfo').value = '';
+  $('crType').value = 'overdue';
+  $('crAmount').value = '';
+  $('crDesc').value = '';
+  $('crRemark').value = '';
+  $('crOperator').value = '王管理员';
+  $('crOpenDate').value = todayStr();
+  $('crDueDate').value = addDaysStr(todayStr(), 14);
+  $('createMask').classList.add('show');
+  setTimeout(() => $('crReader').focus(), 100);
+}
+
+function loadCreateReader(){
+  const kw = $('crReader').value.trim();
+  if(!kw){ toast('请输入读者姓名或学号', 'warn'); return; }
+  const certNo = findReaderCert(kw);
+  if(!certNo){
+    createReaderCert = null;
+    $('crReaderInfo').value = '未找到匹配读者';
+    toast('未找到读者：' + kw, 'error');
+    return;
+  }
+  createReaderCert = certNo;
+  const r = READERS[certNo];
+  $('crReader').value = r.name;
+  $('crReaderInfo').value = certNo + ' · ' + r.type + ' · ' + r.dept;
+  toast('已匹配读者：' + r.name, 'ok');
+}
+
+function confirmCreate(){
+  if(!createReaderCert){ toast('请先输入并匹配读者（回车确认）', 'error'); $('crReader').focus(); return; }
+  const type = $('crType').value;
+  const amount = parseFloat($('crAmount').value);
+  if(isNaN(amount) || amount <= 0){ toast('请输入有效的应缴金额', 'error'); $('crAmount').focus(); return; }
+  const desc = $('crDesc').value.trim();
+  if(!desc){ toast('请填写事项描述', 'error'); $('crDesc').focus(); return; }
+  const openDate = $('crOpenDate').value || todayStr();
+  const dueDate = $('crDueDate').value;
+  if(!dueDate){ toast('请选择截止日期', 'error'); return; }
+  if(dueDate < openDate){ toast('截止日期不能早于开单日期', 'error'); return; }
+  const operator = $('crOperator').value.trim() || '王管理员';
+  const remark = $('crRemark').value.trim();
+
+  const id = genFineId(openDate);
+  fines.unshift({
+    id, type, certNo: createReaderCert, desc,
+    totalAmount: Number(amount.toFixed(2)), paidAmount: 0, reducedAmount: 0, refundedAmount: 0,
+    status: 'pending', payMethod: '', openDate, dueDate, operator,
+    flow: [{actor: operator, act: '创建罚单', time: nowStr(), comment: TYPE_DESC[type] + (remark ? ' · ' + remark : '')}]
+  });
+
+  closeModal('createMask');
+  toast('已创建罚单 ' + id + '，应缴 ￥' + amount.toFixed(2), 'ok');
+  state.page = 1;
+  renderTable();
+}
+
+/* ============ 减免 ============ */
+let reduceTarget = null;
+
+function openReduceFor(id){
+  const f = fines.find(x => x.id === id);
+  if(!f) return;
+  if(!isReducible(f)){ toast('该罚单当前状态不允许减免', 'warn'); return; }
+  reduceTarget = f;
+  const reader = READERS[f.certNo];
+  const remain = getRemainAmount(f);
+  $('reduceQuestion').textContent = '确认要为「' + reader.name + '」减免罚单 ' + f.id + ' 吗？';
+  $('reduceDetail').style.display = 'block';
+  $('reduceDetail').innerHTML = '<b>罚款类型：</b>' + TYPE_LABEL[f.type] + '（' + esc(f.desc) + '）<br>'
+    + '<b>应缴金额：</b>￥' + f.totalAmount.toFixed(2) + '<br>'
+    + '<b>已缴金额：</b>￥' + f.paidAmount.toFixed(2) + '<br>'
+    + '<b>已减免金额：</b>￥' + (f.reducedAmount || 0).toFixed(2) + '<br>'
+    + '<b>最大可减免：</b>￥' + remain.toFixed(2) + '（<span style="color:#dc2626;font-weight:600">输入 0 表示全额减免</span>，也可输入具体金额做部分减免）';
+  $('reduceAmount').value = '';
+  $('reduceAmount').max = remain.toFixed(2);
+  $('reduceReason').value = '';
+  $('reduceMask').classList.add('show');
+  setTimeout(() => $('reduceAmount').focus(), 100);
+}
+
+function confirmReduce(){
+  if(!reduceTarget) return;
+
+  let inputVal = $('reduceAmount').value.trim();
+  if(inputVal === ''){ toast('请输入减免金额（输入 0 表示全额减免）', 'error'); $('reduceAmount').focus(); return; }
+
+  let reduce = parseFloat(inputVal);
+  if(isNaN(reduce) || reduce < 0){ toast('请输入有效的减免金额（≥ 0）', 'error'); $('reduceAmount').focus(); return; }
+
+  const currentRemain = getRemainAmount(reduceTarget);
+
+  // ★ 关键修复：输入 0 表示全额减免剩余欠款
+  if(reduce === 0){
+    reduce = currentRemain;
+  }
+
+  if(reduce > currentRemain + 0.01){
+    toast('减免金额不能超过剩余欠款 ￥' + currentRemain.toFixed(2), 'error');
+    return;
+  }
+
+  const reason = $('reduceReason').value.trim();
+  if(!reason){ toast('请填写减免理由', 'error'); $('reduceReason').focus(); return; }
+  const reader = READERS[reduceTarget.certNo];
+
+  // 累加减免金额
+  reduceTarget.reducedAmount = Number(((reduceTarget.reducedAmount || 0) + reduce).toFixed(2));
+  const remainAfter = getRemainAmount(reduceTarget);
+
+  if(remainAfter <= 0.01){
+    reduceTarget.status = 'reduced';   // 全额减免，剩余为0
+  } else {
+    reduceTarget.status = reduceTarget.paidAmount > 0 ? 'partial' : 'pending';  // 部分减免
+  }
+
+  reduceTarget.flow.push({
+    actor:'李主管', act:'减免罚金', time:nowStr(),
+    comment:'申请：' + reader.name + ' · 减免 ￥' + reduce.toFixed(2) + ' · 理由：' + reason
+  });
+
+  closeModal('reduceMask');
+  toast('已减免罚单 ' + reduceTarget.id + ' ￥' + reduce.toFixed(2) + (remainAfter <= 0.01 ? ' · 已全额减免' : ' · 剩余待缴 ￥' + remainAfter.toFixed(2)), 'ok');
+  reduceTarget = null;
+  renderTable();
+}
+
+/* ============ 催缴通知 ============ */
+function batchNotice(){
+  const ids = [...selected];
+  if(!ids.length){ toast('请先勾选需要催缴的罚单', 'warn'); return; }
+  const targets = ids.map(id => fines.find(f => f.id === id)).filter(f => f && isPayable(f));
+  if(!targets.length){ toast('所选罚单中没有待缴 / 逾期的项目', 'warn'); return; }
+  $('noticeSummary').innerHTML = '共有 <b>' + targets.length + '</b> 条待缴/逾期罚单，涉及 <b>'
+    + new Set(targets.map(f => f.certNo)).size + '</b> 位读者，合计金额 <b style="color:#dc2626">￥'
+    + targets.reduce((s,f) => s + getRemainAmount(f), 0).toFixed(2) + '</b>。';
+  $('noticeMask').classList.add('show');
+}
+
+function confirmNotice(){
+  const ids = [...selected];
+  const targets = ids.map(id => fines.find(f => f.id === id)).filter(f => f && isPayable(f));
+  const ways = [];
+  if($('chSms').checked) ways.push('短信');
+  if($('chEmail').checked) ways.push('邮件');
+  if(!ways.length){ toast('请至少选择一种催缴方式', 'warn'); return; }
+  if(!targets.length){ toast('没有可催缴的罚单', 'warn'); closeModal('noticeMask'); return; }
+  const readers = new Set(targets.map(f => f.certNo)).size;
+  targets.forEach(f => {
+    f.flow.push({actor:'系统', act:'发送催缴通知', time: nowStr(), comment: '方式：' + ways.join(' + ')});
+  });
+  closeModal('noticeMask');
+  toast('已通过 ' + ways.join(' + ') + ' 向 ' + readers + ' 位读者发送 ' + targets.length + ' 条催缴通知', 'ok');
+  clearSelection();
+}
+
+function batchReduce(){
+  if(!selected.size){ toast('请先勾选需要减免的罚单', 'warn'); return; }
+  const targets = [...selected].map(id => fines.find(f => f.id === id)).filter(f => f && isReducible(f));
+  if(!targets.length){ toast('所选罚单中没有可减免的项目', 'warn'); return; }
+  if(targets.length === 1){
+    openReduceFor(targets[0].id);
+    return;
+  }
+  confirmDialog({
+    title: '批量减免确认',
+    icon: 'warning',
+    question: '确认要批量减免选中的 ' + targets.length + ' 条罚单吗？',
+    text: '批量减免将统一标记为「已减免」状态，不再逐条填写理由。',
+    okText: '确认减免',
+    okClass: 'btn btn-warn',
+    onOk(){
+      targets.forEach(f => {
+        const currentRemain = getRemainAmount(f);
+        f.reducedAmount = Number(((f.reducedAmount || 0) + currentRemain).toFixed(2));
+        f.status = 'reduced';
+        f.flow.push({actor:'王管理员', act:'批量减免', time:nowStr(), comment:'批量减免操作，减免 ￥' + currentRemain.toFixed(2)});
+      });
+      toast('已批量减免 ' + targets.length + ' 条罚单', 'ok');
+      clearSelection();
+    }
+  });
+}
+
+function batchPrint(){
+  if(!selected.size){ toast('请先勾选需要打印凭条的罚单', 'warn'); return; }
+  toast('已生成 ' + selected.size + ' 张罚单缴费凭条', 'ok');
+  clearSelection();
+}
+
+/* ============ 详情 ============ */
+function openDetail(id){
+  const f = fines.find(x => x.id === id);
+  if(!f) return;
+  const reader = READERS[f.certNo];
+  const isVoid = f.status === 'cancelled' || f.status === 'refunded';
+  const remain = isVoid ? 0 : getRemainAmount(f);
+  const remaining = remainingDays(f);
+  const typeLabel = TYPE_LABEL[f.type];
+  const typeEmoji = TYPE_EMOJI[f.type];
+  const stLabel = STATUS_LABEL[f.status];
+  const stCls = STATUS_CLASS[f.status];
+  const payLabel = PAY_LABEL[f.payMethod] || '未支付';
+
+  let timeline = '';
+  f.flow.forEach(log => {
+    timeline += '<div class="tl-item done"><div class="tl-t">' + esc(log.act) + '</div><div class="tl-d">'
+      + esc(log.actor) + ' · ' + esc(log.time) + (log.comment ? ' · ' + esc(log.comment) : '') + '</div></div>';
+  });
+  if(f.status === 'cancelled'){
+    timeline += '<div class="tl-item danger"><div class="tl-t">罚单已撤销 <span class="tl-tag red">不计入应收</span></div><div class="tl-d">该罚单已作废，无需缴费</div></div>';
+  } else if(f.status === 'refunded'){
+    timeline += '<div class="tl-item warn"><div class="tl-t">已全额退费 <span class="tl-tag red">￥' + (f.refundedAmount || f.totalAmount).toFixed(2) + '</span></div><div class="tl-d">款项已退回读者，罚单终结</div></div>';
+  } else if(isPayable(f) && f.status !== 'overdue'){
+    timeline += '<div class="tl-item active"><div class="tl-t">待缴费 <span class="tl-tag red">欠款 ￥' + remain.toFixed(2)
+      + '</span></div><div class="tl-d">距离截止日期还有 ' + remaining + ' 天</div></div>';
+  } else if(f.status === 'overdue'){
+    timeline += '<div class="tl-item danger"><div class="tl-t">已逾期 <span class="tl-tag red">逾期 ' + (-remaining)
+      + ' 天</span></div><div class="tl-d">请尽快催缴</div></div>';
+  } else {
+    timeline += '<div class="tl-item done"><div class="tl-t">记录终结 <span class="tl-tag green">已归档</span></div></div>';
+  }
+
+  $('detailBody').innerHTML = ''
+    + '<div class="summary-card">'
+    +   '<div style="flex:1"><div class="sc-l">' + (isVoid ? '当前待收金额（已作废）' : '当前待收金额') + '</div><div class="sc-v">￥' + remain.toFixed(2)
+    +     '</div><div class="sc-sub">应缴 ￥' + f.totalAmount.toFixed(2) + ' · 已收 ￥' + f.paidAmount.toFixed(2)
+    +     (f.reducedAmount > 0 ? ' · 已减 ￥' + f.reducedAmount.toFixed(2) : '')
+    +     (f.refundedAmount > 0 ? ' · 已退 ￥' + f.refundedAmount.toFixed(2) : '') + '</div></div>'
+    +   '<div style="text-align:right"><div class="status ' + stCls + '">' + stLabel
+    +     '</div><div style="margin-top:6px"><span class="type-tag ' + TYPE_TAG[f.type] + '">' + typeEmoji + ' ' + typeLabel + '</span></div></div>'
+    + '</div>'
+    + '<div class="detail-sec"><h4>罚单信息</h4>'
+    +   '<dl class="detail-grid">'
+    +     '<dt>罚单号</dt><dd class="mono">' + esc(f.id) + '</dd>'
+    +     '<dt>开单日期</dt><dd class="mono">' + f.openDate + '</dd>'
+    +     '<dt>截止日期</dt><dd class="mono">' + f.dueDate + '</dd>'
+    +     '<dt>经办人</dt><dd>' + esc(f.operator) + '</dd>'
+    +     '<dt>罚款类型</dt><dd>' + typeEmoji + ' ' + typeLabel + '</dd>'
+    +     '<dt>事项描述</dt><dd>' + esc(f.desc) + '</dd>'
+    +   '</dl>'
+    + '</div>'
+    + '<div class="detail-sec"><h4>金额明细</h4>'
+    +   '<div class="breakdown-list">'
+    +     '<div class="breakdown-row"><div class="bl-l"><div class="bl-ico">📌</div><div class="bl-info"><b>应缴金额</b><span>原始计费</span></div></div><div class="bl-v">￥' + f.totalAmount.toFixed(2) + '</div></div>'
+    +     (f.paidAmount > 0 ? '<div class="breakdown-row"><div class="bl-l"><div class="bl-ico">✅</div><div class="bl-info"><b>已收金额</b><span>' + (f.payMethod || '—') + '</span></div></div><div class="bl-v" style="color:#047857">￥' + f.paidAmount.toFixed(2) + '</div></div>' : '')
+    +     (f.reducedAmount > 0 ? '<div class="breakdown-row"><div class="bl-l"><div class="bl-ico">✂️</div><div class="bl-info"><b>已减免金额</b><span>减免审批</span></div></div><div class="bl-v" style="color:#7c3aed">￥' + f.reducedAmount.toFixed(2) + '</div></div>' : '')
+    +     (f.refundedAmount > 0 ? '<div class="breakdown-row"><div class="bl-l"><div class="bl-ico">↩️</div><div class="bl-info"><b>已退费金额</b><span>累计退回读者</span></div></div><div class="bl-v" style="color:#c2410c">￥' + f.refundedAmount.toFixed(2) + '</div></div>' : '')
+    +     '<div class="breakdown-row" style="background:linear-gradient(135deg,#fef2f2,#fff7ed);border-color:#fed7aa"><div class="bl-l"><div class="bl-ico">💡</div><div class="bl-info"><b>' + (isVoid ? '待缴金额（已作废）' : '本次待缴') + '</b><span>' + (isVoid ? '无需缴纳' : '剩余金额') + '</span></div></div><div class="bl-v">￥' + remain.toFixed(2) + '</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="detail-sec"><h4>读者信息</h4>'
+    +   '<dl class="detail-grid">'
+    +     '<dt>姓名</dt><dd>' + esc(reader.name) + ' <span class="tag t-' + typeKey(reader.type) + '">' + reader.type + '</span></dd>'
+    +     '<dt>学号</dt><dd class="mono">' + esc(f.certNo) + '</dd>'
+    +     '<dt>所属单位</dt><dd>' + esc(reader.dept) + '</dd>'
+    +     '<dt>联系电话</dt><dd class="mono">' + esc(reader.phone) + '</dd>'
+    +   '</dl>'
+    + '</div>'
+    + '<div class="detail-sec"><h4>处理流程</h4>'
+    +   '<div class="timeline">' + timeline + '</div>'
+    + '</div>';
+
+  $('detailMask').classList.add('show');
+}
+
+function printReceipt(){ toast('已生成罚单缴费凭条', 'ok'); }
+
+/* ============ 通用确认弹窗 ============ */
+let confirmCb = null;
+function confirmDialog(opts){
+  $('confirmTitle').textContent = opts.title;
+  $('confirmQuestion').textContent = opts.question;
+  $('confirmText').innerHTML = opts.text || '';
+  const cd = $('confirmDetail');
+  if(opts.detail){ cd.style.display = 'block'; cd.innerHTML = opts.detail; } else { cd.style.display = 'none'; }
+  const iconMap = {success:'check-circle', warning:'exclamation-triangle', danger:'trash-alt', info:'info-circle'};
+  const icon = $('confirmIcon');
+  icon.className = 'confirm-icon ' + (opts.icon === 'danger' ? 'danger' : opts.icon === 'success' ? 'success' : (opts.icon === 'info' ? 'info' : 'warn'));
+  icon.innerHTML = '<i class="fas fa-' + (iconMap[opts.icon || 'warning'] || 'exclamation-triangle') + '"></i>';
+  const btn = $('confirmOkBtn');
+  btn.className = opts.okClass || 'btn btn-primary';
+  btn.textContent = opts.okText || '确定';
+  confirmCb = opts.onOk;
+  $('confirmMask').classList.add('show');
+}
+function closeConfirm(){ $('confirmMask').classList.remove('show'); confirmCb = null; }
+$('confirmOkBtn').addEventListener('click', () => {
+  const h = confirmCb; closeConfirm();
+  if(typeof h === 'function') h();
+});
+
+function closeModal(id){ $(id).classList.remove('show'); }
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    ['payMask','createMask','reduceMask','refundMask','cancelMask','noticeMask','detailMask','confirmMask']
+      .forEach(id => $(id).classList.remove('show'));
+  }
+});
+
+/* ========== 初始化 ========== */
+renderTable();
+  </script>
+</body>
+</html>
+

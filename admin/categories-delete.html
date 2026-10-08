@@ -1,0 +1,589 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>删除分类 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">图书分类</span><span class="mx-2">&gt;</span><span style="color: var(--lib-ink);">删除</span>
+</nav>
+<!-- 页面标题 -->
+
+<!-- 筛选栏 -->
+<div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border p-4" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-2">
+<i class="h-4 w-4" data-lucide="search" style="color: var(--lib-ink-4);"></i>
+<input class="h-9 w-44 rounded-md border px-3 text-sm outline-none focus:ring-2" placeholder="分类名称/编号" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
+</div>
+<select class="h-9 rounded-md border px-3 text-sm outline-none focus:ring-2" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);">
+<option>全部状态</option>
+<option>启用</option>
+<option>停用</option>
+</select>
+<div class="ml-auto flex items-center gap-2"><button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+<i class="h-4 w-4" data-lucide="search"></i>
+            搜索
+          </button>
+<button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+<i class="h-4 w-4" data-lucide="rotate-ccw"></i>
+            重置
+          </button>
+<button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+<i class="h-4 w-4" data-lucide="download"></i>
+            导出
+          </button>
+</div>
+</div>
+<!-- 数据表格 -->
+<div class="overflow-hidden rounded-lg border" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-2 border-b p-4" style="border-color: var(--lib-line);">
+<span class="text-sm" style="color: var(--lib-ink-2);">删除分类</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead style="background-color: var(--lib-surface-2);">
+<tr>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">分类编号</th>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">分类名称</th>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">上级分类</th>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">图书数量</th>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">状态</th>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">创建时间</th>
+<th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y" style="border-color: var(--lib-line);">
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">A</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>马克思主义、列宁主义、毛泽东思想、邓小平理论</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">1,240</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-01</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">A1</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>马克思、恩格斯著作</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">A 马克思主义、列宁主义、毛泽东思想、邓小平理论</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">356</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-02</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">G</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>文化、科学、教育、体育</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">5,680</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-03</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">G25</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>图书馆学、情报学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">G 文化、科学、教育、体育</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">856</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-04</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">H</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>语言、文字</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">8,920</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-05</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">H31</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>英语</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">H 语言、文字</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">4,680</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-06</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">I</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>文学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">12,450</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-07</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">I247.5</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>当代长篇小说</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">I 文学</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2,150</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-08</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">O</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>数理科学和化学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">3,210</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-09</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">O4</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>物理学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">O 数理科学和化学</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">1,560</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-10</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+</table>
+</div>
+<!-- 分页 -->
+<div class="flex items-center justify-between border-t px-4 py-3" style="border-color: var(--lib-line);">
+<span class="text-sm" style="color: var(--lib-ink-3);">共130条，第1/13页</span>
+<div class="flex items-center gap-2">
+<button class="inline-flex h-8 items-center rounded-md border px-3 text-sm disabled:opacity-50" disabled="" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+              上一页
+            </button>
+<button class="inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-medium text-white" style="background-color: var(--lib-primary);" type="button">
+              1
+            </button>
+<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+              2
+            </button>
+<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+              3
+            </button>
+<span class="text-sm" style="color: var(--lib-ink-3);">...</span>
+<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+              13
+            </button>
+<button class="inline-flex h-8 items-center rounded-md border px-3 text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+              下一页
+            </button>
+</div>
+</div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4" style="background-color: rgba(15, 23, 42, 0.45);">
+  <div class="w-full max-w-sm rounded-lg border shadow-2xl" style="background-color: var(--lib-surface); border-color: var(--lib-line); box-shadow: var(--lib-shadow-3);">
+    <div class="flex items-center justify-between border-b px-5 py-4" style="border-color: var(--lib-line);">
+      <h2 class="text-h3" style="color: var(--lib-ink);">删除确认</h2>
+      <a aria-label="关闭" class="inline-flex rounded-md p-1" data-dom-id="modal-close-categories-delete" href="categories.html" style="color: var(--lib-ink-3);">
+        <i class="h-5 w-5" data-lucide="x"></i>
+      </a>
+    </div>
+    <div class="px-5 py-5">
+      <p class="text-sm" style="color: var(--lib-ink);">确定要删除分类 <span class="font-medium" style="color: var(--lib-primary);">G25 图书馆学、情报学</span> 吗？该分类下的 856 本图书将变为未分类状态，此操作不可恢复。</p>
+      <div class="mt-5 flex items-center justify-end gap-3">
+        <a class="inline-flex h-9 items-center rounded-md border px-4 text-sm font-medium" data-dom-id="btn-cancel-categories-delete" href="categories.html" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);">取消</a>
+        <button class="inline-flex h-9 items-center rounded-md px-4 text-sm font-medium text-white transition-colors hover:opacity-90" data-dom-id="btn-confirm-delete-categories" style="background-color: var(--lib-state-error);" type="button">确认删除</button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+</body>
+</html>
+

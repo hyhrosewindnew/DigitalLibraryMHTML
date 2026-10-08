@@ -1,0 +1,1774 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>采购荐购 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 采购荐购 */
+    body {
+      --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#eff6ff;
+      --border:#e5e9f0; --text:#1f2937; --text-2:#6b7280; --text-3:#9ca3af;
+      --bg:#f0f2f5; --radius:8px; --success:#16a34a; --warning:#d97706; --danger:#dc2626;
+    }
+    .content{padding:20px 24px 40px;flex:1}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #dfe4ec;background:#fff;color:#374151;border-radius:8px;padding:8px 15px;font-size:13px;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:#c3ccdb;background:#f8fafc}
+.btn-primary{background:#2f6fed;border-color:#2f6fed;color:#fff;box-shadow:0 2px 8px rgba(47,111,237,.28)}
+.btn-primary:hover{background:#2360d8;border-color:#2360d8}
+.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:7px}
+.btn-danger{color:#dc2626;border-color:#f0c9c9}
+.btn-danger:hover{background:#fef2f2;border-color:#f5a3a3}
+.btn-ghost{background:#fff;color:#2f6fed;border-color:#d4def0}
+.btn-ghost:hover{background:#f0f5fe;border-color:#b8c8e6}
+.btn-warn{color:#b46b00;border-color:#fcd9b0;background:#fff8ee}
+.btn-warn:hover{background:#fff4e5;border-color:#f5b97c}
+
+select,input[type=text],input[type=number],input[type=date],textarea{font-family:inherit;font-size:13px;border:1px solid #dfe4ec;border-radius:8px;padding:8px 11px;background:#fff;color:#1f2937;outline:none;transition:.15s}
+select:focus,input:focus,textarea:focus{border-color:#2f6fed;box-shadow:0 0 0 3px rgba(47,111,237,.12)}
+select{cursor:pointer;min-width:110px;height:34px;background:#fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239aa3b2'/%3E%3C/svg%3E") no-repeat right 11px center;appearance:none;padding-right:30px}
+textarea{width:100%;min-height:64px;resize:vertical;line-height:1.5}
+
+.filter-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(16,24,40,.06);margin-bottom:16px}
+.filter-title{font-size:13px;font-weight:600;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.filter-title::before{content:'';width:3px;height:14px;border-radius:2px;background:#2f6fed}
+.filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.filter-group{display:flex;align-items:center;gap:9px}
+.filter-group label{font-size:13px;color:#64748b;white-space:nowrap}
+.filter-divider{width:1px;height:20px;background:#e8ecf3;margin:0 4px}
+.search{position:relative;display:flex;align-items:center}
+.search span{position:absolute;left:11px;font-size:13px;color:#a3adbd;pointer-events:none}
+.search input{padding-left:32px;width:280px}
+.filter-actions{display:flex;gap:10px;margin-left:auto}
+
+.panel{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid #eef1f6;flex-wrap:wrap}
+.panel-head .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.panel-head .sel-info{margin-left:6px;font-size:13px;color:#64748b}
+.panel-head .sel-info b{color:#2f6fed}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1480px}
+thead th{text-align:left;font-size:12px;font-weight:600;color:#6b7280;letter-spacing:.3px;padding:12px 16px;background:#f8fafc;border-bottom:1px solid #eef1f6;white-space:nowrap}
+thead th:first-child{width:44px;padding-left:20px}
+tbody td{padding:13px 16px;border-bottom:1px solid #f2f4f8;vertical-align:middle;font-size:13px;color:#374151}
+tbody td:first-child{padding-left:20px}
+tbody tr:hover{background:#fafbfd}
+tbody tr:last-child td{border-bottom:none}
+input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
+
+.record-id{font-family:"SF Mono",Consolas,monospace;font-size:12.5px;color:#6b7280}
+.book-cover{width:40px;height:54px;border-radius:4px;background:linear-gradient(135deg,#475569,#1e293b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,.12)}
+.book-cover.green{background:linear-gradient(135deg,#10b981,#047857)}
+.book-cover.blue{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+.book-cover.purple{background:linear-gradient(135deg,#a855f7,#7e22ce)}
+.book-cover.orange{background:linear-gradient(135deg,#f59e0b,#b45309)}
+.book-cover.red{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.book-cover.gray{background:linear-gradient(135deg,#94a3b8,#475569)}
+
+.book-cell{display:flex;gap:11px;align-items:flex-start}
+.book-info{flex:1;min-width:0}
+.book-title{font-weight:600;color:#111827;font-size:13.5px;line-height:1.4;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.book-meta{font-size:11.5px;color:#9aa3b2;line-height:1.5}
+.book-meta .isbn{font-family:"SF Mono",Consolas,monospace;letter-spacing:.3px}
+
+.source{font-size:12.5px;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-weight:500;white-space:nowrap}
+.source-reader{background:#eef2ff;color:#4338ca}
+.source-staff{background:#ecfeff;color:#0891b2}
+.source-ill{background:#fdf4ff;color:#a21caf}
+.source-database{background:#fff7ed;color:#c2410c}
+
+.price{font-weight:600;color:#1f2937;font-size:13.5px}
+.price small{font-size:11px;color:#9aa3b2;font-weight:400}
+
+.copies{font-weight:500;color:#374151;font-size:13px;display:flex;align-items:center;gap:4px}
+.copies small{font-size:11px;color:#9aa3b2;font-weight:400}
+
+.requester{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#374151}
+.req-name{font-weight:500}
+.req-sub{font-size:11px;color:#9aa3b2}
+
+.acq-cell{display:flex;flex-direction:column;gap:3px}
+.acq-name{font-size:12.5px;font-weight:500;color:#1f2937;display:flex;align-items:center;gap:5px}
+.acq-name .acq-avatar{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2f6fed,#6366f1);color:#fff;font-size:10.5px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.acq-dept{font-size:11px;color:#94a3b8;padding-left:25px}
+.acq-empty{font-size:12px;color:#c3ccdb;font-style:italic}
+
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap}
+.status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-draft{background:#f0f2f5;color:#6b7280}
+.s-pending{background:#fff8e5;color:#9b6f00}
+.s-reviewing{background:#e8f0fe;color:#1d5fd6}
+.s-approved{background:#e8f7ee;color:#12894f}
+.s-rejected{background:#ffe9e9;color:#b91c1c}
+.s-ordered{background:#f0e7ff;color:#7c3aed}
+.s-arrived{background:#e0f2fe;color:#075985}
+.s-cataloged{background:#dbeafe;color:#1e40af}
+.s-onshelf{background:#d1fae5;color:#047857}
+.s-duplicate{background:#fee2e2;color:#991b1b}
+
+.text-danger{color:#b91c1c;font-weight:500}
+.text-warn{color:#b46b00;font-weight:500}
+.text-muted{color:#94a3b8;font-size:12.5px}
+.text-success{color:#047857;font-weight:500}
+
+.ops{white-space:nowrap}
+.ops a{color:#2f6fed;font-size:12.5px;margin-right:14px;cursor:pointer}
+.ops a:last-child{margin-right:0}
+.ops a:hover{text-decoration:underline}
+.ops a.danger{color:#dc2626}
+.ops a.warn{color:#b46b00}
+.ops a.disabled{color:#c3ccdb;cursor:not-allowed}
+.ops a.disabled:hover{text-decoration:none}
+
+.panel-foot{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-top:1px solid #f2f4f8;font-size:12.5px;color:#8a94a6;flex-wrap:wrap;gap:10px}
+.pager{display:flex;gap:6px;align-items:center}
+.pager button{min-width:30px;height:30px;border-radius:7px;border:1px solid #e5eaf1;background:#fff;color:#475569;font-size:12.5px;cursor:pointer;font-family:inherit;transition:.15s}
+.pager button:hover{border-color:#c3ccdb;background:#f8fafc}
+.pager button.active{background:#2f6fed;border-color:#2f6fed;color:#fff;font-weight:600}
+.pager button:disabled{opacity:.4;cursor:not-allowed}
+
+.empty{padding:60px 20px;text-align:center;color:#a8b0bf;font-size:13.5px}
+.empty .big{font-size:34px;margin-bottom:12px;opacity:.5}
+
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:100;padding:32px 20px}
+.modal-mask.show{display:flex}
+.modal{background:#fff;border-radius:14px;width:760px;max-width:100%;max-height:calc(100vh - 64px);display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(15,23,42,.28);animation:pop .22s ease}
+@keyframes pop{from{opacity:0;transform:translateY(-14px) scale(.98)}to{opacity:1;transform:none}}
+.modal-head{padding:18px 22px;border-bottom:1px solid #eef1f6;display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;border-radius:14px 14px 0 0}
+.modal-head h3{font-size:16px;font-weight:600;color:#0f172a}
+.modal-close{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:#94a3b8;font-size:18px;cursor:pointer;line-height:1;transition:.15s}
+.modal-close:hover{background:#f1f4f9;color:#475569}
+.modal-body{padding:22px;flex:1 1 auto;overflow-y:auto;min-height:0}
+.modal-body::-webkit-scrollbar{width:8px}
+.modal-body::-webkit-scrollbar-thumb{background:#d5dce8;border-radius:4px}
+.modal-foot{padding:16px 22px;border-top:1px solid #eef1f6;display:flex;justify-content:flex-end;gap:10px;flex:0 0 auto;border-radius:0 0 14px 14px;background:#fff}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field.three{grid-column:span 1}
+.field label{font-size:12.5px;color:#4b5563;font-weight:500}
+.field label .req{color:#e5484d;margin-left:2px}
+.field input,.field select,.field textarea{width:100%}
+.field .form-tip{font-size:11.5px;color:#94a3b8;margin-top:2px}
+
+.detail-section{margin-bottom:18px}
+.detail-section:last-child{margin-bottom:0}
+.detail-section h4{font-size:13px;font-weight:600;color:#0f172a;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eef1f6;display:flex;align-items:center;gap:8px}
+.detail-section h4::before{content:'';width:3px;height:13px;border-radius:2px;background:#2f6fed}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.info-grid.three{grid-template-columns:repeat(3,1fr)}
+.info-grid.four{grid-template-columns:repeat(4,1fr)}
+.info-item{display:flex;flex-direction:column;gap:3px}
+.info-item .label{font-size:11.5px;color:#9aa3b2}
+.info-item .value{font-size:13px;color:#1f2937;font-weight:500}
+.info-item .value.mono{font-family:"SF Mono",Consolas,monospace;font-size:12.5px}
+
+.detail-hero{display:flex;gap:16px;padding:14px 18px;background:linear-gradient(135deg,#f8fafc,#f0f5fe);border:1px solid #d4def0;border-radius:10px;margin-bottom:18px}
+.detail-hero .book-cover{width:56px;height:76px;font-size:24px}
+.detail-hero .dh-info{flex:1}
+.detail-hero .dh-title{font-size:16px;font-weight:600;color:#0f172a;margin-bottom:6px}
+.detail-hero .dh-meta{font-size:12.5px;color:#5a6577;display:flex;gap:14px;flex-wrap:wrap}
+.detail-hero .dh-status{margin-left:auto}
+
+.timeline{position:relative;padding-left:18px}
+.timeline::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:#eef1f6}
+.timeline-item{position:relative;padding-bottom:14px;font-size:13px;color:#1f2937}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-item::before{content:'';position:absolute;left:-18px;top:5px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #cbd5e1}
+.timeline-item.active::before{background:#2f6fed;border-color:#2f6fed;box-shadow:0 0 0 3px rgba(47,111,237,.18)}
+.timeline-item .ti-time{font-size:11.5px;color:#9aa3b2;font-family:"SF Mono",Consolas,monospace;margin-top:2px}
+.timeline-item .ti-actor{font-size:11.5px;color:#64748b;margin-top:2px}
+
+.modal-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+.modal-icon.warn{background:#fff4e5;color:#b46b00}
+.modal-icon.danger{background:#ffe9e9;color:#b91c1c}
+.modal-icon.success{background:#e8f7ee;color:#12894f}
+.modal-icon.info{background:#e8f0fe;color:#2f6fed}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:6px;color:#0f172a}
+.modal-text{font-size:13px;color:#5a6577;line-height:1.7}
+.modal-detail{background:#f5f7fb;border:1px solid #e8ecf3;border-radius:8px;padding:11px 13px;margin-top:11px;font-size:12.5px;line-height:1.85;color:#1f2937}
+
+.flow-diagram{background:#f5f7fb;border:1px solid #e8ecf3;border-radius:8px;padding:14px 16px;margin-top:8px;font-size:12.5px;line-height:1.95;font-family:"SF Mono",Consolas,monospace;color:#1f2937}
+.flow-diagram b{color:#2f6fed}
+.flow-diagram .hl{background:#fef3c7;padding:1px 5px;border-radius:3px;color:#92400e;font-weight:600}
+
+.summary-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+.summary-tbl th{background:#f5f7fb;text-align:left;padding:8px 12px;border:1px solid #e8ecf3;font-weight:600;color:#4b5563;font-size:11.5px;white-space:nowrap}
+.summary-tbl td{padding:8px 12px;border:1px solid #e8ecf3;color:#374151;vertical-align:top;line-height:1.7}
+.summary-tbl td:first-child{font-weight:600;color:#0f172a;white-space:nowrap}
+
+.audit-list{display:flex;flex-direction:column;gap:10px}
+.audit-item{display:flex;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border-left:3px solid #cbd5e1}
+.audit-item.approve{border-left-color:#22c55e}
+.audit-item.reject{border-left-color:#dc2626}
+.audit-item.order{border-left-color:#7c3aed}
+.audit-item.draft{border-left-color:#94a3b8}
+.audit-item.review{border-left-color:#3b82f6}
+.audit-item .ai-actor{font-weight:500;color:#0f172a;font-size:13px}
+.audit-item .ai-time{font-size:11.5px;color:#94a3b8;font-family:"SF Mono",Consolas,monospace}
+.audit-item .ai-action{font-size:12.5px;color:#5a6577;margin-top:4px}
+.audit-item .ai-comment{font-size:12.5px;color:#1f2937;background:#fff;padding:8px 10px;border-radius:6px;margin-top:6px;line-height:1.6}
+
+.toast{position:fixed;left:50%;top:26px;transform:translate(-50%,-14px);background:#1f2937;color:#fff;padding:10px 20px;border-radius:9px;font-size:13px;opacity:0;transition:.25s;z-index:300;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:80vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.warn{background:#b46b00}
+.toast.error{background:#b91c1c}
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">采购荐购</span>
+</nav>
+
+<!-- ========== 筛选区 ========== -->
+      <div class="filter-card">
+        <div class="filter-title">筛选条件</div>
+        <div class="filter-row">
+          <div class="search">
+            <span>🔍</span>
+            <input type="text" id="kwInput" placeholder="搜索订单号 / ISBN / 书名 / 作者 / 推荐人 / 采访馆员">
+          </div>
+          <div class="filter-divider"></div>
+          <div class="filter-group"><label>状态</label>
+            <select id="statusSel">
+              <option value="">全部状态</option>
+              <option value="draft">草稿</option>
+              <option value="pending">待审核</option>
+              <option value="reviewing">审核中</option>
+              <option value="approved">已批准</option>
+              <option value="rejected">已驳回</option>
+              <option value="ordered">已采购</option>
+              <option value="arrived">已到馆</option>
+              <option value="cataloged">已编目</option>
+              <option value="onshelf">已上架</option>
+              <option value="duplicate">重复采购</option>
+            </select>
+          </div>
+          <div class="filter-group"><label>来源</label>
+            <select id="sourceSel">
+              <option value="">全部来源</option>
+              <option value="reader">读者推荐</option>
+              <option value="staff">馆员推荐</option>
+              <option value="ill">馆际互借</option>
+              <option value="database">数据库筛选</option>
+            </select>
+          </div>
+          <div class="filter-group"><label>采访馆员</label>
+            <select id="acqSel">
+              <option value="">全部馆员</option>
+            </select>
+          </div>
+          <div class="filter-group"><label>提交日期</label>
+            <select id="dateSel">
+              <option value="all" selected>全部时间</option>
+              <option value="today">今日</option>
+              <option value="thisweek">本周</option>
+              <option value="thismonth">本月</option>
+              <option value="last30">最近30天</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary" id="btnSearch">搜索</button>
+            <button class="btn" id="btnReset">重置</button>
+            <button class="btn btn-ghost" id="btnExport">📤 导出</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 列表区 ========== -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="actions">
+            <button class="btn btn-primary" id="btnAdd">＋ 新增荐购</button>
+            <button class="btn btn-sm btn-danger" id="btnBatchDelete">批量删除</button>
+            <button class="btn btn-ghost" id="btnLegal">📖 流程说明</button>
+            <span class="sel-info" id="selInfo"></span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="checkAll"></th>
+                <th style="width:110px">订单号</th>
+                <th style="width:240px">图书信息</th>
+                <th style="width:80px">来源</th>
+                <th style="width:80px">复本</th>
+                <th style="width:90px">定价</th>
+                <th style="width:130px">推荐人</th>
+                <th style="width:150px">采访馆员</th>
+                <th style="width:120px">提交日期</th>
+                <th style="width:100px">状态</th>
+                <th style="width:180px">最后操作</th>
+                <th style="width:200px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="panel-foot">
+          <span id="footInfo">共 0 条记录</span>
+          <div class="pager" id="pager"></div>
+        </div>
+      </div>
+</main>
+
+<!-- ============ 新增 / 编辑荐购 ============ -->
+<div class="modal-mask" id="addMask">
+  <div class="modal">
+    <div class="modal-head"><h3 id="addTitle">新增采购荐购</h3><button class="modal-close" onclick="closeAdd()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field">
+          <label>ISBN / ISSN<span class="req">*</span></label>
+          <input type="text" id="addIsbn" placeholder="如：978-7-100-12345-6">
+          <div class="form-tip">13 位 ISBN；期刊用 ISSN</div>
+        </div>
+        <div class="field">
+          <label>复本数<span class="req">*</span></label>
+          <input type="number" id="addCopies" min="1" max="50" value="2">
+        </div>
+
+        <div class="field full">
+          <label>书名<span class="req">*</span></label>
+          <input type="text" id="addTitleInput" placeholder="图书完整书名">
+        </div>
+
+        <div class="field">
+          <label>作者<span class="req">*</span></label>
+          <input type="text" id="addAuthor" placeholder="主要作者">
+        </div>
+        <div class="field">
+          <label>出版社<span class="req">*</span></label>
+          <input type="text" id="addPublisher" placeholder="如：商务印书馆">
+        </div>
+
+        <div class="field">
+          <label>出版年<span class="req">*</span></label>
+          <input type="number" id="addPubYear" min="1900" max="2099" placeholder="如：2024">
+        </div>
+        <div class="field">
+          <label>预估定价（元）<span class="req">*</span></label>
+          <input type="number" id="addPrice" min="0" step="0.01" value="0">
+        </div>
+
+        <div class="field">
+          <label>推荐来源<span class="req">*</span></label>
+          <select id="addSource">
+            <option value="reader">读者推荐</option>
+            <option value="staff">馆员推荐</option>
+            <option value="ill">馆际互借</option>
+            <option value="database">数据库筛选</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>中图法分类</label>
+          <input type="text" id="addClc" placeholder="如：I247.5（小说）">
+        </div>
+
+        <div class="field">
+          <label>采访馆员<span class="req">*</span></label>
+          <select id="addAcq">
+            <option value="王采编员">王采编员 · 采编部</option>
+            <option value="许诗涵">许诗涵 · 采编部</option>
+            <option value="赵文博">赵文博 · 采编部</option>
+          </select>
+          <div class="form-tip">负责跟进该订单采购全流程</div>
+        </div>
+        <div class="field">
+          <label>推荐人</label>
+          <input type="text" id="addRequester" placeholder="选填，默认当前登录人" value="王采编员">
+        </div>
+
+        <div class="field full">
+          <label>推荐理由<span class="req" id="reasonReq">*</span></label>
+          <textarea id="addReason" placeholder="说明推荐此书的理由、读者需求、馆藏查重结果等"></textarea>
+          <div class="form-tip" id="draftTip" style="display:none">草稿阶段可暂不填写理由，提交审核前需补全</div>
+        </div>
+
+        <div class="field full">
+          <label>备注</label>
+          <input type="text" id="addRemark" placeholder="选填">
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeAdd()">取消</button>
+      <button class="btn" id="addDraftBtn" onclick="submitAdd(false, true)">💾 保存草稿</button>
+      <button class="btn btn-primary" id="addSubmitBtn" onclick="submitAdd(false, false)">提交荐购</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 详情 ============ -->
+<div class="modal-mask" id="detailMask">
+  <div class="modal">
+    <div class="modal-head"><h3>荐购详情</h3><button class="modal-close" onclick="closeDetail()">✕</button></div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeDetail()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 审核弹窗 ============ -->
+<div class="modal-mask" id="auditMask">
+  <div class="modal" style="width:520px">
+    <div class="modal-head"><h3 id="auditTitle">审核荐购</h3><button class="modal-close" onclick="closeAudit()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-icon" id="auditIcon"><i class="fas fa-clipboard-check"></i></div>
+      <div class="modal-title" id="auditQuestion">确认处理该荐购？</div>
+      <div class="modal-text" id="auditText"></div>
+      <div class="modal-detail" id="auditDetail" style="display:none"></div>
+      <div style="margin-top:14px">
+        <label style="display:block;font-size:13px;font-weight:500;color:#4b5563;margin-bottom:7px">审核意见<span style="color:#e5484d;margin-left:2px">*</span></label>
+        <textarea id="auditComment" placeholder="请填写审核意见（批准/驳回必填）" style="height:80px"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeAudit()">取消</button>
+      <button class="btn btn-danger" id="auditRejectBtn">驳回</button>
+      <button class="btn btn-primary" id="auditApproveBtn">批准</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 流程说明 ============ -->
+<div class="modal-mask" id="legalMask">
+  <div class="modal">
+    <div class="modal-head"><h3>采购荐购 · 10 种状态流转说明</h3><button class="modal-close" onclick="closeLegal()">✕</button></div>
+    <div class="modal-body" id="legalBody"></div>
+    <div class="modal-foot"><button class="btn" onclick="closeLegal()">关闭</button></div>
+  </div>
+</div>
+
+<!-- ============ 通用确认 ============ -->
+<div class="modal-mask" id="confirmMask">
+  <div class="modal" style="width:480px">
+    <div class="modal-head"><h3 id="confirmTitle">操作确认</h3><button class="modal-close" onclick="closeConfirm()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-icon" id="confirmIcon"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="modal-title" id="confirmQuestion">确定要执行该操作吗？</div>
+      <div class="modal-text" id="confirmText"></div>
+      <div class="modal-detail" id="confirmDetail" style="display:none"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeConfirm()">取消</button>
+      <button class="btn btn-primary" id="confirmOkBtn">确定</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastWrap"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <script>
+const STATUS_DEF = {
+  draft:     {label:'草稿',     cls:'s-draft',     cover:'gray'},
+  pending:   {label:'待审核',   cls:'s-pending',   cover:'orange'},
+  reviewing: {label:'审核中',   cls:'s-reviewing', cover:'blue'},
+  approved:  {label:'已批准',   cls:'s-approved',  cover:'green'},
+  rejected:  {label:'已驳回',   cls:'s-rejected',  cover:'red'},
+  ordered:   {label:'已采购',   cls:'s-ordered',   cover:'purple'},
+  arrived:   {label:'已到馆',   cls:'s-arrived',   cover:'blue'},
+  cataloged: {label:'已编目',   cls:'s-cataloged', cover:'blue'},
+  onshelf:   {label:'已上架',   cls:'s-onshelf',   cover:'green'},
+  duplicate: {label:'重复采购', cls:'s-duplicate', cover:'gray'}
+};
+const SOURCE_DEF = {
+  reader:   {label:'读者推荐',  cls:'source-reader'},
+  staff:    {label:'馆员推荐',  cls:'source-staff'},
+  ill:      {label:'馆际互借',  cls:'source-ill'},
+  database: {label:'数据库筛选',cls:'source-database'}
+};
+
+const ACQUISITION_STAFF = [
+  {name:'王采编员', dept:'采编部'},
+  {name:'许诗涵',   dept:'采编部'},
+  {name:'赵文博',   dept:'采编部'}
+];
+
+/* =========================================================
+   示例数据：10 种状态各 1 条
+   =======================================================*/
+let data = [
+  /* ===== 1. 草稿 draft ===== */
+  {
+    id:'PO20250409001', isbn:'978-7-02-000220-7',
+    title:'围城', author:'钱钟书', publisher:'人民文学出版社', pubYear:1991,
+    price:18.00, copies:1, source:'staff', clc:'I246.5',
+    reason:'采编部按年度中文文学补充计划提交：馆藏 1 册封面破损已下架，拟新增 1 册替换。',
+    remark:'年度补充计划',
+    acquisitionLibrarian:'王采编员',
+    status:'draft', requester:'王采编员', requestDept:'采编部',
+    createdAt:'2025-04-09 08:40',
+    auditLog:[{actor:'王采编员', act:'保存草稿', time:'2025-04-09 08:40', comment:'已保存为草稿，待补充完整信息后提交'}]
+  },
+
+  /* ===== 2. 待审核 pending ===== */
+  {
+    id:'PO20250409002', isbn:'978-7-115-58901-2',
+    title:'计算机网络：自顶向下方法（第8版）',
+    author:'James F. Kurose / Keith W. Ross',
+    publisher:'机械工业出版社', pubYear:2023,
+    price:99.00, copies:2, source:'reader', clc:'TP393',
+    reason:'读者陈思远（2022010301）推荐：计算机学院《计算机网络》课程指定参考书，馆藏第 7 版内容已滞后。',
+    remark:'读者荐购·课程用书',
+    acquisitionLibrarian:'王采编员',
+    status:'pending', requester:'陈思远', requestDept:'计算机科学与技术学院',
+    createdAt:'2025-04-09 09:15',
+    auditLog:[
+      {actor:'王采编员', act:'提交待审', time:'2025-04-09 09:15', comment:'已提交，等待审核员认领处理'}
+    ]
+  },
+
+  /* ===== 3. 审核中 reviewing ===== */
+  {
+    id:'PO20250409003', isbn:'978-7-302-67890-1',
+    title:'深入理解操作系统（CSAPP 第3版）',
+    author:'Randal E. Bryant / David R. O\'Hallaron',
+    publisher:'机械工业出版社', pubYear:2022,
+    price:139.00, copies:3, source:'ill', clc:'TP316',
+    reason:'馆际互借高频申请书目：近一学期外馆代借 12 次，读者建议本馆直接入藏以降低互借成本。',
+    remark:'馆际互借转荐购',
+    acquisitionLibrarian:'许诗涵',
+    status:'reviewing', requester:'馆际互借处', requestDept:'参考咨询部',
+    createdAt:'2025-04-08 14:10',
+    auditLog:[
+      {actor:'许诗涵', act:'提交待审', time:'2025-04-08 14:10', comment:'馆际互借数据支撑充分，提交审核'},
+      {actor:'李审核员', act:'开始审核', time:'2025-04-08 16:20', comment:'已认领，正在查重：馆藏 0 册同名同版'}
+    ]
+  },
+
+  /* ===== 4. 已批准 approved ===== */
+  {
+    id:'PO20250409004', isbn:'978-7-208-16234-5',
+    title:'百年孤独', author:'加西亚·马尔克斯',
+    publisher:'上海人民出版社', pubYear:2011,
+    price:55.00, copies:5, source:'reader', clc:'I775.45',
+    reason:'读者反复推荐书目之一，借阅预约等待最长 23 天，建议增加复本。',
+    remark:'高预约书目',
+    acquisitionLibrarian:'王采编员',
+    status:'approved', requester:'林晓彤', requestDept:'文学院',
+    createdAt:'2025-04-07 10:05',
+    auditLog:[
+      {actor:'王采编员', act:'提交待审', time:'2025-04-07 10:05', comment:'读者推荐，附带预约数据'},
+      {actor:'李审核员', act:'开始审核', time:'2025-04-07 11:20', comment:'已认领'},
+      {actor:'李审核员', act:'已批准', time:'2025-04-07 15:40', comment:'馆藏 3 册长期高预约排队（42 人候补），同意增订 5 册'}
+    ]
+  },
+
+  /* ===== 5. 已采购 ordered ===== */
+  {
+    id:'PO20250409005', isbn:'978-7-111-54493-7',
+    title:'深入理解计算机系统（原书第3版）', author:'Randal E. Bryant',
+    publisher:'机械工业出版社', pubYear:2016,
+    price:139.00, copies:4, source:'database', clc:'TP303',
+    reason:'来自 Springer Link 数据库的热门推荐（被引频次 Top5），适合计算机学院大三课程。',
+    remark:'数据库荐购',
+    acquisitionLibrarian:'赵文博',
+    status:'ordered', requester:'采编系统', requestDept:'采编部',
+    createdAt:'2025-04-03 10:20',
+    auditLog:[
+      {actor:'赵文博', act:'提交待审', time:'2025-04-03 10:20', comment:'数据库 Top5 被引书目'},
+      {actor:'李审核员', act:'开始审核', time:'2025-04-03 11:00', comment:'已认领'},
+      {actor:'李审核员', act:'已批准', time:'2025-04-03 11:50', comment:'数据库评分 8.7，复本量合适，同意采购'},
+      {actor:'赵文博', act:'已采购', time:'2025-04-04 09:30', comment:'订单已发至供应商，预计 5 个工作日到货'}
+    ]
+  },
+
+  /* ===== 6. 已到馆 arrived ===== */
+  {
+    id:'PO20250409006', isbn:'978-7-115-61234-5',
+    title:'Python 编程：从入门到实践（第3版）', author:'Eric Matthes',
+    publisher:'人民邮电出版社', pubYear:2023,
+    price:89.00, copies:4, source:'staff', clc:'TP311.561',
+    reason:'Python 入门经典，馆藏第 2 版借空率高，适合新生导论课使用。',
+    remark:'',
+    acquisitionLibrarian:'许诗涵',
+    status:'arrived', requester:'许诗涵', requestDept:'采编部',
+    createdAt:'2025-03-28 09:00',
+    auditLog:[
+      {actor:'许诗涵', act:'提交待审', time:'2025-03-28 09:00', comment:'基础教材补货'},
+      {actor:'李审核员', act:'开始审核', time:'2025-03-28 09:40', comment:'已认领'},
+      {actor:'李审核员', act:'已批准', time:'2025-03-28 10:30', comment:'基础教材，复本 4 合理'},
+      {actor:'许诗涵', act:'已采购', time:'2025-03-30 09:00', comment:'订单已发至供应商'},
+      {actor:'物流', act:'已到馆', time:'2025-04-06 08:15', comment:'供应商送货，4 册全部签收'}
+    ]
+  },
+
+  /* ===== 7. 已编目 cataloged ===== */
+  {
+    id:'PO20250409007', isbn:'978-7-5399-8901-2',
+    title:'三体（套装全3册）', author:'刘慈欣',
+    publisher:'重庆出版社', pubYear:2016,
+    price:98.00, copies:6, source:'staff', clc:'I247.55',
+    reason:'科幻经典，馆藏 1 套 3 册借空率 98%，候补读者 42 人，需加复本。',
+    remark:'套装',
+    acquisitionLibrarian:'王采编员',
+    status:'cataloged', requester:'采编系统', requestDept:'采编部',
+    createdAt:'2025-03-20 10:00',
+    auditLog:[
+      {actor:'王采编员', act:'提交待审', time:'2025-03-20 10:00', comment:'系统自动荐购，附借阅数据'},
+      {actor:'李审核员', act:'开始审核', time:'2025-03-20 10:45', comment:'已认领'},
+      {actor:'李审核员', act:'已批准', time:'2025-03-20 11:30', comment:'长期高预约，同意增订 6 套'},
+      {actor:'王采编员', act:'已采购', time:'2025-03-22 09:00', comment:'下单成功'},
+      {actor:'物流', act:'已到馆', time:'2025-04-02 14:00', comment:'入库验收完成'},
+      {actor:'周编目员', act:'已编目', time:'2025-04-07 16:30', comment:'分配索书号 I247.55/L-3，条形码已生成'}
+    ]
+  },
+
+  /* ===== 8. 已上架 onshelf ===== */
+  {
+    id:'PO20250409008', isbn:'978-7-100-98765-4',
+    title:'乡土中国', author:'费孝通',
+    publisher:'商务印书馆', pubYear:2013,
+    price:32.00, copies:3, source:'reader', clc:'C912.82',
+    reason:'社会学必读经典，馆藏 3 册全部借空，建议加复本。',
+    remark:'',
+    acquisitionLibrarian:'许诗涵',
+    status:'onshelf', requester:'何静怡', requestDept:'经济管理学院',
+    createdAt:'2025-03-05 09:00',
+    auditLog:[
+      {actor:'许诗涵', act:'提交待审', time:'2025-03-05 09:00', comment:'读者荐购，馆藏借空'},
+      {actor:'李审核员', act:'开始审核', time:'2025-03-05 09:30', comment:'已认领'},
+      {actor:'李审核员', act:'已批准', time:'2025-03-05 10:00', comment:'经典入门读物，同意增订'},
+      {actor:'许诗涵', act:'已采购', time:'2025-03-06 09:00', comment:'下单成功'},
+      {actor:'物流', act:'已到馆', time:'2025-03-15 14:00', comment:'到货签收'},
+      {actor:'周编目员', act:'已编目', time:'2025-03-18 16:30', comment:'分配索书号 C912.82/F-2'},
+      {actor:'流通部', act:'已上架', time:'2025-04-01 09:00', comment:'总馆三层中文图书借阅区已上架流通'}
+    ]
+  },
+
+  /* ===== 9. 已驳回 rejected ===== */
+  {
+    id:'PO20250409009', isbn:'978-7-5063-6543-7',
+    title:'活着', author:'余华',
+    publisher:'作家出版社', pubYear:2012,
+    price:28.00, copies:2, source:'reader', clc:'I247.57',
+    reason:'中国当代文学经典，馆藏 4 册，预约等待 12 天，需补货。',
+    remark:'',
+    acquisitionLibrarian:'赵文博',
+    status:'rejected', requester:'周雨桐', requestDept:'文学院',
+    createdAt:'2025-04-09 08:30',
+    auditLog:[
+      {actor:'赵文博', act:'提交待审', time:'2025-04-09 08:30', comment:'读者荐购，预约 12 天'},
+      {actor:'李审核员', act:'开始审核', time:'2025-04-09 09:20', comment:'已认领'},
+      {actor:'李审核员', act:'已驳回', time:'2025-04-09 10:15', comment:'本年度采购经费已使用 78%，该书现有复本 4 册可基本满足需求，建议延至下季度评估'}
+    ]
+  },
+
+  /* ===== 10. 重复采购 duplicate ===== */
+  {
+    id:'PO20250409010', isbn:'978-7-111-40701-1',
+    title:'算法导论（原书第3版）', author:'Thomas H. Cormen',
+    publisher:'机械工业出版社', pubYear:2013,
+    price:128.00, copies:2, source:'reader', clc:'TP301.6',
+    reason:'计算机学院核心课参考，馆藏 5 册状态良好，读者误重提交。',
+    remark:'',
+    acquisitionLibrarian:'',
+    status:'duplicate', requester:'赵敏', requestDept:'电子信息工程学院',
+    createdAt:'2025-04-08 13:45',
+    auditLog:[
+      {actor:'系统查重', act:'重复采购', time:'2025-04-08 13:46', comment:'馆内已有同名同版 5 册且状态正常，标记为重复采购并归档'}
+    ]
+  }
+];
+
+let state = {page:1, pageSize:10, keyword:'', status:'', source:'', acq:'', date:'all', selected:new Set()};
+const $ = id => document.getElementById(id);
+function pad2(n){return String(n).padStart(2,'0')}
+function fmtNow(){const d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())+' '+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds())}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function isToday(dk){return dk===TODAY}
+function isThisWeek(dk){const d=new Date(dk+'T00:00:00');const now=new Date();const diff=(now-d)/86400000;return diff>=0 && diff<=7}
+function isThisMonth(dk){const d=new Date(dk+'T00:00:00');const now=new Date();return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()}
+function isLast30(dk){const d=new Date(dk+'T00:00:00');const now=new Date();return (now-d)/86400000<=30}
+const TODAY = '2025-04-09';
+
+let toastTimer;
+function toast(msg,type){
+  const old = document.querySelector('.toast'); if(old) old.remove();
+  const el = document.createElement('div');
+  el.className = 'toast' + (type?' '+type:'');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); },2200);
+}
+
+function getFiltered(){
+  const k = state.keyword.trim().toLowerCase();
+  return data.filter(r=>{
+    if(state.status && r.status !== state.status) return false;
+    if(state.source && r.source !== state.source) return false;
+    if(state.acq && r.acquisitionLibrarian !== state.acq) return false;
+    if(state.date==='today' && !isToday(r.createdAt.substr(0,10))) return false;
+    if(state.date==='thisweek' && !isThisWeek(r.createdAt.substr(0,10))) return false;
+    if(state.date==='thismonth' && !isThisMonth(r.createdAt.substr(0,10))) return false;
+    if(state.date==='last30' && !isLast30(r.createdAt.substr(0,10))) return false;
+    if(k){
+      const hay = (r.id + ' ' + r.isbn + ' ' + r.title + ' ' + r.author + ' ' + r.publisher + ' ' + r.requester + ' ' + (r.acquisitionLibrarian||'') + ' ' + r.reason).toLowerCase();
+      if(hay.indexOf(k)===-1) return false;
+    }
+    return true;
+  });
+}
+
+function getLastAuditAction(r){
+  if(!r.auditLog || !r.auditLog.length) return {actor:'',act:'',time:r.createdAt};
+  return r.auditLog[r.auditLog.length-1];
+}
+
+function getBtns(r){
+  const id = r.id, sk = r.status;
+  const detail = '<a class="link" data-act="detail" data-id="'+id+'">详情</a>';
+  if(sk==='draft'){
+    /* 草稿：提交待审 → 进入 pending */
+    return '<a class="link" data-act="submit" data-id="'+id+'">提交待审</a><a class="link" data-act="edit" data-id="'+id+'">编辑</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
+  }
+  if(sk==='pending'){
+    /* 待审核：审核员开始审核 → 进入 reviewing；同时允许推荐人撤回编辑 */
+    return '<a class="link" data-act="startAudit" data-id="'+id+'">开始审核</a><a class="link" data-act="edit" data-id="'+id+'">编辑</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
+  }
+  if(sk==='reviewing'){
+    return '<a class="link" data-act="audit" data-id="'+id+'">审核</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
+  }
+  if(sk==='approved'){
+    return '<a class="link" data-act="order" data-id="'+id+'">下单采购</a>'+detail;
+  }
+  if(sk==='ordered'){
+    return '<a class="link" data-act="arrive" data-id="'+id+'">标记到馆</a>'+detail;
+  }
+  if(sk==='arrived'){
+    return '<a class="link" data-act="catalog" data-id="'+id+'">送编目</a>'+detail;
+  }
+  if(sk==='cataloged'){
+    return '<a class="link" data-act="onshelf" data-id="'+id+'">标记上架</a>'+detail;
+  }
+  if(sk==='rejected'){
+    return '<a class="link" data-act="reopen" data-id="'+id+'">重新提交</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
+  }
+  if(sk==='duplicate'){
+    return '<a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
+  }
+  if(sk==='onshelf'){
+    return detail;
+  }
+  return detail;
+}
+
+function renderAcqCell(r){
+  const name = r.acquisitionLibrarian;
+  if(!name){
+    return '<div class="acq-cell"><span class="acq-empty">— 待分配 —</span></div>';
+  }
+  const initial = name.charAt(0);
+  return '<div class="acq-cell">'
+    + '<div class="acq-name"><span class="acq-avatar">'+esc(initial)+'</span>'+esc(name)+'</div>'
+    + '<div class="acq-dept">采编部</div>'
+    + '</div>';
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total/state.pageSize));
+  if(state.page>pages) state.page=pages;
+  const start = (state.page-1)*state.pageSize;
+  const rows = list.slice(start, start+state.pageSize);
+  const tbody = $('tbody');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="12"><div class="empty"><div class="big">📭</div>没有找到符合条件的荐购记录<br><span style="font-size:12.5px;color:#b0b8c6">请调整筛选条件后重试</span></div></td></tr>';
+  } else {
+    let html = '';
+    rows.forEach(r=>{
+      const cover = STATUS_DEF[r.status].cover;
+      const src = SOURCE_DEF[r.source];
+      const last = getLastAuditAction(r);
+      const checked = state.selected.has(r.id) ? 'checked' : '';
+      html += '<tr>';
+      html += '<td><input type="checkbox" class="row-chk" data-id="'+r.id+'" '+checked+'></td>';
+      html += '<td><span class="record-id">#'+r.id+'</span></td>';
+      html += '<td><div class="book-cell"><div class="book-cover '+cover+'">📖</div><div class="book-info"><div class="book-title">'+esc(r.title)+'</div><div class="book-meta">作者：'+esc(r.author)+'<br>出版社：'+esc(r.publisher)+' · '+r.pubYear+' <span class="isbn">ISBN '+r.isbn+'</span></div></div></div></td>';
+      html += '<td><span class="source '+src.cls+'">'+src.label+'</span></td>';
+      html += '<td><span class="copies">'+r.copies+' <small>本</small></span></td>';
+      html += '<td><span class="price">¥'+r.price.toFixed(2)+'</span></td>';
+      html += '<td><div class="requester"><div><span class="req-name">'+esc(r.requester)+'</span><div class="req-sub">'+esc(r.requestDept)+'</div></div></div></td>';
+      html += '<td>'+renderAcqCell(r)+'</td>';
+      html += '<td><div class="time-cell" style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12.5px;color:#1f2937;font-weight:500">'+r.createdAt.substr(0,10)+'</div><div style="font-size:11.5px;color:#94a3b8">'+r.createdAt.substr(11)+'</div></div></td>';
+      html += '<td><span class="status '+STATUS_DEF[r.status].cls+'">'+STATUS_DEF[r.status].label+'</span></td>';
+      html += '<td><div style="font-size:12.5px;color:#5a6577;line-height:1.5">'+esc(last.act ? last.actor+' · '+last.act : '已创建')+'</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">'+esc(last.time ? last.time.substr(0,16) : r.createdAt.substr(0,16))+'</div></td>';
+      html += '<td><div class="ops">'+getBtns(r)+'</div></td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+  $('footInfo').textContent = '显示 '+(rows.length?(start+1):0)+' - '+(start+rows.length)+' 条，共 '+total+' 条记录';
+  renderPager(pages);
+  updateSelInfo();
+}
+
+function renderPager(pages){
+  const cur = state.page;
+  let h = '<button onclick="gotoPage(-1)" '+(cur===1?'disabled':'')+'>‹</button>';
+  const show = [];
+  if(pages<=7){ for(let i=1;i<=pages;i++) show.push(i); }
+  else { show.push(1); if(cur>3) show.push('...'); for(let i=Math.max(2,cur-1); i<=Math.min(pages-1,cur+1); i++) show.push(i); if(cur<pages-2) show.push('...'); show.push(pages); }
+  show.forEach(p=>{
+    if(p==='...') h += '<span style="padding:0 6px;color:#9aa3b2">···</span>';
+    else h += '<button class="'+(p===cur?'active':'')+'" onclick="gotoPage('+p+')">'+p+'</button>';
+  });
+  h += '<button onclick="gotoPage(1)" '+(cur===pages?'disabled':'')+'>›</button>';
+  $('pager').innerHTML = h;
+}
+function gotoPage(p){
+  if(p===-1) p=state.page-1;
+  if(p===1) p=state.page+1;
+  const pages = Math.max(1, Math.ceil(getFiltered().length/state.pageSize));
+  if(p<1||p>pages) return;
+  state.page=p; renderTable();
+}
+function updateSelInfo(){
+  const n = state.selected.size;
+  $('selInfo').innerHTML = n ? '已选择 <b>'+n+'</b> 条' : '';
+}
+function render(){ renderTable(); }
+
+/* 操作动作 */
+function act(a, id){
+  const r = data.find(x=>x.id===id);
+  if(!r) return;
+  if(a==='detail'){ openDetail(id); return; }
+
+  /* 草稿 → 待审核（而不是直接跳审核中） */
+  if(a==='submit'){
+    r.status='pending';
+    r.auditLog = r.auditLog || [];
+    r.auditLog.push({actor:r.acquisitionLibrarian||'王采编员',act:'提交待审',time:fmtNow(),comment:'已提交，等待审核员认领处理'});
+    toast('已提交，等待审核员处理');
+    render();
+    return;
+  }
+
+  /* 待审核 → 审核中（审核员认领） */
+  if(a==='startAudit'){
+    r.status='reviewing';
+    r.auditLog = r.auditLog || [];
+    r.auditLog.push({actor:'李审核员',act:'开始审核',time:fmtNow(),comment:'已认领，正在查重/评估'});
+    toast('已进入审核中');
+    render();
+    return;
+  }
+
+  if(a==='edit'){
+    openEdit(r);
+    return;
+  }
+
+  if(a==='delete'){
+    confirmDialog({title:'删除荐购',icon:'danger',question:'确定要删除订单 #'+r.id+' 吗？',text:'删除后该荐购记录将不可恢复，但馆藏图书不受影响。',detail:'书名：'+r.title+'<br>推荐人：'+r.requester,okText:'确认删除',okClass:'btn btn-danger',onOk:()=>{
+      data = data.filter(x=>x.id!==id);
+      state.selected.delete(id);
+      toast('已删除订单 #'+id,'warn');
+      render();
+    }});
+    return;
+  }
+
+  if(a==='audit'){
+    openAudit(r);
+    return;
+  }
+
+  if(a==='order'){
+    confirmDialog({title:'下单采购',icon:'info',question:'确认要为该订单下单吗？',text:'订单将发送给供应商，预计 3-5 个工作日到货。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本 · 单价：¥'+r.price.toFixed(2)+'<br>合计：¥'+(r.copies*r.price).toFixed(2),okText:'确认下单',okClass:'btn btn-primary',onOk:()=>{
+      r.status='ordered';
+      r.auditLog.push({actor:r.acquisitionLibrarian||'王采编员',act:'已采购',time:fmtNow(),comment:'订单已发送至供应商'});
+      toast('订单已发送至供应商');
+      render();
+    }});
+    return;
+  }
+
+  if(a==='arrive'){
+    confirmDialog({title:'标记到馆',icon:'info',question:'确认该订单已到馆吗？',text:'请确保供应商已送货签收，订单进入编目流程。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本',okText:'确认到馆',okClass:'btn btn-primary',onOk:()=>{
+      r.status='arrived';
+      r.auditLog.push({actor:'物流',act:'已到馆',time:fmtNow(),comment:'供应商送货签收'});
+      toast('订单已标记为到馆');
+      render();
+    }});
+    return;
+  }
+
+  if(a==='catalog'){
+    confirmDialog({title:'送编目',icon:'info',question:'确认送编目吗？',text:'将分配中图法分类号、设置馆藏地、生成条形码。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本',okText:'确认送编目',okClass:'btn btn-primary',onOk:()=>{
+      r.status='cataloged';
+      r.auditLog.push({actor:'周编目员',act:'已编目',time:fmtNow(),comment:'分配索书号 '+r.clc+'，生成条形码'});
+      toast('订单已送编目');
+      render();
+    }});
+    return;
+  }
+
+  if(a==='onshelf'){
+    confirmDialog({title:'标记上架',icon:'success',question:'确认该订单已上架流通吗？',text:'图书已分配具体馆藏位置，读者可正常借阅。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本',okText:'确认上架',okClass:'btn btn-primary',onOk:()=>{
+      r.status='onshelf';
+      r.auditLog.push({actor:'流通部',act:'已上架',time:fmtNow(),comment:'流通库已上架'});
+      toast('订单已完成，图书已上架流通');
+      render();
+    }});
+    return;
+  }
+
+  if(a==='reopen'){
+    confirmDialog({title:'重新提交',icon:'info',question:'确定要重新提交该荐购吗？',text:'重新提交后进入「待审核」状态，等待审核员处理。',detail:'书名：'+r.title,okText:'确认重新提交',okClass:'btn btn-primary',onOk:()=>{
+      r.status='pending';
+      r.auditLog.push({actor:r.acquisitionLibrarian||'王采编员',act:'重新提交',time:fmtNow(),comment:'重新提交，等待审核员处理'});
+      toast('已重新提交，等待审核员处理');
+      render();
+    }});
+    return;
+  }
+}
+
+/* 详情 */
+function openDetail(id){
+  const r = data.find(x=>x.id===id);
+  if(!r) return;
+  const cover = STATUS_DEF[r.status].cover;
+  const src = SOURCE_DEF[r.source];
+
+  let logHtml = '';
+  if(r.auditLog && r.auditLog.length){
+    r.auditLog.forEach(log=>{
+      let actionCls = '';
+      if(log.act.indexOf('批准')>=0) actionCls='approve';
+      else if(log.act.indexOf('驳回')>=0) actionCls='reject';
+      else if(log.act.indexOf('采购')>=0) actionCls='order';
+      else if(log.act.indexOf('草稿')>=0) actionCls='draft';
+      else if(log.act.indexOf('开始审核')>=0) actionCls='review';
+      logHtml += '<div class="audit-item '+actionCls+'">'
+        + '<div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="ai-actor">'+esc(log.actor)+'</div><div class="ai-time">'+esc(log.time)+'</div></div>'
+        + '<div class="ai-action">→ '+esc(log.act)+'</div>'
+        + (log.comment? '<div class="ai-comment">'+esc(log.comment)+'</div>' : '')
+        + '</div></div>';
+    });
+  } else {
+    logHtml = '<div class="text-muted" style="font-size:12.5px;padding:10px 0">暂无记录</div>';
+  }
+
+  const acqDisplay = r.acquisitionLibrarian
+    ? '<div class="acq-name" style="font-size:13px"><span class="acq-avatar" style="width:22px;height:22px;font-size:11px">'+esc(r.acquisitionLibrarian.charAt(0))+'</span>'+esc(r.acquisitionLibrarian)+'</div>'
+    : '<span class="text-muted">— 待分配 —</span>';
+
+  $('detailBody').innerHTML = ''
++ '<div class="detail-hero">'
++   '<div class="book-cover '+cover+'">📖</div>'
++   '<div class="dh-info">'
++     '<div class="dh-title">'+esc(r.title)+'</div>'
++     '<div class="dh-meta"><span>作者：'+esc(r.author)+'</span><span>出版社：'+esc(r.publisher)+'</span><span>出版年：'+r.pubYear+'</span></div>'
++     '<div class="dh-meta" style="margin-top:5px"><span class="record-id">#'+r.id+'</span><span>ISBN '+r.isbn+'</span><span class="source '+src.cls+'">'+src.label+'</span><span>中图法 '+esc(r.clc||'-')+'</span></div>'
++   '</div>'
++   '<div class="dh-status"><span class="status '+STATUS_DEF[r.status].cls+'">'+STATUS_DEF[r.status].label+'</span></div>'
++ '</div>'
+
++ '<div class="detail-section"><h4>采购信息</h4><div class="info-grid four">'
++   '<div class="info-item"><div class="label">复本数</div><div class="value">'+r.copies+' 本</div></div>'
++   '<div class="info-item"><div class="label">单价</div><div class="value">¥'+r.price.toFixed(2)+'</div></div>'
++   '<div class="info-item"><div class="label">合计金额</div><div class="value" style="color:#dc2626">¥'+(r.copies*r.price).toFixed(2)+'</div></div>'
++   '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
++ '</div></div>'
+
++ '<div class="detail-section"><h4>采访馆员与推荐人</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">采访馆员</div><div class="value">'+acqDisplay+'</div></div>'
++   '<div class="info-item"><div class="label">负责部门</div><div class="value">采编部</div></div>'
++   '<div class="info-item"><div class="label">推荐人</div><div class="value">'+esc(r.requester)+'</div></div>'
++   '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(r.requestDept)+'</div></div>'
++ '</div></div>'
+
++ '<div class="detail-section"><h4>推荐理由</h4><div class="modal-detail" style="font-size:13px;line-height:1.7">'+(r.reason?esc(r.reason):'<span class="text-muted">（草稿阶段暂未填写）</span>')+'</div>'
++ (r.remark? '<div class="modal-detail" style="font-size:12.5px;margin-top:8px"><b>备注：</b>'+esc(r.remark)+'</div>' : '')
++ '</div>'
+
++ '<div class="detail-section"><h4>处理流程（'+r.auditLog.length+' 条）</h4>'
++ '<div class="audit-list">'+logHtml+'</div>'
++ '</div>';
+  $('detailMask').classList.add('show');
+  $('detailBody').scrollTop=0;
+}
+function closeDetail(){ $('detailMask').classList.remove('show'); }
+
+/* 新增 / 编辑荐购 */
+let editingId = null;
+
+function clearAddForm(){
+  $('addIsbn').value='';
+  $('addCopies').value='2';
+  $('addTitleInput').value='';
+  $('addAuthor').value='';
+  $('addPublisher').value='';
+  $('addPubYear').value='';
+  $('addPrice').value='0';
+  $('addSource').value='reader';
+  $('addClc').value='';
+  $('addAcq').value='王采编员';
+  $('addRequester').value='王采编员';
+  $('addReason').value='';
+  $('addRemark').value='';
+}
+
+function openAdd(){
+  editingId = null;
+  clearAddForm();
+  $('addTitle').textContent = '新增采购荐购';
+  $('addDraftBtn').style.display = '';
+  $('addDraftBtn').textContent = '💾 保存草稿';
+  $('addSubmitBtn').textContent = '提交荐购';
+  $('reasonReq').style.display = 'none';
+  $('draftTip').style.display = '';
+  $('addMask').classList.add('show');
+  $('addSubmitBtn').onclick = function(){ submitAdd(false, false); };
+}
+
+function openEdit(r){
+  editingId = r.id;
+  $('addTitle').textContent = '编辑荐购 · #' + r.id;
+  $('addIsbn').value = r.isbn;
+  $('addCopies').value = r.copies;
+  $('addTitleInput').value = r.title;
+  $('addAuthor').value = r.author;
+  $('addPublisher').value = r.publisher;
+  $('addPubYear').value = r.pubYear;
+  $('addPrice').value = r.price;
+  $('addSource').value = r.source;
+  $('addClc').value = r.clc || '';
+  $('addAcq').value = r.acquisitionLibrarian || '王采编员';
+  $('addRequester').value = r.requester;
+  $('addReason').value = r.reason;
+  $('addRemark').value = r.remark || '';
+
+  if(r.status === 'draft'){
+    $('addDraftBtn').style.display = '';
+    $('addDraftBtn').textContent = '💾 保存草稿';
+    $('addSubmitBtn').textContent = '提交待审';
+    $('reasonReq').style.display = 'none';
+    $('draftTip').style.display = '';
+    $('addSubmitBtn').onclick = function(){ submitAdd(true, false); };
+  } else {
+    /* 待审核：可以保存修改（保持状态），也可以退回草稿 */
+    $('addDraftBtn').style.display = '';
+    $('addDraftBtn').textContent = '📥 转为草稿';
+    $('addSubmitBtn').textContent = '保存修改';
+    $('reasonReq').style.display = '';
+    $('draftTip').style.display = 'none';
+    $('addSubmitBtn').onclick = function(){ submitAdd(true, false, true); };
+  }
+  $('addMask').classList.add('show');
+}
+
+function closeAdd(){ $('addMask').classList.remove('show'); editingId = null; }
+
+/**
+ * 提交 / 保存
+ * @param {boolean} isEdit
+ * @param {boolean} asDraft
+ * @param {boolean} keepStatus 编辑时保持原状态
+ */
+function submitAdd(isEdit, asDraft, keepStatus){
+  const isbn = $('addIsbn').value.trim();
+  const copies = parseInt($('addCopies').value,10);
+  const title = $('addTitleInput').value.trim();
+  const author = $('addAuthor').value.trim();
+  const publisher = $('addPublisher').value.trim();
+  const pubYear = parseInt($('addPubYear').value,10);
+  const price = parseFloat($('addPrice').value);
+  const source = $('addSource').value;
+  const clc = $('addClc').value.trim();
+  const acq = $('addAcq').value;
+  const requester = $('addRequester').value.trim() || '王采编员';
+  const reason = $('addReason').value.trim();
+  const remark = $('addRemark').value.trim();
+
+  if(asDraft){
+    if(!isbn && !title){
+      toast('草稿至少需要填写 ISBN 或书名之一','error');
+      return;
+    }
+  } else {
+    if(!isbn){ toast('请填写 ISBN/ISSN','error'); return; }
+    if(isNaN(copies) || copies<1){ toast('复本数必须 ≥ 1','error'); return; }
+    if(!title){ toast('请填写书名','error'); return; }
+    if(!author){ toast('请填写作者','error'); return; }
+    if(!publisher){ toast('请填写出版社','error'); return; }
+    if(isNaN(pubYear) || pubYear<1900){ toast('请填写有效出版年','error'); return; }
+    if(isNaN(price) || price<0){ toast('请填写有效定价','error'); return; }
+    if(!reason){ toast('请填写推荐理由','error'); return; }
+  }
+
+  if(isEdit){
+    const r = data.find(x=>x.id===editingId);
+    if(r){
+      const prevStatus = r.status;
+      Object.assign(r, {
+        isbn: isbn || r.isbn,
+        copies: isNaN(copies) ? r.copies : copies,
+        title: title || r.title,
+        author: author || r.author,
+        publisher: publisher || r.publisher,
+        pubYear: isNaN(pubYear) ? r.pubYear : pubYear,
+        price: isNaN(price) ? r.price : price,
+        source, clc,
+        reason: reason || r.reason,
+        remark,
+        acquisitionLibrarian: acq,
+        requester
+      });
+      r.auditLog = r.auditLog || [];
+      let actName, actComment, toastMsg;
+      if(keepStatus){
+        actName = '保存修改';
+        actComment = '修改了荐购信息，保持原状态';
+        toastMsg = '荐购信息已更新';
+      } else if(asDraft){
+        r.status = 'draft';
+        actName = '转为草稿';
+        actComment = '已转为草稿，待补充完整信息后提交';
+        toastMsg = '已转为草稿';
+      } else {
+        /* 编辑草稿后提交：进入待审核 */
+        r.status = 'pending';
+        actName = prevStatus === 'draft' ? '提交待审' : '编辑并提交';
+        actComment = '已提交，等待审核员认领处理';
+        toastMsg = '已提交，等待审核员处理';
+      }
+      r.auditLog.push({actor:acq, act:actName, time:fmtNow(), comment:actComment});
+      toast(toastMsg);
+    }
+    closeAdd();
+    render();
+    return;
+  }
+
+  /* 新增模式：查重 */
+  if(!asDraft && data.some(r=>r.isbn===isbn)){
+    confirmDialog({
+      title:'ISBN 重复', icon:'warn',
+      question:'馆内已存在相同 ISBN 的荐购记录，是否仍要继续提交？',
+      text:'继续提交后，系统会自动将本条标记为「重复采购」并归档。',
+      detail:'重复 ISBN：'+isbn+'<br>建议改用其他 ISBN 或协调馆藏',
+      okText:'仍要提交', okClass:'btn btn-warn',
+      onOk:()=>{ saveNew(isbn,copies,title,author,publisher,pubYear,price,source,clc,acq,requester,reason,remark,false); }
+    });
+    return;
+  }
+  saveNew(isbn,copies,title,author,publisher,pubYear,price,source,clc,acq,requester,reason,remark,asDraft);
+  closeAdd();
+  render();
+}
+
+function saveNew(isbn,copies,title,author,publisher,pubYear,price,source,clc,acq,requester,reason,remark,asDraft){
+  const isDup = !asDraft && data.some(r=>r.isbn===isbn);
+  const id = 'PO' + TODAY.replace(/-/g,'') + String(Math.floor(Math.random()*900+100));
+  const now = fmtNow();
+
+  let status, firstAction, firstComment, toastMsg;
+  if(asDraft){
+    status = 'draft';
+    firstAction = '保存草稿';
+    firstComment = '已保存为草稿，待补充完整信息后提交';
+    toastMsg = '草稿已保存！订单号 ' + id;
+  } else if(isDup){
+    status = 'duplicate';
+    firstAction = '重复采购';
+    firstComment = '馆内已有相同 ISBN，标记为重复';
+    toastMsg = '荐购已创建（重复采购）！订单号 ' + id;
+  } else {
+    status = 'pending';
+    firstAction = '提交待审';
+    firstComment = '已提交，等待审核员认领处理';
+    toastMsg = '荐购已提交，等待审核员处理！订单号 ' + id;
+  }
+
+  data.unshift({
+    id, isbn, title, author, publisher, pubYear,
+    price: isNaN(price) ? 0 : price,
+    copies: isNaN(copies) ? 1 : copies,
+    source, clc,
+    reason: reason || '',
+    remark: remark || '',
+    acquisitionLibrarian: status === 'duplicate' ? '' : acq,
+    status,
+    requester, requestDept:'采编部',
+    createdAt: now,
+    auditLog:[{actor:acq, act:firstAction, time:now, comment:firstComment}]
+  });
+  toast(toastMsg);
+}
+
+/* 审核弹窗 */
+let auditId = null;
+function openAudit(r){
+  auditId = r.id;
+  $('auditTitle').textContent = '审核 · '+r.title.substr(0,20)+(r.title.length>20?'...':'');
+  $('auditQuestion').textContent = '请审核该荐购订单并填写意见';
+  $('auditText').innerHTML = '订单 <b>#'+r.id+'</b>，推荐人：<b>'+r.requester+'</b>（'+r.requestDept+'），复本：<b>'+r.copies+'</b> 本，金额：<b>¥'+(r.copies*r.price).toFixed(2)+'</b>';
+  $('auditDetail').innerHTML = '<b>推荐理由：</b><br>'+esc(r.reason);
+  $('auditDetail').style.display = 'block';
+  $('auditComment').value = '';
+  $('auditMask').classList.add('show');
+  $('auditComment').focus();
+}
+function closeAudit(){ $('auditMask').classList.remove('show'); auditId = null; }
+$('auditApproveBtn').addEventListener('click', ()=>{
+  const r = data.find(x=>x.id===auditId); if(!r) return;
+  const comment = $('auditComment').value.trim();
+  if(!comment){ toast('请填写批准意见','error'); return; }
+  r.status='approved';
+  r.auditLog.push({actor:'李审核员',act:'已批准',time:fmtNow(),comment});
+  closeAudit();
+  toast('已批准订单 #'+r.id);
+  render();
+});
+$('auditRejectBtn').addEventListener('click', ()=>{
+  const r = data.find(x=>x.id===auditId); if(!r) return;
+  const comment = $('auditComment').value.trim();
+  if(!comment){ toast('请填写驳回意见','error'); return; }
+  r.status='rejected';
+  r.auditLog.push({actor:'李审核员',act:'已驳回',time:fmtNow(),comment});
+  closeAudit();
+  toast('已驳回订单 #'+r.id,'warn');
+  render();
+});
+
+/* 批量删除 */
+function batchDelete(){
+  const ids = [...state.selected];
+  if(!ids.length){ toast('请先勾选要删除的荐购','warn'); return; }
+  const list = ids.map(id=>data.find(x=>x.id===id)).filter(Boolean);
+  const allowed = ['draft','rejected','duplicate','onshelf'];
+  const ok = list.filter(r=>allowed.indexOf(r.status)>=0);
+  const skip = list.filter(r=>allowed.indexOf(r.status)<0);
+  if(!ok.length){
+    toast('所选 '+skip.length+' 条均不可删除（状态流转中或已下单）','warn');
+    return;
+  }
+  if(skip.length){
+    confirmDialog({title:'批量删除',icon:'warn',question:'确定要批量删除 '+ok.length+' 条可删除的荐购吗？',text:'另有 '+skip.length+' 条因状态流转中或已下单将被自动跳过。',detail:'共 '+list.length+' 条，可删除 '+ok.length+' 条',okText:'确认删除',okClass:'btn btn-danger',onOk:()=>{
+      ok.forEach(r=>{ data = data.filter(x=>x.id!==r.id); state.selected.delete(r.id); });
+      toast('已删除 '+ok.length+' 条（'+skip.length+' 条已跳过）','warn');
+      render();
+    }});
+  } else {
+    confirmDialog({title:'批量删除',icon:'warn',question:'确定要删除选中的 '+ok.length+' 条荐购吗？',text:'此操作不可撤销。',detail:'共 '+ok.length+' 条',okText:'确认删除',okClass:'btn btn-danger',onOk:()=>{
+      ok.forEach(r=>{ data = data.filter(x=>x.id!==r.id); state.selected.delete(r.id); });
+      toast('已删除 '+ok.length+' 条');
+      render();
+    }});
+  }
+}
+
+/* 通用确认 */
+let confirmCb = null;
+function confirmDialog(opts){
+  $('confirmTitle').textContent = opts.title;
+  $('confirmQuestion').textContent = opts.question;
+  $('confirmText').innerHTML = opts.text || '';
+  const cd = $('confirmDetail');
+  if(opts.detail){ cd.style.display='block'; cd.innerHTML=opts.detail; } else { cd.style.display='none'; }
+  const iconMap = {success:'check-circle', warning:'exclamation-triangle', danger:'trash-alt', info:'info-circle'};
+  const icon = $('confirmIcon');
+  icon.className = 'modal-icon ' + (opts.icon==='danger'?'danger':opts.icon==='success'?'success':'warn');
+  icon.innerHTML = '<i class="fas fa-'+(iconMap[opts.icon||'warning']||'exclamation-triangle')+'"></i>';
+  const btn = $('confirmOkBtn');
+  btn.className = opts.okClass || 'btn btn-primary';
+  btn.textContent = opts.okText || '确定';
+  confirmCb = opts.onOk;
+  $('confirmMask').classList.add('show');
+}
+function closeConfirm(){ $('confirmMask').classList.remove('show'); confirmCb=null; }
+$('confirmOkBtn').addEventListener('click', ()=>{
+  const h = confirmCb; closeConfirm();
+  if(typeof h==='function') h();
+});
+
+/* 流程说明弹窗 */
+function openLegal(){
+  $('legalBody').innerHTML = ''
++ '<div class="detail-section"><h4>一、流程流转状态（10 种）</h4>'
++   '<div class="info-grid three">'
++     '<div class="info-item"><span class="status s-draft"><i></i></span><div class="label" style="margin-top:4px">1. 草稿（draft）</div><div class="value" style="font-size:12px">未提交，可继续编辑</div></div>'
++     '<div class="info-item"><span class="status s-pending"><i></i></span><div class="label" style="margin-top:4px">2. 待审核（pending）</div><div class="value" style="font-size:12px">已提交，排队等审核员认领</div></div>'
++     '<div class="info-item"><span class="status s-reviewing"><i></i></span><div class="label" style="margin-top:4px">3. 审核中（reviewing）</div><div class="value" style="font-size:12px">审核员已认领，查重/评估中</div></div>'
++     '<div class="info-item"><span class="status s-approved"><i></i></span><div class="label" style="margin-top:4px">4. 已批准（approved）</div><div class="value" style="font-size:12px">可下单采购</div></div>'
++     '<div class="info-item"><span class="status s-ordered"><i></i></span><div class="label" style="margin-top:4px">5. 已采购（ordered）</div><div class="value" style="font-size:12px">订单已发至供应商</div></div>'
++     '<div class="info-item"><span class="status s-arrived"><i></i></span><div class="label" style="margin-top:4px">6. 已到馆（arrived）</div><div class="value" style="font-size:12px">供应商已送货签收</div></div>'
++     '<div class="info-item"><span class="status s-cataloged"><i></i></span><div class="label" style="margin-top:4px">7. 已编目（cataloged）</div><div class="value" style="font-size:12px">已分配索书号/条形码</div></div>'
++     '<div class="info-item"><span class="status s-onshelf"><i></i></span><div class="label" style="margin-top:4px">8. 已上架（onshelf）</div><div class="value" style="font-size:12px">流通库已上架，读者可借</div></div>'
++     '<div class="info-item"><span class="status s-rejected"><i></i></span><div class="label" style="margin-top:4px">9. 已驳回（rejected）</div><div class="value" style="font-size:12px">审核未通过</div></div>'
++     '<div class="info-item"><span class="status s-duplicate"><i></i></span><div class="label" style="margin-top:4px">10. 重复采购（duplicate）</div><div class="value" style="font-size:12px">馆内已有同名同版</div></div>'
++   '</div></div>'
+
++ '<div class="detail-section"><h4>二、状态流转关系（修正后）</h4>'
++   '<div class="flow-diagram">'
++     '<b>草稿</b> → [提交待审] → <span class="hl">待审核</span> → [开始审核] → <span class="hl">审核中</span> → [批准/驳回] → <b>已批准 / 已驳回</b><br><br>'
++     '<b>已批准</b> → 下单 → <b>已采购</b> → 物流送货 → <b>已到馆</b> → <b>已编目</b> → <b>已上架</b>（⭐ 完整闭环）<br><br>'
++     '<b>待审核</b> → 查重命中 → <b>重复采购</b>（自动归档）<br>'
++     '<b>已驳回</b> → 重新提交 → <span class="hl">待审核</span><br>'
++     '<b>已上架</b> → 流程结束，归档'
++   '</div></div>'
+
++ '<div class="detail-section"><h4>三、为什么待审核（pending）和审核中（reviewing）是两个状态？</h4>'
++   '<div class="modal-detail" style="font-size:13px;line-height:1.9">'
++   '<b>两者的区别在于「责任归属」：</b><br><br>'
++   '· <b>待审核（pending）</b>：荐购已提交，但<b>还没有审核员认领</b>。<br>'
++   '&nbsp;&nbsp;&nbsp;&nbsp;此时推荐人如果发现信息有误，还可以撤回「编辑」或「转为草稿」。<br>'
++   '&nbsp;&nbsp;&nbsp;&nbsp;相当于「排队中」，是提交后的缓冲状态。<br><br>'
++   '· <b>审核中（reviewing）</b>：审核员<b>已认领</b>，正在查重/评估。<br>'
++   '&nbsp;&nbsp;&nbsp;&nbsp;此时推荐人不能再修改，避免和审核员的评估过程冲突。<br>'
++   '&nbsp;&nbsp;&nbsp;&nbsp;相当于「办理中」，进入审核员的工作台。<br><br>'
++   '<b>如果业务上不需要区分这两步：</b><br>'
++   '可以合并——把「待审核」的下一步直接改成「审核」，跳过 reviewing，<br>'
++   '即：草稿 → 提交待审 → 待审核 → 审核 → 已批准/已驳回。<br>'
++   '这样状态从 10 种减到 9 种。'
++   '</div></div>'
+
++ '<div class="detail-section"><h4>四、汇总对照表</h4>'
++   '<table class="summary-tbl"><thead><tr><th>状态</th><th>含义</th><th>可执行操作</th></tr></thead><tbody>'
++     '<tr><td>草稿</td><td>未提交，可稍后补全</td><td>提交待审 / 编辑 / 删除 / 详情</td></tr>'
++     '<tr><td>待审核</td><td>排队等审核员认领</td><td>开始审核 / 编辑 / 删除 / 详情</td></tr>'
++     '<tr><td>审核中</td><td>审核员已认领，正在评估</td><td>审核（批准/驳回）/ 删除 / 详情</td></tr>'
++     '<tr><td>已批准</td><td>进入采购</td><td>下单采购 / 详情</td></tr>'
++     '<tr><td>已采购</td><td>供应商处理中</td><td>标记到馆 / 详情</td></tr>'
++     '<tr><td>已到馆</td><td>已送货签收</td><td>送编目 / 详情</td></tr>'
++     '<tr><td>已编目</td><td>已分配索书号</td><td>标记上架 / 详情</td></tr>'
++     '<tr><td>已上架</td><td>读者可借阅</td><td>详情（只读，流程已结束）</td></tr>'
++     '<tr><td>已驳回</td><td>审核未通过</td><td>重新提交 / 删除 / 详情</td></tr>'
++     '<tr><td>重复采购</td><td>查重命中</td><td>删除 / 详情</td></tr>'
++   '</tbody></table></div>'
+
++ '<div class="detail-section"><h4>五、草稿（draft）是如何产生的？</h4>'
++ '<div class="modal-detail" style="font-size:13px;line-height:1.85">'
++   '① <b>新增荐购时点击「💾 保存草稿」</b>：仅需 ISBN 或书名之一，其余字段可稍后补充。<br>'
++   '② <b>编辑待审核荐购，点「📥 转为草稿」</b>：信息不完整时可退回草稿状态。<br>'
++   '<b>草稿如何继续流转？</b>草稿 → 点「提交待审」→ 进入 <b>待审核</b> 状态，等待审核员认领。'
++ '</div></div>'
+
++ '<div class="detail-section"><h4>六、角色职责</h4>'
++ '<div class="modal-detail" style="font-size:13px;line-height:1.85">'
++   '<b>· 推荐人（读者 / 馆员 / 数据库）</b>：发起荐购，填写书名、ISBN、推荐理由。<br>'
++   '<b>· 采访馆员（采编部）</b>：负责该订单的全流程跟进——查重、下单、催货、验收到货，是每条荐购的「责任人」。<br>'
++   '<b>· 审核员（采编部主管）</b>：认领待审核订单、查重馆藏、批准或驳回。<br>'
++   '<b>· 编目员（编目部）</b>：到货后分配索书号、生成条形码、典藏分配。<br>'
++   '<b>· 流通部</b>：将编目完毕的图书上架到对应馆藏位置。<br>'
++   '<br><b style="color:#2f6fed">· 采访馆员 vs 最后操作人的区别：</b><br>'
++   '「采访馆员」是固定责任人，从荐购创建时即确定，贯穿始终；<br>'
++   '「最后操作」是流程中最后一步的操作人，可能是审核员、物流、编目员、流通部，随流程变化。'
++ '</div></div>';
+  $('legalMask').classList.add('show');
+}
+function closeLegal(){ $('legalMask').classList.remove('show'); }
+
+/* 初始化采访馆员筛选下拉 */
+function initAcqFilter(){
+  const sel = $('acqSel');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">全部馆员</option>'
+    + ACQUISITION_STAFF.map(s => '<option value="'+esc(s.name)+'">'+esc(s.name)+' · '+esc(s.dept)+'</option>').join('');
+}
+
+/* 事件绑定 */
+function bind(){
+  initAcqFilter();
+  $('kwInput').addEventListener('input', ()=>{ state.keyword=$('kwInput').value; state.page=1; render(); });
+  $('statusSel').addEventListener('change', ()=>{ state.status=$('statusSel').value; state.page=1; render(); });
+  $('sourceSel').addEventListener('change', ()=>{ state.source=$('sourceSel').value; state.page=1; render(); });
+  $('acqSel').addEventListener('change', ()=>{ state.acq=$('acqSel').value; state.page=1; render(); });
+  $('dateSel').addEventListener('change', ()=>{ state.date=$('dateSel').value; state.page=1; render(); });
+  $('btnSearch').addEventListener('click', ()=>{ state.page=1; render(); });
+  $('btnReset').addEventListener('click', ()=>{
+    $('kwInput').value=''; $('statusSel').value=''; $('sourceSel').value=''; $('acqSel').value=''; $('dateSel').value='all';
+    state.keyword=''; state.status=''; state.source=''; state.acq=''; state.date='all'; state.page=1;
+    render();
+  });
+  $('btnExport').addEventListener('click', ()=>{ toast('已按当前条件导出 '+getFiltered().length+' 条荐购记录'); });
+
+  document.addEventListener('click', e=>{
+    if(e.target.id==='btnAdd') openAdd();
+    if(e.target.id==='btnBatchDelete') batchDelete();
+    if(e.target.id==='btnLegal') openLegal();
+    const link = e.target.closest('a[data-act]');
+    if(link){ act(link.dataset.act, link.dataset.id); return; }
+    const cb = e.target.closest('.row-chk');
+    if(cb){
+      const id = cb.dataset.id;
+      if(cb.checked) state.selected.add(id); else state.selected.delete(id);
+      updateSelInfo();
+      const pageIds = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize).map(r=>r.id);
+      $('checkAll').checked = pageIds.length>0 && pageIds.every(i=>state.selected.has(i));
+    }
+  });
+  $('checkAll').addEventListener('change', e=>{
+    const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+    rows.forEach(r=>{ e.target.checked ? state.selected.add(r.id) : state.selected.delete(r.id); });
+    render();
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){
+      document.querySelectorAll('.modal-mask.show').forEach(m=>m.classList.remove('show'));
+    }
+  });
+}
+
+bind();
+render();
+  </script>
+</body>
+</html>
+

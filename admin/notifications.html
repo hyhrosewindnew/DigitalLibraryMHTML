@@ -1,0 +1,1844 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>消息通知 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 消息通知 */
+    body {
+      --primary:#1677ff; --primary-dark:#0e63e6;
+      --border:#eaeef4; --text:#1f2329; --text-2:#5a6474; --text-3:#8b95a5;
+      --bg:#f0f2f5; --radius:8px; --success:#52c41a; --warning:#faad14; --danger:#ff4d4f;
+    }
+    .content { padding: 20px 24px 32px; flex: 1; }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, .06);
+  }
+
+  /* ---- 概览统计 ---- */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .stat-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .stat-icon.blue   { background: #e8f1ff; color: #1d6ee0; }
+  .stat-icon.green  { background: #e6f7ee; color: #15803d; }
+  .stat-icon.orange { background: #fff2e3; color: #c26a05; }
+  .stat-icon.purple { background: #f2ebff; color: #7c3aed; }
+  .stat-icon svg { width: 20px; height: 20px; }
+  .stat-meta b { display: block; font-size: 20px; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .stat-meta span { font-size: 12.5px; color: var(--text-3); }
+
+  /* ---- 筛选 ---- */
+  .filter-card { padding: 18px 20px 6px; margin-bottom: 16px; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 16px 20px; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 7px; padding-bottom: 12px; }
+  .field > label { font-size: 12.5px; color: var(--text-2); }
+  .filter-actions { display: flex; gap: 10px; padding-bottom: 12px; margin-left: auto; }
+
+  .input, .select {
+    height: 34px;
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--text-1);
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+    width: 100%;
+  }
+  .input::placeholder { color: #aab3c0; }
+  .input:focus, .select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22,119,255,.12);
+  }
+  .select { appearance: none; cursor: pointer; padding-right: 28px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  .date-range { display: flex; align-items: center; gap: 8px; }
+  .date-range span { color: var(--text-3); font-size: 12px; }
+  .date-range .input { width: 148px; }
+
+  /* ---- 按钮 ---- */
+  .btn {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-default { background: #fff; border-color: #d8dee8; color: var(--text-1); }
+  .btn-default:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+  .btn-danger { background: #fff; border-color: #ffc4c6; color: #e5484d; }
+  .btn-danger:hover:not(:disabled) { background: #fff5f5; border-color: #e5484d; }
+  .btn-sm { height: 30px; padding: 0 12px; font-size: 12.5px; }
+
+  /* ---- 表格卡片 ---- */
+  .table-card { overflow: hidden; }
+
+  .table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .toolbar-actions { display: flex; gap: 10px; align-items: center; }
+  .selected-tip {
+    font-size: 12.5px;
+    color: var(--primary);
+    background: #eef5ff;
+    border-radius: 6px;
+    padding: 5px 10px;
+    display: none;
+  }
+  .selected-tip.show { display: inline-block; }
+
+  .table-wrap { overflow-x: auto; }
+  .table { width: 100%; min-width: 1240px; border-collapse: collapse; font-size: 13px; }
+  .table th {
+    background: #f7f9fc;
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 12.5px;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #f2f5f9;
+    vertical-align: middle;
+  }
+  .table tbody tr { transition: background .12s; }
+  .table tbody tr:hover { background: #f8faff; }
+  .table tbody tr:last-child td { border-bottom: none; }
+
+  .col-check { width: 46px; }
+  input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
+
+  .cell-title { display: flex; align-items: center; gap: 6px; line-height: 1.4; }
+  .cell-title .link {
+    color: var(--text-1);
+    font-weight: 500;
+    cursor: pointer;
+    transition: color .15s;
+  }
+  .cell-title .link:hover { color: var(--primary); }
+  .cell-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-3);
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .muted { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  /* 状态 */
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; white-space: nowrap; }
+  .status i { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .status.ok { color: #15803d; }
+  .status.ok i { background: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.14); }
+  .status.draft { color: #64748b; }
+  .status.draft i { background: #94a3b8; }
+  .status.off { color: #b45309; }
+  .status.off i { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.14); }
+  .status.pending { color: #1d6ee0; }
+  .status.pending i { background: #1677ff; box-shadow: 0 0 0 3px rgba(22,119,255,.16); animation: pulse 1.4s infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .35; }
+  }
+
+  /* 类型标签 */
+  .tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  .tag-blue   { background: #e8f1ff; color: #1d6ee0; }
+  .tag-purple { background: #f2ebff; color: #7c3aed; }
+  .tag-cyan   { background: #e0f7f6; color: #0d8f8a; }
+  .tag-orange { background: #fff2e3; color: #c26a05; }
+  .tag-indigo { background: #eceefb; color: #4f56c9; }
+  .tag-green  { background: #e6f7ee; color: #15803d; }
+
+  /* 渠道 */
+  .channels { display: flex; flex-wrap: wrap; gap: 4px; }
+  .ch {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11.5px;
+    line-height: 18px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #f2f5fa;
+    color: var(--text-2);
+    border: 1px solid #e6ebf3;
+    white-space: nowrap;
+  }
+  .ch.on { background: #eef5ff; color: #1d6ee0; border-color: #d3e4ff; }
+
+  /* 送达/已读 */
+  .read-cell { min-width: 130px; }
+  .read-bar {
+    height: 5px;
+    border-radius: 3px;
+    background: #eef1f6;
+    overflow: hidden;
+    margin-bottom: 5px;
+  }
+  .read-bar i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #4b92ff, #1677ff);
+    transition: width .4s;
+  }
+  .read-txt { font-size: 11.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+  /* 操作列 */
+  .ops { display: flex; align-items: center; gap: 2px; }
+  .op {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--primary);
+    padding: 3px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .12s;
+    white-space: nowrap;
+  }
+  .op:hover { background: #eef5ff; }
+  .op.danger { color: #e5484d; }
+  .op.danger:hover { background: #fff1f1; }
+
+  .empty {
+    padding: 56px 0;
+    text-align: center;
+    color: var(--text-3);
+    font-size: 13px;
+  }
+  .empty svg { display: block; margin: 0 auto 12px; opacity: .35; }
+
+  /* ---- 分页 ---- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .page-info { font-size: 12.5px; color: var(--text-3); }
+  .pager { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #e3e8ef;
+    background: #fff;
+    color: #41474f;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+  .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; cursor: default; }
+  .page-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ============ 弹窗 ============ */
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    padding: 20px;
+  }
+  .modal-mask.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: #fff;
+    border-radius: 10px;
+    width: 780px;
+    max-width: 100%;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(14px) scale(.985);
+    transition: transform .22s cubic-bezier(.3,.9,.4,1);
+    box-shadow: 0 20px 50px rgba(15,23,42,.25);
+  }
+  .modal-mask.show .modal { transform: none; }
+  .modal-sm { width: 420px; }
+
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .modal-head h3 { font-size: 16px; font-weight: 600; }
+  .modal-close {
+    width: 30px; height: 30px;
+    border: none; background: transparent;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--text-3);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: .15s;
+  }
+  .modal-close:hover { background: #f2f5fa; color: var(--text-1); }
+
+  .modal-body { padding: 22px; overflow-y: auto; }
+  .modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  /* 表单 */
+  .form-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .form-item:last-child { margin-bottom: 0; }
+  .form-item > label { font-size: 13px; color: #41474f; }
+  .form-item > label.req::before { content: '*'; color: #e5484d; margin-right: 4px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-tip { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
+  .textarea {
+    font-size: 13.5px;
+    line-height: 1.7;
+    padding: 10px 14px;
+    resize: vertical;
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    font-family: inherit;
+    color: var(--text-1);
+    width: 100%;
+  }
+  .textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22,119,255,.12);
+  }
+
+  .radio-group { display: flex; gap: 20px; height: 34px; align-items: center; flex-wrap: wrap; }
+  .radio-group label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #41474f; cursor: pointer;
+  }
+  input[type="radio"] { accent-color: var(--primary); cursor: pointer; }
+
+  .check-group { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; padding-top: 4px; }
+  .check-group label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #41474f; cursor: pointer;
+  }
+  .check-group input[type="checkbox"] { accent-color: var(--primary); }
+
+  .var-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .var-bar > span { font-size: 12px; color: var(--text-3); }
+  .var-btn {
+    font-size: 12px;
+    font-family: inherit;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #d3e4ff;
+    background: #f4f8ff;
+    color: #1d6ee0;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .var-btn:hover { background: #e6f0ff; border-color: var(--primary); }
+
+  /* 详情 */
+  .view-title { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .view-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin: 12px 0 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 12.5px;
+    color: var(--text-3);
+  }
+  .view-content {
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #41474f;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f8fafd;
+    border: 1px solid #eef2f7;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+  .view-link {
+    font-size: 12.5px;
+    color: var(--primary);
+    word-break: break-all;
+    margin-bottom: 20px;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    background: #f8fafd;
+    border: 1px solid #eef2f7;
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat-box b { display: block; font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat-box span { font-size: 12px; color: var(--text-3); }
+
+  .detail-sub-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 10px;
+    padding-left: 8px;
+    border-left: 3px solid var(--primary);
+    line-height: 1.2;
+  }
+  .ch-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ch-table th {
+    background: #f7f9fc;
+    color: var(--text-2);
+    font-weight: 600;
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .ch-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f2f5f9;
+    color: #41474f;
+    font-variant-numeric: tabular-nums;
+  }
+  .ch-table tr:last-child td { border-bottom: none; }
+
+  #confirmText { font-size: 13.5px; color: #41474f; line-height: 1.7; }
+  #confirmText b { color: #e5484d; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 26px;
+    left: 50%;
+    transform: translate(-50%, -18px);
+    background: #1f2937;
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15,23,42,.28);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .25s;
+    z-index: 9999;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">消息通知</span>
+</nav>
+
+<!-- 概览统计 -->
+      <section class="stat-row">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 4h16v13H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>
+          </div>
+          <div class="stat-meta">
+            <b id="statTotal">0</b>
+            <span>消息总数</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+          </div>
+          <div class="stat-meta">
+            <b id="statSent">0</b>
+            <span>已发送</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          </div>
+          <div class="stat-meta">
+            <b id="statPending">0</b>
+            <span>待发送 / 草稿</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="stat-meta">
+            <b id="statReadRate">0%</b>
+            <span>平均已读率</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 筛选 -->
+      <section class="card filter-card">
+        <div class="filter-row">
+          <div class="field">
+            <label>消息标题</label>
+            <input class="input" id="kwInput" placeholder="输入标题关键词" style="width:220px" />
+          </div>
+          <div class="field">
+            <label>消息类型</label>
+            <select class="select" id="typeSelect" style="width:150px">
+              <option value="">全部类型</option>
+              <option>借阅提醒</option>
+              <option>预约到馆</option>
+              <option>逾期通知</option>
+              <option>审核结果</option>
+              <option>活动提醒</option>
+              <option>系统通知</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>接收对象</label>
+            <select class="select" id="targetSelect" style="width:140px">
+              <option value="">全部对象</option>
+              <option>全部读者</option>
+              <option>本科生</option>
+              <option>研究生</option>
+              <option>教职工</option>
+              <option>指定用户</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>发送状态</label>
+            <select class="select" id="statusSelect" style="width:130px">
+              <option value="">全部状态</option>
+              <option>已发送</option>
+              <option>发送中</option>
+              <option>草稿</option>
+              <option>已撤回</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>发送时间</label>
+            <div class="date-range">
+              <input type="date" class="input" id="dateStart" />
+              <span>至</span>
+              <input type="date" class="input" id="dateEnd" />
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary" id="searchBtn">查询</button>
+            <button class="btn btn-default" id="resetBtn">重置</button>
+            <button class="btn btn-default" id="exportBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+              导出
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 列表 -->
+      <section class="card table-card">
+        <div class="table-toolbar">
+          <div class="toolbar-actions">
+            <button class="btn btn-primary" id="addBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+              新建消息
+            </button>
+            <button class="btn btn-danger" id="batchDeleteBtn" disabled>批量删除</button>
+            <button class="btn btn-default" id="refreshBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg>
+              刷新
+            </button>
+          </div>
+          <span class="selected-tip" id="selectedTip">已选 0 项</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" id="checkAll" /></th>
+                <th style="min-width:300px">消息标题</th>
+                <th style="width:100px">类型</th>
+                <th style="width:110px">接收对象</th>
+                <th style="width:170px">发送渠道</th>
+                <th style="width:100px">状态</th>
+                <th style="width:150px">送达 / 已读</th>
+                <th style="width:150px">发送时间</th>
+                <th style="width:230px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <div class="page-info" id="pageInfo"></div>
+          <div class="pager" id="pager"></div>
+        </div>
+      </section>
+</main>
+
+<div class="modal-mask" id="formMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="formTitle">新建消息</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-item">
+        <label class="req">消息标题</label>
+        <input class="input" id="fTitle" maxlength="60" placeholder="请输入消息标题，不超过 60 个字" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-item">
+          <label class="req">消息类型</label>
+          <select class="select" id="fType">
+            <option>借阅提醒</option>
+            <option>预约到馆</option>
+            <option>逾期通知</option>
+            <option>审核结果</option>
+            <option>活动提醒</option>
+            <option>系统通知</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <label class="req">接收对象</label>
+          <select class="select" id="fTarget">
+            <option>全部读者</option>
+            <option>本科生</option>
+            <option>研究生</option>
+            <option>教职工</option>
+            <option>指定用户</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <label class="req">发送渠道</label>
+        <div class="check-group">
+          <label><input type="checkbox" class="fChannel" value="站内信" checked /> 站内信</label>
+          <label><input type="checkbox" class="fChannel" value="邮件" /> 邮件</label>
+          <label><input type="checkbox" class="fChannel" value="短信" /> 短信</label>
+          <label><input type="checkbox" class="fChannel" value="微信" /> 微信服务号</label>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <label>跳转链接</label>
+        <input class="input" id="fLink" placeholder="选填，如 /reader/borrow 或 https://..." />
+        <div class="form-tip">读者点击消息后将跳转到该地址，留空则仅展示文本内容。</div>
+      </div>
+
+      <div class="form-item">
+        <label>发送时间</label>
+        <div class="radio-group">
+          <label><input type="radio" name="fsend" value="now" checked /> 立即发送</label>
+          <label><input type="radio" name="fsend" value="timing" /> 定时发送</label>
+        </div>
+        <input type="datetime-local" class="input" id="fSendTime" style="display:none;width:230px;margin-top:8px" />
+      </div>
+
+      <div class="form-item">
+        <label class="req">消息内容</label>
+        <div class="var-bar">
+          <span>插入变量：</span>
+          <button type="button" class="var-btn" data-var="{{读者姓名}}">{{读者姓名}}</button>
+          <button type="button" class="var-btn" data-var="{{图书名称}}">{{图书名称}}</button>
+          <button type="button" class="var-btn" data-var="{{应还日期}}">{{应还日期}}</button>
+          <button type="button" class="var-btn" data-var="{{取书地点}}">{{取书地点}}</button>
+          <button type="button" class="var-btn" data-var="{{逾期天数}}">{{逾期天数}}</button>
+        </div>
+        <textarea class="textarea" id="fContent" rows="6" maxlength="500"
+          placeholder="请输入消息内容，可插入变量，发送时将自动替换为读者实际信息"></textarea>
+        <div class="form-tip"><span id="contentCount">0</span> / 500 字</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>取消</button>
+      <button class="btn btn-default" id="saveDraftBtn">存为草稿</button>
+      <button class="btn btn-primary" id="saveSendBtn">保存并发送</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 详情弹窗 ==================== -->
+<div class="modal-mask" id="viewMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>消息详情</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body" id="viewBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 确认弹窗 ==================== -->
+<div class="modal-mask" id="confirmMask">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <h3>操作确认</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmText"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>取消</button>
+      <button class="btn btn-primary" id="confirmOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <script>
+/* =========================================================
+ *  常量与数据
+ * ========================================================= */
+const TYPE_CLASS = {
+  '借阅提醒': 'tag-blue',
+  '预约到馆': 'tag-cyan',
+  '逾期通知': 'tag-orange',
+  '审核结果': 'tag-indigo',
+  '活动提醒': 'tag-purple',
+  '系统通知': 'tag-green'
+};
+
+const STATUS_CLASS = {
+  '已发送': 'ok',
+  '发送中': 'pending',
+  '草稿': 'draft',
+  '已撤回': 'off'
+};
+
+const state = {
+  list: [
+    {
+      id: 1, title: '您的图书即将到期，请及时归还',
+      type: '借阅提醒', target: '指定用户', targetDesc: '32 位读者',
+      channels: ['站内信', '邮件'],
+      status: '已发送', sendTime: '2025-09-26 08:00',
+      sent: 32, read: 28, link: '/reader/borrow',
+      content: '{{读者姓名}} 同学，您好：\n\n您借阅的《{{图书名称}}》将于 {{应还日期}} 到期，请及时归还或办理续借，以免产生逾期费用。\n\n图书馆'
+    },
+    {
+      id: 2, title: '您预约的图书已到馆，请于 3 日内取书',
+      type: '预约到馆', target: '指定用户', targetDesc: '18 位读者',
+      channels: ['站内信', '短信'],
+      status: '已发送', sendTime: '2025-09-25 15:30',
+      sent: 18, read: 17, link: '/reader/reserve',
+      content: '{{读者姓名}} 同学，您好：\n\n您预约的《{{图书名称}}》已到馆，请携带校园卡于 3 日内到 {{取书地点}} 取书，逾期预约将自动取消。\n\n图书馆'
+    },
+    {
+      id: 3, title: '图书逾期提醒：请尽快归还并缴纳滞纳金',
+      type: '逾期通知', target: '指定用户', targetDesc: '7 位读者',
+      channels: ['站内信', '邮件', '短信'],
+      status: '已发送', sendTime: '2025-09-24 09:15',
+      sent: 7, read: 6, link: '/reader/borrow',
+      content: '{{读者姓名}} 同学，您好：\n\n您借阅的《{{图书名称}}》已逾期 {{逾期天数}} 天，请尽快归还并到一楼服务台处理滞纳金。\n\n图书馆'
+    },
+    {
+      id: 4, title: '国庆节期间图书馆开放时间调整',
+      type: '系统通知', target: '全部读者', targetDesc: '全部读者（12,480 人）',
+      channels: ['站内信', '微信'],
+      status: '已发送', sendTime: '2025-09-25 10:35',
+      sent: 12480, read: 9124, link: '/notice/1',
+      content: '各位读者：\n\n10月1日—10月7日全馆闭馆，数字图书馆线上服务正常；10月8日起恢复 08:00—22:00。\n\n图书馆'
+    },
+    {
+      id: 5, title: '“秋季读书月”活动报名开始啦',
+      type: '活动提醒', target: '全部读者', targetDesc: '全部读者（12,480 人）',
+      channels: ['站内信'],
+      status: '已发送', sendTime: '2025-09-15 09:05',
+      sent: 12480, read: 7360, link: '/notice/3',
+      content: '各位读者：\n\n“书香校园·秋季读书月”系列活动现已开启报名，包含读书分享会、经典诵读大赛等 6 项活动，欢迎踊跃参与。\n\n图书馆'
+    },
+    {
+      id: 6, title: '文献传递申请已通过审核',
+      type: '审核结果', target: '指定用户', targetDesc: '1 位读者',
+      channels: ['站内信', '邮件'],
+      status: '已发送', sendTime: '2025-09-22 16:40',
+      sent: 1, read: 1, link: '/reader/document',
+      content: '{{读者姓名}} 老师，您好：\n\n您提交的文献传递申请已通过审核，请登录系统下载全文，链接 7 日内有效。\n\n图书馆'
+    },
+    {
+      id: 7, title: '关于 2025 级新生借阅权限开通的通知',
+      type: '系统通知', target: '本科生', targetDesc: '本科生（8,320 人）',
+      channels: ['站内信', '微信'],
+      status: '发送中', sendTime: '2025-09-28 09:00',
+      sent: 8320, read: 1240, link: '/notice/12',
+      content: '各位新同学：\n\n完成入馆教育并通过测试后，图书借阅权限已自动开通，可借图书 10 册，借期 30 天。\n\n图书馆'
+    },
+    {
+      id: 8, title: '电子资源校外访问方式更新说明',
+      type: '系统通知', target: '教职工', targetDesc: '教职工（1,260 人）',
+      channels: ['站内信', '邮件'],
+      status: '草稿', sendTime: '',
+      sent: 0, read: 0, link: '/notice/6',
+      content: '（草稿，待补充新版 WebVPN 操作截图后发送）'
+    },
+    {
+      id: 9, title: '您有 2 本图书将于 3 日后到期',
+      type: '借阅提醒', target: '指定用户', targetDesc: '46 位读者',
+      channels: ['站内信'],
+      status: '已发送', sendTime: '2025-09-20 08:00',
+      sent: 46, read: 39, link: '/reader/borrow',
+      content: '{{读者姓名}} 同学，您好：\n\n您有 2 本图书将于 {{应还日期}} 到期，请及时办理续借或归还。\n\n图书馆'
+    },
+    {
+      id: 10, title: '知网研学平台试用开通提醒',
+      type: '活动提醒', target: '研究生', targetDesc: '研究生（3,150 人）',
+      channels: ['站内信', '微信'],
+      status: '已发送', sendTime: '2025-08-12 10:20',
+      sent: 3150, read: 1870, link: '/notice/10',
+      content: '各位研究生同学：\n\n知网研学平台现已开通试用，支持文献管理、在线笔记与写作辅助，试用期至 2025年12月31日。\n\n图书馆'
+    },
+    {
+      id: 11, title: '自助借还机维护期间服务调整通知',
+      type: '系统通知', target: '全部读者', targetDesc: '全部读者（12,480 人）',
+      channels: ['站内信'],
+      status: '已撤回', sendTime: '2025-08-06 18:00',
+      sent: 4100, read: 1560, link: '/notice/11',
+      content: '各位读者：\n\n8月7日 07:00—09:00 自助借还机暂停使用，请移步一楼人工服务台办理。（该消息已撤回）'
+    },
+    {
+      id: 12, title: '文献传递申请未通过，请补充材料',
+      type: '审核结果', target: '指定用户', targetDesc: '3 位读者',
+      channels: ['站内信', '邮件'],
+      status: '已发送', sendTime: '2025-08-04 14:25',
+      sent: 3, read: 3, link: '/reader/document',
+      content: '{{读者姓名}} 同学，您好：\n\n您提交的文献传递申请未通过审核，原因：文献超出馆际互借范围。请补充信息后重新提交。\n\n图书馆'
+    }
+  ],
+  page: 1,
+  pageSize: 10,
+  filters: { kw: '', type: '', target: '', status: '', dateStart: '', dateEnd: '' },
+  selected: new Set(),
+  editingId: null,
+  confirmAction: null
+};
+
+/* =========================================================
+ *  工具函数
+ * ========================================================= */
+const $ = id => document.getElementById(id);
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function nowStr() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function statusHtml(s) {
+  const cls = STATUS_CLASS[s] || 'draft';
+  return `<span class="status ${cls}"><i></i>${s}</span>`;
+}
+
+function channelsHtml(chs) {
+  return `<div class="channels">${chs.map(c => `<span class="ch">${esc(c)}</span>`).join('')}</div>`;
+}
+
+function readCellHtml(m) {
+  if (!m.sent) {
+    return `<div class="read-cell"><div class="read-bar"><i style="width:0%"></i></div><span class="read-txt">— / —</span></div>`;
+  }
+  const rate = Math.round((m.read / m.sent) * 100);
+  return `
+    <div class="read-cell">
+      <div class="read-bar"><i style="width:${rate}%"></i></div>
+      <span class="read-txt">${m.read.toLocaleString()} / ${m.sent.toLocaleString()}（${rate}%）</span>
+    </div>`;
+}
+
+/* =========================================================
+ *  统计概览
+ * ========================================================= */
+function renderStats() {
+  const list = state.list;
+  const total = list.length;
+  const sent = list.filter(m => m.status === '已发送' || m.status === '发送中').length;
+  const pending = list.filter(m => m.status === '草稿' || m.status === '发送中').length;
+
+  let sentSum = 0, readSum = 0;
+  list.forEach(m => {
+    if (m.sent > 0) { sentSum += m.sent; readSum += m.read; }
+  });
+  const rate = sentSum ? Math.round((readSum / sentSum) * 100) : 0;
+
+  $('statTotal').textContent = total;
+  $('statSent').textContent = sent;
+  $('statPending').textContent = pending;
+  $('statReadRate').textContent = rate + '%';
+}
+
+/* =========================================================
+ *  过滤 + 渲染
+ * ========================================================= */
+function getFiltered() {
+  const f = state.filters;
+  return state.list.filter(m => {
+    if (f.kw) {
+      const hit = m.title.includes(f.kw) || (m.content || '').includes(f.kw);
+      if (!hit) return false;
+    }
+    if (f.type && m.type !== f.type) return false;
+    if (f.target && m.target !== f.target) return false;
+    if (f.status && m.status !== f.status) return false;
+    if (f.dateStart || f.dateEnd) {
+      if (!m.sendTime) return false;
+      const d = m.sendTime.slice(0, 10);
+      if (f.dateStart && d < f.dateStart) return false;
+      if (f.dateEnd && d > f.dateEnd) return false;
+    }
+    return true;
+  });
+}
+
+function rowHtml(m) {
+  const ops = [
+    `<button class="op" data-action="view" data-id="${m.id}">查看</button>`,
+    `<button class="op" data-action="edit" data-id="${m.id}">编辑</button>`
+  ];
+
+  if (m.status === '已发送') {
+    ops.push(`<button class="op" data-action="withdraw" data-id="${m.id}">撤回</button>`);
+  }
+  if (m.status === '已撤回' || m.status === '草稿') {
+    ops.push(`<button class="op" data-action="resend" data-id="${m.id}">${m.status === '草稿' ? '发送' : '重新发送'}</button>`);
+  }
+  ops.push(`<button class="op" data-action="copy" data-id="${m.id}">复制</button>`);
+  ops.push(`<button class="op danger" data-action="delete" data-id="${m.id}">删除</button>`);
+
+  const sub = (m.content || '').replace(/\n/g, ' ').slice(0, 60);
+
+  return `
+    <tr>
+      <td class="col-check">
+        <input type="checkbox" class="row-check" data-id="${m.id}" ${state.selected.has(m.id) ? 'checked' : ''} />
+      </td>
+      <td>
+        <div class="cell-title">
+          <span class="link" data-action="view" data-id="${m.id}">${esc(m.title)}</span>
+        </div>
+        ${sub ? `<div class="cell-sub">${esc(sub)}${m.content.length > 60 ? '…' : ''}</div>` : ''}
+      </td>
+      <td><span class="tag ${TYPE_CLASS[m.type] || 'tag-blue'}">${esc(m.type)}</span></td>
+      <td>
+        <div style="line-height:1.4">
+          <div>${esc(m.target)}</div>
+          <div style="font-size:11.5px;color:var(--text-3)">${esc(m.targetDesc)}</div>
+        </div>
+      </td>
+      <td>${channelsHtml(m.channels)}</td>
+      <td>${statusHtml(m.status)}</td>
+      <td>${readCellHtml(m)}</td>
+      <td class="muted">${m.sendTime || '—'}</td>
+      <td><div class="ops">${ops.join('')}</div></td>
+    </tr>`;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const maxPage = Math.max(1, Math.ceil(total / state.pageSize));
+  if (state.page > maxPage) state.page = maxPage;
+
+  const start = (state.page - 1) * state.pageSize;
+  const rows = filtered.slice(start, start + state.pageSize);
+
+  const tbody = $('tableBody');
+  if (!rows.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="9">
+        <div class="empty">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M4 4h16v13H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/>
+          </svg>
+          没有找到符合条件的消息
+        </div>
+      </td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(rowHtml).join('');
+  }
+
+  const pageIds = rows.map(r => r.id);
+  const allChecked = pageIds.length > 0 && pageIds.every(id => state.selected.has(id));
+  const head = $('checkAll');
+  head.checked = allChecked;
+  head.indeterminate = !allChecked && pageIds.some(id => state.selected.has(id));
+
+  const n = state.selected.size;
+  $('batchDeleteBtn').disabled = n === 0;
+  const tip = $('selectedTip');
+  tip.textContent = `已选 ${n} 项`;
+  tip.classList.toggle('show', n > 0);
+
+  renderPager(maxPage, total);
+  renderStats();
+}
+
+function renderPager(maxPage, total) {
+  const pager = $('pager');
+  let html = `<button class="page-btn" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>上一页</button>`;
+  for (let i = 1; i <= maxPage; i++) {
+    html += `<button class="page-btn ${i === state.page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  html += `<button class="page-btn" data-page="${state.page + 1}" ${state.page === maxPage ? 'disabled' : ''}>下一页</button>`;
+  pager.innerHTML = html;
+
+  $('pageInfo').textContent = total
+    ? `共 ${total} 条记录，第 ${state.page} / ${maxPage} 页`
+    : '暂无记录';
+}
+
+/* =========================================================
+ *  弹窗控制
+ * ========================================================= */
+function openMask(id) { $(id).classList.add('show'); }
+function closeMask(id) { $(id).classList.remove('show'); }
+
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.target.closest('.modal-mask').classList.remove('show');
+  });
+});
+
+document.querySelectorAll('.modal-mask').forEach(mask => {
+  mask.addEventListener('click', e => {
+    if (e.target === mask) mask.classList.remove('show');
+  });
+});
+
+function askConfirm(html, onOk) {
+  $('confirmText').innerHTML = html;
+  state.confirmAction = onOk;
+  openMask('confirmMask');
+}
+
+$('confirmOk').addEventListener('click', () => {
+  if (typeof state.confirmAction === 'function') state.confirmAction();
+  state.confirmAction = null;
+  closeMask('confirmMask');
+});
+
+/* =========================================================
+ *  表单（新建 / 编辑）
+ * ========================================================= */
+function getCheckedChannels() {
+  return Array.from(document.querySelectorAll('.fChannel:checked')).map(c => c.value);
+}
+
+function updateContentCount() {
+  $('contentCount').textContent = $('fContent').value.length;
+}
+
+// 发送时间切换
+document.querySelectorAll('input[name="fsend"]').forEach(r => {
+  r.addEventListener('change', () => {
+    $('fSendTime').style.display = r.value === 'timing' && r.checked ? 'block' : 'none';
+  });
+});
+
+// 变量快捷插入
+document.querySelectorAll('.var-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const ta = $('fContent');
+    const text = btn.dataset.var;
+    const start = ta.selectionStart ?? ta.value.length;
+    const end = ta.selectionEnd ?? ta.value.length;
+    ta.value = ta.value.slice(0, start) + text + ta.value.slice(end);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = start + text.length;
+    updateContentCount();
+  });
+});
+
+$('fContent').addEventListener('input', updateContentCount);
+
+function openForm(item) {
+  state.editingId = item ? item.id : null;
+  $('formTitle').textContent = item ? '编辑消息' : '新建消息';
+  $('fTitle').value = item ? item.title : '';
+  $('fType').value = item ? item.type : '借阅提醒';
+  $('fTarget').value = item ? item.target : '全部读者';
+  $('fLink').value = item ? (item.link || '') : '';
+  $('fContent').value = item ? (item.content || '') : '';
+
+  // 渠道
+  const chs = item ? item.channels : ['站内信'];
+  document.querySelectorAll('.fChannel').forEach(c => {
+    c.checked = chs.includes(c.value);
+  });
+
+  // 发送方式
+  const timing = item && item.status === '发送中' && item.sendTime;
+  document.querySelectorAll('input[name="fsend"]').forEach(r => {
+    r.checked = timing ? r.value === 'timing' : r.value === 'now';
+  });
+  if (timing) {
+    $('fSendTime').value = item.sendTime.replace(' ', 'T');
+    $('fSendTime').style.display = 'block';
+  } else {
+    $('fSendTime').value = '';
+    $('fSendTime').style.display = 'none';
+  }
+
+  // 编辑已发送消息时，禁用“保存并发送”之外的误操作
+  const isSent = item && item.status === '已发送';
+  $('saveSendBtn').textContent = isSent ? '保存并重新发送' : '保存并发送';
+
+  updateContentCount();
+  openMask('formMask');
+}
+
+function collectForm() {
+  const title = $('fTitle').value.trim();
+  if (!title) { toast('请输入消息标题'); $('fTitle').focus(); return null; }
+
+  const channels = getCheckedChannels();
+  if (!channels.length) { toast('请至少选择一个发送渠道'); return null; }
+
+  const content = $('fContent').value.trim();
+  if (!content) { toast('请输入消息内容'); $('fContent').focus(); return null; }
+
+  const target = $('fTarget').value;
+  const targetDescMap = {
+    '全部读者': '全部读者（12,480 人）',
+    '本科生': '本科生（8,320 人）',
+    '研究生': '研究生（3,150 人）',
+    '教职工': '教职工（1,260 人）',
+    '指定用户': '已选读者'
+  };
+
+  return {
+    title,
+    type: $('fType').value,
+    target,
+    targetDesc: targetDescMap[target] || target,
+    channels,
+    link: $('fLink').value.trim(),
+    content
+  };
+}
+
+// 存为草稿
+$('saveDraftBtn').addEventListener('click', () => {
+  const data = collectForm();
+  if (!data) return;
+
+  if (state.editingId) {
+    const item = state.list.find(m => m.id === state.editingId);
+    Object.assign(item, data, { status: '草稿', sendTime: '', sent: 0, read: 0 });
+    toast('已保存为草稿');
+  } else {
+    const newId = state.list.length ? Math.max(...state.list.map(m => m.id)) + 1 : 1;
+    state.list.unshift(Object.assign({ id: newId, status: '草稿', sendTime: '', sent: 0, read: 0 }, data));
+    state.page = 1;
+    toast('已保存为草稿');
+  }
+  closeMask('formMask');
+  render();
+});
+
+// 保存并发送
+$('saveSendBtn').addEventListener('click', () => {
+  const data = collectForm();
+  if (!data) return;
+
+  const isTiming = document.querySelector('input[name="fsend"]:checked').value === 'timing';
+  let sendTime = nowStr();
+  let status = '已发送';
+
+  if (isTiming) {
+    const t = $('fSendTime').value;
+    if (!t) { toast('请选择定时发送时间'); return; }
+    sendTime = t.replace('T', ' ');
+    status = '发送中';
+  }
+
+  // 模拟送达量
+  const estimate = { '全部读者': 12480, '本科生': 8320, '研究生': 3150, '教职工': 1260, '指定用户': 20 };
+  const sent = status === '已发送' ? (estimate[data.target] || 20) : 0;
+  const read = status === '已发送' ? Math.round(sent * 0.72) : 0;
+
+  if (state.editingId) {
+    const item = state.list.find(m => m.id === state.editingId);
+    Object.assign(item, data, { status, sendTime, sent, read });
+    toast(status === '发送中' ? '已加入定时发送队列' : '消息已发送');
+  } else {
+    const newId = state.list.length ? Math.max(...state.list.map(m => m.id)) + 1 : 1;
+    state.list.unshift(Object.assign({ id: newId, status, sendTime, sent, read }, data));
+    state.page = 1;
+    toast(status === '发送中' ? '已加入定时发送队列' : '消息已发送');
+  }
+
+  closeMask('formMask');
+  render();
+});
+
+/* =========================================================
+ *  表格事件（委托）
+ * ========================================================= */
+$('tableBody').addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+
+  const id = Number(el.dataset.id);
+  const action = el.dataset.action;
+  const item = state.list.find(m => m.id === id);
+  if (!item) return;
+
+  switch (action) {
+    case 'view':
+      openView(item);
+      break;
+
+    case 'edit':
+      openForm(item);
+      break;
+
+    case 'withdraw':
+      askConfirm(
+        `确定要撤回消息「<b>${esc(item.title)}</b>」吗？<br>撤回后读者端将不再展示该消息，已读用户不受影响。`,
+        () => {
+          item.status = '已撤回';
+          toast('消息已撤回');
+          render();
+        }
+      );
+      break;
+
+    case 'resend':
+      askConfirm(
+        `确定要发送消息「<b>${esc(item.title)}</b>」吗？<br>将按所选渠道立即推送给 ${esc(item.targetDesc)}。`,
+        () => {
+          item.status = '已发送';
+          item.sendTime = nowStr();
+          const estimate = { '全部读者': 12480, '本科生': 8320, '研究生': 3150, '教职工': 1260, '指定用户': 20 };
+          item.sent = estimate[item.target] || 20;
+          item.read = Math.round(item.sent * 0.72);
+          toast('消息已发送');
+          render();
+        }
+      );
+      break;
+
+    case 'copy': {
+      const newId = state.list.length ? Math.max(...state.list.map(m => m.id)) + 1 : 1;
+      const copy = JSON.parse(JSON.stringify(item));
+      copy.id = newId;
+      copy.title = item.title + '（副本）';
+      copy.status = '草稿';
+      copy.sendTime = '';
+      copy.sent = 0;
+      copy.read = 0;
+      state.list.unshift(copy);
+      state.page = 1;
+      toast('已复制为新草稿');
+      render();
+      break;
+    }
+
+    case 'delete':
+      askConfirm(
+        `确定要删除消息「<b>${esc(item.title)}</b>」吗？<br>删除后不可恢复。`,
+        () => {
+          state.list = state.list.filter(m => m.id !== id);
+          state.selected.delete(id);
+          toast('删除成功');
+          render();
+        }
+      );
+      break;
+  }
+});
+
+// 单行勾选
+$('tableBody').addEventListener('change', e => {
+  if (!e.target.classList.contains('row-check')) return;
+  const id = Number(e.target.dataset.id);
+  if (e.target.checked) state.selected.add(id);
+  else state.selected.delete(id);
+  render();
+});
+
+// 全选（当前页）
+$('checkAll').addEventListener('change', e => {
+  const filtered = getFiltered();
+  const start = (state.page - 1) * state.pageSize;
+  const pageIds = filtered.slice(start, start + state.pageSize).map(m => m.id);
+  pageIds.forEach(id => e.target.checked ? state.selected.add(id) : state.selected.delete(id));
+  render();
+});
+
+// 分页
+$('pager').addEventListener('click', e => {
+  const btn = e.target.closest('.page-btn');
+  if (!btn || btn.disabled || btn.classList.contains('active')) return;
+  const p = Number(btn.dataset.page);
+  if (p < 1) return;
+  state.page = p;
+  render();
+});
+
+/* =========================================================
+ *  详情弹窗
+ * ========================================================= */
+function openView(m) {
+  const sent = m.sent || 0;
+  const read = m.read || 0;
+  const rate = sent ? Math.round((read / sent) * 100) : 0;
+
+  // 渠道明细（演示数据，按比例拆分）
+  const chRows = m.channels.map((c, i) => {
+    const ratio = [1, 0.85, 0.6, 0.4][i] || 0.5;
+    const cSent = Math.round(sent * ratio);
+    const cRead = Math.round(read * ratio);
+    const cRate = cSent ? Math.round((cRead / cSent) * 100) : 0;
+    return `
+      <tr>
+        <td>${esc(c)}</td>
+        <td>${cSent.toLocaleString()}</td>
+        <td>${cRead.toLocaleString()}</td>
+        <td>${cRate}%</td>
+      </tr>`;
+  }).join('');
+
+  $('viewBody').innerHTML = `
+    <h2 class="view-title">${esc(m.title)}</h2>
+    <div class="view-meta">
+      <span class="tag ${TYPE_CLASS[m.type] || 'tag-blue'}">${esc(m.type)}</span>
+      ${statusHtml(m.status)}
+      <span>接收对象：${esc(m.targetDesc)}</span>
+      <span>发送时间：${m.sendTime || '—'}</span>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <b>${sent.toLocaleString()}</b>
+        <span>送达人数</span>
+      </div>
+      <div class="stat-box">
+        <b>${read.toLocaleString()}</b>
+        <span>已读人数</span>
+      </div>
+      <div class="stat-box">
+        <b>${rate}%</b>
+        <span>已读率</span>
+      </div>
+    </div>
+
+    <div class="detail-sub-title">消息内容</div>
+    <div class="view-content">${esc(m.content)}</div>
+
+    ${m.link ? `<div class="detail-sub-title">跳转链接</div><div class="view-link">${esc(m.link)}</div>` : ''}
+
+    <div class="detail-sub-title" style="margin-top:4px">渠道送达明细</div>
+    <table class="ch-table">
+      <thead>
+        <tr><th>渠道</th><th>送达</th><th>已读</th><th>已读率</th></tr>
+      </thead>
+      <tbody>${chRows}</tbody>
+    </table>
+  `;
+  openMask('viewMask');
+}
+
+/* =========================================================
+ *  筛选 / 工具栏
+ * ========================================================= */
+$('searchBtn').addEventListener('click', () => {
+  state.filters = {
+    kw: $('kwInput').value.trim(),
+    type: $('typeSelect').value,
+    target: $('targetSelect').value,
+    status: $('statusSelect').value,
+    dateStart: $('dateStart').value,
+    dateEnd: $('dateEnd').value
+  };
+  state.page = 1;
+  render();
+});
+
+$('resetBtn').addEventListener('click', () => {
+  $('kwInput').value = '';
+  $('typeSelect').value = '';
+  $('targetSelect').value = '';
+  $('statusSelect').value = '';
+  $('dateStart').value = '';
+  $('dateEnd').value = '';
+  state.filters = { kw: '', type: '', target: '', status: '', dateStart: '', dateEnd: '' };
+  state.page = 1;
+  render();
+  toast('筛选条件已重置');
+});
+
+$('kwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') $('searchBtn').click();
+});
+
+$('addBtn').addEventListener('click', () => openForm(null));
+
+$('refreshBtn').addEventListener('click', () => {
+  render();
+  toast('列表已刷新');
+});
+
+$('exportBtn').addEventListener('click', () => {
+  toast(`正在导出 ${getFiltered().length} 条消息记录…`);
+});
+
+$('batchDeleteBtn').addEventListener('click', () => {
+  const n = state.selected.size;
+  if (!n) return;
+  askConfirm(`确定要删除选中的 <b>${n}</b> 条消息吗？<br>删除后不可恢复。`, () => {
+    state.list = state.list.filter(m => !state.selected.has(m.id));
+    state.selected.clear();
+    toast(`已删除 ${n} 条消息`);
+    render();
+  });
+});
+
+/* =========================================================
+ *  初始化
+ * ========================================================= */
+render();
+  </script>
+</body>
+</html>
+

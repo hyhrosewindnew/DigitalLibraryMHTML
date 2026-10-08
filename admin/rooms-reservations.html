@@ -1,0 +1,2185 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>研修室预约记录 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 研修室预约记录 */
+    body {
+      --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#eff6ff;
+      --border:#e5e9f0; --text:#1f2937; --text-2:#6b7280; --text-3:#9ca3af;
+      --bg:#f0f2f5; --radius:8px; --success:#16a34a; --warning:#d97706; --danger:#dc2626;
+    }
+    .content{padding:20px 24px 40px;flex:1}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #dfe4ec;background:#fff;color:#374151;border-radius:8px;padding:8px 15px;font-size:13px;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:#c3ccdb;background:#f8fafc}
+.btn-primary{background:#2f6fed;border-color:#2f6fed;color:#fff;box-shadow:0 2px 8px rgba(47,111,237,.28)}
+.btn-primary:hover{background:#2360d8;border-color:#2360d8}
+.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:7px}
+.btn-danger{color:#dc2626;border-color:#f0c9c9}
+.btn-danger:hover{background:#fef2f2;border-color:#f5a3a3}
+.btn-ghost{background:#fff;color:#2f6fed;border-color:#d4def0}
+.btn-ghost:hover{background:#f0f5fe;border-color:#b8c8e6}
+
+select,input[type=text],input[type=number],input[type=date],textarea{font-family:inherit;font-size:13px;border:1px solid #dfe4ec;border-radius:8px;padding:8px 11px;background:#fff;color:#1f2937;outline:none;transition:.15s}
+select:focus,input:focus,textarea:focus{border-color:#2f6fed;box-shadow:0 0 0 3px rgba(47,111,237,.12)}
+select{cursor:pointer;min-width:110px;height:34px}
+select:disabled{background:#f5f7fb;color:#b0b8c6;cursor:not-allowed;border-color:#e8ecf3}
+textarea{width:100%;min-height:64px;resize:vertical;line-height:1.5}
+input[readonly]{background:#f5f7fb;color:#475569;cursor:default}
+
+.filter-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(16,24,40,.06);margin-bottom:16px}
+.filter-title{font-size:13px;font-weight:600;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.filter-title::before{content:'';width:3px;height:14px;border-radius:2px;background:#2f6fed}
+.filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.filter-group{display:flex;align-items:center;gap:9px}
+.filter-group label{font-size:13px;color:#64748b;white-space:nowrap}
+.filter-arrow{color:#cbd3e0;font-size:15px;margin:0 -4px}
+.filter-divider{width:1px;height:20px;background:#e8ecf3;margin:0 4px}
+.search{position:relative;display:flex;align-items:center}
+.search span{position:absolute;left:11px;font-size:13px;color:#a3adbd;pointer-events:none}
+.search input{padding-left:32px;width:260px}
+.filter-actions{display:flex;gap:10px;margin-left:auto}
+
+.panel{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(16,24,40,.06);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid #eef1f6;flex-wrap:wrap}
+.panel-head .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.panel-head .sel-info{margin-left:6px;font-size:13px;color:#64748b}
+.panel-head .sel-info b{color:#2f6fed}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1600px}
+thead th{text-align:left;font-size:12px;font-weight:600;color:#6b7280;letter-spacing:.3px;padding:12px 16px;background:#f8fafc;border-bottom:1px solid #eef1f6;white-space:nowrap}
+thead th:first-child{width:44px;padding-left:20px}
+tbody td{padding:14px 16px;border-bottom:1px solid #f2f4f8;vertical-align:middle;font-size:13px;color:#374151}
+tbody td:first-child{padding-left:20px}
+tbody tr:hover{background:#fafbfd}
+tbody tr:last-child td{border-bottom:none}
+input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
+
+.record-id{font-family:"SF Mono",Consolas,monospace;font-size:12.5px;color:#6b7280}
+
+.reader-cell{display:flex;align-items:center;gap:9px;min-width:0}
+.avatar-sm{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+.avatar-sm.f{background:linear-gradient(135deg,#f472b6,#ec4899)}
+.user-name{font-weight:500;color:#111827;font-size:13.5px;line-height:1.35;display:flex;align-items:center;gap:4px}
+.user-sub{font-size:11.5px;color:#9aa3b2;line-height:1.35;margin-top:1px;max-width:132px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.tag-mini{display:inline-flex;align-items:center;padding:0 6px;border-radius:4px;font-size:10.5px;line-height:16px;font-weight:500;flex-shrink:0}
+.tm-stu{background:#eff6ff;color:#2563eb}
+.tm-tea{background:#f5f3ff;color:#7c3aed}
+.tm-tmp{background:#fff7ed;color:#ea580c}
+.tm-alu{background:#ecfeff;color:#0891b2}
+.tm-out{background:#f3f4f6;color:#4b5563}
+
+.member-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
+.member-chips{display:flex;flex-wrap:wrap;gap:4px}
+.mchip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;background:#f1f5fb;border:1px solid #e4ebf6;color:#334155;font-size:11.5px;line-height:17px;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis}
+.mchip.free{background:#fff7ed;border-color:#fde7cf;color:#c26a00}
+.mchip.more{background:#e8f0fe;border-color:#d3e0f8;color:#2f6fed;cursor:pointer;font-weight:600}
+.mchip.more:hover{background:#d9e6fc}
+.member-empty{font-size:12px;color:#b0b8c6}
+.member-meta{font-size:11.5px;color:#8a94a6;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.member-meta b{color:#334155;font-weight:600}
+.member-meta .ok{color:#12894f;font-weight:600}
+.member-meta .bad{color:#b46b00;font-weight:600}
+.member-meta .no{color:#b91c1c;font-weight:600}
+
+.room-cell{display:flex;flex-direction:column;gap:2px}
+.room-name{font-weight:600;color:#111827;font-size:13.5px}
+.room-name.clickable{cursor:pointer;transition:.15s}
+.room-name.clickable:hover{color:#2f6fed;text-decoration:underline}
+.room-code{font-size:11px;color:#9aa3b2;font-family:"SF Mono",Consolas,monospace;letter-spacing:.3px}
+
+.loc-text{font-size:12px;color:#475569;background:#f5f7fb;padding:3px 9px;border-radius:6px;white-space:nowrap;display:inline-block}
+
+.purpose{font-size:12.5px;color:#374151;max-width:130px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.time-cell{display:flex;flex-direction:column;gap:2px}
+.time-date{font-size:12.5px;color:#1f2937;font-weight:500}
+.time-range{font-size:12px;color:#475569;font-family:"SF Mono",Consolas,monospace}
+
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap}
+.status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-pending{background:#fff8e5;color:#9b6f00}
+.s-checkedin{background:#e8f7ee;color:#12894f}
+.s-inuse{background:#e8f0fe;color:#1d5fd6}
+.s-supervising{background:#f3e8ff;color:#7c3aed}
+.s-completed{background:#e0f2fe;color:#075985}
+.s-cancelled{background:#f0f2f5;color:#6b7280}
+.s-noshow{background:#ffe9e9;color:#b91c1c}
+.s-overdue{background:#ffe2dc;color:#a11212}
+.s-minnotreach{background:#fff4e5;color:#b46b00}
+.s-temp{background:#e8eafc;color:#4338ca}
+
+.text-danger{color:#b91c1c;font-weight:500}
+.text-warn{color:#b46b00;font-weight:500}
+.text-muted{color:#94a3b8;font-size:12.5px}
+
+.ops{white-space:nowrap}
+.ops a{color:#2f6fed;font-size:12.5px;margin-right:14px;cursor:pointer}
+.ops a:last-child{margin-right:0}
+.ops a:hover{text-decoration:underline}
+.ops a.danger{color:#dc2626}
+.ops a.disabled{color:#c3ccdb;cursor:not-allowed}
+.ops a.disabled:hover{text-decoration:none}
+
+.panel-foot{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-top:1px solid #f2f4f8;font-size:12.5px;color:#8a94a6;flex-wrap:wrap;gap:10px}
+.pager{display:flex;gap:6px;align-items:center}
+.pager button{min-width:30px;height:30px;border-radius:7px;border:1px solid #e5eaf1;background:#fff;color:#475569;font-size:12.5px;cursor:pointer;font-family:inherit;transition:.15s}
+.pager button:hover:not(:disabled){border-color:#c3ccdb;background:#f8fafc}
+.pager button.active{background:#2f6fed;border-color:#2f6fed;color:#fff;font-weight:600}
+.pager button:disabled{opacity:.45;cursor:not-allowed}
+
+.empty{padding:60px 20px;text-align:center;color:#a8b0bf;font-size:13.5px}
+.empty .big{font-size:34px;margin-bottom:12px;opacity:.5}
+
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:100;padding:32px 20px}
+.modal-mask.show{display:flex}
+.modal{background:#fff;border-radius:14px;width:760px;max-width:100%;max-height:calc(100vh - 64px);display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(15,23,42,.28);animation:pop .22s ease}
+.modal-xl{width:1280px}
+@keyframes pop{from{opacity:0;transform:translateY(-14px) scale(.98)}to{opacity:1;transform:none}}
+
+.modal-head{padding:18px 22px;border-bottom:1px solid #eef1f6;display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;border-radius:14px 14px 0 0}
+.modal-head h3{font-size:16px;font-weight:600;color:#0f172a}
+.modal-close{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:#94a3b8;font-size:18px;cursor:pointer;line-height:1;transition:.15s}
+.modal-close:hover{background:#f1f4f9;color:#475569}
+.modal-body{padding:22px;flex:1 1 auto;overflow-y:auto;min-height:0}
+.modal-body::-webkit-scrollbar{width:8px}
+.modal-body::-webkit-scrollbar-thumb{background:#d5dce8;border-radius:4px}
+.modal-foot{padding:16px 22px;border-top:1px solid #eef1f6;display:flex;justify-content:flex-end;gap:10px;flex:0 0 auto;border-radius:0 0 14px 14px;background:#fff}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12.5px;color:#4b5563;font-weight:500}
+.field label .req{color:#e5484d;margin-left:2px}
+.field input,.field select,.field textarea{width:100%}
+.field .form-tip{font-size:11.5px;color:#94a3b8;margin-top:2px}
+.chk{display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;cursor:pointer;user-select:none}
+
+.detail-section{margin-bottom:18px}
+.detail-section:last-child{margin-bottom:0}
+.detail-section h4{font-size:13px;font-weight:600;color:#0f172a;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eef1f6;display:flex;align-items:center;gap:8px}
+.detail-section h4::before{content:'';width:3px;height:13px;border-radius:2px;background:#2f6fed}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.info-grid.three{grid-template-columns:repeat(3,1fr)}
+.info-item{display:flex;flex-direction:column;gap:3px}
+.info-item .label{font-size:11.5px;color:#9aa3b2}
+.info-item .value{font-size:13px;color:#1f2937;font-weight:500}
+.info-item .value.mono{font-family:"SF Mono",Consolas,monospace;font-size:12.5px}
+
+.member-tbl{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid #eef1f6;border-radius:8px;overflow:hidden}
+.member-tbl th{background:#f8fafc;padding:8px 12px;text-align:left;font-size:11.5px;color:#6b7280;font-weight:600;border-bottom:1px solid #eef1f6;white-space:nowrap}
+.member-tbl td{padding:9px 12px;border-bottom:1px solid #f2f4f8;color:#374151;vertical-align:middle}
+.member-tbl tr:last-child td{border-bottom:none}
+.member-tbl .role{display:inline-flex;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:500;background:#e8f0fe;color:#2f6fed;white-space:nowrap}
+.member-tbl .role.member{background:#f1f4f9;color:#64748b}
+.member-tbl .role.guest{background:#fff4e5;color:#b46b00}
+
+.quota-tip{border-radius:8px;padding:9px 13px;font-size:12.5px;line-height:1.7;margin-bottom:12px}
+.quota-tip.ok{background:#e8f7ee;border:1px solid #cdeadd;color:#12894f}
+.quota-tip.warn{background:#fff4e5;border:1px solid #fbe3c4;color:#b46b00}
+.quota-tip.bad{background:#ffe9e9;border:1px solid #f8d4d4;color:#b91c1c}
+
+.timeline{position:relative;padding-left:18px}
+.timeline::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:#eef1f6}
+.timeline-item{position:relative;padding-bottom:12px;font-size:13px;color:#1f2937}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-item::before{content:'';position:absolute;left:-18px;top:5px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #cbd5e1}
+.timeline-item.active::before{background:#2f6fed;border-color:#2f6fed;box-shadow:0 0 0 3px rgba(47,111,237,.18)}
+.timeline-item .ti-time{font-size:11.5px;color:#9aa3b2;font-family:"SF Mono",Consolas,monospace;margin-top:2px}
+
+.modal-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+.modal-icon.warn{background:#fff4e5;color:#b46b00}
+.modal-icon.danger{background:#ffe9e9;color:#b91c1c}
+.modal-icon.success{background:#e8f7ee;color:#12894f}
+.modal-icon.info{background:#e8f0fe;color:#2f6fed}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:6px;color:#0f172a}
+.modal-text{font-size:13px;color:#5a6577;line-height:1.7}
+.modal-detail{background:#f5f7fb;border:1px solid #e8ecf3;border-radius:8px;padding:11px 13px;margin-top:11px;font-size:12.5px;line-height:1.85;color:#1f2937}
+
+.flow-diagram{background:#f5f7fb;border:1px solid #e8ecf3;border-radius:8px;padding:14px 16px;margin-top:8px;font-size:12.5px;line-height:1.95;font-family:"SF Mono",Consolas,monospace;color:#1f2937}
+.flow-diagram b{color:#2f6fed}
+
+.summary-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+.summary-tbl th{background:#f5f7fb;text-align:left;padding:8px 12px;border:1px solid #e8ecf3;font-weight:600;color:#4b5563;font-size:11.5px;white-space:nowrap}
+.summary-tbl td{padding:8px 12px;border:1px solid #e8ecf3;color:#374151;vertical-align:top;line-height:1.7}
+.summary-tbl td:first-child{font-weight:600;color:#0f172a;white-space:nowrap}
+
+.rs-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #eef1f6}
+.rs-toolbar label{font-size:12.5px;color:#64748b;white-space:nowrap}
+.rs-legend{display:flex;gap:13px;flex-wrap:wrap;margin-left:auto;font-size:12px;color:#64748b}
+.rs-legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.rs-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+.rs-table-wrap{overflow-x:auto}
+.rs-table{table-layout:fixed;width:100%;min-width:1000px;border-collapse:collapse;font-size:12.5px}
+.rs-table th{background:#f8fafc;padding:9px 8px;text-align:left;font-size:11.5px;color:#6b7280;font-weight:600;border-bottom:1px solid #eef1f6;white-space:nowrap;box-sizing:border-box}
+.rs-table th.rs-th-slot{text-align:center;padding:8px 4px}
+.rs-table td{padding:10px 8px;border-bottom:1px solid #f2f4f8;vertical-align:middle;box-sizing:border-box;overflow:hidden}
+.rs-table tr:last-child td{border-bottom:none}
+.rs-table tr:hover{background:#fafbfd}
+.rs-table td.rs-td-slot{padding:5px 5px}
+
+.rs-slot{display:flex;align-items:center;justify-content:center;width:100%;height:38px;border-radius:6px;border:1px solid transparent;font-size:11px;padding:0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:default;font-weight:500;transition:.15s;box-sizing:border-box}
+.rs-free{background:#f5f7fb;border-color:#e8ecf3;color:#c9d2de;font-weight:400}
+.rs-pending{background:#fff8e5;border-color:#fbe3c4;color:#9b6f00}
+.rs-inuse{background:#e8f0fe;border-color:#c9dcfb;color:#1d5fd6}
+.rs-supervising{background:#f3e8ff;border-color:#e0ccfb;color:#7c3aed}
+.rs-completed{background:#f0f2f5;border-color:#e5e8ee;color:#94a3b8;font-weight:400}
+.rs-cancelled{background:#fafbfd;border-color:#f0f2f5;color:#d5dce8;font-weight:400;text-decoration:line-through}
+.rs-closed{background:repeating-linear-gradient(45deg,#f5f7fb,#f5f7fb 4px,#e8ecf3 4px,#e8ecf3 8px);color:#b0b8c6;font-weight:400;border-color:#e8ecf3}
+
+.rs-summary{margin-top:16px;padding-top:14px;border-top:1px solid #eef1f6;font-size:12.5px;color:#64748b;display:flex;gap:22px;flex-wrap:wrap}
+.rs-summary b{color:#2f6fed;font-weight:600}
+
+.rb-room-card{
+  background:linear-gradient(135deg,#f5f8ff,#fdfdff);
+  border:1px solid #dde7f7;border-radius:10px;
+  padding:14px 16px;margin-bottom:16px;
+}
+.rb-room-name{font-size:15px;font-weight:600;color:#0f172a;margin-bottom:3px}
+.rb-room-code{font-size:11.5px;color:#9aa3b2;font-family:"SF Mono",Consolas,monospace;margin-bottom:9px;letter-spacing:.3px}
+.rb-room-meta{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:#64748b}
+.rb-room-meta .rb-flag{display:inline-flex;align-items:center;gap:5px}
+.rb-room-meta .rb-flag::before{content:'';width:6px;height:6px;border-radius:50%;background:#2f6fed}
+
+.rb-day-group{margin-bottom:14px;border:1px solid #eef1f6;border-radius:10px;overflow:hidden}
+.rb-day-head{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#f8fafc;border-bottom:1px solid #eef1f6}
+.rb-day-label{font-size:13px;font-weight:600;color:#0f172a}
+.rb-day-date{font-size:11.5px;color:#94a3b8;font-family:"SF Mono",Consolas,monospace}
+.rb-day-count{margin-left:auto;font-size:11.5px;color:#2f6fed;background:#e8f0fe;padding:2px 9px;border-radius:10px;font-weight:500}
+.rb-day-body{padding:4px 10px}
+
+.rb-rec{display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid #f5f7fb}
+.rb-rec:last-child{border-bottom:none}
+.rb-time{font-size:12px;font-family:"SF Mono",Consolas,monospace;color:#475569;flex:0 0 122px;font-weight:500}
+.rb-info{flex:1;display:flex;gap:10px;align-items:baseline;min-width:0;flex-wrap:wrap}
+.rb-user{font-size:13px;font-weight:500;color:#111827}
+.rb-org{font-size:11.5px;color:#94a3b8}
+.rb-persons{font-size:12px;color:#64748b}
+
+.rb-empty{padding:44px 20px;text-align:center;color:#b0b8c6;font-size:13px}
+.rb-empty .big{font-size:34px;display:block;margin-bottom:10px;opacity:.5}
+
+.toast{position:fixed;left:50%;top:26px;transform:translate(-50%,-14px);background:#1f2937;color:#fff;padding:10px 20px;border-radius:9px;font-size:13px;opacity:0;transition:.25s;z-index:300;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:80vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.warn{background:#b46b00}
+.toast.error{background:#b91c1c}
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">研修室预约记录</span>
+</nav>
+
+<div class="filter-card">
+        <div class="filter-title">筛选条件</div>
+        <div class="filter-row">
+          <div class="search">
+            <span>🔍</span>
+            <input type="text" id="kwInput" placeholder="搜索记录ID / 读者 / 研修室 / 用途">
+          </div>
+          <div class="filter-divider"></div>
+          <div class="filter-group"><label>状态</label>
+            <select id="statusSel">
+              <option value="">全部状态</option>
+              <option value="pending">待签到</option>
+              <option value="inuse">使用中</option>
+              <option value="temp">暂离中</option>
+              <option value="supervising">监督中</option>
+              <option value="completed">已签退</option>
+              <option value="cancelled">已取消</option>
+              <option value="noshow">未签到</option>
+              <option value="overdue">逾期未签退</option>
+              <option value="minnotreach">人数不足取消</option>
+            </select>
+          </div>
+          <div class="filter-group"><label>日期</label>
+            <select id="dateSel">
+              <option value="today">今日</option>
+              <option value="tomorrow">明日</option>
+              <option value="thisweek">本周</option>
+              <option value="future">未来预约</option>
+              <option value="all">全部时间</option>
+              <option value="yesterday">昨日</option>
+            </select>
+          </div>
+          <div class="filter-divider"></div>
+          <div class="filter-group"><label>馆藏地</label>
+            <select id="venueSel"></select>
+          </div>
+          <span class="filter-arrow">›</span>
+          <div class="filter-group"><label>楼层</label>
+            <select id="floorSel" disabled><option value="">请先选择馆藏地</option></select>
+          </div>
+          <span class="filter-arrow">›</span>
+          <div class="filter-group"><label>区域</label>
+            <select id="areaSel" disabled><option value="">请先选择楼层</option></select>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary" id="btnSearch">搜索</button>
+            <button class="btn" id="btnReset">重置</button>
+            <button class="btn btn-ghost" id="btnExport">📤 导出</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="actions">
+            <button class="btn btn-primary" id="btnAdd">＋ 新增预约</button>
+            <button class="btn btn-sm btn-danger" id="btnBatchCancel">批量取消</button>
+            <button class="btn btn-ghost" id="btnLegal">📖 状态说明</button>
+            <button class="btn btn-ghost" id="btnRoomStatus">🏛 研修室使用及预约状态</button>
+            <span class="sel-info" id="selInfo"></span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="checkAll"></th>
+                <th style="width:96px">记录ID</th>
+                <th style="width:180px">预约读者</th>
+                <th style="width:220px">共同预约人</th>
+                <th style="width:150px">研修室</th>
+                <th style="width:140px">位置（馆/楼层/区域）</th>
+                <th style="width:155px">预约时段</th>
+                <th style="width:88px">预约状态</th>
+                <th style="width:88px">研修室状态</th>
+                <th style="width:140px">用途</th>
+                <th style="width:150px">最后操作/超时</th>
+                <th style="width:190px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="panel-foot">
+          <span id="footInfo">共 0 条记录</span>
+          <div class="pager" id="pager"></div>
+        </div>
+      </div>
+</main>
+
+<!-- 新增预约 -->
+<div class="modal-mask" id="addMask">
+  <div class="modal">
+    <div class="modal-head"><h3>新增研修室预约</h3><button class="modal-close" onclick="closeAdd()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full">
+          <label>预约读者（发起人）<span class="req">*</span></label>
+          <input type="text" id="addReader" placeholder="输入读者姓名 / 学号 / 工号（仅显示「正常」状态）" autocomplete="off">
+          <div class="form-tip">支持模糊搜索，状态异常的读者不可预约</div>
+        </div>
+        <div class="field">
+          <label>馆藏地<span class="req">*</span></label>
+          <select id="addVenue" onchange="onAddVenue()"></select>
+        </div>
+        <div class="field">
+          <label>楼层<span class="req">*</span></label>
+          <select id="addFloor" onchange="onAddFloor()" disabled><option value="">请先选择馆藏地</option></select>
+        </div>
+        <div class="field">
+          <label>区域<span class="req">*</span></label>
+          <select id="addArea" onchange="onAddArea()" disabled><option value="">请先选择楼层</option></select>
+        </div>
+        <div class="field">
+          <label>研修室<span class="req">*</span></label>
+          <select id="addRoom" onchange="onAddRoom()" disabled><option value="">请先选择区域</option></select>
+        </div>
+
+        <div class="field">
+          <label>预约日期<span class="req">*</span></label>
+          <input type="date" id="addDate" onchange="recalcMinPersons()">
+        </div>
+        <div class="field">
+          <label>开始时段<span class="req">*</span></label>
+          <select id="addSlotStart" onchange="onSlotChange()"></select>
+        </div>
+        <div class="field">
+          <label>预约时长<span class="req">*</span></label>
+          <select id="addDuration" onchange="recalcMinPersons()">
+            <option value="1">1 个时段（2 小时）</option>
+            <option value="2" selected>2 个时段（4 小时）</option>
+            <option value="3">3 个时段（6 小时·最长）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>预约总人数</label>
+          <input type="text" id="addPersons" readonly value="1 人">
+          <!-- 修复：补上 id="addPersonsTip"，避免 updateAddTip() 取到 null -->
+          <div class="form-tip" id="addPersonsTip">= 发起人 1 人 + 下方共同预约人 N 人，系统自动计算</div>
+        </div>
+
+        <div class="field full">
+          <label>共同预约人</label>
+          <textarea id="addMembers" placeholder="每行一位成员，可填姓名或学号，例如：&#10;刘子涵&#10;2025020222 杨梦琪&#10;（留空表示仅发起人 1 人预约）"></textarea>
+          <div class="form-tip" id="addMembersTip">已在成员库中的将自动带出学号与单位；未匹配到的将记为「外部成员」</div>
+        </div>
+
+        <div class="field full">
+          <label>用途说明<span class="req">*</span></label>
+          <input type="text" id="addPurpose" placeholder="如：本科毕设答辩 / 学术研讨 / 社团例会 / 课程录制">
+        </div>
+
+        <div class="field full">
+          <label>备注</label>
+          <textarea id="addRemark" placeholder="选填"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeAdd()">取消</button>
+      <button class="btn btn-primary" onclick="submitAdd()" id="addSubmitBtn" disabled>提交预约</button>
+    </div>
+  </div>
+</div>
+
+<!-- 预约详情 -->
+<div class="modal-mask" id="detailMask">
+  <div class="modal">
+    <div class="modal-head"><h3>预约详情</h3><button class="modal-close" onclick="closeDetail()">✕</button></div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-foot"><button class="btn" onclick="closeDetail()">关闭</button></div>
+  </div>
+</div>
+
+<!-- 状态说明 -->
+<div class="modal-mask" id="legalMask">
+  <div class="modal">
+    <div class="modal-head"><h3>研修室预约 · 9 种状态说明与流转</h3><button class="modal-close" onclick="closeLegal()">✕</button></div>
+    <div class="modal-body" id="legalBody"></div>
+    <div class="modal-foot"><button class="btn" onclick="closeLegal()">关闭</button></div>
+  </div>
+</div>
+
+<!-- 研修室使用及预约状态 -->
+<div class="modal-mask" id="roomStatusMask">
+  <div class="modal modal-xl">
+    <div class="modal-head">
+      <h3>研修室使用及预约状态</h3>
+      <button class="modal-close" onclick="closeRoomStatus()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="rsToolbar"></div>
+      <div id="rsTableArea"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeRoomStatus()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 研修室预约明细 -->
+<div class="modal-mask" id="roomBookingsMask" style="z-index:120">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>研修室预约明细 · 当天及未来</h3>
+      <button class="modal-close" onclick="closeRoomBookings()">✕</button>
+    </div>
+    <div class="modal-body" id="rbBody"></div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeRoomBookings()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通用确认 -->
+<div class="modal-mask" id="confirmMask" style="z-index:200">
+  <div class="modal" style="width:480px">
+    <div class="modal-head"><h3 id="confirmTitle">操作确认</h3><button class="modal-close" onclick="closeConfirm()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-icon" id="confirmIcon"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="modal-title" id="confirmQuestion">确定要执行该操作吗？</div>
+      <div class="modal-text" id="confirmText"></div>
+      <div class="modal-detail" id="confirmDetail" style="display:none"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeConfirm()">取消</button>
+      <button class="btn btn-primary" id="confirmOkBtn">确定</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastWrap"></div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <script>
+const VENUES = {
+  '总馆': { '1F': ['少儿借阅区', '自助服务区'], '2F': ['多媒体区', '研讨区', '电子阅览区'], '3F': ['古籍阅览区', '研习区'] },
+  '南馆': { '1F': ['综合阅览区', '研讨区'], '4F': ['数字资源区', '多媒体区'] },
+  '北馆': { '3F': ['研讨区', '视听区'] }
+};
+const TIME_SLOTS = [
+  {key:'s1',label:'上午一',range:'08:00-10:00'},
+  {key:'s2',label:'上午二',range:'10:00-12:00'},
+  {key:'s3',label:'中午',range:'12:00-14:00'},
+  {key:'s4',label:'下午一',range:'14:00-16:00'},
+  {key:'s5',label:'下午二',range:'16:00-18:00'},
+  {key:'s6',label:'晚上一',range:'18:00-20:00'},
+  {key:'s7',label:'晚上二',range:'20:00-22:00'}
+];
+
+const STATUS_DEF = {
+  pending:    {label:'待签到',     cls:'s-pending'},
+  inuse:      {label:'使用中',     cls:'s-inuse'},
+  temp:       {label:'暂离中',     cls:'s-temp'},
+  supervising:{label:'监督中',     cls:'s-supervising'},
+  completed:  {label:'已签退',     cls:'s-completed'},
+  cancelled:  {label:'已取消',     cls:'s-cancelled'},
+  noshow:     {label:'未签到',     cls:'s-noshow'},
+  overdue:    {label:'逾期未签退', cls:'s-overdue'},
+  minnotreach:{label:'人数不足取消',cls:'s-minnotreach'}
+};
+const ROOM_STATUS = {
+  available:   {label:'可用',   cls:'s-checkedin'},
+  inuse:       {label:'使用中', cls:'s-inuse'},
+  maintenance: {label:'维护中', cls:'s-pending'},
+  closed:      {label:'已停用', cls:'s-cancelled'}
+};
+
+const ROOMS = [
+  {id:1, code:'YJS-2F-201', name:'多媒体研讨间 A', venue:'总馆', floor:'2F', area:'多媒体区', capacity:6, minPersons:2, status:'available', openSlots:['s1','s2','s3','s4','s5','s6','s7']},
+  {id:2, code:'YJS-2F-202', name:'多媒体研讨间 B', venue:'总馆', floor:'2F', area:'多媒体区', capacity:8, minPersons:3, status:'available', openSlots:['s1','s2','s4','s5','s6']},
+  {id:3, code:'YJS-2F-203', name:'多媒体研讨间 C', venue:'总馆', floor:'2F', area:'多媒体区', capacity:4, minPersons:2, status:'available', openSlots:['s1','s2','s3','s4','s5']},
+  {id:4, code:'YJS-2F-204', name:'多媒体创作间',   venue:'总馆', floor:'2F', area:'多媒体区', capacity:10,minPersons:4, status:'available', openSlots:['s2','s3','s4','s5','s6','s7']},
+  {id:5, code:'YJS-2F-205', name:'多媒体研讨间 D', venue:'总馆', floor:'2F', area:'多媒体区', capacity:6, minPersons:2, status:'maintenance', openSlots:['s1','s2','s4','s5']},
+  {id:7, code:'YJS-2F-207', name:'多媒体研讨间 E', venue:'总馆', floor:'2F', area:'多媒体区', capacity:8, minPersons:3, status:'inuse', openSlots:['s1','s2','s3','s4','s5','s6']},
+  {id:12,code:'YJS-2F-101', name:'研讨间 1',        venue:'总馆', floor:'2F', area:'研讨区',   capacity:4, minPersons:2, status:'inuse', openSlots:['s1','s2','s3','s4','s5']},
+  {id:13,code:'YJS-2F-102', name:'研讨间 2',        venue:'总馆', floor:'2F', area:'研讨区',   capacity:6, minPersons:2, status:'inuse', openSlots:['s1','s2','s4','s5','s6']},
+  {id:14,code:'YJS-2F-103', name:'研讨间 3',        venue:'总馆', floor:'2F', area:'研讨区',   capacity:8, minPersons:3, status:'available', openSlots:['s1','s2','s3','s4','s5','s6','s7']},
+  {id:15,code:'YJS-2F-104', name:'研讨间 4',        venue:'总馆', floor:'2F', area:'研讨区',   capacity:12,minPersons:4, status:'closed',    openSlots:[]},
+  {id:17,code:'YJS-2F-301', name:'电子阅览研讨舱 A',venue:'总馆', floor:'2F', area:'电子阅览区',capacity:2, minPersons:1, status:'available', openSlots:['s1','s2','s3','s4','s5','s6','s7']},
+  {id:21,code:'YJS-3F-201', name:'研习间 A',         venue:'总馆', floor:'3F', area:'研习区',   capacity:6, minPersons:2, status:'available', openSlots:['s1','s2','s4','s5']},
+  {id:22,code:'YJS-N1-101', name:'研讨间 A',         venue:'南馆', floor:'1F', area:'研讨区',   capacity:6, minPersons:2, status:'available', openSlots:['s1','s2','s3','s4','s5']},
+  {id:23,code:'YJS-N1-102', name:'研讨间 B',         venue:'南馆', floor:'1F', area:'研讨区',   capacity:10,minPersons:3, status:'available', openSlots:['s1','s2','s3','s4','s5','s6','s7']},
+  {id:24,code:'YJS-N4-201', name:'数字资源研讨间',   venue:'南馆', floor:'4F', area:'数字资源区',capacity:8, minPersons:3, status:'available', openSlots:['s1','s2','s4','s5','s6']}
+];
+
+/* ★ 新增：安全取研修室
+   兼容 roomIdx 被误写成「房间 id」的历史脏数据，避免 ROOMS[idx] 为 undefined
+   导致整表渲染抛异常、翻页“无反应” */
+function getRoom(idx){
+  if(ROOMS[idx]) return ROOMS[idx];
+  const byId = ROOMS.find(r => r.id === idx);
+  return byId || ROOMS[0];
+}
+
+const READERS = [
+  {name:'陈思远',gender:'男',type:'学生',certNo:'2022010301',dept:'计算机科学与技术学院',status:'正常',violations:1},
+  {name:'李婉清',gender:'女',type:'学生',certNo:'2023051208',dept:'外国语学院',status:'正常',violations:0},
+  {name:'王振宇',gender:'男',type:'教师',certNo:'T20160128',dept:'电子信息工程学院',status:'正常',violations:0},
+  {name:'赵敏',gender:'女',type:'教师',certNo:'T20190456',dept:'经济管理学院',status:'正常',violations:0},
+  {name:'周雨桐',gender:'女',type:'学生',certNo:'2023070822',dept:'文学院',status:'正常',violations:0},
+  {name:'郑晓岚',gender:'女',type:'临时',certNo:'L20240312',dept:'图书馆',status:'正常',violations:0},
+  {name:'林晓彤',gender:'女',type:'校友',certNo:'A20150123',dept:'计算机科学与技术学院',status:'正常',violations:0},
+  {name:'唐雅琴',gender:'女',type:'教师',certNo:'T20200678',dept:'文学院',status:'正常',violations:0},
+  {name:'许诗涵',gender:'女',type:'学生',certNo:'2023090245',dept:'外国语学院',status:'正常',violations:1}
+];
+
+const TODAY = '2025-04-09';
+
+function mk(name, type, certNo, dept){ return {name, type, certNo, dept}; }
+
+/* ============ 预约数据 ============ */
+let data = [
+  /* ================= 今日 2025-04-09（9 种状态示例） ================= */
+  {id:'R2025040901',readerIdx:0,roomIdx:0,dateKey:TODAY,slotStart:3,duration:2,persons:5,purpose:'本科毕设答辩',
+   members:[mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('杨梦琪','学生','2025020222','经济管理学院'),mk('邱志豪','学生','2023030333','电子信息工程学院'),mk('宋雨薇','学生','2022040444','外国语学院')],
+   sk:'pending',st:'待签到',la:'签到剩余 18 分钟',remark:'指导老师旁听',
+   createdAt:'2025-04-09 10:15',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025040902',readerIdx:2,roomIdx:6,dateKey:TODAY,slotStart:1,duration:2,persons:4,purpose:'学术研讨（课题推进）',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处'),mk('罗嘉诚','学生','2023080912','材料科学与工程学院')],
+   sk:'inuse',st:'使用中',la:'已使用 1h 05m',remark:'',
+   createdAt:'2025-04-09 09:30',signInAt:'2025-04-09 09:35',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025040903',readerIdx:7,roomIdx:7,dateKey:TODAY,slotStart:3,duration:2,persons:3,purpose:'课题组例会（需白板）',
+   members:[mk('曹雨欣','学生','2023020378','经济管理学院'),mk('何静怡','学生','2023012245','经济管理学院')],
+   sk:'temp',st:'暂离中',la:'暂离剩余 09:24',remark:'',
+   createdAt:'2025-04-09 13:50',signInAt:'2025-04-09 14:00',tempAt:'2025-04-09 14:45',superviseAt:'',signOutAt:''},
+
+  {id:'R2025040904',readerIdx:5,roomIdx:5,dateKey:TODAY,slotStart:2,duration:2,persons:6,purpose:'社团活动',
+   members:[mk('邓伟成','校外读者','4401061992031856','社会读者'),mk('高文博','学生','2022031966','机械工程学院'),mk('徐若曦','学生','2023041577','外国语学院'),mk('马天宇','学生','2021060889','电子信息工程学院'),mk('韩明辉','学生','2021070145','计算机科学与技术学院')],
+   sk:'supervising',st:'监督中',la:'监督中·剩余 07:12',remark:'被举报室内无人',
+   createdAt:'2025-04-09 11:20',signInAt:'2025-04-09 11:30',tempAt:'',superviseAt:'2025-04-09 12:05',signOutAt:''},
+
+  {id:'R2025040905',readerIdx:4,roomIdx:2,dateKey:TODAY,slotStart:0,duration:1,persons:4,purpose:'课程录制（外语教学）',
+   members:[mk('冯子轩','学生','2022091133','计算机科学与技术学院'),mk('郑晓岚','临时','L20240312','图书馆'),mk('李婉清','学生','2023051208','外国语学院')],
+   sk:'completed',st:'已签退',la:'正常使用 2h 后签退',remark:'设备：录播',
+   createdAt:'2025-04-09 07:50',signInAt:'2025-04-09 08:00',tempAt:'',superviseAt:'',signOutAt:'2025-04-09 10:00'},
+
+  {id:'R2025040906',readerIdx:1,roomIdx:1,dateKey:TODAY,slotStart:5,duration:2,persons:4,purpose:'社团辩论赛',
+   members:[mk('苏婉柔','学生','2022050678','文学院'),mk('许诗涵','学生','2023090245','外国语学院'),mk('邱志豪','学生','2023030333','电子信息工程学院')],
+   sk:'cancelled',st:'已取消',la:'用户主动取消 16:20',remark:'报名人数不足',
+   createdAt:'2025-04-09 14:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025040907',readerIdx:3,roomIdx:8,dateKey:TODAY,slotStart:0,duration:1,persons:3,purpose:'论文修改小组',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处')],
+   sk:'noshow',st:'未签到',la:'超时 30 分钟未签到',remark:'',
+   createdAt:'2025-04-09 07:50',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025040908',readerIdx:6,roomIdx:11,dateKey:TODAY,slotStart:1,duration:2,persons:2,purpose:'本科生答疑',
+   members:[mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'overdue',st:'逾期未签退',la:'已用完时段未签退·超时 22m',remark:'已催签退',
+   createdAt:'2025-04-09 09:50',signInAt:'2025-04-09 10:00',tempAt:'',superviseAt:'',signOutAt:'2025-04-09 12:22'},
+
+  {id:'R2025040909',readerIdx:8,roomIdx:3,dateKey:TODAY,slotStart:3,duration:1,persons:5,purpose:'小组讨论',
+   members:[mk('杨梦琪','学生','2025020222','经济管理学院'),mk('曹雨欣','学生','2023020378','经济管理学院'),mk('何静怡','学生','2023012245','经济管理学院'),mk('苏婉柔','学生','2022050678','文学院')],
+   sk:'minnotreach',st:'人数不足取消',la:'实到 1 人 < 最低 4 人·已取消',remark:'系统检测后自动取消',
+   createdAt:'2025-04-09 13:55',signInAt:'2025-04-09 14:05',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 明日 2025-04-10 周四 ================= */
+  {id:'R2025041001',readerIdx:1,roomIdx:0,dateKey:'2025-04-10',slotStart:0,duration:1,persons:3,purpose:'英语角讨论',
+   members:[mk('杨梦琪','学生','2025020222','经济管理学院'),mk('刘子涵','学生','2025010111','计算机科学与技术学院')],
+   sk:'pending',st:'待签到',la:'待开始·明日 08:00 签到',remark:'',
+   createdAt:'2025-04-08 15:20',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041002',readerIdx:7,roomIdx:6,dateKey:'2025-04-10',slotStart:1,duration:1,persons:4,purpose:'毕业论文讨论',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处'),mk('罗嘉诚','学生','2023080912','材料科学与工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·明日 10:00 签到',remark:'',
+   createdAt:'2025-04-08 16:05',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041003',readerIdx:0,roomIdx:1,dateKey:'2025-04-10',slotStart:3,duration:1,persons:6,purpose:'课题组例会',
+   members:[mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('杨梦琪','学生','2025020222','经济管理学院'),mk('邱志豪','学生','2023030333','电子信息工程学院'),mk('宋雨薇','学生','2022040444','外国语学院'),mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·明日 14:00 签到',remark:'',
+   createdAt:'2025-04-08 17:40',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041004',readerIdx:2,roomIdx:12,dateKey:'2025-04-10',slotStart:2,duration:2,persons:5,purpose:'跨校学术交流',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处'),mk('罗嘉诚','学生','2023080912','材料科学与工程学院'),mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·明日 12:00 签到',remark:'南馆研讨间A',
+   createdAt:'2025-04-08 18:20',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041005',readerIdx:3,roomIdx:14,dateKey:'2025-04-10',slotStart:4,duration:2,persons:4,purpose:'数据库专项培训',
+   members:[mk('唐雅琴','教师','T20200678','文学院'),mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('宋雨薇','学生','2022040444','外国语学院')],
+   sk:'pending',st:'待签到',la:'待开始·明日 16:00 签到',remark:'数字资源研讨间',
+   createdAt:'2025-04-08 19:10',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 后天 2025-04-11 周五 ================= */
+  {id:'R2025041101',readerIdx:3,roomIdx:3,dateKey:'2025-04-11',slotStart:1,duration:1,persons:5,purpose:'课程录制',
+   members:[mk('苏婉柔','学生','2022050678','文学院'),mk('许诗涵','学生','2023090245','外国语学院'),mk('罗嘉诚','学生','2023080912','材料科学与工程学院'),mk('曹雨欣','学生','2023020378','经济管理学院')],
+   sk:'pending',st:'待签到',la:'待开始·后天 10:00 签到',remark:'设备：录播',
+   createdAt:'2025-04-08 11:10',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041102',readerIdx:2,roomIdx:11,dateKey:'2025-04-11',slotStart:4,duration:2,persons:4,purpose:'学术报告排练',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处'),mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·后天 16:00 签到',remark:'',
+   createdAt:'2025-04-08 14:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041103',readerIdx:5,roomIdx:2,dateKey:'2025-04-11',slotStart:2,duration:1,persons:2,purpose:'临时交流接待',
+   members:[mk('郑晓岚','临时','L20240312','图书馆')],
+   sk:'pending',st:'待签到',la:'待开始·后天 12:00 签到',remark:'',
+   createdAt:'2025-04-08 20:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041104',readerIdx:4,roomIdx:8,dateKey:'2025-04-11',slotStart:5,duration:1,persons:4,purpose:'读书分享会',
+   members:[mk('许诗涵','学生','2023090245','外国语学院'),mk('苏婉柔','学生','2022050678','文学院'),mk('曹雨欣','学生','2023020378','经济管理学院')],
+   sk:'pending',st:'待签到',la:'待开始·后天 18:00 签到',remark:'',
+   createdAt:'2025-04-08 20:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041105',readerIdx:7,roomIdx:13,dateKey:'2025-04-11',slotStart:0,duration:2,persons:5,purpose:'本科生导师会',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('杨梦琪','学生','2025020222','经济管理学院'),mk('罗嘉诚','学生','2023080912','材料科学与工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·后天 08:00 签到',remark:'南馆研讨间B',
+   createdAt:'2025-04-08 21:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-12 周六 ================= */
+  {id:'R2025041201',readerIdx:4,roomIdx:12,dateKey:'2025-04-12',slotStart:0,duration:2,persons:3,purpose:'周末读书会',
+   members:[mk('冯子轩','学生','2022091133','计算机科学与技术学院'),mk('郑晓岚','临时','L20240312','图书馆')],
+   sk:'pending',st:'待签到',la:'待开始·周六 08:00 签到',remark:'',
+   createdAt:'2025-04-09 09:15',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041202',readerIdx:7,roomIdx:2,dateKey:'2025-04-12',slotStart:3,duration:1,persons:2,purpose:'期末复习',
+   members:[mk('唐雅琴','教师','T20200678','文学院')],
+   sk:'pending',st:'待签到',la:'待开始·周六 14:00 签到',remark:'',
+   createdAt:'2025-04-09 10:50',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041203',readerIdx:6,roomIdx:13,dateKey:'2025-04-12',slotStart:2,duration:2,persons:6,purpose:'校友交流座谈',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处'),mk('邓伟成','校外读者','4401061992031856','社会读者'),mk('宋雨薇','学生','2022040444','外国语学院'),mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·周六 12:00 签到',remark:'校友会组织',
+   createdAt:'2025-04-09 11:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-13 周日 ================= */
+  {id:'R2025041301',readerIdx:8,roomIdx:1,dateKey:'2025-04-13',slotStart:3,duration:2,persons:5,purpose:'英语演讲练习',
+   members:[mk('李婉清','学生','2023051208','外国语学院'),mk('徐若曦','学生','2023041577','外国语学院'),mk('苏婉柔','学生','2022050678','文学院'),mk('刘子涵','学生','2025010111','计算机科学与技术学院')],
+   sk:'pending',st:'待签到',la:'待开始·周日 14:00 签到',remark:'',
+   createdAt:'2025-04-09 12:20',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041302',readerIdx:0,roomIdx:6,dateKey:'2025-04-13',slotStart:4,duration:2,persons:3,purpose:'项目进度讨论',
+   members:[mk('冯子轩','学生','2022091133','计算机科学与技术学院'),mk('马天宇','学生','2021060889','电子信息工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·周日 16:00 签到',remark:'',
+   createdAt:'2025-04-09 13:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-14 周一 ================= */
+  {id:'R2025041401',readerIdx:6,roomIdx:14,dateKey:'2025-04-14',slotStart:1,duration:2,persons:5,purpose:'数字资源培训',
+   members:[mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('杨梦琪','学生','2025020222','经济管理学院'),mk('邱志豪','学生','2023030333','电子信息工程学院'),mk('宋雨薇','学生','2022040444','外国语学院')],
+   sk:'pending',st:'待签到',la:'待开始·周一 10:00 签到',remark:'数字资源研讨间',
+   createdAt:'2025-04-09 11:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041402',readerIdx:1,roomIdx:0,dateKey:'2025-04-14',slotStart:3,duration:1,persons:4,purpose:'小组作业讨论',
+   members:[mk('徐若曦','学生','2023041577','外国语学院'),mk('苏婉柔','学生','2022050678','文学院'),mk('曹雨欣','学生','2023020378','经济管理学院')],
+   sk:'pending',st:'待签到',la:'待开始·周一 14:00 签到',remark:'',
+   createdAt:'2025-04-09 14:10',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041403',readerIdx:3,roomIdx:12,dateKey:'2025-04-14',slotStart:4,duration:2,persons:4,purpose:'课程录制',
+   members:[mk('唐雅琴','教师','T20200678','文学院'),mk('李婉清','学生','2023051208','外国语学院'),mk('许诗涵','学生','2023090245','外国语学院')],
+   sk:'pending',st:'待签到',la:'待开始·周一 16:00 签到',remark:'南馆研讨间A',
+   createdAt:'2025-04-09 15:20',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-15 周二 ================= */
+  {id:'R2025041501',readerIdx:2,roomIdx:6,dateKey:'2025-04-15',slotStart:2,duration:2,persons:3,purpose:'论文指导',
+   members:[mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('冯子轩','学生','2022091133','计算机科学与技术学院')],
+   sk:'pending',st:'待签到',la:'待开始·周二 12:00 签到',remark:'',
+   createdAt:'2025-04-09 16:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041502',readerIdx:7,roomIdx:7,dateKey:'2025-04-15',slotStart:5,duration:1,persons:5,purpose:'课题组讨论',
+   members:[mk('沈立诚','教师','T20170412','机械工程学院'),mk('黄志强','教师','T20180567','教务处'),mk('罗嘉诚','学生','2023080912','材料科学与工程学院'),mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·周二 18:00 签到',remark:'',
+   createdAt:'2025-04-09 16:40',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ★ 修正：roomIdx 原为 17（房间 id），应为数组下标 10 */
+  {id:'R2025041503',readerIdx:5,roomIdx:10,dateKey:'2025-04-15',slotStart:0,duration:1,persons:1,purpose:'个人自习',
+   members:[],
+   sk:'pending',st:'待签到',la:'待开始·周二 08:00 签到',remark:'电子阅览舱',
+   createdAt:'2025-04-09 17:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-16 周三 ================= */
+  {id:'R2025041601',readerIdx:5,roomIdx:1,dateKey:'2025-04-16',slotStart:0,duration:2,persons:4,purpose:'图书馆业务会议',
+   members:[mk('郑晓岚','临时','L20240312','图书馆'),mk('唐雅琴','教师','T20200678','文学院'),mk('李婉清','学生','2023051208','外国语学院')],
+   sk:'pending',st:'待签到',la:'待开始·周三 08:00 签到',remark:'部门例会',
+   createdAt:'2025-04-09 17:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041602',readerIdx:4,roomIdx:13,dateKey:'2025-04-16',slotStart:4,duration:2,persons:6,purpose:'社团活动策划',
+   members:[mk('苏婉柔','学生','2022050678','文学院'),mk('许诗涵','学生','2023090245','外国语学院'),mk('曹雨欣','学生','2023020378','经济管理学院'),mk('何静怡','学生','2023012245','经济管理学院'),mk('徐若曦','学生','2023041577','外国语学院')],
+   sk:'pending',st:'待签到',la:'待开始·周三 16:00 签到',remark:'南馆研讨间B',
+   createdAt:'2025-04-09 18:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ★ 修正：roomIdx 原为 24（房间 id），应为数组下标 14 */
+  {id:'R2025041603',readerIdx:6,roomIdx:14,dateKey:'2025-04-16',slotStart:2,duration:2,persons:4,purpose:'数字资源检索培训',
+   members:[mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('宋雨薇','学生','2022040444','外国语学院'),mk('冯子轩','学生','2022091133','计算机科学与技术学院')],
+   sk:'pending',st:'待签到',la:'待开始·周三 12:00 签到',remark:'',
+   createdAt:'2025-04-09 18:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-17 周四 ================= */
+  /* ★ 修正：roomIdx 原为 21（房间 id），应为数组下标 11 */
+  {id:'R2025041701',readerIdx:0,roomIdx:11,dateKey:'2025-04-17',slotStart:1,duration:2,persons:5,purpose:'毕设进度汇报',
+   members:[mk('杨梦琪','学生','2025020222','经济管理学院'),mk('邱志豪','学生','2023030333','电子信息工程学院'),mk('宋雨薇','学生','2022040444','外国语学院'),mk('刘子涵','学生','2025010111','计算机科学与技术学院')],
+   sk:'pending',st:'待签到',la:'待开始·周四 10:00 签到',remark:'研习间A',
+   createdAt:'2025-04-09 19:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  {id:'R2025041702',readerIdx:8,roomIdx:3,dateKey:'2025-04-17',slotStart:5,duration:1,persons:6,purpose:'语言角活动',
+   members:[mk('李婉清','学生','2023051208','外国语学院'),mk('徐若曦','学生','2023041577','外国语学院'),mk('苏婉柔','学生','2022050678','文学院'),mk('曹雨欣','学生','2023020378','经济管理学院'),mk('何静怡','学生','2023012245','经济管理学院')],
+   sk:'pending',st:'待签到',la:'待开始·周四 18:00 签到',remark:'',
+   createdAt:'2025-04-09 19:30',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ================= 2025-04-18 周五 ================= */
+  {id:'R2025041801',readerIdx:2,roomIdx:14,dateKey:'2025-04-18',slotStart:3,duration:2,persons:4,purpose:'电子资源培训',
+   members:[mk('唐雅琴','教师','T20200678','文学院'),mk('刘子涵','学生','2025010111','计算机科学与技术学院'),mk('高文博','学生','2022031966','机械工程学院')],
+   sk:'pending',st:'待签到',la:'待开始·周五 14:00 签到',remark:'',
+   createdAt:'2025-04-09 20:00',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''},
+
+  /* ★ 修正：roomIdx 原为 23（房间 id），应为数组下标 13 */
+  {id:'R2025041802',readerIdx:7,roomIdx:13,dateKey:'2025-04-18',slotStart:0,duration:1,persons:3,purpose:'校友见面会',
+   members:[mk('林晓彤','校友','A20150123','计算机科学与技术学院'),mk('邓伟成','校外读者','4401061992031856','社会读者')],
+   sk:'pending',st:'待签到',la:'待开始·周五 08:00 签到',remark:'南馆研讨间B',
+   createdAt:'2025-04-09 20:20',signInAt:'',tempAt:'',superviseAt:'',signOutAt:''}
+];
+
+const DIRECTORY = {};
+function regPerson(p){
+  if(!p || !p.name) return;
+  if(!DIRECTORY[p.name]) DIRECTORY[p.name] = p;
+  if(p.certNo && p.certNo !== '—' && !DIRECTORY[p.certNo]) DIRECTORY[p.certNo] = p;
+}
+READERS.forEach(r => regPerson({name:r.name, type:r.type, certNo:r.certNo, dept:r.dept}));
+data.forEach(r => (r.members || []).forEach(regPerson));
+
+function fmtTime(dateKey,slotStart,duration){
+  const s = TIME_SLOTS[slotStart], e = TIME_SLOTS[Math.min(slotStart+duration-1,6)];
+  return s.range.split('-')[0] + ' - ' + e.range.split('-')[1];
+}
+function pad2(n){return String(n).padStart(2,'0')}
+function fmtNow(){const d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())+' '+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds())}
+function fmtDate(d){return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
+function addDays(dateLike,n){const d=(dateLike instanceof Date)?new Date(dateLike.getTime()):new Date(dateLike+'T00:00:00');d.setDate(d.getDate()+n);return fmtDate(d)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function typeKey(t){return {'学生':'stu','教师':'tea','临时':'tmp','校友':'alu','校外读者':'out'}[t]||'out'}
+const $ = id => document.getElementById(id);
+
+let toastTimer;
+function toast(msg,type){
+  const old = document.querySelector('.toast'); if(old) old.remove();
+  const el=document.createElement('div');
+  el.className='toast'+(type?' '+type:''); el.textContent=msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); },2200);
+}
+
+/* 默认「今日」 */
+let state = {page:1,pageSize:10,keyword:'',status:'',date:'today',venue:'',floor:'',area:'',selected:new Set()};
+
+function isToday(dk){return dk===TODAY}
+function isTomorrow(dk){return dk===addDays(TODAY,1)}
+function isYesterday(dk){const d=new Date();d.setDate(d.getDate()-1);return dk===fmtDate(d)}
+function isThisWeek(dk){
+  const d=new Date(dk+'T00:00:00');const mon=new Date(TODAY+'T00:00:00');
+  const day=mon.getDay()||7;const m=new Date(mon);m.setDate(mon.getDate()-day+1);
+  const s=new Date(m);s.setDate(m.getDate()+7);return d>=m && d<s;
+}
+function isFuture(dk){return dk>TODAY}
+
+function fillVenueFilter(sel,preferred){
+  sel.innerHTML = '<option value="">全部馆藏地</option>' + Object.keys(VENUES).map(v=>`<option value="${v}" ${v===preferred?'selected':''}>${v}</option>`).join('');
+}
+function fillFloorFilter(sel,venue,preferred){
+  const floors = Object.keys(VENUES[venue]||{});
+  sel.innerHTML = '<option value="">请选择楼层</option>' + floors.map(f=>`<option value="${f}" ${f===preferred?'selected':''}>${f}</option>`).join('');
+  sel.disabled = !venue;
+}
+function fillAreaFilter(sel,venue,floor,preferred){
+  const areas = (VENUES[venue]||{})[floor]||[];
+  sel.innerHTML = '<option value="">请选择区域</option>' + areas.map(a=>`<option value="${a}" ${a===preferred?'selected':''}>${a}</option>`).join('');
+  sel.disabled = !(venue&&floor);
+}
+
+function initFilterSelects(){
+  fillVenueFilter($('venueSel'),'');
+  fillFloorFilter($('floorSel'),'','');
+  fillAreaFilter($('areaSel'),'','','');
+  $('venueSel').addEventListener('change', ()=>{
+    state.venue=$('venueSel').value; state.floor=''; state.area='';
+    fillFloorFilter($('floorSel'),state.venue,'');
+    fillAreaFilter($('areaSel'),state.floor,'','');
+    state.page=1; render();
+  });
+  $('floorSel').addEventListener('change', ()=>{
+    state.floor=$('floorSel').value; state.area='';
+    fillAreaFilter($('areaSel'),state.venue,state.floor,'');
+    state.page=1; render();
+  });
+  $('areaSel').addEventListener('change', ()=>{ state.area=$('areaSel').value; state.page=1; render(); });
+}
+
+function getFiltered(){
+  const k = state.keyword.trim().toLowerCase();
+  return data.filter(r=>{
+    if(state.status && r.sk!==state.status) return false;
+    if(state.date==='today' && !isToday(r.dateKey)) return false;
+    if(state.date==='tomorrow' && !isTomorrow(r.dateKey)) return false;
+    if(state.date==='yesterday' && !isYesterday(r.dateKey)) return false;
+    if(state.date==='thisweek' && !isThisWeek(r.dateKey)) return false;
+    if(state.date==='future' && !isFuture(r.dateKey)) return false;
+    const room = getRoom(r.roomIdx);
+    if(state.venue && room.venue!==state.venue) return false;
+    if(state.floor && room.floor!==state.floor) return false;
+    if(state.area && room.area!==state.area) return false;
+    if(k){
+      const reader = READERS[r.readerIdx];
+      const memberNames = (r.members||[]).map(m=>m.name+' '+m.certNo+' '+m.dept).join(' ');
+      const hay = (r.id + ' ' + r.purpose + ' ' + room.name + ' ' + room.code + ' ' + reader.name + ' ' + reader.certNo + ' ' + memberNames).toLowerCase();
+      if(hay.indexOf(k)===-1) return false;
+    }
+    return true;
+  });
+}
+
+function memberCellHtml(r, room){
+  const members = r.members || [];
+  const total = 1 + members.length;
+  const min = room.minPersons || 1;
+  const cap = room.capacity || 99;
+  const MAX_SHOW = 3;
+
+  let chips = '';
+  if(!members.length){
+    chips = '<span class="member-empty">仅发起人 1 人</span>';
+  } else {
+    members.slice(0, MAX_SHOW).forEach(m=>{
+      const cls = m.type === '校外读者' ? ' free' : '';
+      chips += `<span class="mchip${cls}" title="${esc(m.name)} · ${esc(m.type)} · ${esc(m.certNo)} · ${esc(m.dept)}">${esc(m.name)}</span>`;
+    });
+    if(members.length > MAX_SHOW){
+      chips += `<span class="mchip more" data-act="detail" data-id="${r.id}" title="查看全部 ${members.length} 位共同预约人">+${members.length - MAX_SHOW}</span>`;
+    }
+  }
+
+  let flag = '<span class="ok">✓ 达标</span>';
+  if(total < min)      flag = `<span class="no">✕ 低于最低 ${min} 人</span>`;
+  else if(total > cap) flag = `<span class="bad">⚠ 超容纳 ${cap} 人</span>`;
+
+  return `<div class="member-cell">
+    <div class="member-chips">${chips}</div>
+    <div class="member-meta">
+      <b>${total}</b> 人（发起 1 + 成员 ${members.length}）
+      <span>·</span> 最低 ${min} 人起
+      ${flag}
+    </div>
+  </div>`;
+}
+
+function getBtns(r){
+  const id=r.id, sk=r.sk;
+  const detail='<a class="link" data-act="detail" data-id="'+id+'">详情</a>';
+  if(sk==='pending'){
+    return '<a class="link" data-act="checkin" data-id="'+id+'">强制签到</a><a class="link danger" data-act="cancel" data-id="'+id+'">取消</a>'+detail;
+  }
+  if(sk==='inuse'){
+    return '<a class="link" data-act="checkout" data-id="'+id+'">强制签退</a><a class="link" data-act="temp" data-id="'+id+'">标记暂离</a><a class="link" data-act="supervise" data-id="'+id+'">发起监督</a>'+detail;
+  }
+  if(sk==='temp'){
+    return '<a class="link" data-act="restore" data-id="'+id+'">恢复使用</a><a class="link" data-act="checkout" data-id="'+id+'">强制签退</a>'+detail;
+  }
+  if(sk==='supervising'){
+    return '<a class="link" data-act="superviseRestore" data-id="'+id+'">读者已返回·恢复使用</a><a class="link danger" data-act="superviseEnd" data-id="'+id+'">超时清退</a>'+detail;
+  }
+  if(sk==='cancelled'){
+    return '<a class="link" data-act="reopen" data-id="'+id+'">重新启用</a>'+detail;
+  }
+  if(sk==='noshow' || sk==='overdue' || sk==='minnotreach'){
+    return '<a class="link" data-act="clearviol" data-id="'+id+'">消除违约</a>'+detail;
+  }
+  return detail;
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total/state.pageSize));
+  if(state.page>pages) state.page=pages;
+  const start = (state.page-1)*state.pageSize;
+  const rows = list.slice(start, start+state.pageSize);
+  const tbody = $('tbody');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="12"><div class="empty"><div class="big">📭</div>没有找到符合条件的预约记录<br><span style="font-size:12.5px;color:#b0b8c6">请调整筛选条件后重试</span></div></td></tr>';
+  } else {
+    let html = '';
+    rows.forEach(r=>{
+      const reader = READERS[r.readerIdx];
+      /* ★ 使用安全取值，脏数据不再中断整表渲染 */
+      const room = getRoom(r.roomIdx);
+      const locStr = room.venue+' / '+room.floor+' / '+room.area;
+      const timeStr = fmtTime(r.dateKey, r.slotStart, r.duration);
+      const ls = (r.sk==='noshow'||r.sk==='overdue') ? 'text-danger' : (r.sk==='minnotreach' ? 'text-warn' : '');
+      const checked = state.selected.has(r.id) ? 'checked' : '';
+
+      html += '<tr>';
+      html += '<td><input type="checkbox" class="row-chk" data-id="'+r.id+'" '+checked+'></td>';
+      html += '<td><span class="record-id">#'+r.id+'</span></td>';
+
+      html += '<td><div class="reader-cell">'
+            +   '<div class="avatar-sm '+(reader.gender==='女'?'f':'')+'">'+esc(reader.name[0])+'</div>'
+            +   '<div style="min-width:0">'
+            +     '<div class="user-name">'+esc(reader.name)
+            +       '<span class="tag-mini tm-'+typeKey(reader.type)+'">'+esc(reader.type)+'</span>'
+            +     '</div>'
+            +     '<div class="user-sub" title="'+esc(reader.certNo+' · '+reader.dept)+'">'+esc(reader.certNo)+' · '+esc(reader.dept)+'</div>'
+            +   '</div>'
+            + '</div></td>';
+
+      html += '<td>'+memberCellHtml(r, room)+'</td>';
+
+      html += '<td><div class="room-cell">'
+            +   '<div class="room-name clickable" onclick="openRoomBookings('+r.roomIdx+')" title="查看该研修室当天及未来的使用及预约记录">'+esc(room.name)+'</div>'
+            +   '<div class="room-code">'+room.code+'</div>'
+            + '</div></td>';
+
+      html += '<td><span class="loc-text">'+locStr+'</span></td>';
+      html += '<td><div class="time-cell"><div class="time-date">'+r.dateKey+'</div><div class="time-range">'+timeStr+'</div></div></td>';
+      html += '<td><span class="status '+STATUS_DEF[r.sk].cls+'">'+STATUS_DEF[r.sk].label+'</span></td>';
+      html += '<td><span class="status '+ROOM_STATUS[room.status].cls+'">'+ROOM_STATUS[room.status].label+'</span></td>';
+      html += '<td><div class="purpose" title="'+esc(r.purpose)+'">'+esc(r.purpose)+'</div></td>';
+      html += '<td class="'+ls+'">'+r.la+'</td>';
+      html += '<td><div class="ops">'+getBtns(r)+'</div></td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+  $('footInfo').textContent = '显示 '+(rows.length?(start+1):0)+' - '+(start+rows.length)+' 条，共 '+total+' 条记录';
+  renderPager(pages);
+  updateSelInfo();
+
+  const pageIds = rows.map(r=>r.id);
+  $('checkAll').checked = pageIds.length>0 && pageIds.every(i=>state.selected.has(i));
+}
+
+function renderPager(pages){
+  const cur = state.page, total = pages;
+  let h = '<button onclick="gotoPage('+(cur-1)+')" '+(cur===1?'disabled':'')+'>‹</button>';
+  const show = [];
+  if(pages<=7){ for(let i=1;i<=pages;i++) show.push(i); }
+  else {
+    show.push(1);
+    if(cur > 3) show.push('...');
+    for(let i=Math.max(2,cur-1); i<=Math.min(pages-1,cur+1); i++) show.push(i);
+    if(cur < pages-2) show.push('...');
+    show.push(pages);
+  }
+  show.forEach(p=>{
+    if(p==='...') h += '<span style="padding:0 6px;color:#9aa3b2">···</span>';
+    else h += '<button class="'+(p===cur?'active':'')+'" onclick="gotoPage('+p+')">'+p+'</button>';
+  });
+  h += '<button onclick="gotoPage('+(cur+1)+')" '+(cur===total?'disabled':'')+'>›</button>';
+  $('pager').innerHTML = h;
+}
+
+function gotoPage(p){
+  const pages = Math.max(1, Math.ceil(getFiltered().length/state.pageSize));
+  if(p<1||p>pages) return;
+  state.page=p; renderTable();
+  document.querySelector('.table-wrap').scrollTop = 0;
+}
+
+function updateSelInfo(){
+  const n = state.selected.size;
+  $('selInfo').innerHTML = n ? '已选择 <b>'+n+'</b> 条' : '';
+}
+
+function render(){ renderTable(); }
+
+/* ============ 操作动作 ============ */
+function act(a,id){
+  const r = data.find(x=>x.id===id);
+  if(!r) return;
+  if(a==='detail'){ openDetail(id); return; }
+  const reader = READERS[r.readerIdx];
+  const room = getRoom(r.roomIdx);
+  const memberTxt = (r.members||[]).length
+    ? '共同预约人：'+(r.members||[]).map(m=>m.name).join('、')+'<br>'
+    : '';
+
+  switch(a){
+    case 'checkin':
+      confirmDialog({title:'强制签到',icon:'info',question:'确定要为「'+reader.name+'」强制签到吗？',text:'签到后预约立即进入「使用中」，开始计时。',detail:'读者：'+reader.name+'（'+reader.certNo+'）<br>'+memberTxt+'研修室：'+room.name+' · '+fmtTime(r.dateKey,r.slotStart,r.duration),okText:'确认签到',okClass:'btn btn-primary',onOk:()=>{
+        r.sk='inuse';r.st='使用中';r.la='已使用 0h 0m';r.signInAt=fmtNow();
+        toast('已为 '+reader.name+' 强制签到，进入「使用中」');
+        render();
+      }});
+      break;
+
+    case 'cancel':
+      confirmDialog({title:'取消预约',icon:'warn',question:'确定要取消「'+reader.name+'」的预约吗？',text:'取消后预约归档为「已取消」，研修室时段将立即释放。',detail:'读者：'+reader.name+'<br>'+memberTxt+'研修室：'+room.name+' · '+fmtTime(r.dateKey,r.slotStart,r.duration),okText:'确认取消',okClass:'btn btn-primary',onOk:()=>{
+        r.sk='cancelled';r.st='已取消';r.la='管理员取消 '+fmtNow().substr(11);r.signInAt='';
+        toast('已取消 '+reader.name+' 的预约','warn');
+        render();
+      }});
+      break;
+
+    case 'checkout':
+      confirmDialog({title:'强制签退',icon:'warn',question:'确定要强制签退吗？',text:'强制签退将记入读者违约档案（逾期未签退）。',detail:'读者：'+reader.name+'（当前累计违约 '+reader.violations+' 次）<br>'+memberTxt+'研修室：'+room.name+' · '+fmtTime(r.dateKey,r.slotStart,r.duration),okText:'确认签退',okClass:'btn btn-primary',onOk:()=>{
+        r.sk='overdue';r.st='逾期未签退';r.la='管理员强制签退';r.signOutAt=fmtNow();
+        toast('已强制签退，研修室 '+room.name+' 已释放','warn');
+        render();
+      }});
+      break;
+
+    case 'temp':
+      r.sk='temp';r.st='暂离中';r.la='暂离剩余 30:00';r.tempAt=fmtNow();
+      toast('已标记 '+reader.name+' 为「暂离中」','warn');
+      render();
+      break;
+
+    case 'restore':
+      r.sk='inuse';r.st='使用中';r.la='管理员恢复使用';r.tempAt='';
+      toast('已恢复 '+reader.name+' 的预约','info');
+      render();
+      break;
+
+    case 'supervise':
+      confirmDialog({title:'发起监督',icon:'warn',question:'确定要对该研修室发起监督吗？',text:'发起后预约进入「监督中」，读者有 10 分钟时间返回签到自证，超时将被清退并记违约。',detail:'读者：'+reader.name+'<br>'+memberTxt+'研修室：'+room.name,okText:'发起监督',okClass:'btn btn-primary',onOk:()=>{
+        r.sk='supervising';r.st='监督中';r.la='监督中·剩余 10:00';r.superviseAt=fmtNow();
+        toast('已对 '+room.name+' 发起监督，预约进入「监督中」','warn');
+        render();
+      }});
+      break;
+
+    case 'superviseRestore':
+      r.sk='inuse';r.st='使用中';r.la='读者已返回自证，恢复使用';r.superviseAt='';
+      toast('读者已返回自证，「'+reader.name+'」恢复「使用中」');
+      render();
+      break;
+
+    case 'superviseEnd':
+      confirmDialog({title:'监督清退',icon:'danger',question:'确定要对该预约执行「监督清退」吗？',text:'读者未在监督期内返回签到自证，将记为「未签到」违约，研修室立即释放。',detail:'读者：'+reader.name+'（当前累计违约 '+reader.violations+' 次）<br>'+memberTxt+'研修室：'+room.name,okText:'确认清退',okClass:'btn btn-danger',onOk:()=>{
+        reader.violations = reader.violations + 1;
+        r.sk='noshow';r.st='未签到';r.la='监督超时未返回·已清退';r.signOutAt=fmtNow();
+        toast('已清退「'+reader.name+'」，记 1 次违约','warn');
+        render();
+      }});
+      break;
+
+    case 'reopen':
+      r.sk='pending';r.st='待签到';r.la='管理员重新启用';
+      toast('已重新启用 '+reader.name+' 的预约');
+      render();
+      break;
+
+    case 'clearviol':
+      confirmDialog({title:'消除违约',icon:'success',question:'确定要消除该违约记录吗？',text:'消除后记录归档为「已取消」，并撤销读者信用扣分。',detail:'读者：'+reader.name+'（当前累计 '+reader.violations+' 次）<br>违约类型：'+r.st+'<br>'+memberTxt+'研修室：'+room.name,okText:'消除违约',okClass:'btn btn-primary',onOk:()=>{
+        reader.violations = Math.max(0, reader.violations-1);
+        r.sk='cancelled';r.st='已取消';r.la='管理员消除违约';
+        toast('已消除 '+reader.name+' 的违约记录');
+        render();
+      }});
+      break;
+  }
+}
+
+/* ============ 预约详情 ============ */
+function openDetail(id){
+  const r = data.find(x=>x.id===id);
+  if(!r) return;
+  const reader = READERS[r.readerIdx];
+  const room = getRoom(r.roomIdx);
+  const members = r.members || [];
+  const totalPersons = 1 + members.length;
+  const minP = room.minPersons || 1;
+  const capP = room.capacity || 99;
+
+  const endStates = ['cancelled','noshow','overdue','minnotreach','completed'];
+  const afterSignIn = ['inuse','temp','supervising','overdue','noshow','completed'];
+  const timeStr = fmtTime(r.dateKey,r.slotStart,r.duration);
+
+  let tl = '<div class="timeline-item active"><div>预约创建</div><div class="ti-time">'+r.createdAt+'</div></div>';
+  if(r.signInAt) tl += '<div class="timeline-item '+(afterSignIn.indexOf(r.sk)>=0?'active':'')+'"><div>读者签到（进入使用中）</div><div class="ti-time">'+r.signInAt+'</div></div>';
+  if(r.tempAt) tl += '<div class="timeline-item '+(r.sk==='temp'?'active':'')+'"><div>暂离开始</div><div class="ti-time">'+r.tempAt+'</div></div>';
+  if(r.superviseAt) tl += '<div class="timeline-item '+(r.sk==='supervising'?'active':'')+'"><div>管理员发起监督</div><div class="ti-time">'+r.superviseAt+'</div></div>';
+  if(r.signOutAt) tl += '<div class="timeline-item active"><div>读者签退 / 强制释放</div><div class="ti-time">'+r.signOutAt+'</div></div>';
+  if(endStates.indexOf(r.sk)>=0) tl += '<div class="timeline-item active"><div>记录终结 · '+r.st+'</div><div class="ti-time">'+fmtNow().substr(11)+'</div></div>';
+
+  let quotaHtml = '';
+  if(totalPersons < minP){
+    quotaHtml = '<div class="quota-tip bad">✕ 当前登记 <b>'+totalPersons+'</b> 人，低于该研修室最低预约人数 <b>'+minP+'</b> 人，预约可能被判为「人数不足」。</div>';
+  } else if(totalPersons > capP){
+    quotaHtml = '<div class="quota-tip warn">⚠ 当前登记 <b>'+totalPersons+'</b> 人，超过该研修室容纳上限 <b>'+capP+'</b> 人。</div>';
+  } else {
+    quotaHtml = '<div class="quota-tip ok">✓ 当前登记 <b>'+totalPersons+'</b> 人，符合该研修室人数要求（'+minP+' - '+capP+' 人）。</div>';
+  }
+
+  let memberRows = '<tr>'
+    + '<td><span class="role">发起人</span></td>'
+    + '<td>'+esc(reader.name)+'</td>'
+    + '<td>'+esc(reader.type)+'</td>'
+    + '<td class="mono">'+esc(reader.certNo)+'</td>'
+    + '<td>'+esc(reader.dept)+'</td>'
+    + '</tr>';
+  members.forEach(m=>{
+    const isGuest = (m.type === '校外读者' || m.dept === '未匹配');
+    memberRows += '<tr>'
+      + '<td><span class="role '+(isGuest?'guest':'member')+'">'+(isGuest?'外部成员':'成员')+'</span></td>'
+      + '<td>'+esc(m.name)+'</td>'
+      + '<td>'+esc(m.type)+'</td>'
+      + '<td class="mono">'+esc(m.certNo)+'</td>'
+      + '<td>'+esc(m.dept)+'</td>'
+      + '</tr>';
+  });
+
+  $('detailBody').innerHTML = ''
++ '<div class="detail-section"><h4>基本信息</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">记录ID</div><div class="value mono">#'+r.id+'</div></div>'
++   '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
++   '<div class="info-item"><div class="label">预约状态</div><div class="value"><span class="status '+STATUS_DEF[r.sk].cls+'">'+STATUS_DEF[r.sk].label+'</span></div></div>'
++   '<div class="info-item"><div class="label">研修室状态</div><div class="value"><span class="status '+ROOM_STATUS[room.status].cls+'">'+ROOM_STATUS[room.status].label+'</span></div></div>'
++ '</div></div>'
+
++ '<div class="detail-section"><h4>预约读者（发起人）</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">姓名</div><div class="value">'+esc(reader.name)+'</div></div>'
++   '<div class="info-item"><div class="label">类型</div><div class="value">'+esc(reader.type)+'</div></div>'
++   '<div class="info-item"><div class="label">借阅凭证号</div><div class="value mono">'+esc(reader.certNo)+'</div></div>'
++   '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(reader.dept)+'</div></div>'
++   '<div class="info-item"><div class="label">读者状态</div><div class="value">'+esc(reader.status)+'</div></div>'
++   '<div class="info-item"><div class="label">累计违约</div><div class="value" style="color:'+(reader.violations>0?'#b91c1c':'#1f2937')+'">'+reader.violations+' 次</div></div>'
++ '</div></div>'
+
++ '<div class="detail-section"><h4>预约成员（共 '+totalPersons+' 人）</h4>'
++   quotaHtml
++   '<table class="member-tbl"><thead><tr>'
++     '<th style="width:76px">身份</th><th style="width:92px">姓名</th><th style="width:86px">类型</th><th style="width:150px">学号/工号</th><th>所属单位</th>'
++   '</tr></thead><tbody>'+memberRows+'</tbody></table>'
++ '</div>'
+
++ '<div class="detail-section"><h4>研修室与时段</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">研修室名称</div><div class="value">'+esc(room.name)+' <span style="font-family:monospace;color:#94a3b8;font-size:12px;font-weight:400">'+room.code+'</span></div></div>'
++   '<div class="info-item"><div class="label">位置</div><div class="value">'+room.venue+' / '+room.floor+' / '+room.area+'</div></div>'
++   '<div class="info-item"><div class="label">容纳人数</div><div class="value">'+room.capacity+' 人（最低 '+room.minPersons+' 人起）</div></div>'
++   '<div class="info-item"><div class="label">预约总人数</div><div class="value">'+totalPersons+' 人（发起人 1 + 共同预约人 '+members.length+'）</div></div>'
++   '<div class="info-item"><div class="label">预约日期</div><div class="value mono">'+r.dateKey+'</div></div>'
++   '<div class="info-item"><div class="label">时段</div><div class="value mono">'+timeStr+'</div></div>'
++   '<div class="info-item full"><div class="label">用途</div><div class="value">'+esc(r.purpose)+'</div></div>'
++   (r.remark? '<div class="info-item full"><div class="label">备注</div><div class="value">'+esc(r.remark)+'</div></div>':'')
++ '</div></div>'
+
++ '<div class="detail-section"><h4>操作时间线</h4><div class="timeline">'+tl+'</div></div>'
++ '<div class="detail-section"><h4>最后操作</h4><div class="modal-detail">'+r.la+'</div></div>';
+
+  $('detailMask').classList.add('show');
+  $('detailBody').scrollTop=0;
+}
+function closeDetail(){ $('detailMask').classList.remove('show'); }
+
+/* ============ 新增预约 ============ */
+function openAdd(){
+  $('addReader').value = '';
+  fillVenueFilter($('addVenue'),'总馆');
+  fillFloorFilter($('addFloor'),'总馆','2F');
+  // 修复：默认选中一个区域，避免「研修室」下拉一直是禁用状态
+  fillAreaFilter($('addArea'),'总馆','2F','多媒体区');
+  onAddArea();
+  $('addDate').value = TODAY;
+  $('addDate').min = TODAY;
+  $('addDate').max = addDays(TODAY,7);
+  $('addSlotStart').innerHTML = TIME_SLOTS.map((s,i)=>'<option value="'+i+'">'+s.label+'（'+s.range+'）</option>').join('');
+  $('addSlotStart').value = '4';
+  $('addDuration').value = '2';
+  $('addMembers').value = '';
+  $('addPurpose').value = '';
+  $('addRemark').value = '';
+  $('addSubmitBtn').disabled = true;
+  updateAddTip();
+  $('addMask').classList.add('show');
+}
+function closeAdd(){ $('addMask').classList.remove('show'); }
+function onAddVenue(){
+  fillFloorFilter($('addFloor'),$('addVenue').value,'');
+  onAddFloor();
+}
+function onAddFloor(){
+  fillAreaFilter($('addArea'),$('addVenue').value,$('addFloor').value,'');
+  onAddArea();
+}
+function onAddArea(){
+  const venue = $('addVenue').value, floor = $('addFloor').value, area = $('addArea').value;
+  const sel = $('addRoom');
+  sel.innerHTML = '<option value="">请选择研修室</option>';
+  sel.disabled = !(venue && floor && area);
+  if(!(venue && floor && area)){ updateAddTip(); return; }
+  // 修复：维护中 / 已停用的房间不参与新预约
+  ROOMS.filter(r=>r.venue===venue && r.floor===floor && r.area===area
+                  && r.status!=='closed' && r.status!=='maintenance').forEach(r=>{
+    sel.add(new Option(r.name+'（'+r.capacity+'人·≥'+r.minPersons+'）', r.id));
+  });
+  updateAddTip();
+}
+function onAddRoom(){ updateAddTip(); }
+function recalcMinPersons(){ updateAddTip(); }
+function onSlotChange(){ updateAddTip(); }
+
+function parseMemberInput(text){
+  const out = [];
+  const seen = new Set();
+  text.split('\n').forEach(line=>{
+    line = line.trim();
+    if(!line) return;
+    const parts = line.split(/[\s,，、/]+/).filter(Boolean);
+    let hit = null;
+    for(const p of parts){ if(DIRECTORY[p]){ hit = DIRECTORY[p]; break; } }
+    let person;
+    if(hit){
+      person = {name:hit.name, type:hit.type, certNo:hit.certNo, dept:hit.dept};
+    } else {
+      person = {name: parts[0] || line, type:'校外读者', certNo:'—', dept:'未匹配（外部成员）'};
+    }
+    const key = person.name + '|' + person.certNo;
+    if(seen.has(key)) return;
+    seen.add(key);
+    out.push(person);
+  });
+  return out;
+}
+
+function updateAddTip(){
+  const members = parseMemberInput($('addMembers').value);
+  const total = 1 + members.length;
+  $('addPersons').value = total + ' 人';
+
+  const submitBtn = $('addSubmitBtn');
+  // 修复：为 tip 增加兜底，避免 addPersonsTip 缺失时抛异常导致整个弹窗打不开
+  const tip = $('addPersonsTip') || $('addMembersTip');
+  const mTip = $('addMembersTip');
+  submitBtn.disabled = true;
+
+  const matched = members.filter(m=>m.certNo !== '—').length;
+  const unmatched = members.length - matched;
+  if(members.length){
+    let txt = '已登记 '+members.length+' 位共同预约人';
+    if(matched) txt += '（已匹配 '+matched+' 位）';
+    if(unmatched) txt += '，其中 <b style="color:#b46b00">'+unmatched+'</b> 位未匹配到成员库，将记为外部成员';
+    mTip.innerHTML = txt;
+  } else {
+    mTip.textContent = '留空表示仅发起人 1 人预约；每行一位成员，可填姓名或学号';
+  }
+
+  const id = Number($('addRoom').value);
+  if(!id){ tip.innerHTML = '<span style="color:#94a3b8">请先选择研修室</span>'; return; }
+  const room = ROOMS.find(r=>r.id===id);
+  if(!room){ tip.textContent = '研修室不存在'; return; }
+
+  if(total < room.minPersons){
+    tip.innerHTML = '<span style="color:#b46b00">⚠ 当前 '+total+' 人，少于该研修室最低预约人数 '+room.minPersons+' 人</span>';
+    return;
+  }
+  if(total > room.capacity){
+    tip.innerHTML = '<span style="color:#b91c1c">⚠ 当前 '+total+' 人，超过该研修室容纳上限 '+room.capacity+' 人</span>';
+    return;
+  }
+  tip.innerHTML = '<span style="color:#12894f">✓ 符合该研修室人数要求（'+room.minPersons+' - '+room.capacity+' 人）</span>';
+
+  if($('addReader').value.trim() && $('addPurpose').value.trim() && $('addDate').value && $('addSlotStart').value){
+    submitBtn.disabled = false;
+  }
+}
+
+$('addReader').addEventListener('input', updateAddTip);
+$('addMembers').addEventListener('input', updateAddTip);
+$('addPurpose').addEventListener('input', updateAddTip);
+$('addDate').addEventListener('change', updateAddTip);
+
+function submitAdd(){
+  const readerKw = $('addReader').value.trim();
+  const reader = READERS.find(r => r.name===readerKw || r.certNo===readerKw);
+  if(!reader){ toast('请填写正确的读者姓名或学号','warn'); return; }
+  if(reader.status!=='正常'){ toast('该读者状态异常，无法预约','error'); return; }
+  const roomId = Number($('addRoom').value);
+  const room = ROOMS.find(r=>r.id===roomId);
+  if(!room){ toast('请选择研修室','error'); return; }
+
+  const members = parseMemberInput($('addMembers').value);
+  const totalPersons = 1 + members.length;
+  if(totalPersons < room.minPersons){ toast('预约总人数不能少于研修室最低预约人数 '+room.minPersons,'error'); return; }
+  if(totalPersons > room.capacity){ toast('预约总人数不能超过研修室容纳人数 '+room.capacity,'error'); return; }
+
+  const dateKey = $('addDate').value;
+  const slotStart = parseInt($('addSlotStart').value,10);
+  const duration = parseInt($('addDuration').value,10);
+  const purpose = $('addPurpose').value.trim();
+  if(!purpose){ toast('请填写用途说明','error'); return; }
+
+  const readerIdx = READERS.indexOf(reader);
+  const roomIdx = ROOMS.indexOf(room);
+  const id = 'R' + dateKey.replace(/-/g,'') + String(Math.floor(Math.random()*90+10));
+  data.unshift({
+    id, readerIdx, roomIdx, dateKey, slotStart, duration,
+    persons: totalPersons, members, purpose,
+    sk:'pending', st:'待签到',
+    la:'签到剩余 30 分钟', remark: $('addRemark').value.trim(),
+    createdAt: fmtNow(), signInAt:'', tempAt:'', superviseAt:'', signOutAt:''
+  });
+  closeAdd();
+  state.date='today'; $('dateSel').value='today';
+  toast('预约创建成功！记录号 '+id+'（共 '+totalPersons+' 人）');
+  render();
+}
+
+/* ============ 批量取消 ============ */
+function batchCancel(){
+  const ids = [...state.selected];
+  if(!ids.length){ toast('请先勾选要取消的预约','warn'); return; }
+  const list = ids.map(id=>data.find(x=>x.id===id)).filter(Boolean);
+  const ok = list.filter(r=>r.sk==='pending');
+  const skip = list.filter(r=>r.sk!=='pending');
+  if(!ok.length){ toast('所选 '+skip.length+' 条均不可取消（已开始使用或已终结）','warn'); return; }
+
+  const totalPeople = ok.reduce((s,r)=> s + 1 + (r.members||[]).length, 0);
+  const detailTxt = ok.slice(0,8).map(r=>{
+    const reader = READERS[r.readerIdx];
+    const room = getRoom(r.roomIdx);
+    return '· '+reader.name+'（共 '+ (1+(r.members||[]).length) +' 人） · '+room.name;
+  }).join('<br>') + (ok.length>8 ? '<br>… 等共 '+ok.length+' 条' : '');
+
+  if(skip.length){
+    confirmDialog({title:'批量取消预约',icon:'warn',question:'确定要取消选中的 '+ok.length+' 条「待签到」预约吗？',text:'涉及 '+totalPeople+' 位读者。另有 '+skip.length+' 条因状态不符（已开始使用/已终结）将被自动跳过。',detail:detailTxt,okText:'确认取消',okClass:'btn btn-primary',onOk:()=>{
+      ok.forEach(r=>{ r.sk='cancelled'; r.st='已取消'; r.la='管理员批量取消'; });
+      state.selected.clear();
+      toast('已批量取消 '+ok.length+' 条预约'+(skip.length?'（'+skip.length+' 条已跳过）':''), skip.length?'warn':'');
+      render();
+    }});
+  } else {
+    confirmDialog({title:'批量取消预约',icon:'warn',question:'确定要取消选中的 '+ok.length+' 条预约吗？',text:'涉及 '+totalPeople+' 位读者，此操作不可撤销。',detail:detailTxt,okText:'确认取消',okClass:'btn btn-primary',onOk:()=>{
+      ok.forEach(r=>{ r.sk='cancelled'; r.st='已取消'; r.la='管理员批量取消'; });
+      state.selected.clear();
+      toast('已批量取消 '+ok.length+' 条预约');
+      render();
+    }});
+  }
+}
+
+/* ============ 通用确认 ============ */
+let confirmCb = null;
+function confirmDialog(opts){
+  $('confirmTitle').textContent = opts.title;
+  $('confirmQuestion').textContent = opts.question;
+  $('confirmText').innerHTML = opts.text || '';
+  const cd = $('confirmDetail');
+  if(opts.detail){ cd.style.display='block'; cd.innerHTML=opts.detail; } else { cd.style.display='none'; }
+  const iconMap = {success:'check-circle', warning:'exclamation-triangle', danger:'trash-alt', info:'info-circle'};
+  const icon = $('confirmIcon');
+  icon.className = 'modal-icon ' + (opts.icon==='danger'?'danger':opts.icon==='warn'?'warn':opts.icon==='success'?'success':'info');
+  icon.innerHTML = '<i class="fas fa-'+(iconMap[opts.icon||'info']||'info-circle')+'"></i>';
+  const btn = $('confirmOkBtn');
+  btn.className = opts.okClass || 'btn btn-primary';
+  btn.textContent = opts.okText || '确定';
+  confirmCb = opts.onOk;
+  $('confirmMask').classList.add('show');
+}
+function closeConfirm(){ $('confirmMask').classList.remove('show'); confirmCb=null; }
+$('confirmOkBtn').addEventListener('click', ()=>{
+  const h = confirmCb; closeConfirm();
+  if(typeof h==='function') h();
+});
+
+/* ============ 状态说明 ============ */
+function openLegal(){
+  $('legalBody').innerHTML = ''
++ '<div class="detail-section"><h4>一、正常流转状态（4 种）</h4>'
++   '<div class="info-grid">'
++     '<div class="info-item"><span class="status s-pending">待签到</span><div class="value" style="font-size:12px;margin-top:6px">预约已创建，读者尚未到场</div></div>'
++     '<div class="info-item"><span class="status s-inuse">使用中</span><div class="value" style="font-size:12px;margin-top:6px">读者已签到并正在使用，计时开始</div></div>'
++     '<div class="info-item"><span class="status s-temp">暂离中</span><div class="value" style="font-size:12px;margin-top:6px">读者临时离开，保留 30 分钟</div></div>'
++     '<div class="info-item"><span class="status s-supervising">监督中</span><div class="value" style="font-size:12px;margin-top:6px">被举报无人使用，管理员发起监督，读者 10 分钟内需返回自证</div></div>'
++   '</div></div>'
++ '<div class="detail-section"><h4>二、正常终结状态（2 种）</h4>'
++   '<div class="info-grid">'
++     '<div class="info-item"><span class="status s-completed">已签退</span><div class="value" style="font-size:12px;margin-top:6px">读者正常扫码签退，流程闭环</div></div>'
++     '<div class="info-item"><span class="status s-cancelled">已取消</span><div class="value" style="font-size:12px;margin-top:6px">读者或管理员取消，预约归档</div></div>'
++   '</div></div>'
++ '<div class="detail-section"><h4>三、违约类状态（3 种）</h4>'
++   '<div class="info-grid three">'
++     '<div class="info-item"><span class="status s-noshow">未签到</span><div class="value" style="font-size:12px;margin-top:6px">超时未签到，或监督超时未返回</div></div>'
++     '<div class="info-item"><span class="status s-overdue">逾期未签退</span><div class="value" style="font-size:12px;margin-top:6px">时段结束未签退，管理员强制释放</div></div>'
++     '<div class="info-item"><span class="status s-minnotreach">人数不足取消</span><div class="value" style="font-size:12px;margin-top:6px">实到人数 &lt; 最低预约人数，系统自动取消</div></div>'
++   '</div></div>'
++ '<div class="detail-section"><h4>四、汇总对照表</h4>'
++   '<table class="summary-tbl"><thead><tr><th>状态</th><th>含义</th><th>研修室物理</th><th>后台操作</th></tr></thead><tbody>'
++     '<tr><td>待签到</td><td>已预约，未签到</td><td>已预约</td><td>强制签到 / 取消 / 详情</td></tr>'
++     '<tr><td>使用中</td><td>读者已签到，正在使用</td><td>在用</td><td>强制签退 / 标记暂离 / 发起监督 / 详情</td></tr>'
++     '<tr><td>暂离中</td><td>读者临时离开</td><td>暂离保留</td><td>恢复使用 / 强制签退 / 详情</td></tr>'
++     '<tr><td>监督中</td><td>被举报无人使用，等待读者自证</td><td>保留</td><td>读者已返回·恢复使用 / 超时清退 / 详情</td></tr>'
++     '<tr><td>已签退</td><td>正常闭环</td><td>已释放</td><td>详情（只读）</td></tr>'
++     '<tr><td>已取消</td><td>预约终止</td><td>已释放</td><td>重新启用 / 详情</td></tr>'
++     '<tr><td>未签到</td><td>预约生效后未到 / 监督超时</td><td>已释放</td><td>消除违约 / 详情</td></tr>'
++     '<tr><td>逾期未签退</td><td>用完未签退</td><td>已强制释放</td><td>消除违约 / 详情</td></tr>'
++     '<tr><td>人数不足取消</td><td>实到 &lt; 最低预约人数</td><td>已释放</td><td>消除违约 / 详情</td></tr>'
++   '</tbody></table></div>'
++ '<div class="detail-section"><h4>五、状态流转关系（完整闭环）</h4>'
++   '<div class="flow-diagram">'
++     '【正常闭环】<br>'
++     '<b>待签到</b> → 扫码签到 → <b>使用中</b> → 扫码签退 → <b>已签退</b>（⭐）<br><br>'
++     '【临时离开】<br>'
++     '<b>使用中</b> → 暂离 → <b>暂离中</b>（30 分钟）→ 返回 → <b>使用中</b><br><br>'
++     '【监督流程】<br>'
++     '<b>使用中</b> → 举报无人 → 管理员发起监督 → <b>监督中</b>（10 分钟）<br>'
++     '　　├→ 读者返回自证 → <b>使用中</b><br>'
++     '　　└→ 超时未返回 → <b>未签到</b>（违约）<br><br>'
++     '【违约与取消】<br>'
++     '<b>待签到</b> → 超时 30 分钟 → <b>未签到</b>（违约）<br>'
++     '<b>待签到</b> → 读者/管理员取消 → <b>已取消</b><br>'
++     '<b>使用中</b> → 超时未签退 → <b>逾期未签退</b>（违约）<br>'
++     '<b>使用中</b> → 实到 &lt; 最低人数 → <b>人数不足取消</b>（违约）<br><br>'
++     '【归档】<br>'
++     '任意违约 → 管理员「消除违约」 → <b>已取消</b>'
++   '</div></div>';
+  $('legalMask').classList.add('show');
+}
+function closeLegal(){ $('legalMask').classList.remove('show'); }
+
+/* =========================================================
+   研修室使用及预约状态
+   ========================================================= */
+let rsDate = TODAY;
+let rsVenue = '';
+let rsFloor = '';
+
+function openRoomStatus(){
+  rsDate = TODAY;
+  rsVenue = '';
+  rsFloor = '';
+  $('rsToolbar').innerHTML = buildRsToolbar();
+  renderRsTable();
+  $('roomStatusMask').classList.add('show');
+}
+function closeRoomStatus(){ $('roomStatusMask').classList.remove('show'); }
+
+function buildRsToolbar(){
+  let h = '<div class="rs-toolbar">';
+  h += '<label>日期</label>';
+  h += '<input type="date" id="rsDateInput" value="'+rsDate+'" onchange="rsChangeDate(this.value)" style="width:152px;height:34px;padding:0 11px;border:1px solid #dfe4ec;border-radius:8px;font-size:13px;font-family:inherit;outline:none">';
+
+  h += '<label style="margin-left:8px">馆藏地</label>';
+  h += '<select id="rsVenueSel" onchange="rsChangeVenue(this.value)" style="min-width:110px">';
+  h += '<option value="">全部馆藏地</option>';
+  Object.keys(VENUES).forEach(v=>{
+    h += '<option value="'+v+'"'+(v===rsVenue?' selected':'')+'>'+v+'</option>';
+  });
+  h += '</select>';
+
+  h += '<label style="margin-left:8px">楼层</label>';
+  h += '<select id="rsFloorSel" onchange="rsChangeFloor(this.value)" style="min-width:110px"'+(rsVenue ? '' : ' disabled')+'>';
+  if(rsVenue){
+    h += '<option value="">全部楼层</option>';
+    Object.keys(VENUES[rsVenue]||{}).forEach(f=>{
+      h += '<option value="'+f+'"'+(f===rsFloor?' selected':'')+'>'+f+'</option>';
+    });
+  } else {
+    h += '<option value="">请先选择馆藏地</option>';
+  }
+  h += '</select>';
+
+  h += '<div class="rs-legend">';
+  h += '<span><i style="background:#f5f7fb;border:1px solid #e8ecf3"></i>空闲</span>';
+  h += '<span><i style="background:#fff8e5;border:1px solid #fbe3c4"></i>待签到</span>';
+  h += '<span><i style="background:#e8f0fe;border:1px solid #c9dcfb"></i>使用中</span>';
+  h += '<span><i style="background:#f3e8ff;border:1px solid #e0ccfb"></i>监督中</span>';
+  h += '<span><i style="background:#f0f2f5;border:1px solid #e5e8ee"></i>已结束</span>';
+  h += '<span><i style="background:repeating-linear-gradient(45deg,#f5f7fb,#f5f7fb 3px,#e8ecf3 3px,#e8ecf3 6px);border:1px solid #e8ecf3"></i>未开放/停用</span>';
+  h += '</div>';
+  h += '</div>';
+  return h;
+}
+
+function rsChangeDate(v){ rsDate = v || TODAY; renderRsTable(); }
+function rsChangeVenue(v){
+  rsVenue = v;
+  rsFloor = '';
+  $('rsToolbar').innerHTML = buildRsToolbar();
+  renderRsTable();
+}
+function rsChangeFloor(v){
+  rsFloor = v;
+  renderRsTable();
+}
+
+function renderRsTable(){
+  const rooms = ROOMS.filter(r =>
+    (!rsVenue || r.venue === rsVenue) &&
+    (!rsFloor || r.floor === rsFloor)
+  );
+  const dayRecords = data.filter(r => r.dateKey === rsDate);
+
+  const byRoom = {};
+  dayRecords.forEach(r => {
+    if(!byRoom[r.roomIdx]) byRoom[r.roomIdx] = [];
+    byRoom[r.roomIdx].push(r);
+  });
+
+  const PRIO = {inuse:5, temp:5, supervising:5, pending:4, completed:2, cancelled:1, noshow:1, overdue:1, minnotreach:1};
+
+  let html = '';
+  html += '<div class="rs-table-wrap">';
+  html += '<table class="rs-table">';
+  html += '<colgroup>';
+  html +=   '<col style="width:210px">';
+  html +=   '<col style="width:56px">';
+  html +=   '<col style="width:80px">';
+  for(let i = 0; i < 7; i++) html += '<col style="width:108px">';
+  html += '</colgroup>';
+  html += '<thead><tr>';
+  html += '<th>研修室</th>';
+  html += '<th>容量</th>';
+  html += '<th>当前状态</th>';
+  TIME_SLOTS.forEach(s=>{
+    html += '<th class="rs-th-slot" style="font-size:11.5px; color:#475569; font-weight:600; white-space:nowrap; padding:8px 0; text-align:center;">'
+         + s.range.replace('-', '~')
+         + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  let totalSlots = 0, usedSlots = 0;
+  let pendingCnt = 0, inuseCnt = 0, freeCnt = 0;
+
+  if(!rooms.length){
+    html += '<tr><td colspan="10"><div class="empty" style="padding:50px 20px"><div class="big">📭</div>当前筛选条件下暂无研修室</div></td></tr>';
+  }
+
+  rooms.forEach(room=>{
+    const idx = ROOMS.indexOf(room);
+    const recs = byRoom[idx] || [];
+
+    const slotMap = {};
+    recs.forEach(rec=>{
+      for(let i = rec.slotStart; i < rec.slotStart + rec.duration && i < TIME_SLOTS.length; i++){
+        const cur = slotMap[i];
+        if(!cur || (PRIO[rec.sk]||0) > (PRIO[cur.sk]||0)) slotMap[i] = rec;
+      }
+    });
+
+    html += '<tr>';
+    html += '<td>'
+         +   '<div class="room-name" style="font-size:13px">'+esc(room.name)+'</div>'
+         +   '<div class="room-code">'+room.code+'</div>'
+         +   '<div style="font-size:11px;color:#9aa3b2;margin-top:3px">'+room.venue+' / '+room.floor+' / '+room.area+'</div>'
+         + '</td>';
+    html += '<td style="font-size:12px;color:#64748b">'+room.capacity+' 人</td>';
+    html += '<td><span class="status '+ROOM_STATUS[room.status].cls+'" style="font-size:11px;padding:3px 9px">'+ROOM_STATUS[room.status].label+'</span></td>';
+
+    TIME_SLOTS.forEach((s, i)=>{
+      totalSlots++;
+      const isRoomClosed = (room.status === 'closed' || room.status === 'maintenance');
+      const open = (room.openSlots||[]).includes(s.key);
+      const rec = slotMap[i];
+
+      let cls = '', label = '', tip = '';
+      if(isRoomClosed){
+        cls = 'rs-closed';
+        label = room.status === 'closed' ? '停用' : '维护';
+        tip = room.name + ' · ' + (room.status === 'closed' ? '已停用' : '维护中');
+      } else if(!open){
+        cls = 'rs-closed';
+        label = '未开放';
+        tip = room.name + ' · ' + s.range + ' · 该时段未开放';
+      } else if(!rec){
+        cls = 'rs-free';
+        label = '空闲';
+        tip = room.name + ' · ' + s.range + ' · 空闲可预约';
+        freeCnt++;
+      } else {
+        const reader = READERS[rec.readerIdx];
+        const cnt = 1 + (rec.members||[]).length;
+        if(rec.sk === 'pending'){
+          cls = 'rs-pending'; label = reader.name;
+          tip = '待签到 · '+reader.name+'（'+cnt+'人）· '+rec.purpose;
+          pendingCnt++;
+        } else if(rec.sk === 'inuse'){
+          cls = 'rs-inuse'; label = reader.name;
+          tip = '使用中 · '+reader.name+'（'+cnt+'人）· '+rec.purpose;
+          inuseCnt++;
+        } else if(rec.sk === 'temp'){
+          cls = 'rs-inuse'; label = reader.name;
+          tip = '暂离中 · '+reader.name+'（'+cnt+'人）· '+rec.purpose;
+          inuseCnt++;
+        } else if(rec.sk === 'supervising'){
+          cls = 'rs-supervising'; label = reader.name;
+          tip = '监督中 · '+reader.name+'（'+cnt+'人）· '+rec.purpose;
+          inuseCnt++;
+        } else if(rec.sk === 'completed'){
+          cls = 'rs-completed'; label = reader.name;
+          tip = '已签退 · '+reader.name+'（'+cnt+'人）';
+        } else {
+          cls = 'rs-cancelled'; label = reader.name;
+          tip = STATUS_DEF[rec.sk].label + ' · '+reader.name;
+        }
+        usedSlots++;
+      }
+      html += '<td class="rs-td-slot"><span class="rs-slot '+cls+'" title="'+esc(tip)+'">'+esc(label)+'</span></td>';
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  html += '</div>';
+
+  html += '<div class="rs-summary">'
+       +   '<span>共 <b>'+rooms.length+'</b> 间研修室（'+rsDate+'）</span>'
+       +   '<span>时段占用 <b>'+usedSlots+'</b> / '+totalSlots+'（'+(totalSlots?Math.round(usedSlots/totalSlots*100):0)+'%）</span>'
+       +   '<span>使用中 <b>'+inuseCnt+'</b> 格</span>'
+       +   '<span>待签到 <b>'+pendingCnt+'</b> 格</span>'
+       +   '<span>空闲 <b>'+freeCnt+'</b> 格</span>'
+       + '</div>';
+
+  $('rsTableArea').innerHTML = html;
+}
+
+/* =========================================================
+   研修室预约明细（当天及未来）
+   ========================================================= */
+const WEEK_CN = ['周日','周一','周二','周三','周四','周五','周六'];
+function dayLabel(dk){
+  if(dk === TODAY) return '今天';
+  if(dk === addDays(TODAY,1)) return '明天';
+  if(dk === addDays(TODAY,2)) return '后天';
+  const d = new Date(dk+'T00:00:00');
+  return WEEK_CN[d.getDay()];
+}
+
+function openRoomBookings(roomIdx){
+  const room = getRoom(roomIdx);
+  if(!room) return;
+
+  const recs = data.filter(r => r.roomIdx === roomIdx && r.dateKey >= TODAY);
+  recs.sort((a,b)=>{
+    if(a.dateKey !== b.dateKey) return a.dateKey.localeCompare(b.dateKey);
+    return a.slotStart - b.slotStart;
+  });
+
+  const byDate = {};
+  recs.forEach(r => {
+    if(!byDate[r.dateKey]) byDate[r.dateKey] = [];
+    byDate[r.dateKey].push(r);
+  });
+
+  const dateList = [];
+  const seen = new Set();
+  for(let i = 0; i < 7; i++){
+    const dk = addDays(TODAY, i);
+    if(!seen.has(dk)){ seen.add(dk); dateList.push(dk); }
+  }
+  Object.keys(byDate).forEach(dk=>{
+    if(!seen.has(dk)){ seen.add(dk); dateList.push(dk); }
+  });
+  dateList.sort();
+
+  let html = '';
+
+  html += '<div class="rb-room-card">'
+       +   '<div class="rb-room-name">'+esc(room.name)+'</div>'
+       +   '<div class="rb-room-code">'+room.code+'</div>'
+       +   '<div class="rb-room-meta">'
+       +     '<span class="rb-flag">'+room.venue+' / '+room.floor+' / '+room.area+'</span>'
+       +     '<span>容量 <b style="color:#334155">'+room.capacity+' 人</b>（最低 '+room.minPersons+' 人起）</span>'
+       +     '<span class="status '+ROOM_STATUS[room.status].cls+'" style="font-size:11.5px;padding:3px 10px">'+ROOM_STATUS[room.status].label+'</span>'
+       +   '</div>'
+       + '</div>';
+
+  const totalCount = recs.length;
+  let hasAny = false;
+  dateList.forEach(dk=>{
+    const dayRecs = byDate[dk] || [];
+    if(!dayRecs.length && dk !== TODAY) return;
+    hasAny = true;
+
+    html += '<div class="rb-day-group">';
+    html +=   '<div class="rb-day-head">'
+          +     '<span class="rb-day-label">'+dayLabel(dk)+'</span>'
+          +     '<span class="rb-day-date">'+dk+'</span>'
+          +     '<span class="rb-day-count">'+dayRecs.length+' 场</span>'
+          +   '</div>';
+    html +=   '<div class="rb-day-body">';
+    if(!dayRecs.length){
+      html += '<div class="rb-empty" style="padding:26px 10px"><div class="big" style="font-size:26px;opacity:.4">📭</div>该日暂无预约</div>';
+    } else {
+      dayRecs.forEach(rec=>{
+        const reader = READERS[rec.readerIdx];
+        const cnt = 1 + (rec.members||[]).length;
+        const timeStr = fmtTime(rec.dateKey, rec.slotStart, rec.duration);
+        html += '<div class="rb-rec">'
+              +   '<div class="rb-time">'+timeStr+'</div>'
+              +   '<div class="rb-info">'
+              +     '<span class="rb-user">'+esc(reader.name)+'</span>'
+              +     '<span class="rb-org">'+esc(reader.dept)+'</span>'
+              +     '<span class="rb-persons">'+cnt+' 人 · '+esc(rec.purpose)+'</span>'
+              +   '</div>'
+              +   '<span class="status '+STATUS_DEF[rec.sk].cls+'" style="font-size:11.5px;padding:3px 10px">'+STATUS_DEF[rec.sk].label+'</span>'
+              + '</div>';
+      });
+    }
+    html +=   '</div>';
+    html += '</div>';
+  });
+
+  if(!hasAny){
+    html += '<div class="rb-empty"><div class="big">📭</div>该研修室当天及未来暂无预约记录</div>';
+  } else {
+    html += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #eef1f6;font-size:12.5px;color:#64748b">'
+         +   '共 <b style="color:#2f6fed">'+totalCount+'</b> 场预约（当天及未来）'
+         + '</div>';
+  }
+
+  $('rbBody').innerHTML = html;
+  $('rbBody').scrollTop = 0;
+  $('roomBookingsMask').classList.add('show');
+}
+function closeRoomBookings(){ $('roomBookingsMask').classList.remove('show'); }
+
+/* ============ 事件绑定 ============ */
+function bind(){
+  $('kwInput').addEventListener('input', ()=>{ state.keyword=$('kwInput').value; state.page=1; render(); });
+  $('statusSel').addEventListener('change', ()=>{ state.status=$('statusSel').value; state.page=1; render(); });
+  $('dateSel').addEventListener('change', ()=>{ state.date=$('dateSel').value; state.page=1; render(); });
+
+  $('btnSearch').addEventListener('click', ()=>{ state.page=1; render(); });
+  $('btnReset').addEventListener('click', ()=>{
+    $('kwInput').value=''; state.keyword='';
+    $('statusSel').value=''; state.status='';
+    $('dateSel').value='today'; state.date='today';
+    $('venueSel').value=''; $('floorSel').innerHTML='<option value="">请先选择馆藏地</option>'; $('floorSel').disabled=true;
+    $('areaSel').innerHTML='<option value="">请先选择楼层</option>'; $('areaSel').disabled=true;
+    state.venue=''; state.floor=''; state.area='';
+    state.page=1; render();
+  });
+  $('btnExport').addEventListener('click', ()=>{ toast('已按当前条件导出 '+getFiltered().length+' 条预约记录'); });
+
+  document.addEventListener('click', e=>{
+    if(e.target.id==='btnAdd') openAdd();
+    if(e.target.id==='btnBatchCancel') batchCancel();
+    if(e.target.id==='btnLegal') openLegal();
+    if(e.target.id==='btnRoomStatus') openRoomStatus();
+
+    const link = e.target.closest('[data-act]');
+    if(link && link.dataset.act){ act(link.dataset.act, link.dataset.id); return; }
+
+    const cb = e.target.closest('.row-chk');
+    if(cb){
+      const id = cb.dataset.id;
+      if(cb.checked) state.selected.add(id); else state.selected.delete(id);
+      updateSelInfo();
+      const pageIds = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize).map(r=>r.id);
+      $('checkAll').checked = pageIds.length>0 && pageIds.every(i=>state.selected.has(i));
+    }
+  });
+
+  $('checkAll').addEventListener('change', e=>{
+    const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+    rows.forEach(r=>{ e.target.checked ? state.selected.add(r.id) : state.selected.delete(r.id); });
+    render();
+  });
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){
+      document.querySelectorAll('.modal-mask.show').forEach(m=>m.classList.remove('show'));
+    }
+  });
+}
+
+initFilterSelects();
+bind();
+render();
+  </script>
+</body>
+</html>
+

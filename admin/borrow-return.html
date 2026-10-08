@@ -1,0 +1,2480 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>借还管理 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 借还管理 */
+    body {
+      --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#eff6ff;
+      --border:#e5e9f0; --text:#1f2937; --text-2:#6b7280; --text-3:#9ca3af;
+      --bg:#f0f2f5; --radius:8px; --success:#16a34a; --warning:#d97706; --danger:#dc2626;
+    }
+    .content{flex:1;padding:18px 24px 32px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 1px 2px rgba(15,23,42,.04);overflow:hidden}
+.card + .card{margin-top:14px}
+
+.page-pos{background:linear-gradient(135deg,#ecfeff,#f0f9ff);border:1px solid #bae6fd;border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.page-pos .ico{width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center;font-size:17px;flex-shrink:0;color:#0891b2;box-shadow:0 2px 6px rgba(8,145,178,.12)}
+.page-pos .info{flex:1;font-size:12.5px;color:#0c4a6e;line-height:1.7}
+.page-pos .info b{color:#0e7490;font-weight:600}
+.page-pos .info .q{background:#fff;border:1px solid #bae6fd;padding:1px 6px;border-radius:4px;color:#0e7490;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;margin:0 2px}
+
+.filter-bar{display:flex;flex-wrap:wrap;gap:14px 16px;padding:16px 20px;align-items:flex-end}
+.filter-item{display:flex;flex-direction:column;gap:6px;min-width:130px;flex:1 1 130px}
+.filter-item label{font-size:12.5px;color:var(--text-2);font-weight:500}
+.filter-item.search{flex:1 1 280px;min-width:240px}
+.filter-item.dates{flex:0 1 auto;min-width:auto}
+.filter-actions{display:flex;gap:10px;margin-left:auto;flex-shrink:0;padding-bottom:0}
+
+input[type=text],input[type=date],input[type=number],select{width:100%;height:36px;border:1px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px;color:var(--text);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:var(--text-3)}
+input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select:disabled{background:#f8fafc;color:var(--text-3);cursor:not-allowed}
+.date-range{display:flex;align-items:center;gap:6px}
+.date-range input{width:140px}
+.date-sep{color:var(--text-3);font-size:12px}
+
+.loc-block{background:#f8fafc;border-top:1px solid var(--border);padding:14px 20px}
+.loc-head{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-2);font-weight:500;margin-bottom:10px;flex-wrap:wrap}
+.loc-head .ico{color:var(--primary);font-size:13px}
+.loc-cascade{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
+.loc-step{display:flex;flex-direction:column;gap:6px;min-width:115px;flex:1 1 115px}
+.loc-step > label{font-size:12.5px;color:var(--text-2);font-weight:500}
+.loc-arrow{align-self:center;color:#cbd5e1;font-size:14px;padding-bottom:8px;flex-shrink:0}
+.loc-preview{margin-top:10px;padding:8px 12px;background:#fff;border:1px dashed #cbd5e1;border-radius:7px;font-size:12.5px;color:var(--text-2);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;align-items:center;gap:8px;min-height:32px;flex-wrap:wrap}
+.loc-preview .lp-l{color:var(--text-3);font-size:11.5px;font-weight:500;font-family:inherit;flex-shrink:0}
+.loc-preview .lp-v{color:#1d4ed8;font-weight:500;flex:1;min-width:0;word-break:break-all}
+.loc-preview .lp-clear{color:var(--danger);cursor:pointer;font-family:inherit;font-size:11.5px;text-decoration:underline;flex-shrink:0}
+.loc-preview .lp-clear:hover{color:#b91c1c}
+.loc-preview .lp-hint{color:var(--text-3);font-family:inherit;font-style:italic}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 15px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;user-select:none}
+.btn:hover{border-color:#c3df1;background:#f8fafc}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover)}
+.btn-info{background:#0891b2;border-color:#0891b2;color:#fff}
+.btn-info:hover{background:#067a99;border-color:#067a99}
+.btn-ghost{background:#fff;color:var(--primary);border-color:#bfdbfe}
+.btn-ghost:hover{background:var(--primary-light);border-color:#93c5fd}
+.btn-sm{height:28px;padding:0 12px;font-size:12.5px}
+
+.quick-row{padding:0 20px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.quick-label{font-size:12px;color:var(--text-3);margin-right:2px}
+.chip{padding:5px 12px;border:1px solid var(--border);border-radius:15px;font-size:12.5px;color:#4b5563;cursor:pointer;background:#fff;transition:.15s;user-select:none;display:inline-flex;align-items:center;gap:6px;line-height:20px}
+.chip:hover{border-color:#bfdbfe;color:var(--primary)}
+.chip.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500}
+.chip .cnt{font-size:11px;color:var(--text-3);font-weight:400}
+.chip.active .cnt{color:rgba(255,255,255,.85)}
+.chip.danger.active{background:var(--danger);border-color:var(--danger)}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.toolbar-left{display:flex;gap:10px;flex-wrap:wrap}
+.toolbar-right{font-size:13px;color:var(--text-2)}
+.toolbar-right b{color:var(--text);font-weight:600}
+
+.batch-bar{display:none;align-items:center;gap:12px;padding:10px 20px;background:var(--primary-light);border-bottom:1px solid #dbeafe;font-size:13px;color:#1e40af;flex-wrap:wrap}
+.batch-bar.show{display:flex}
+.batch-bar b{font-weight:600}
+.batch-bar .bb-spacer{flex:1}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;min-width:1320px;border-collapse:collapse;font-size:13px}
+thead th{background:#f8fafc;color:var(--text-2);font-weight:600;font-size:12.5px;text-align:left;padding:12px 14px;white-space:nowrap;border-bottom:1px solid var(--border);letter-spacing:.3px;position:sticky;top:0;z-index:1}
+tbody td{padding:12px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle;font-size:13px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#f8fafc}
+tbody tr.is-lost td{background:#fef2f2}
+tbody tr.is-lost:hover td{background:#fee2e2}
+tbody tr.is-damaged td{background:#fffbeb}
+tbody tr.is-damaged:hover td{background:#fef3c7}
+
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:pointer;vertical-align:middle}
+
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:-.2px}
+.sub{color:var(--text-3);font-size:12px;margin-top:2px}
+
+.book-cell .bt{font-weight:500;color:#111827;line-height:1.35;max-width:240px}
+.book-cell .bt .abn-mark{display:inline-block;font-size:11px;padding:1px 5px;border-radius:3px;margin-left:6px;font-weight:600;vertical-align:1px}
+.book-cell .bt .lost-mark{background:#dc2626;color:#fff}
+.book-cell .bt .damaged-mark{background:#b45309;color:#fff}
+.book-cell .bs{font-size:11.5px;color:var(--text-3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+
+.user-cell{display:flex;align-items:center;gap:9px}
+.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:600;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+.avatar.f{background:linear-gradient(135deg,#f472b6,#ec4899)}
+.user-name{font-weight:500;color:#111827;line-height:1.35}
+.user-sub{font-size:11.5px;color:var(--text-3);line-height:1.35;margin-top:2px}
+
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;line-height:18px;white-space:nowrap;font-weight:500}
+.t-stu{background:#eff6ff;color:#2563eb}
+.t-tea{background:#f5f3ff;color:#7c3aed}
+.t-tmp{background:#fff7ed;color:#ea580c}
+.t-alu{background:#ecfeff;color:#0891b2}
+.t-out{background:#f3f4f6;color:#4b5563}
+
+.rec-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;line-height:18px;white-space:nowrap;font-weight:500}
+.st-borrowing{background:#eff6ff;color:#2563eb}
+.st-duesoon{background:#fffbeb;color:#b45309}
+.st-overdue{background:#fef2f2;color:#dc2626}
+.st-returned{background:#f1f5f9;color:#64748b}
+.st-late{background:#fff7ed;color:#ea580c}
+.st-lost{background:#fef2f2;color:#dc2626}
+.st-damaged{background:#fffbeb;color:#b45309}
+
+.date-cell{font-variant-numeric:tabular-nums;font-size:12.5px;color:#374151}
+.date-cell.warn{color:#b45309;font-weight:600}
+.date-cell.danger{color:#dc2626;font-weight:600}
+.date-cell.green{color:#16a34a;font-weight:600}
+
+.fine-cell{font-variant-numeric:tabular-nums;font-size:12.5px}
+.fine-cell b{color:var(--danger);font-weight:600}
+.fine-cell.zero{color:var(--text-3)}
+
+.renew-num{font-size:12.5px;color:#4b5563;font-variant-numeric:tabular-nums}
+.renew-num b{color:#111827;font-weight:600}
+.renew-num.full b{color:#b45309}
+
+.ops{white-space:nowrap}
+.link{color:var(--primary);cursor:pointer;font-size:12.5px;user-select:none}
+.link:hover{text-decoration:underline}
+.link.disabled{color:#cbd5e1;cursor:not-allowed}
+.link.disabled:hover{text-decoration:none}
+.op-sep{color:#e2e8f0;margin:0 6px}
+.more-btn{display:inline-flex;align-items:center;gap:2px;color:var(--primary);cursor:pointer;font-size:12.5px;user-select:none}
+.more-btn:hover{text-decoration:underline}
+
+.empty{padding:60px 20px;text-align:center;color:var(--text-3);font-size:13px}
+.empty .big{font-size:34px;display:block;margin-bottom:10px;opacity:.5}
+
+.pager{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;font-size:13px;color:var(--text-2);flex-wrap:wrap;border-top:1px solid var(--border)}
+.pager-info b{color:var(--text);font-weight:600}
+.pager-btns{display:flex;gap:6px;align-items:center}
+.pager-btn{min-width:33px;height:33px;padding:0 9px;border:1px solid var(--border);background:#fff;border-radius:7px;cursor:pointer;font-size:13px;color:var(--text);transition:.15s}
+.pager-btn:hover:not(:disabled):not(.active){border-color:var(--primary);color:var(--primary)}
+.pager-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500}
+.pager-btn:disabled{opacity:.45;cursor:not-allowed}
+.pager-dots{padding:0 4px;color:var(--text-3)}
+.page-size-select{height:33px;padding:0 8px;border:1px solid var(--border);border-radius:7px;background:#fff;font-size:13px;color:var(--text);cursor:pointer;outline:none;margin-left:6px}
+
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:12px;width:100%;max-width:760px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(15,23,42,.25);animation:pop .18s cubic-bezier(.34,1.3,.64,1)}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:600;flex-shrink:0}
+.modal-header.danger{border-bottom-color:#fecaca;background:linear-gradient(135deg,#fef2f2,#fff)}
+.modal-header.danger span{color:#dc2626}
+.modal-header.warn{border-bottom-color:#fde68a;background:linear-gradient(135deg,#fffbeb,#fff)}
+.modal-header.warn span{color:#b45309}
+.icon-btn{width:30px;height:30px;border:none;background:none;border-radius:7px;cursor:pointer;color:var(--text-3);font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.15s}
+.icon-btn:hover{background:#f1f5f9;color:var(--text)}
+.modal-body{padding:20px 22px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0}
+
+.scan-row{display:flex;gap:8px}
+.scan-input{flex:1;height:36px;border:1px solid var(--border);border-radius:8px;padding:0 12px;font-size:13px;outline:none;font-family:inherit;transition:.15s;color:var(--text)}
+.scan-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.scan-input::placeholder{color:#b6c0ce}
+
+.reader-card{display:flex;gap:12px;align-items:center;padding:13px 14px;border:1px solid #dbeafe;background:linear-gradient(135deg,#f8fbff,#fdfdff);border-radius:8px;margin-top:10px}
+.reader-card .avatar{width:42px;height:42px;font-size:16px}
+.reader-card .rc-name{font-size:14px;font-weight:600;color:#111827;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.reader-card .rc-sub{font-size:12px;color:var(--text-2);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.reader-card .rc-quota{margin-left:auto;text-align:right;flex-shrink:0}
+.reader-card .rc-quota .q-v{font-size:17px;font-weight:650;color:#1e3a8a;font-variant-numeric:tabular-nums}
+.reader-card .rc-quota .q-v.full{color:var(--danger)}
+.reader-card .rc-quota .q-l{font-size:11px;color:var(--text-3);margin-top:2px}
+
+.summary-bar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:14px;padding:11px 14px;background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;font-size:12.5px;color:#4b5563}
+.summary-bar .sb-item{display:flex;align-items:center;gap:6px}
+.summary-bar .sb-item b{color:#111827;font-weight:600;font-variant-numeric:tabular-nums}
+.summary-bar .sb-item b.red{color:var(--danger)}
+
+.sec-label{font-size:13px;font-weight:600;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sec-label .num{width:18px;height:18px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;display:grid;place-items:center;font-weight:500;flex-shrink:0}
+.sec-label .opt{font-size:11.5px;color:var(--text-3);font-weight:400}
+
+.tip-box{margin-top:10px;padding:10px 12px;border-radius:7px;font-size:12.5px;line-height:1.6;border:1px solid #e5e9f0;background:#f8fafc;color:#4b5563}
+.tip-box.err{border-color:#fecaca;background:#fef2f2;color:#b91c1c}
+.tip-box.warn{border-color:#fde68a;background:#fffbeb;color:#92400e}
+.tip-box.ok{border-color:#a7f3d0;background:#f0fdf4;color:#047857}
+.tip-box.danger{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
+
+.detail-grid{display:grid;grid-template-columns:96px 1fr;row-gap:11px;font-size:13px}
+.detail-grid dt{color:var(--text-2);font-size:12.5px}
+.detail-grid dd{color:#111827;word-break:break-all}
+
+.detail-sec{margin-top:18px}
+.detail-sec:first-child{margin-top:0}
+.detail-sec h4{font-size:13px;font-weight:600;color:#111827;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.detail-sec h4::before{content:'';width:3px;height:13px;border-radius:2px;background:var(--primary)}
+
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:#e8edf5;border-radius:1px}
+.tl-item{position:relative;padding-bottom:14px;font-size:12.5px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-19px;top:4px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #cbd5e1}
+.tl-item.done::before{border-color:#22c55e;background:#22c55e}
+.tl-item.active::before{border-color:var(--primary);background:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.tl-item.warn::before{border-color:#f59e0b;background:#f59e0b}
+.tl-item.danger::before{border-color:#ef4444;background:#ef4444}
+.tl-item .tl-t{color:#111827;font-weight:500}
+.tl-item .tl-d{color:var(--text-3);font-size:11.5px;margin-top:3px}
+.tl-item .tl-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;margin-left:6px;background:#eef2f7;color:#475569}
+.tl-item .tl-tag.warn{background:#fffbeb;color:#b45309}
+.tl-item .tl-tag.danger{background:#fef2f2;color:#dc2626}
+.tl-item .tl-tag.green{background:#f0fdf4;color:#16a34a}
+
+.row-menu{position:fixed;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 26px rgba(15,23,42,.14);padding:5px;display:none;z-index:200;min-width:200px;animation:popIn .13s ease}
+@keyframes popIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.menu-item{padding:8px 12px;border-radius:5px;font-size:13px;color:#374151;cursor:pointer;transition:.12s;white-space:nowrap}
+.menu-item:hover{background:#f1f5f9;color:var(--primary)}
+.menu-item.danger{color:#dc2626}
+.menu-item.danger:hover{background:#fef2f2;color:#dc2626}
+.menu-item.warn{color:#b45309}
+.menu-item.warn:hover{background:#fffbeb;color:#b45309}
+.menu-item.disabled{color:#cbd5e1;cursor:not-allowed;background:transparent}
+.menu-item.disabled:hover{background:transparent;color:#cbd5e1}
+.menu-item .hint{display:block;font-size:11px;color:var(--text-3);font-weight:400;margin-top:1px}
+.menu-divider{height:1px;background:#f1f5f9;margin:4px 6px}
+
+.chk{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:#fff;transition:.15s}
+.chk:hover{border-color:#bfdbfe;background:#f8fbff}
+.chk input{margin-top:2px}
+.chk-sub{font-size:11.5px;color:var(--text-3);margin-top:2px}
+
+#toastWrap{position:fixed;top:26px;left:50%;z-index:999;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:#1e293b;color:#fff;padding:11px 22px;border-radius:9px;font-size:13.5px;box-shadow:0 8px 24px rgba(15,23,42,.28);animation:pop .2s ease;transition:.3s;max-width:520px;line-height:1.5;opacity:1}
+.toast.out{opacity:0;transform:translateY(-8px)}
+.toast.error{background:var(--danger)}
+.toast.warn{background:var(--warning)}
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">借还管理</span>
+</nav>
+
+<div class="page-pos">
+        <div class="ico">🛎️</div>
+        <div class="info">
+          <b>借还管理 · 业务操作台</b>　用于办理<span class="q">借阅</span>、<span class="q">归还</span>、<span class="q">续借</span>、<span class="q">催还</span>，以及<span class="q">登记遗失/损坏</span>（生成罚款）等操作。
+          如需查询历史档案，请前往 <span class="q">📋 借阅记录</span>。
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="filter-bar">
+          <div class="filter-item search">
+            <label>关键字</label>
+            <input type="text" id="kw" placeholder="书名 / 索书号 / 条码 / 读者姓名 / 卡号" onkeydown="if(event.key==='Enter')doSearch()">
+          </div>
+
+          <div class="filter-item">
+            <label>借阅状态</label>
+            <select id="fStatus" onchange="onFilter()">
+              <option value="">全部借阅状态</option>
+              <option>借阅中</option>
+              <option>即将到期</option>
+              <option>已逾期</option>
+              <option>已归还</option>
+              <option>逾期归还</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>读者类型</label>
+            <select id="fType" onchange="onFilter()">
+              <option value="">全部读者类型</option>
+              <option>学生</option>
+              <option>教师</option>
+              <option>临时</option>
+              <option>校友</option>
+              <option>校外读者</option>
+            </select>
+          </div>
+
+          <div class="filter-item dates">
+            <label>借出日期范围</label>
+            <div class="date-range">
+              <input type="date" id="fDateFrom" onchange="onFilter()" title="起始日期">
+              <span class="date-sep">至</span>
+              <input type="date" id="fDateTo" onchange="onFilter()" title="结束日期">
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+            <button class="btn" onclick="resetFilter()">重置</button>
+            <button class="btn btn-ghost" onclick="exportList()">📤 导出</button>
+          </div>
+        </div>
+
+        <div class="loc-block">
+          <div class="loc-head">
+            <span class="ico">📍</span>
+            <span>馆藏位置（按顺序选择，馆藏地 › 楼层 › 区域 › 排 › 架 › 层 › 格）</span>
+          </div>
+          <div class="loc-cascade">
+            <div class="loc-step">
+              <label>馆藏地</label>
+              <select id="locLib" onchange="onLocChange('lib')"></select>
+            </div>
+            <span class="loc-arrow">›</span>
+            <div class="loc-step">
+              <label>楼层</label>
+              <select id="locFloor" disabled onchange="onLocChange('floor')"><option value="">楼层</option></select>
+            </div>
+            <span class="loc-arrow">›</span>
+            <div class="loc-step">
+              <label>区域</label>
+              <select id="locArea" disabled onchange="onLocChange('area')"><option value="">区域</option></select>
+            </div>
+            <span class="loc-arrow">›</span>
+            <div class="loc-step">
+              <label>排</label>
+              <select id="locRow" disabled onchange="onLocChange('row')"><option value="">排</option></select>
+            </div>
+            <span class="loc-arrow">›</span>
+            <div class="loc-step">
+              <label>架</label>
+              <select id="locShelf" disabled onchange="onLocChange('shelf')"><option value="">架</option></select>
+            </div>
+            <span class="loc-arrow">›</span>
+            <div class="loc-step">
+              <label>层</label>
+              <select id="locLayer" disabled onchange="onLocChange('layer')"><option value="">层</option></select>
+            </div>
+            <span class="loc-arrow">›</span>
+            <div class="loc-step">
+              <label>格</label>
+              <select id="locSlot" disabled onchange="onLocChange('slot')"><option value="">格</option></select>
+            </div>
+          </div>
+          <div class="loc-preview" id="locPreview">
+            <span class="lp-l">已选位置：</span>
+            <span class="lp-hint">未选择（不参与位置筛选）</span>
+          </div>
+        </div>
+
+        <div class="quick-row">
+          <span class="quick-label">快捷筛选</span>
+          <span class="chip active" data-quick="" onclick="setQuick(this,'')">全部 <span class="cnt" id="c-all">0</span></span>
+          <span class="chip" data-quick="borrowing" onclick="setQuick(this,'borrowing')">借阅中 <span class="cnt" id="c-borrowing">0</span></span>
+          <span class="chip" data-quick="duesoon" onclick="setQuick(this,'duesoon')">即将到期 <span class="cnt" id="c-duesoon">0</span></span>
+          <span class="chip danger" data-quick="overdue" onclick="setQuick(this,'overdue')">已逾期 <span class="cnt" id="c-overdue">0</span></span>
+          <span class="chip" data-quick="returned" onclick="setQuick(this,'returned')">已归还 <span class="cnt" id="c-returned">0</span></span>
+          <span class="chip" data-quick="lost" onclick="setQuick(this,'lost')">已遗失 <span class="cnt" id="c-lost">0</span></span>
+          <span class="chip" data-quick="damaged" onclick="setQuick(this,'damaged')">已损坏 <span class="cnt" id="c-damaged">0</span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="btn btn-primary" onclick="openLend()">📕 办理借阅</button>
+            <button class="btn btn-info" onclick="openReturn()">📗 办理归还</button>
+            <button class="btn" onclick="batchRenew()">🔄 批量续借</button>
+            <button class="btn" onclick="openNoticeModal()">📢 逾期催还</button>
+            <button class="btn" onclick="printSelected()">🖨️ 打印凭条</button>
+          </div>
+          <div class="toolbar-right">
+            已选 <b id="selInfo" style="color:var(--primary);font-weight:600;margin:0 4px">0</b> 条记录
+          </div>
+        </div>
+
+        <div class="batch-bar" id="batchBar">
+          <span>已选择 <b id="selCount">0</b> 条借阅记录</span>
+          <button class="btn btn-sm" onclick="batchRenew()">批量续借</button>
+          <button class="btn btn-sm" onclick="batchReturn()">批量归还</button>
+          <button class="btn btn-sm" onclick="batchNotice()">批量催还</button>
+          <button class="btn btn-sm" onclick="batchExport()">导出选中</button>
+          <div class="bb-spacer"></div>
+          <button class="btn btn-sm" onclick="clearSelection()">取消选择</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:38px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
+                <th style="width:148px">借阅单号</th>
+                <th style="width:240px">图书信息</th>
+                <th style="width:172px">读者信息</th>
+                <th style="width:248px">馆藏位置</th>
+                <th style="width:96px">借出日期</th>
+                <th style="width:104px">应还日期</th>
+                <th style="width:96px">归还日期</th>
+                <th style="width:70px">续借</th>
+                <th style="width:96px">滞纳金</th>
+                <th style="width:100px">状态</th>
+                <th style="width:128px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="pager">
+          <div class="pager-info">
+            共 <b id="totalNum">0</b> 条记录
+            <select class="page-size-select" id="pageSize" onchange="changePageSize(this.value)">
+              <option value="10">10 条/页</option>
+              <option value="20">20 条/页</option>
+              <option value="50">50 条/页</option>
+            </select>
+          </div>
+          <div class="pager-btns" id="pagerCtrl"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 办理借阅 -->
+</main>
+
+<div class="modal" id="lendMask">
+  <div class="modal-box" style="max-width:700px">
+    <div class="modal-header"><span>办理借阅</span><button class="icon-btn" onclick="closeModal('lendMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="sec-label"><span class="num">1</span>扫描 / 输入读者卡号</div>
+      <div class="scan-row">
+        <input class="scan-input" id="lendReaderInput" placeholder="扫描校园卡，或输入学号 / 工号后回车" onkeydown="if(event.key==='Enter'){event.preventDefault();loadLendReader()}">
+        <button class="btn btn-primary" onclick="loadLendReader()">读取</button>
+      </div>
+      <div id="lendReaderBox"></div>
+      <div class="sec-label" style="margin-top:20px"><span class="num">2</span>扫描 / 输入图书条码 <span class="opt">（可连续扫描多册）</span></div>
+      <div class="scan-row">
+        <input class="scan-input" id="lendBookInput" placeholder="扫描图书条码后回车添加" onkeydown="if(event.key==='Enter'){event.preventDefault();addLendBook()}">
+        <button class="btn btn-primary" onclick="addLendBook()">添加</button>
+      </div>
+      <div id="lendBookBox"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('lendMask')">取消</button>
+      <button class="btn btn-primary" id="btnConfirmLend" onclick="confirmLend()" disabled>确认借出</button>
+    </div>
+  </div>
+</div>
+
+<!-- 办理归还 -->
+<div class="modal" id="returnMask">
+  <div class="modal-box" style="max-width:620px">
+    <div class="modal-header"><span>办理归还</span><button class="icon-btn" onclick="closeModal('returnMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="sec-label"><span class="num">1</span>扫描 / 输入图书条码</div>
+      <div class="scan-row">
+        <input class="scan-input" id="returnInput" placeholder="扫描图书条码后回车读取借阅信息" onkeydown="if(event.key==='Enter'){event.preventDefault();loadReturn()}">
+        <button class="btn btn-primary" onclick="loadReturn()">读取</button>
+      </div>
+      <div id="returnBox"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('returnMask')">关闭</button>
+      <button class="btn btn-info" id="btnConfirmReturn" onclick="confirmReturn()" disabled>确认归还</button>
+    </div>
+  </div>
+</div>
+
+<!-- 登记遗失 -->
+<div class="modal" id="lostMask">
+  <div class="modal-box" style="max-width:620px">
+    <div class="modal-header danger"><span>📕 登记图书遗失</span><button class="icon-btn" onclick="closeModal('lostMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="sec-label"><span class="num">1</span>扫描 / 输入图书条码</div>
+      <div class="scan-row">
+        <input class="scan-input" id="lostBarcode" placeholder="扫描图书条码后回车读取借阅信息" onkeydown="if(event.key==='Enter'){event.preventDefault();loadLostInfo()}">
+        <button class="btn btn-primary" onclick="loadLostInfo()">读取</button>
+      </div>
+      <div id="lostReaderBox"></div>
+      <div id="lostBookBox"></div>
+      <div id="lostDamageBox" style="display:none">
+        <div class="detail-sec">
+          <h4 class="danger">赔偿金计算</h4>
+          <div style="padding:14px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <span style="font-size:12.5px;color:#991b1b">图书定价</span>
+              <span class="mono" id="lostBookPrice" style="color:#991b1b">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px">
+              <span style="font-size:12.5px;color:#991b1b;flex-shrink:0">加工费 <span style="color:#9ca3af;font-size:11px;margin-left:4px">（默认 5 元，可调整，≥0.1 元）</span></span>
+              <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                <span style="font-size:12.5px;color:#991b1b">￥</span>
+                <input type="number" id="lostProcessFee" value="5" min="0.1" step="0.1"
+                       style="width:88px;height:30px;border:1px solid #fca5a5;border-radius:6px;padding:0 8px;font-size:13px;color:#991b1b;text-align:right;background:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;outline:none"
+                       oninput="updateLostCalc()" onblur="clampLostFee()">
+                <span style="font-size:12.5px;color:#991b1b">元</span>
+                <span id="lostFeeWarn" style="display:none;font-size:11px;color:#dc2626;white-space:nowrap">⚠ ≥0.1 元</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px dashed #fecaca;margin-top:4px">
+              <span style="font-size:13px;color:#dc2626;font-weight:600">应赔总额</span>
+              <span class="mono" id="lostTotalFine" style="color:#dc2626;font-weight:700;font-size:15px">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="detail-sec">
+          <h4 class="danger">备注说明（选填）</h4>
+          <textarea id="lostRemark" rows="2" placeholder="例如：读者自述在地铁上遗失..." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:13px;font-family:inherit;resize:vertical"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('lostMask')">取消</button>
+      <button class="btn btn-danger" id="btnConfirmLost" onclick="confirmLost()" disabled>确认登记遗失</button>
+    </div>
+  </div>
+</div>
+
+<!-- 登记损坏 -->
+<div class="modal" id="damagedMask">
+  <div class="modal-box" style="max-width:620px">
+    <div class="modal-header warn"><span>🔧 登记图书损坏</span><button class="icon-btn" onclick="closeModal('damagedMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="sec-label"><span class="num">1</span>扫描 / 输入图书条码</div>
+      <div class="scan-row">
+        <input class="scan-input" id="damagedBarcode" placeholder="扫描图书条码后回车读取借阅信息" onkeydown="if(event.key==='Enter'){event.preventDefault();loadDamagedInfo()}">
+        <button class="btn btn-primary" onclick="loadDamagedInfo()">读取</button>
+      </div>
+      <div id="damagedReaderBox"></div>
+      <div id="damagedBookBox"></div>
+      <div id="damagedDamageBox" style="display:none">
+        <div class="detail-sec">
+          <h4 class="warn">损坏情况与赔偿金</h4>
+          <dl class="detail-grid">
+            <dt>损坏类型</dt><dd>
+              <select id="damagedLevel" style="height:32px;padding:0 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:100%" onchange="updateDamagedCalc()">
+                <option value="0.1">页面破损（轻微，赔 10%）</option>
+                <option value="0.2">装订破损（赔 20%）</option>
+                <option value="0.5">内页遗失 / 严重涂画（赔 50%）</option>
+                <option value="0.7">水浸 / 霉变（赔 70%）</option>
+                <option value="0.9">封面丢失 / 严重损坏（赔 90%）</option>
+                <option value="1.0">无法修复（按定价全额赔）</option>
+              </select>
+            </dd>
+            <dt>损坏描述</dt><dd><textarea id="damagedDesc" rows="2" placeholder="例如：第 23-25 页水浸污损..." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:13px;font-family:inherit;resize:vertical"></textarea></dd>
+            <dt>加工费</dt><dd>
+              <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#374151;padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:#fff;transition:.15s" onmouseover="this.style.borderColor='#fdba74'" onmouseout="this.style.borderColor='var(--border)'">
+                <input type="checkbox" id="damagedIncludeFee" onchange="updateDamagedCalc()" style="width:16px;height:16px;accent-color:#b45309;cursor:pointer">
+                <span>加上加工费</span>
+                <span style="font-size:11.5px;color:var(--text-3);font-weight:400">（最少 0.1 元，可手动调整）</span>
+              </label>
+              <div id="damagedFeeRow" style="display:none;margin-top:10px;padding:10px 12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                  <span style="font-size:12.5px;color:#92400e;font-weight:500">金额</span>
+                  <span style="font-size:12.5px;color:#92400e">￥</span>
+                  <input type="number" id="damagedProcessFee" value="5" min="0.1" step="0.1"
+                         style="width:88px;height:30px;border:1px solid #fdba74;border-radius:6px;padding:0 8px;font-size:13px;color:#92400e;text-align:right;background:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;outline:none"
+                         oninput="updateDamagedCalc()" onblur="clampDamagedFee()">
+                  <span style="font-size:12.5px;color:#92400e">元</span>
+                  <span id="damagedFeeWarn" style="display:none;font-size:11px;color:#dc2626;white-space:nowrap">⚠ 加工费最少 0.1 元</span>
+                </div>
+              </div>
+            </dd>
+          </dl>
+        </div>
+        <div class="detail-sec">
+          <h4 class="warn">赔偿金计算</h4>
+          <div style="padding:14px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12.5px;color:#92400e">图书定价</span><span class="mono" id="damagedBookPrice" style="color:#92400e">—</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12.5px;color:#92400e">损坏赔偿比例</span><span class="mono" id="damagedRatio" style="color:#92400e">10%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px" id="damagedFeeLine" style="display:none"><span style="font-size:12.5px;color:#92400e">加工费</span><span class="mono" id="damagedFeeShow" style="color:#92400e">￥0.00</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px dashed #fde68a"><span style="font-size:13px;color:#b45309;font-weight:600">应赔总额</span><span class="mono" id="damagedTotalFine" style="color:#b45309;font-weight:700;font-size:15px">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('damagedMask')">取消</button>
+      <button class="btn btn-warn" id="btnConfirmDamaged" onclick="confirmDamaged()" disabled>确认登记损坏</button>
+    </div>
+  </div>
+</div>
+
+<!-- 借阅详情 -->
+<div class="modal" id="detailMask">
+  <div class="modal-box">
+    <div class="modal-header"><span>借阅详情</span><button class="icon-btn" onclick="closeModal('detailMask')">✕</button></div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer" id="detailFooter"></div>
+  </div>
+</div>
+
+<!-- 催还通知 -->
+<div class="modal" id="noticeMask">
+  <div class="modal-box" style="max-width:640px">
+    <div class="modal-header"><span>发送催还通知</span><button class="icon-btn" onclick="closeModal('noticeMask')">✕</button></div>
+    <div class="modal-body">
+      <div class="tip-box warn" id="noticeSummary"></div>
+      <div class="sec-label" style="margin-top:18px">催还方式</div>
+      <label class="chk"><input type="checkbox" checked id="chSms"><div>短信通知<div class="chk-sub">发送至读者预留手机号</div></div></label>
+      <label class="chk" style="margin-top:11px"><input type="checkbox" checked id="chEmail"><div>邮件通知<div class="chk-sub">发送借阅明细与归还提醒至预留邮箱</div></div></label>
+      <div class="sec-label" style="margin-top:18px">催还对象 <span class="opt">（默认全选）</span></div>
+      <div id="noticeList" style="max-height:240px;overflow:auto"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('noticeMask')">取消</button>
+      <button class="btn btn-primary" onclick="sendNoticeConfirm()">发送催还通知</button>
+    </div>
+  </div>
+</div>
+
+<div class="row-menu" id="rowMenu"></div>
+<div id="toastWrap"></div>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* =========================================================
+   馆藏地层级数据
+   =======================================================*/
+const LIBRARIES = [
+  { id:1, name:'总馆' }, { id:2, name:'南区分馆' }, { id:3, name:'东校区分馆' }, { id:4, name:'医学分馆' }
+];
+const FLOORS = [
+  { id:1,  libraryId:1, name:'一层', code:'ZG-1F' },
+  { id:2,  libraryId:1, name:'二层', code:'ZG-2F' },
+  { id:3,  libraryId:1, name:'三层', code:'ZG-3F' },
+  { id:4,  libraryId:1, name:'四层', code:'ZG-4F' },
+  { id:5,  libraryId:2, name:'一层', code:'NQ-1F' },
+  { id:6,  libraryId:2, name:'二层', code:'NQ-2F' },
+  { id:7,  libraryId:3, name:'一层', code:'DQ-1F' },
+  { id:8,  libraryId:3, name:'二层', code:'DQ-2F' },
+  { id:9,  libraryId:4, name:'一层', code:'YX-1F' },
+  { id:10, libraryId:4, name:'二层', code:'YX-2F' }
+];
+const AREAS = [
+  { id:1, floorId:1, code:'A', name:'中文图书借阅区' },
+  { id:2, floorId:1, code:'B', name:'外文图书借阅区' },
+  { id:3, floorId:1, code:'C', name:'总服务台' },
+  { id:4, floorId:2, code:'D', name:'外文书库' },
+  { id:5, floorId:2, code:'E', name:'电子阅览室' },
+  { id:6, floorId:3, code:'F', name:'中文期刊阅览室' },
+  { id:7, floorId:3, code:'G', name:'自习区' },
+  { id:8, floorId:4, code:'H', name:'古籍特藏室' },
+  { id:9, floorId:5, code:'I', name:'综合借阅区' },
+  { id:10, floorId:6, code:'J', name:'报刊阅览室' },
+  { id:11, floorId:9, code:'K', name:'医学参考区' },
+  { id:12, floorId:10, code:'L', name:'医学期刊区' }
+];
+const ROWS = [
+  { id:1, areaId:1, code:'01', name:'第 1 排' },
+  { id:2, areaId:1, code:'02', name:'第 2 排' },
+  { id:3, areaId:1, code:'03', name:'第 3 排' },
+  { id:4, areaId:1, code:'04', name:'第 4 排' },
+  { id:5, areaId:1, code:'05', name:'第 5 排' },
+  { id:6, areaId:2, code:'01', name:'第 1 排' },
+  { id:7, areaId:2, code:'02', name:'第 2 排' },
+  { id:8, areaId:3, code:'01', name:'第 1 排' },
+  { id:9, areaId:3, code:'02', name:'第 2 排' },
+  { id:10, areaId:4, code:'A', name:'A 排机位' },
+  { id:11, areaId:4, code:'B', name:'B 排机位' },
+  { id:12, areaId:5, code:'01', name:'第 1 排' },
+  { id:13, areaId:5, code:'02', name:'第 2 排' },
+  { id:14, areaId:6, code:'01', name:'第 1 排' },
+  { id:15, areaId:6, code:'02', name:'第 2 排' },
+  { id:16, areaId:7, code:'01', name:'第 1 排' },
+  { id:17, areaId:8, code:'01', name:'第 1 排' },
+  { id:18, areaId:8, code:'02', name:'第 2 排' },
+  { id:19, areaId:9, code:'01', name:'第 1 排' },
+  { id:20, areaId:11, code:'01', name:'第 1 排' },
+  { id:21, areaId:12, code:'01', name:'第 1 排' }
+];
+const SHELVES = [
+  { id:1, rowId:1, code:'01', name:'第 1 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:2, rowId:1, code:'02', name:'第 2 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:3, rowId:1, code:'03', name:'第 3 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:4, rowId:1, code:'04', name:'第 4 书架', layerCount:5, layerSlots:[18,18,18,18,15] },
+  { id:5, rowId:2, code:'01', name:'第 1 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:6, rowId:2, code:'02', name:'第 2 书架', layerCount:6, layerSlots:[18,18,18,18,18,18] },
+  { id:7, rowId:2, code:'03', name:'第 3 书架', layerCount:0, layerSlots:[] },
+  { id:8, rowId:3, code:'01', name:'第 1 书架', layerCount:5, layerSlots:[15,15,15,15,15] },
+  { id:9, rowId:3, code:'02', name:'第 2 书架', layerCount:5, layerSlots:[15,15,15,15,12] },
+  { id:10, rowId:4, code:'01', name:'第 1 书架', layerCount:4, layerSlots:[12,12,12,10] },
+  { id:11, rowId:6, code:'01', name:'第 1 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:12, rowId:6, code:'02', name:'第 2 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:13, rowId:6, code:'03', name:'第 3 书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:14, rowId:10, code:'01', name:'第 1 机位架', layerCount:4, layerSlots:[10,10,10,10] },
+  { id:15, rowId:10, code:'02', name:'第 2 机位架', layerCount:4, layerSlots:[10,10,10,10] },
+  { id:16, rowId:14, code:'01', name:'第 1 书架', layerCount:4, layerSlots:[0,0,0,0] },
+  { id:17, rowId:8, code:'01', name:'第 1 书架', layerCount:5, layerSlots:[15,15,15,15,15] },
+  { id:18, rowId:9, code:'01', name:'第 1 书架', layerCount:5, layerSlots:[15,15,15,15,15] },
+  { id:19, rowId:12, code:'01', name:'第 1 书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:20, rowId:13, code:'01', name:'第 1 书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:21, rowId:16, code:'01', name:'第 1 书架', layerCount:4, layerSlots:[0,0,0,0] },
+  { id:22, rowId:19, code:'01', name:'第 1 书架', layerCount:5, layerSlots:[12,12,12,12,12] },
+  { id:23, rowId:20, code:'01', name:'第 1 书架', layerCount:4, layerSlots:[10,10,10,10] }
+];
+
+const getShelf = id => SHELVES.find(s => s.id === Number(id));
+const getRow = id => ROWS.find(r => r.id === Number(id));
+const getArea = id => AREAS.find(a => a.id === Number(id));
+const getFloor = id => FLOORS.find(f => f.id === Number(id));
+const getLib = id => LIBRARIES.find(l => l.id === Number(id));
+
+function getLocationPath(shelfId, layer, slot){
+  const sh = getShelf(shelfId);
+  if(!sh) return null;
+  const row = getRow(sh.rowId);
+  const area = row ? getArea(row.areaId) : null;
+  const floor = area ? getFloor(area.floorId) : null;
+  const lib = floor ? getLib(floor.libraryId) : null;
+  if(!lib) return null;
+  const basePath = `${lib.name} › ${floor.name} › ${area.name} › ${row.name} › ${sh.name}`;
+  const baseCode = `${floor.code}-${area.code}-${row.code}-${sh.code}`;
+  if(layer && slot){
+    return { lib, floor, area, row, shelf: sh, layer, slot,
+      fullPath: `${basePath} › 第 ${layer} 层 › 第 ${slot} 格`,
+      code: `${baseCode}-${layer}-${slot}` };
+  } else if(layer){
+    return { lib, floor, area, row, shelf: sh, layer, slot: null,
+      fullPath: `${basePath} › 第 ${layer} 层`, code: `${baseCode}-${layer}` };
+  }
+  return { lib, floor, area, row, shelf: sh, layer: null, slot: null,
+    fullPath: basePath, code: baseCode };
+}
+
+function layerOptions(shelfId){
+  const sh = getShelf(shelfId);
+  if(!sh || sh.layerCount <= 0) return '';
+  const slotsArr = sh.layerSlots || [];
+  let html = '';
+  for(let i = 1; i <= sh.layerCount; i++){
+    const cnt = slotsArr[i-1] || 0;
+    html += `<option value="${i}">第 ${i} 层${cnt > 0 ? `（${cnt} 格）` : '（暂无架位）'}</option>`;
+  }
+  return html;
+}
+function slotOptions(shelfId, layer){
+  const sh = getShelf(shelfId);
+  if(!sh) return '';
+  const max = (sh.layerSlots || [])[layer-1] || 0;
+  if(max <= 0) return '';
+  let html = '';
+  for(let i = 1; i <= max; i++) html += `<option value="${i}">第 ${i} 格</option>`;
+  return html;
+}
+
+function disableSelect(sel, placeholder){
+  sel.innerHTML = `<option value="">${placeholder}</option>`;
+  sel.disabled = true;
+  sel.value = '';
+}
+function genFloorOptions(libId){
+  return FLOORS.filter(f => String(f.libraryId) === String(libId))
+    .map(f => `<option value="${f.id}">${esc(f.name)}（${esc(f.code)}）</option>`).join('');
+}
+function genAreaOptions(libId, floorId){
+  let list = AREAS;
+  if(floorId) list = list.filter(a => String(a.floorId) === String(floorId));
+  else if(libId) list = list.filter(a => { const f = getFloor(a.floorId); return f && String(f.libraryId) === String(libId); });
+  return list.map(a => `<option value="${a.id}">${esc(a.code)} - ${esc(a.name)}</option>`).join('');
+}
+function genRowOptions(libId, floorId, areaId){
+  let list = ROWS;
+  if(areaId) list = list.filter(r => String(r.areaId) === String(areaId));
+  else if(floorId) list = list.filter(r => { const a = getArea(r.areaId); return a && String(a.floorId) === String(floorId); });
+  else if(libId) list = list.filter(r => { const a = getArea(r.areaId); if(!a) return false; const f = getFloor(a.floorId); return f && String(f.libraryId) === String(libId); });
+  return list.map(r => `<option value="${r.id}">${esc(r.code)} - ${esc(r.name)}</option>`).join('');
+}
+function genShelfOptions(libId, floorId, areaId, rowId){
+  let list = SHELVES;
+  if(rowId) list = list.filter(s => String(s.rowId) === String(rowId));
+  else if(areaId) list = list.filter(s => { const r = getRow(s.rowId); return r && String(r.areaId) === String(areaId); });
+  else if(floorId) list = list.filter(s => { const r = getRow(s.rowId); if(!r) return false; const a = getArea(r.areaId); return a && String(a.floorId) === String(floorId); });
+  else if(libId) list = list.filter(s => { const r = getRow(s.rowId); if(!r) return false; const a = getArea(r.areaId); if(!a) return false; const f = getFloor(a.floorId); return f && String(f.libraryId) === String(libId); });
+  return list.map(s => `<option value="${s.id}">${esc(s.code)} - ${esc(s.name)}（${s.layerCount} 层）</option>`).join('');
+}
+
+function onLocChange(level){
+  state.loc = { libId:'', floorId:'', areaId:'', rowId:'', shelfId:'', layer:'', slot:'' };
+  const libId = $('locLib').value;
+  const floorId = $('locFloor').value;
+  const areaId = $('locArea').value;
+  const rowId = $('locRow').value;
+  const shelfId = $('locShelf').value;
+  state.loc.libId = libId;
+  state.loc.floorId = floorId;
+  state.loc.areaId = areaId;
+  state.loc.rowId = rowId;
+  state.loc.shelfId = shelfId;
+
+  $('locLib').innerHTML = '<option value="">全部</option>' +
+    LIBRARIES.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('');
+  $('locLib').value = libId;
+
+  if(libId){
+    const html = genFloorOptions(libId);
+    html ? enableSelect($('locFloor'), html) : disableSelect($('locFloor'), '该馆藏地暂无楼层');
+    $('locFloor').value = floorId;
+  } else { disableSelect($('locFloor'), '请先选馆藏地'); }
+
+  if(floorId){
+    const html = genAreaOptions(libId, floorId);
+    html ? enableSelect($('locArea'), html) : disableSelect($('locArea'), '该楼层暂无区域');
+    $('locArea').value = areaId;
+  } else { disableSelect($('locArea'), '请先选楼层'); }
+
+  if(areaId){
+    const html = genRowOptions(libId, floorId, areaId);
+    html ? enableSelect($('locRow'), html) : disableSelect($('locRow'), '该区域暂无排');
+    $('locRow').value = rowId;
+  } else { disableSelect($('locRow'), '请先选区域'); }
+
+  if(rowId){
+    const html = genShelfOptions(libId, floorId, areaId, rowId);
+    html ? enableSelect($('locShelf'), html) : disableSelect($('locShelf'), '该排暂无书架');
+    $('locShelf').value = shelfId;
+  } else { disableSelect($('locShelf'), '请先选排'); }
+
+  if(shelfId){
+    const html = layerOptions(shelfId);
+    html ? enableSelect($('locLayer'), html) : disableSelect($('locLayer'), '该书架暂无层');
+    $('locLayer').value = state.loc.layer;
+  } else { disableSelect($('locLayer'), '请先选架'); }
+
+  if(shelfId && state.loc.layer){
+    const html = slotOptions(shelfId, Number(state.loc.layer));
+    html ? enableSelect($('locSlot'), html) : disableSelect($('locSlot'), '该层暂无格');
+    $('locSlot').value = state.loc.slot;
+  } else { disableSelect($('locSlot'), '请先选架和层'); }
+
+  state.loc = {
+    libId: $('locLib').value,
+    floorId: $('locFloor').value,
+    areaId: $('locArea').value,
+    rowId: $('locRow').value,
+    shelfId: $('locShelf').value,
+    layer: $('locLayer').value,
+    slot: $('locSlot').value
+  };
+  refreshLocPreview();
+  state.page = 1;
+  renderTable();
+}
+function enableSelect(sel, optionsHtml){
+  sel.innerHTML = '<option value="">全部</option>' + optionsHtml;
+  sel.disabled = false;
+}
+
+function refreshLocPreview(){
+  const loc = state.loc;
+  const pieces = [];
+  if(loc.libId){ const l = getLib(loc.libId); if(l) pieces.push(l.name); }
+  if(loc.floorId){ const f = getFloor(loc.floorId); if(f) pieces.push(f.name); }
+  if(loc.areaId){ const a = getArea(loc.areaId); if(a) pieces.push(a.name); }
+  if(loc.rowId){ const r = getRow(loc.rowId); if(r) pieces.push(r.name); }
+  if(loc.shelfId){ const s = getShelf(loc.shelfId); if(s) pieces.push(s.name); }
+  if(loc.layer) pieces.push(`第 ${loc.layer} 层`);
+  if(loc.slot) pieces.push(`第 ${loc.slot} 格`);
+  const preview = $('locPreview');
+  if(!pieces.length){
+    preview.innerHTML = '<span class="lp-l">已选位置：</span><span class="lp-hint">未选择（不参与位置筛选）</span>';
+  } else {
+    preview.innerHTML = `<span class="lp-l">已选位置：</span><span class="lp-v">${esc(pieces.join(' › '))}</span><span class="lp-clear" onclick="clearLoc()">清除</span>`;
+  }
+}
+
+function clearLoc(){
+  state.loc = { libId:'', floorId:'', areaId:'', rowId:'', shelfId:'', layer:'', slot:'' };
+  onLocChange('lib');
+}
+
+/* =========================================================
+   借阅规则 + 基础数据
+   =======================================================*/
+const RULES = {
+  '学生':     {quota:10, days:30, renew:2, renewDays:15, fine:0.2},
+  '教师':     {quota:20, days:60, renew:3, renewDays:30, fine:0.2},
+  '临时':     {quota:3,  days:15, renew:2, renewDays:7,  fine:0.5},
+  '校友':     {quota:5,  days:30, renew:2, renewDays:15, fine:0.2},
+  '校外读者': {quota:2,  days:15, renew:2, renewDays:7,  fine:0.5}
+};
+
+const BOOKS = {
+  'B2023001': {title:'《数据结构与算法分析》', callNo:'TP311.12/W-3', isbn:'978-7-111-40701-0', price:59.00, shelfId:1, layer:1, slot:5},
+  'B2023002': {title:'《人类简史》',           callNo:'K02/H-1',       isbn:'978-7-5086-4563-6', price:68.00, shelfId:8, layer:1, slot:3},
+  'B2023003': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-7', isbn:'978-7-111-59850-7', price:89.00, shelfId:2, layer:1, slot:12},
+  'B2023004': {title:'《算法导论》',           callNo:'TP301.6/C-1',   isbn:'978-7-111-40701-1', price:128.00, shelfId:5, layer:2, slot:8},
+  'B2023005': {title:'《活着》',               callNo:'I247.5/Y-12',   isbn:'978-7-5063-6543-7', price:45.00, shelfId:11, layer:1, slot:2},
+  'B2023006': {title:'《机器学习》',           callNo:'TP181/Z-2',     isbn:'978-7-302-42328-7', price:88.00, shelfId:1, layer:3, slot:15},
+  'B2023007': {title:'《万历十五年》',         callNo:'K248/H-4',      isbn:'978-7-101-05252-5', price:35.00, shelfId:17, layer:2, slot:7},
+  'B2023008': {title:'《深入理解计算机系统》', callNo:'TP303/B-1',     isbn:'978-7-111-54493-7', price:139.00, shelfId:3, layer:4, slot:11},
+  'B2023009': {title:'《百年孤独》',           callNo:'I775.4/M-2',    isbn:'978-7-5442-5399-9', price:55.00, shelfId:11, layer:2, slot:18},
+  'B2023010': {title:'《中国哲学简史》',       callNo:'B2/F-3',        isbn:'978-7-301-21569-2', price:39.00, shelfId:18, layer:1, slot:6},
+  'B2023011': {title:'《数据库系统概论》',     callNo:'TP311.13/W-9',  isbn:'978-7-04-040664-1', price:42.00, shelfId:5, layer:4, slot:14},
+  'B2023012': {title:'《经济学原理》',         callNo:'F0/M-6',        isbn:'978-7-301-25966-1', price:98.00, shelfId:17, layer:3, slot:9},
+  'B2023013': {title:'《月亮与六便士》',       callNo:'I561.4/M-8',    isbn:'978-7-5327-7268-3', price:39.00, shelfId:12, layer:1, slot:11},
+  'B2023014': {title:'《乌合之众》',           callNo:'C912.6/L-2',    isbn:'978-7-5113-3012-8', price:32.00, shelfId:18, layer:2, slot:4},
+  'B2023015': {title:'《操作系统概念》',       callNo:'TP316/S-5',     isbn:'978-7-111-52359-7', price:99.00, shelfId:2, layer:3, slot:18},
+  'B2023016': {title:'《围城》',               callNo:'I246.5/Q-1',    isbn:'978-7-02-009000-6', price:36.00, shelfId:11, layer:3, slot:9},
+  'B2023017': {title:'《时间简史》',           callNo:'P159/H-3',      isbn:'978-7-5357-3230-9', price:45.00, shelfId:17, layer:5, slot:12},
+  'B2023018': {title:'《平凡的世界》',         callNo:'I247.5/L-7',    isbn:'978-7-5302-1605-4', price:108.00, shelfId:12, layer:4, slot:7},
+  'B2023019': {title:'《枪炮、病菌与钢铁》',   callNo:'K02/D-5',       isbn:'978-7-5327-7625-5', price:78.00, shelfId:18, layer:4, slot:3},
+  'B2023020': {title:'《社会契约论》',         callNo:'D0/L-4',        isbn:'978-7-100-01234-5', price:29.00, shelfId:18, layer:5, slot:15},
+  'B2023021': {title:'《编译原理》',           callNo:'TP314/A-2',     isbn:'978-7-111-25121-7', price:95.00, shelfId:3, layer:2, slot:19},
+  'B2023022': {title:'《国富论》',             callNo:'F091.33/S-1',   isbn:'978-7-100-05678-9', price:88.00, shelfId:17, layer:4, slot:11},
+  'B2023023': {title:'《三体》',               callNo:'I247.5/L-1',    isbn:'978-7-229-03093-3', price:93.00, shelfId:13, layer:2, slot:5},
+  'B2023024': {title:'《白夜行》',             callNo:'I313.45/D-1',    isbn:'978-7-5442-6774-8', price:39.50, shelfId:12, layer:2, slot:16},
+  'B2023025': {title:'《新概念英语》',         callNo:'H31/A-1',       isbn:'978-7-100-8060-9', price:39.90, shelfId:19, layer:1, slot:8}
+};
+
+const READERS = {
+  '2022010301': {name:'陈思远', gender:'男', type:'学生',     dept:'计算机科学与技术学院', phone:'13801234567'},
+  '2023051208': {name:'李婉清', gender:'女', type:'学生',     dept:'外国语学院',           phone:'13912345678'},
+  '2023012245': {name:'何静怡', gender:'女', type:'学生',     dept:'经济管理学院',         phone:'13012345678'},
+  '2023070822': {name:'周雨桐', gender:'女', type:'学生',     dept:'文学院',               phone:'13412345678'},
+  '2023090245': {name:'许诗涵', gender:'女', type:'学生',     dept:'外国语学院',           phone:'17612345678'},
+  '2022091133': {name:'冯子轩', gender:'男', type:'学生',     dept:'计算机科学与技术学院', phone:'13112345678'},
+  '2022031966': {name:'高文博', gender:'男', type:'学生',     dept:'机械工程学院',         phone:'18512345678'},
+  '2023020378': {name:'曹雨欣', gender:'女', type:'学生',     dept:'经济管理学院',         phone:'17812345678'},
+  '2021060889': {name:'马天宇', gender:'男', type:'学生',     dept:'电子信息工程学院',     phone:'18712345678'},
+  '2022050678': {name:'苏婉柔', gender:'女', type:'学生',     dept:'文学院',               phone:'17412345678'},
+  '2021070145': {name:'韩明辉', gender:'男', type:'学生',     dept:'计算机科学与技术学院', phone:'18112345678'},
+  '2023080912': {name:'罗嘉诚', gender:'男', type:'学生',     dept:'材料科学与工程学院',   phone:'18312345678'},
+  'T20160128':  {name:'王振宇', gender:'男', type:'教师',     dept:'电子信息工程学院',     phone:'13701234567'},
+  'T20190456':  {name:'赵敏',   gender:'女', type:'教师',     dept:'经济管理学院',         phone:'13612345678'},
+  'T20180567':  {name:'黄志强', gender:'男', type:'教师',     dept:'教务处',               phone:'18912345678'},
+  'T20200678':  {name:'唐雅琴', gender:'女', type:'教师',     dept:'文学院',               phone:'18212345678'},
+  'T20170412':  {name:'沈立诚', gender:'男', type:'教师',     dept:'机械工程学院',         phone:'17512345678'},
+  'L20240312':  {name:'郑晓岚', gender:'女', type:'临时',     dept:'图书馆',               phone:'13212345678'},
+  'A20150123':  {name:'林晓彤', gender:'女', type:'校友',     dept:'计算机科学与技术学院', phone:'18612345678'}
+};
+
+const RAW = [
+  ['B2023001','2022010301', -8,  30, null, 0],
+  ['B2023005','2023051208', -3,  30, null, 0],
+  ['B2023012','2023012245', -12, 30, null, 1],
+  ['B2023007','T20160128',  -20, 60, null, 0],
+  ['B2023010','2023070822', -6,  30, null, 0],
+  ['B2023014','2023090245', -1,  30, null, 0],
+  ['B2023009','T20190456',  -25, 60, null, 1],
+  ['B2023004','2022091133', -15, 30, null, 2],
+  ['B2023016','2023090245', -5,  30, null, 0],
+  ['B2023017','2023012245', -10, 30, null, 1],
+  ['B2023002','2022031966', -28, 30, null, 0],
+  ['B2023013','2023020378', -27, 30, null, 1],
+  ['B2023003','2021060889', -45, 30, null, 1],
+  ['B2023006','2022050678', -50, 30, null, 2],
+  ['B2023015','2021070145', -40, 30, null, 0],
+  ['B2023018','2023051208', -55, 30, null, 0],
+  ['B2023019','2022091133', -50, 30, null, 1],
+  ['B2023020','T20200678',  -48, 60, null, 0],
+  ['B2023021','2023012245', -42, 30, null, 1],
+  ['B2023022','2023080912', -38, 30, null, 0],
+  ['B2023005','2023070822', -35, 30, null, 0],
+  ['B2023009','2023020378', -32, 30, null, 1],
+  ['B2023010','T20200678',  -30, 60, null, 0],
+  ['B2023008','T20180567',  -80, 60, 70,   0],
+  ['B2023011','2022010301', -70, 30, 38,   1],
+  ['B2023018','2023051208', -60, 30, 25,   0],
+  ['B2023019','2022091133', -55, 30, 28,   0],
+  ['B2023020','T20200678',  -90, 60, 50,   1],
+  ['B2023021','2023012245', -45, 30, 22,   0],
+  ['B2023022','2023080912', -50, 30, 30,   0],
+  ['B2023001','2023070822', -100,30, 20,   0],
+  ['B2023005','T20170412',  -75, 60, 45,   0],
+  ['B2023013','2023090245', -40, 30, 15,   0],
+  ['B2023002','2022031966', -120,30, 28,   1],
+  ['B2023009','2023020378', -35, 30, 20,   0],
+  ['B2023007','2022050678', -95, 30, 25,   0],
+  ['B2023012','2021060889', -65, 30, 18,   0],
+  ['B2023010','T20160128',  -110,60, 55,   0],
+  ['B2023016','2023080912', -30, 30, 10,   0],
+  ['B2023004','T20190456',  -85, 60, 40,   1],
+  ['B2023014','2021070145', -25, 30, 12,   0],
+  ['B2023020','2023051208', -140,30, 26,   0],
+  ['B2023023','2022091133', -22, 30, null, 0],
+  ['B2023024','2023080912', -18, 30, null, 1],
+  ['B2023025','T20160128',  -14, 60, null, 0],
+  ['B2023004','2023020378', -4,  30, null, 0],
+  ['B2023011','2021060889', -7,  30, null, 0],
+  ['B2023023','L20240312',  -9,  15, null, 0],
+  ['B2023010','A20150123',  -11, 30, null, 0],
+  ['B2023008','O20210101',  -2,  15, null, 0]
+];
+
+function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayStr(){ return fmtDate(new Date()); }
+function addDaysStr(base,n){ const d=new Date(base+'T00:00:00'); d.setDate(d.getDate()+n); return fmtDate(d); }
+function diffDays(a,b){ return Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/86400000); }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function nowStr(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
+function typeKey(t){ return {'学生':'stu','教师':'tea','临时':'tmp','校友':'alu','校外读者':'out'}[t]||'out'; }
+
+function buildBorrows(){
+  const list = [];
+  const today = todayStr();
+  RAW.forEach((r,i) => {
+    const [barcode,certNo,outOff,days,retOff,renew] = r;
+    const book = BOOKS[barcode];
+    const reader = READERS[certNo];
+    if(!book || !reader) return;
+    const borrowDate = addDaysStr(today, outOff);
+    const dueDate = addDaysStr(borrowDate, days);
+    const retDate = (retOff === null) ? null : addDaysStr(borrowDate, retOff);
+    const seq = String(i+1).padStart(3,'0');
+    list.push({
+      id: 'JY' + borrowDate.replace(/-/g,'') + seq,
+      barcode, certNo, book, reader,
+      borrowDate, dueDate, retDate,
+      renewCount: renew,
+      maxRenew: (RULES[reader.type] || RULES['学生']).renew,
+      fineRate: (RULES[reader.type] || RULES['学生']).fine,
+      operator: '王管理员'
+    });
+  });
+  return list;
+}
+
+let borrows = buildBorrows();
+let noticeLogs = [];
+let renewLogs = [];
+
+function statusOf(b){
+  if(b.lost) return 'lost';
+  if(b.damaged) return 'damaged';
+  if(b.retDate) return b.retDate > b.dueDate ? 'late' : 'returned';
+  const today = todayStr();
+  if(today > b.dueDate) return 'overdue';
+  if(diffDays(b.dueDate, today) <= 3) return 'duesoon';
+  return 'borrowing';
+}
+function overdueDays(b){
+  const base = b.retDate || todayStr();
+  const d = diffDays(base, b.dueDate);
+  return d > 0 ? d : 0;
+}
+function fineOf(b){
+  if(b.lost && typeof b.lostFine === 'number') return b.lostFine;
+  if(b.damaged && typeof b.damagedFine === 'number') return b.damagedFine;
+  const d = overdueDays(b);
+  if(d <= 0) return 0;
+  return Math.min(d * b.fineRate, 20);
+}
+const STATUS_MAP = {
+  borrowing:{label:'借阅中',   cls:'st-borrowing'},
+  duesoon:  {label:'即将到期', cls:'st-duesoon'},
+  overdue:  {label:'已逾期',   cls:'st-overdue'},
+  returned: {label:'已归还',   cls:'st-returned'},
+  late:     {label:'逾期归还', cls:'st-late'},
+  lost:     {label:'已遗失',   cls:'st-lost'},
+  damaged:  {label:'已损坏',   cls:'st-damaged'}
+};
+function canRenew(b){ return !b.retDate && !b.lost && !b.damaged && b.renewCount < b.maxRenew; }
+function borrowedCount(certNo){ return borrows.filter(b => b.certNo === certNo && !b.retDate).length; }
+
+let state = { page:1, pageSize:10, keyword:'', status:'', type:'', dateFrom:'', dateTo:'', quick:'',
+  loc:{ libId:'', floorId:'', areaId:'', rowId:'', shelfId:'', layer:'', slot:'' } };
+let selected = new Set();
+
+function toast(msg, type){
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' '+type : '');
+  el.textContent = msg;
+  $('toastWrap').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, 2600);
+}
+
+function matchLoc(b){
+  const loc = state.loc;
+  if(!loc.libId && !loc.floorId && !loc.areaId && !loc.rowId && !loc.shelfId && !loc.layer && !loc.slot) return true;
+  const p = getLocationPath(b.book.shelfId);
+  if(!p) return false;
+  if(loc.libId && String(p.lib.id) !== String(loc.libId)) return false;
+  if(loc.floorId && String(p.floor.id) !== String(loc.floorId)) return false;
+  if(loc.areaId && String(p.area.id) !== String(loc.areaId)) return false;
+  if(loc.rowId && String(p.row.id) !== String(loc.rowId)) return false;
+  if(loc.shelfId && String(p.shelf.id) !== String(loc.shelfId)) return false;
+  if(loc.layer && String(b.book.layer) !== String(loc.layer)) return false;
+  if(loc.slot && String(b.book.slot) !== String(loc.slot)) return false;
+  return true;
+}
+
+function getFiltered(){
+  const k = state.keyword.trim().toLowerCase();
+  return borrows.filter(b => {
+    if(state.quick){
+      const st = statusOf(b);
+      if(state.quick === 'borrowing' && !(st === 'borrowing' || st === 'duesoon')) return false;
+      if(state.quick === 'duesoon' && st !== 'duesoon') return false;
+      if(state.quick === 'overdue' && st !== 'overdue') return false;
+      if(state.quick === 'returned' && !(st === 'returned' || st === 'late')) return false;
+      if(state.quick === 'lost' && st !== 'lost') return false;
+      if(state.quick === 'damaged' && st !== 'damaged') return false;
+    }
+    if(state.status){
+      const map = {'借阅中':'borrowing','即将到期':'duesoon','已逾期':'overdue','已归还':'returned','逾期归还':'late'};
+      if(statusOf(b) !== map[state.status]) return false;
+    }
+    if(state.type && b.reader.type !== state.type) return false;
+    if(state.dateFrom && b.borrowDate < state.dateFrom) return false;
+    if(state.dateTo && b.borrowDate > state.dateTo) return false;
+    if(!matchLoc(b)) return false;
+    if(k){
+      const hit = b.id.toLowerCase().includes(k)
+        || b.book.title.toLowerCase().includes(k)
+        || b.book.callNo.toLowerCase().includes(k)
+        || b.barcode.toLowerCase().includes(k)
+        || b.reader.name.toLowerCase().includes(k)
+        || b.certNo.toLowerCase().includes(k);
+      if(!hit) return false;
+    }
+    return true;
+  });
+}
+
+function updateChips(){
+  const all = borrows;
+  $('c-all').textContent = all.length;
+  $('c-borrowing').textContent = all.filter(b => ['borrowing','duesoon'].includes(statusOf(b))).length;
+  $('c-duesoon').textContent = all.filter(b => statusOf(b) === 'duesoon').length;
+  $('c-overdue').textContent = all.filter(b => statusOf(b) === 'overdue').length;
+  $('c-returned').textContent = all.filter(b => ['returned','late'].includes(statusOf(b))).length;
+  $('c-lost').textContent = all.filter(b => b.lost).length;
+  $('c-damaged').textContent = all.filter(b => b.damaged).length;
+}
+function setQuick(el, q){
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state.quick = q;
+  state.page = 1;
+  renderTable();
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / state.pageSize));
+  if(state.page > pages) state.page = pages;
+  const start = (state.page - 1) * state.pageSize;
+  const rows = list.slice(start, start + state.pageSize);
+  const tbody = $('tbody');
+
+  if(!rows.length){
+    tbody.innerHTML = `<tr><td colspan="12"><div class="empty"><span class="big">📭</span>没有找到符合条件的借阅记录</div></td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(b => {
+      const st = statusOf(b);
+      const sm = STATUS_MAP[st];
+      const od = overdueDays(b);
+      const fine = fineOf(b);
+      const today = todayStr();
+      const path = getLocationPath(b.book.shelfId, b.book.layer, b.book.slot);
+
+      let statusHtml = `<span class="rec-badge ${sm.cls}">${sm.label}</span>`;
+      if(st === 'overdue') statusHtml += `<div class="sub" style="color:#dc2626">已逾期 ${od} 天</div>`;
+      else if(st === 'duesoon') statusHtml += `<div class="sub" style="color:#b45309">${diffDays(b.dueDate, today)} 天后到期</div>`;
+      else if(st === 'late') statusHtml += `<div class="sub" style="color:#ea580c">逾期 ${od} 天归还</div>`;
+
+      const dueCls = st === 'overdue' ? 'danger' : (st === 'duesoon' ? 'warn' : '');
+      const retCls = st === 'late' ? 'warn' : (b.retDate ? 'green' : '');
+
+      const locParts = [
+        `<span style="color:#1d4ed8;font-weight:600">${esc(path.lib.name)}</span>`,
+        `<span style="color:#0e7490">${esc(path.floor.name)}</span>`,
+        `<span style="color:#0369a1">${esc(path.area.name)}</span>`,
+        `<span style="color:#0c4a6e">${esc(path.row.name)}</span>`,
+        `<span style="color:#111827;font-weight:600">${esc(path.shelf.name)}</span>`
+      ];
+      const locStr = locParts.join(' <span style="color:#cbd5e1">›</span> ');
+      const layerSlotStr = (path.layer && path.slot)
+        ? ` <span style="color:#cbd5e1">›</span> <span style="background:#eff6ff;color:#1d4ed8;padding:1px 7px;border-radius:4px;font-weight:500">第 ${path.layer} 层 › 第 ${path.slot} 格</span>`
+        : '';
+
+      let abnMark = '';
+      if(b.lost) abnMark = `<span class="abn-mark lost-mark">已遗失</span>`;
+      else if(b.damaged) abnMark = `<span class="abn-mark damaged-mark">已损坏</span>`;
+
+      const rowCls = b.lost ? 'is-lost' : (b.damaged ? 'is-damaged' : '');
+
+      let fineCell = '<span class="fine-cell zero">¥0</span>';
+      if(b.lost && typeof b.lostFine === 'number'){
+        const feeTag = (typeof b.lostProcessFee === 'number') ? `<span style="color:#9ca3af;font-size:11px">（含加工费 ￥${b.lostProcessFee.toFixed(2)}）</span>` : '';
+        fineCell = `<span class="fine-cell"><b>¥${b.lostFine.toFixed(2)}</b></span><div class="sub" style="color:#dc2626;font-size:11px">遗失赔偿 ${feeTag}</div>`;
+      } else if(b.damaged && typeof b.damagedFine === 'number'){
+        const feeTag = b.damagedIncludeFee ? `<span style="color:#9ca3af;font-size:11px">（含加工费 ￥${(b.damagedProcessFee||0).toFixed(2)}）</span>` : '';
+        fineCell = `<span class="fine-cell"><b>¥${b.damagedFine.toFixed(2)}</b></span><div class="sub" style="color:#b45309;font-size:11px">损坏赔偿 ${feeTag}</div>`;
+      } else if(fine > 0){
+        fineCell = `<span class="fine-cell"><b>￥${fine.toFixed(2)}</b></span>`;
+      }
+
+      return `
+      <tr class="${rowCls}">
+        <td><input type="checkbox" ${selected.has(b.id)?'checked':''} onchange="toggleRow('${b.id}',this)"></td>
+        <td><div class="mono" style="font-size:12px;color:#4b5563">${esc(b.id)}</div><div class="sub" style="margin-top:3px">经办：${esc(b.operator)}</div></td>
+        <td>
+          <div class="book-cell">
+            <div class="bt">${esc(b.book.title)}${abnMark}</div>
+            <div class="bs">
+              <span class="mono">${esc(b.book.callNo)}</span>
+              <span class="mono" style="color:#9ca3af">${esc(b.barcode)}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="user-cell">
+            <div class="avatar ${b.reader.gender==='女'?'f':''}">${esc(b.reader.name[0])}</div>
+            <div style="min-width:0">
+              <div class="user-name">${esc(b.reader.name)}</div>
+              <div class="user-sub"><span class="tag t-${typeKey(b.reader.type)}">${b.reader.type}</span> <span class="mono">${esc(b.certNo)}</span></div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div style="font-size:11.5px;line-height:1.7;color:#374151">
+            ${locStr}${layerSlotStr}
+          </div>
+          <div style="font-size:11px;color:var(--text-3);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin-top:4px">📍 ${esc(path.code)}</div>
+        </td>
+        <td class="date-cell">${b.borrowDate}</td>
+        <td class="date-cell ${dueCls}">${b.dueDate}</td>
+        <td class="date-cell ${retCls}">${b.retDate || '—'}</td>
+        <td><span class="renew-num ${b.renewCount >= b.maxRenew ? 'full' : ''}"><b>${b.renewCount}</b> / ${b.maxRenew}</span></td>
+        <td>${fineCell}</td>
+        <td>${statusHtml}</td>
+        <td class="ops">
+          <span class="link" onclick="openBorrowDetail('${b.id}')">详情</span>
+          <span class="op-sep">|</span>
+          <span class="more-btn" onclick="showRowMenu(event,'${b.id}')">更多 ▾</span>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  $('totalNum').textContent = total;
+  renderPager(total, pages);
+  updateBatchBar();
+  updateChips();
+  const allChecked = rows.length > 0 && rows.every(b => selected.has(b.id));
+  $('checkAll').checked = allChecked;
+}
+
+function renderPager(total, pages){
+  let btnHtml = `<button class="pager-btn" ${state.page===1?'disabled':''} onclick="gotoPage(${state.page-1})">‹</button>`;
+  const show = [];
+  if(pages <= 7){ for(let i=1;i<=pages;i++) show.push(i); }
+  else {
+    show.push(1);
+    if(state.page > 3) show.push('...');
+    for(let i=Math.max(2,state.page-1); i<=Math.min(pages-1,state.page+1); i++) show.push(i);
+    if(state.page < pages-2) show.push('...');
+    show.push(pages);
+  }
+  show.forEach(p => {
+    if(p === '...') btnHtml += `<span class="pager-dots">···</span>`;
+    else btnHtml += `<button class="pager-btn ${p===state.page?'active':''}" onclick="gotoPage(${p})">${p}</button>`;
+  });
+  btnHtml += `<button class="pager-btn" ${state.page===pages?'disabled':''} onclick="gotoPage(${state.page+1})">›</button>`;
+  $('pagerCtrl').innerHTML = btnHtml;
+}
+
+function gotoPage(p){ state.page = p; renderTable(); document.querySelector('.table-wrap').scrollTop = 0; }
+function changePageSize(v){ state.pageSize = parseInt(v); state.page = 1; renderTable(); }
+function doSearch(){ state.keyword = $('kw').value; state.page = 1; renderTable(); }
+function onFilter(){
+  state.status = $('fStatus').value;
+  state.type = $('fType').value;
+  state.dateFrom = $('fDateFrom').value;
+  state.dateTo = $('fDateTo').value;
+  state.page = 1;
+  renderTable();
+}
+function resetFilter(){
+  $('kw').value = ''; $('fStatus').value = ''; $('fType').value = '';
+  $('fDateFrom').value = ''; $('fDateTo').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.querySelector('.chip[data-quick=""]').classList.add('active');
+  state = { page:1, pageSize:state.pageSize, keyword:'', status:'', type:'', dateFrom:'', dateTo:'', quick:'',
+    loc:{ libId:'', floorId:'', areaId:'', rowId:'', shelfId:'', layer:'', slot:'' } };
+  clearLoc();
+}
+
+/* ★ 新增：按当前筛选条件导出 CSV */
+function exportList(){
+  const list = getFiltered();
+  if(!list.length){ toast('当前筛选条件下没有数据，无法导出', 'warn'); return; }
+  const today = todayStr();
+  let csv = '\ufeff借阅管理报表,生成时间,' + nowStr() + '\n';
+  csv += '筛选条件,';
+  if(state.keyword) csv += '关键字:' + state.keyword + ' ';
+  if(state.status)   csv += '状态:' + state.status + ' ';
+  if(state.type)     csv += '读者类型:' + state.type + ' ';
+  if(state.dateFrom || state.dateTo) csv += '借出日期:' + (state.dateFrom||'不限') + '~' + (state.dateTo||'不限') + ' ';
+  if(!state.keyword && !state.status && !state.type && !state.dateFrom && !state.dateTo) csv += '全部记录';
+  csv += '\n导出条数,' + list.length + '\n\n';
+  csv += '借阅单号,书名,索书号,条码,读者,读者类型,借出日期,应还日期,归还日期,续借,滞纳金/赔偿,状态\n';
+  list.forEach(b => {
+    const st = statusOf(b);
+    const sm = STATUS_MAP[st];
+    let fineDesc = '';
+    if(b.lost && typeof b.lostFine === 'number'){
+      const pf = (typeof b.lostProcessFee === 'number') ? b.lostProcessFee : 0;
+      fineDesc = '遗失赔' + b.lostFine.toFixed(2) + '(含加工费' + pf.toFixed(2) + ')';
+    } else if(b.damaged && typeof b.damagedFine === 'number'){
+      const pf = b.damagedIncludeFee ? (b.damagedProcessFee||0) : 0;
+      fineDesc = '损坏赔' + b.damagedFine.toFixed(2) + (b.damagedIncludeFee ? '(含加工费' + pf.toFixed(2) + ')' : '');
+    } else if(fineOf(b) > 0){
+      fineDesc = '滞纳金' + fineOf(b).toFixed(2);
+    }
+    csv += [
+      b.id,
+      '"' + b.book.title.replace(/"/g,'""') + '"',
+      b.book.callNo, b.barcode,
+      b.reader.name, b.reader.type,
+      b.borrowDate, b.dueDate,
+      b.retDate || '',
+      b.renewCount + '/' + b.maxRenew,
+      fineDesc,
+      sm.label
+    ].join(',') + '\n';
+  });
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '借阅管理报表_' + today + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('已导出 ' + list.length + ' 条记录（含借阅明细、罚款明细）');
+}
+
+function toggleRow(id, el){
+  if(el.checked) selected.add(id); else selected.delete(id);
+  updateBatchBar();
+  const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+  $('checkAll').checked = rows.length > 0 && rows.every(b => selected.has(b.id));
+  $('selInfo').textContent = selected.size;
+}
+function toggleAll(el){
+  const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+  rows.forEach(b => { el.checked ? selected.add(b.id) : selected.delete(b.id); });
+  renderTable();
+}
+function clearSelection(){ selected.clear(); renderTable(); }
+function updateBatchBar(){
+  $('selCount').textContent = selected.size;
+  $('batchBar').classList.toggle('show', selected.size > 0);
+}
+
+function showRowMenu(ev, id){
+  ev.stopPropagation();
+  const b = borrows.find(x => x.id === id);
+  if(!b) return;
+  const menu = $('rowMenu');
+  const st = statusOf(b);
+
+  let html = '';
+  html += `<div class="menu-item" onclick="openBorrowDetail('${id}',event)">查看详情</div>`;
+  html += `<div class="menu-divider"></div>`;
+
+  if(canRenew(b)){
+    html += `<div class="menu-item" onclick="doRenew('${id}',event)">续借<div class="hint">剩余可续借 ${b.maxRenew - b.renewCount} 次</div></div>`;
+  } else if(b.lost){
+    html += `<div class="menu-item disabled">续借<div class="hint">此书已遗失</div></div>`;
+  } else if(b.damaged){
+    html += `<div class="menu-item disabled">续借<div class="hint">此书已损坏</div></div>`;
+  } else {
+    html += `<div class="menu-item disabled">续借<div class="hint">已用完 ${b.maxRenew} 次续借机会</div></div>`;
+  }
+
+  if(!b.retDate && !b.lost){
+    html += `<div class="menu-item" onclick="quickReturn('${id}',event)">归还<div class="hint">扫描条码办理归还</div></div>`;
+  } else if(b.retDate){
+    html += `<div class="menu-item disabled">归还<div class="hint">已归还</div></div>`;
+  } else if(b.lost){
+    html += `<div class="menu-item disabled">归还<div class="hint">已登记遗失</div></div>`;
+  }
+
+  if(st === 'overdue'){
+    html += `<div class="menu-item" onclick="noticeOne('${id}',event)">发送催还通知<div class="hint">已逾期 ${overdueDays(b)} 天</div></div>`;
+  }
+
+  html += `<div class="menu-divider"></div>`;
+  if(b.retDate){
+    html += `<div class="menu-item disabled">登记遗失<div class="hint">已归还的图书不可登记</div></div>`;
+    html += `<div class="menu-item disabled">登记损坏<div class="hint">已归还的图书不可登记</div></div>`;
+  } else if(b.lost){
+    html += `<div class="menu-item disabled">登记遗失<div class="hint">已登记遗失</div></div>`;
+    html += `<div class="menu-item warn" onclick="openDamaged('${id}',event)">登记损坏<div class="hint">补登记损坏细节</div></div>`;
+  } else if(b.damaged){
+    html += `<div class="menu-item danger" onclick="openLost('${id}',event)">登记遗失<div class="hint">补登记遗失</div></div>`;
+    html += `<div class="menu-item disabled">登记损坏<div class="hint">已登记损坏</div></div>`;
+  } else {
+    html += `<div class="menu-item danger" onclick="openLost('${id}',event)">登记遗失<div class="hint">图书丢失，生成罚款</div></div>`;
+    html += `<div class="menu-item warn" onclick="openDamaged('${id}',event)">登记损坏<div class="hint">图书损坏，按比例生成罚款</div></div>`;
+  }
+
+  html += `<div class="menu-divider"></div>`;
+  html += `<div class="menu-item" onclick="printOne('${id}',event)">打印借阅凭条</div>`;
+
+  menu.innerHTML = html;
+  const rect = ev.currentTarget.getBoundingClientRect();
+  menu.style.display = 'block';
+  const mw = menu.offsetWidth;
+  menu.style.left = Math.max(8, Math.min(rect.right - mw, window.innerWidth - mw - 8)) + 'px';
+  menu.style.top = Math.min(rect.bottom + 6, window.innerHeight - menu.offsetHeight - 8) + 'px';
+}
+document.addEventListener('click', () => { $('rowMenu').style.display = 'none'; });
+window.addEventListener('scroll', () => { $('rowMenu').style.display = 'none'; }, true);
+
+function doRenew(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  const b = borrows.find(x => x.id === id);
+  if(!b) return;
+  if(!canRenew(b)){ toast('该记录已用完续借机会，无法续借', 'error'); return; }
+  const renewDays = (RULES[b.reader.type] || RULES['学生']).renewDays;
+  const oldDue = b.dueDate;
+  b.renewCount++;
+  b.dueDate = addDaysStr(todayStr(), renewDays);
+  renewLogs.unshift({
+    id: 'XJ' + Date.now(), time: nowStr(), certNo: b.certNo, readerName: b.reader.name,
+    oldDueDate: oldDue, newDueDate: b.dueDate, renewCount: b.renewCount, maxRenew: b.maxRenew,
+    operator: '王管理员', source: '管理员'
+  });
+  toast(`《${b.book.title.replace(/[《》]/g,'')}》续借成功，延长 ${renewDays} 天，应还日期延至 ${b.dueDate}`);
+  renderTable();
+}
+
+function noticeOne(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  const b = borrows.find(x => x.id === id);
+  if(!b) return;
+  noticeLogs.unshift({
+    id: 'CH' + Date.now(), time: nowStr(), certNo: b.certNo, readerName: b.reader.name,
+    overdueDays: overdueDays(b), channels: ['sms','email'], operator: '王管理员', status: 'ok'
+  });
+  toast(`已向 ${b.reader.name}（${b.reader.phone.slice(0,3)}****${b.reader.phone.slice(-4)}）发送催还通知`);
+}
+
+function batchRenew(){
+  const ids = [...selected];
+  const targets = ids.filter(id => { const b = borrows.find(x => x.id === id); return b && canRenew(b); });
+  if(!targets.length){ toast('所选记录中没有可续借的图书', 'warn'); return; }
+  targets.forEach(id => {
+    const b = borrows.find(x => x.id === id);
+    const renewDays = (RULES[b.reader.type] || RULES['学生']).renewDays;
+    const oldDue = b.dueDate;
+    b.renewCount++;
+    b.dueDate = addDaysStr(todayStr(), renewDays);
+    renewLogs.unshift({
+      id: 'XJ' + Date.now() + Math.floor(Math.random()*1000),
+      time: nowStr(), certNo: b.certNo, readerName: b.reader.name,
+      oldDueDate: oldDue, newDueDate: b.dueDate, renewCount: b.renewCount, maxRenew: b.maxRenew,
+      operator: '王管理员', source: '管理员'
+    });
+  });
+  toast(`已成功续借 ${targets.length} 册${ids.length - targets.length ? '，' + (ids.length - targets.length) + ' 册因已达上限跳过' : ''}`);
+  clearSelection();
+}
+
+function batchReturn(){
+  const ids = [...selected];
+  const targets = ids.filter(id => { const b = borrows.find(x => x.id === id); return b && !b.retDate && !b.lost; });
+  if(!targets.length){ toast('所选记录中没有未归还的图书', 'warn'); return; }
+  if(!confirm(`确认将所选 ${targets.length} 册图书批量归还吗？\n逾期产生的滞纳金将一并结算。`)) return;
+  let fineTotal = 0;
+  targets.forEach(id => { const b = borrows.find(x => x.id === id); fineTotal += fineOf(b); b.retDate = todayStr(); });
+  toast(`已归还 ${targets.length} 册${fineTotal > 0 ? '，合计滞纳金 ￥' + fineTotal.toFixed(2) : ''}`);
+  clearSelection();
+}
+
+function batchNotice(){
+  const ids = [...selected];
+  const targets = ids.filter(id => { const b = borrows.find(x => x.id === id); return b && statusOf(b) === 'overdue'; });
+  if(!targets.length){ toast('所选记录中没有逾期未还的图书', 'warn'); return; }
+  targets.forEach(id => {
+    const b = borrows.find(x => x.id === id);
+    noticeLogs.unshift({
+      id: 'CH' + Date.now() + Math.floor(Math.random()*1000),
+      time: nowStr(), certNo: b.certNo, readerName: b.reader.name,
+      overdueDays: overdueDays(b), channels: ['sms','email'], operator: '王管理员', status: 'ok'
+    });
+  });
+  toast(`已向 ${targets.length} 位读者发送催还通知`);
+  clearSelection();
+}
+
+function batchExport(){ toast(`已导出 ${selected.size} 条借阅记录`); clearSelection(); }
+function printSelected(){
+  if(!selected.size){ toast('请先勾选需要打印凭条的借阅记录', 'warn'); return; }
+  toast(`已生成 ${selected.size} 张借阅凭条`);
+}
+
+let lendReader = null;
+let lendBooks = [];
+
+function openLend(){
+  lendReader = null; lendBooks = [];
+  $('lendReaderInput').value = ''; $('lendBookInput').value = '';
+  $('lendReaderBox').innerHTML = ''; $('lendBookBox').innerHTML = '';
+  $('btnConfirmLend').disabled = true;
+  $('lendMask').classList.add('show');
+  setTimeout(() => $('lendReaderInput').focus(), 120);
+}
+function loadLendReader(){
+  const code = $('lendReaderInput').value.trim();
+  if(!code){ toast('请输入或扫描读者卡号', 'error'); return; }
+  const reader = READERS[code];
+  if(!reader){
+    $('lendReaderBox').innerHTML = `<div class="tip-box err">未找到卡号为「${esc(code)}」的读者档案。</div>`;
+    lendReader = null; return;
+  }
+  lendReader = { certNo: code, ...reader };
+  const used = borrowedCount(code);
+  const quota = (RULES[reader.type] || RULES['学生']).quota;
+  const full = used >= quota;
+  $('lendReaderBox').innerHTML = `
+    <div class="reader-card">
+      <div class="avatar ${reader.gender==='女'?'f':''}">${esc(reader.name[0])}</div>
+      <div style="min-width:0">
+        <div class="rc-name">${esc(reader.name)}<span class="tag t-${typeKey(reader.type)}">${reader.type}</span></div>
+        <div class="rc-sub"><span class="mono">${esc(code)}</span><span>${esc(reader.dept)}</span></div>
+      </div>
+      <div class="rc-quota"><div class="q-v ${full?'full':''}">${used} / ${quota}</div><div class="q-l">已借 / 可借</div></div>
+    </div>
+    ${full ? '<div class="tip-box err" style="margin-top:10px">该读者已达可借上限，请先归还部分图书。</div>' : ''}`;
+}
+function addLendBook(){
+  if(!lendReader){ toast('请先读取读者信息', 'error'); return; }
+  const code = $('lendBookInput').value.trim();
+  if(!code){ toast('请输入或扫描图书条码', 'error'); return; }
+  $('lendBookInput').value = '';
+  const book = BOOKS[code];
+  if(!book){ toast(`未找到条码「${code}」对应的图书`, 'error'); return; }
+  if(lendBooks.some(x => x.barcode === code)){ toast('该图书已在待借清单中', 'warn'); return; }
+  const onLoan = borrows.find(b => b.barcode === code && !b.retDate);
+  if(onLoan){ toast(`该图书当前处于借出状态（借阅人：${onLoan.reader.name}）`, 'error'); return; }
+  lendBooks.push({ barcode: code, ...book });
+  renderLendBooks();
+  setTimeout(() => $('lendBookInput').focus(), 60);
+}
+function removeLendBook(code){
+  lendBooks = lendBooks.filter(x => x.barcode !== code);
+  renderLendBooks();
+}
+function renderLendBooks(){
+  if(!lendBooks.length){
+    $('lendBookBox').innerHTML = '<div class="tip-box">尚未添加图书，扫描图书条码后回车即可加入清单。</div>';
+    $('btnConfirmLend').disabled = true;
+    return;
+  }
+  const days = lendReader ? (RULES[lendReader.type] || RULES['学生']).days : 30;
+  const due = addDaysStr(todayStr(), days);
+  const overQuota = borrowedCount(lendReader.certNo) + lendBooks.length > (RULES[lendReader.type] || RULES['学生']).quota;
+  $('lendBookBox').innerHTML = `
+    <table class="pick-table">
+      <thead><tr><th>书名</th><th style="width:120px">索书号</th><th style="width:104px">条码</th><th style="width:170px">馆藏位置</th><th style="width:60px">操作</th></tr></thead>
+      <tbody>
+        ${lendBooks.map(x => {
+          const p = getLocationPath(x.shelfId, x.layer, x.slot);
+          return `
+          <tr>
+            <td class="pt-title">${esc(x.title)}</td>
+            <td class="mono">${esc(x.callNo)}</td>
+            <td class="mono">${esc(x.barcode)}</td>
+            <td style="font-size:11.5px;color:#475569;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">${esc(p.code)}</td>
+            <td><span class="link" style="color:#dc2626;cursor:pointer" onclick="removeLendBook('${x.barcode}')">移除</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div class="summary-bar">
+      <div class="sb-item">本次借出 <b>${lendBooks.length}</b> 册</div>
+      <div class="sb-item">借期 <b>${days}</b> 天</div>
+      <div class="sb-item">应还日期 <b>${due}</b></div>
+      <div class="sb-item">经办人 <b>王管理员</b></div>
+      ${overQuota ? '<div class="sb-item" style="color:#dc2626">⚠️ 已超出可借上限</div>' : ''}
+    </div>`;
+  $('btnConfirmLend').disabled = overQuota;
+}
+function confirmLend(){
+  if(!lendReader || !lendBooks.length) return;
+  const days = (RULES[lendReader.type] || RULES['学生']).days;
+  const maxRenew = (RULES[lendReader.type] || RULES['学生']).renew;
+  const fineRate = (RULES[lendReader.type] || RULES['学生']).fine;
+  const today = todayStr();
+  lendBooks.forEach((bk, i) => {
+    borrows.unshift({
+      id: 'JY' + today.replace(/-/g,'') + String(Date.now()).slice(-5) + i,
+      barcode: bk.barcode,
+      certNo: lendReader.certNo,
+      book: { title:bk.title, callNo:bk.callNo, isbn:bk.isbn, price:bk.price, shelfId:bk.shelfId, layer:bk.layer, slot:bk.slot },
+      reader: { name:lendReader.name, gender:lendReader.gender, type:lendReader.type, dept:lendReader.dept, phone:lendReader.phone },
+      borrowDate: today, dueDate: addDaysStr(today, days), retDate: null,
+      renewCount: 0, maxRenew, fineRate, operator: '王管理员'
+    });
+  });
+  toast(`借阅办理成功：${lendReader.name} 借出 ${lendBooks.length} 册`);
+  closeModal('lendMask');
+  state.page = 1; renderTable();
+}
+
+let returnTarget = null;
+function openReturn(){
+  returnTarget = null;
+  $('returnInput').value = ''; $('returnBox').innerHTML = '';
+  $('btnConfirmReturn').disabled = true;
+  $('returnMask').classList.add('show');
+  setTimeout(() => $('returnInput').focus(), 120);
+}
+function quickReturn(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  openReturn();
+  const b = borrows.find(x => x.id === id);
+  if(b){ $('returnInput').value = b.barcode; loadReturn(); }
+}
+function loadReturn(){
+  const code = $('returnInput').value.trim();
+  if(!code){ toast('请输入或扫描图书条码', 'error'); return; }
+  const b = borrows.find(x => x.barcode === code && !x.retDate && !x.lost);
+  if(!b){
+    const any = borrows.find(x => x.barcode === code);
+    if(any && any.retDate){
+      $('returnBox').innerHTML = `<div class="tip-box warn" style="margin-top:12px">该图书已于 <b>${any.retDate}</b> 归还。</div>`;
+    } else if(any && any.lost){
+      $('returnBox').innerHTML = `<div class="tip-box err" style="margin-top:12px">该图书已登记<b style="color:#dc2626">遗失</b>，无法办理归还。</div>`;
+    } else {
+      $('returnBox').innerHTML = `<div class="tip-box err" style="margin-top:12px">未找到条码「${esc(code)}」对应的在借记录。</div>`;
+    }
+    returnTarget = null; $('btnConfirmReturn').disabled = true; return;
+  }
+  returnTarget = b; renderReturnInfo(b); $('btnConfirmReturn').disabled = false;
+}
+function renderReturnInfo(b){
+  const od = overdueDays(b);
+  const fine = fineOf(b);
+  const today = todayStr();
+  const path = getLocationPath(b.book.shelfId, b.book.layer, b.book.slot);
+  $('returnBox').innerHTML = `
+    <div class="reader-card" style="margin-top:12px">
+      <div class="avatar ${b.reader.gender==='女'?'f':''}">${esc(b.reader.name[0])}</div>
+      <div style="min-width:0">
+        <div class="rc-name">${esc(b.reader.name)} <span class="tag t-${typeKey(b.reader.type)}">${b.reader.type}</span></div>
+        <div class="rc-sub"><span class="mono">${esc(b.certNo)}</span><span>${esc(b.reader.dept)}</span></div>
+      </div>
+    </div>
+    <div class="detail-sec" style="margin-top:16px">
+      <h4>借阅信息</h4>
+      <dl class="detail-grid">
+        <dt>图书</dt><dd>${esc(b.book.title)}</dd>
+        <dt>索书号</dt><dd class="mono">${esc(b.book.callNo)}</dd>
+        <dt>条码</dt><dd class="mono">${esc(b.barcode)}</dd>
+        <dt>馆藏位置</dt><dd class="mono" style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1d4ed8">${esc(path.code)}</dd>
+        <dt>借出日期</dt><dd class="mono">${b.borrowDate}</dd>
+        <dt>应还日期</dt><dd class="mono">${b.dueDate}</dd>
+        <dt>续借次数</dt><dd>${b.renewCount} / ${b.maxRenew}</dd>
+        <dt>归还日期</dt><dd class="mono">${today}</dd>
+      </dl>
+    </div>
+    ${od > 0
+      ? `<div class="tip-box warn" style="margin-top:14px">已逾期 <b>${od}</b> 天，按 ${b.fineRate.toFixed(2)} 元/天计算，应缴滞纳金 <b>￥${fine.toFixed(2)}</b>${fine >= 20 ? '（已封顶 20 元）' : ''}。</div>`
+      : `<div class="tip-box ok" style="margin-top:14px">在借期内归还，无滞纳金。</div>`}`;
+}
+function confirmReturn(){
+  if(!returnTarget) return;
+  const b = returnTarget;
+  b.retDate = todayStr();
+  const fine = fineOf(b);
+  toast(`《${b.book.title.replace(/[《》]/g,'')}》归还成功${fine > 0 ? '，已结算滞纳金 ￥' + fine.toFixed(2) : ''}`);
+  renderTable();
+  returnTarget = null; $('returnInput').value = '';
+  $('btnConfirmReturn').disabled = true;
+  $('returnBox').innerHTML = `<div class="tip-box ok" style="margin-top:12px">已完成 1 册归还，可继续扫描下一册。</div>`;
+  setTimeout(() => $('returnInput').focus(), 80);
+}
+
+/* =========================================================
+   登记遗失（加工费可调，默认 5 元，最少 0.1 元）
+   =======================================================*/
+let lostTarget = null;
+let damagedTarget = null;
+
+function openLost(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  lostTarget = borrows.find(x => x.id === id);
+  if(!lostTarget) return;
+  if(lostTarget.retDate){ toast('已归还的图书不可登记遗失', 'warn'); return; }
+  $('lostBarcode').value = lostTarget.barcode;
+  $('lostReaderBox').innerHTML = `
+    <div class="reader-card">
+      <div class="avatar ${lostTarget.reader.gender==='女'?'f':''}">${esc(lostTarget.reader.name[0])}</div>
+      <div style="min-width:0">
+        <div class="rc-name">${esc(lostTarget.reader.name)} <span class="tag t-${typeKey(lostTarget.reader.type)}">${lostTarget.reader.type}</span></div>
+        <div class="rc-sub"><span class="mono">${esc(lostTarget.certNo)}</span><span>${esc(lostTarget.reader.dept)}</span></div>
+      </div>
+    </div>`;
+  $('lostBookBox').innerHTML = `
+    <div class="detail-sec" style="margin-top:14px">
+      <h4 class="danger">借阅信息</h4>
+      <dl class="detail-grid">
+        <dt>图书</dt><dd>${esc(lostTarget.book.title)}</dd>
+        <dt>索书号</dt><dd class="mono">${esc(lostTarget.book.callNo)}</dd>
+        <dt>条码</dt><dd class="mono">${esc(lostTarget.barcode)}</dd>
+        <dt>借出日期</dt><dd class="mono">${lostTarget.borrowDate}</dd>
+        <dt>应还日期</dt><dd class="mono">${lostTarget.dueDate}</dd>
+      </dl>
+    </div>`;
+  $('lostProcessFee').value = '5';
+  $('lostRemark').value = '';
+  updateLostCalc();
+  $('lostDamageBox').style.display = 'block';
+  $('btnConfirmLost').disabled = false;
+  $('lostMask').classList.add('show');
+}
+
+/** 遗失 - 实时计算应赔金额 = 定价 + 加工费（≥0.1 元） */
+function updateLostCalc(){
+  if(!lostTarget) return;
+  const price = lostTarget.book.price;
+  const raw = $('lostProcessFee').value;
+  let fee = parseFloat(raw);
+  let warn = false;
+  if(raw === '' || isNaN(fee)){
+    warn = true;
+  } else if(fee < 0.1){
+    warn = true;
+  }
+  $('lostFeeWarn').style.display = warn ? 'inline' : 'none';
+  const total = price + (isNaN(fee) ? 0 : (fee < 0.1 ? 0.1 : fee));
+  $('lostBookPrice').textContent = `￥${price.toFixed(2)}`;
+  $('lostTotalFine').textContent = `￥${total.toFixed(2)}`;
+}
+
+/** 遗失 - 失焦时若值小于 0.1，自动夹到 0.1 */
+function clampLostFee(){
+  const el = $('lostProcessFee');
+  let v = parseFloat(el.value);
+  if(el.value !== '' && !isNaN(v) && v < 0.1){
+    el.value = '0.1';
+    updateLostCalc();
+  }
+}
+
+function confirmLost(){
+  if(!lostTarget) return;
+  const raw = $('lostProcessFee').value;
+  let fee = parseFloat(raw);
+  if(raw === '' || isNaN(fee)){
+    toast('请填写加工费金额（最少 0.1 元）', 'error');
+    $('lostProcessFee').focus();
+    return;
+  }
+  if(fee < 0.1){
+    toast('加工费不能少于 0.1 元，请调整后再次确认', 'error');
+    $('lostProcessFee').focus();
+    return;
+  }
+  const processFee = parseFloat(fee.toFixed(2));
+  const totalFine = lostTarget.book.price + processFee;
+  if(!confirm(`确认登记图书《${lostTarget.book.title}》遗失？\n\n应赔金额：${totalFine.toFixed(2)} 元\n· 图书定价：${lostTarget.book.price.toFixed(2)} 元\n· 加工费：${processFee.toFixed(2)} 元\n\n登记后该书将从借阅记录中核销为「已遗失」，罚款将记入罚款缴费。`)) return;
+  const b = lostTarget;
+  b.retDate = todayStr();
+  b.lost = true;
+  b.lostFine = totalFine;
+  b.lostProcessFee = processFee;
+  b.lostTime = nowStr();
+  b.lostRemark = $('lostRemark').value.trim();
+  closeModal('lostMask');
+  toast(`《${b.book.title.replace(/[《》]/g,'')}》遗失已登记，应赔金额 ￥${totalFine.toFixed(2)}`);
+  renderTable();
+}
+
+/* =========================================================
+   登记损坏（可选加工费，复选框控制）
+   =======================================================*/
+function openDamaged(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  damagedTarget = borrows.find(x => x.id === id);
+  if(!damagedTarget) return;
+  if(damagedTarget.retDate){ toast('已归还的图书不可登记损坏', 'warn'); return; }
+  $('damagedBarcode').value = damagedTarget.barcode;
+  $('damagedReaderBox').innerHTML = `
+    <div class="reader-card">
+      <div class="avatar ${damagedTarget.reader.gender==='女'?'f':''}">${esc(damagedTarget.reader.name[0])}</div>
+      <div style="min-width:0">
+        <div class="rc-name">${esc(damagedTarget.reader.name)} <span class="tag t-${typeKey(damagedTarget.reader.type)}">${damagedTarget.reader.type}</span></div>
+        <div class="rc-sub"><span class="mono">${esc(damagedTarget.certNo)}</span><span>${esc(damagedTarget.reader.dept)}</span></div>
+      </div>
+    </div>`;
+  $('damagedBookBox').innerHTML = `
+    <div class="detail-sec" style="margin-top:14px">
+      <h4 class="warn">借阅信息</h4>
+      <dl class="detail-grid">
+        <dt>图书</dt><dd>${esc(damagedTarget.book.title)}</dd>
+        <dt>索书号</dt><dd class="mono">${esc(damagedTarget.book.callNo)}</dd>
+        <dt>条码</dt><dd class="mono">${esc(damagedTarget.barcode)}</dd>
+        <dt>借出日期</dt><dd class="mono">${damagedTarget.borrowDate}</dd>
+        <dt>应还日期</dt><dd class="mono">${damagedTarget.dueDate}</dd>
+      </dl>
+    </div>`;
+  $('damagedLevel').value = '0.1';
+  $('damagedDesc').value = '';
+  $('damagedIncludeFee').checked = false;
+  $('damagedProcessFee').value = '5';
+  updateDamagedCalc();
+  $('damagedDamageBox').style.display = 'block';
+  $('btnConfirmDamaged').disabled = false;
+  $('damagedMask').classList.add('show');
+}
+
+/** 损坏 - 实时计算 应赔金额 = 定价×比例 [+加工费（若勾选，≥0.1 元）] */
+function updateDamagedCalc(){
+  if(!damagedTarget) return;
+  const ratio = parseFloat($('damagedLevel').value);
+  const price = damagedTarget.book.price;
+  const baseFine = price * ratio;
+  const includeFee = $('damagedIncludeFee').checked;
+
+  let processFee = 0;
+  let warn = false;
+  if(includeFee){
+    $('damagedFeeRow').style.display = 'block';
+    $('damagedFeeLine').style.display = 'flex';
+    const raw = $('damagedProcessFee').value;
+    let fee = parseFloat(raw);
+    if(raw === '' || isNaN(fee)){
+      warn = true;
+      $('damagedFeeShow').textContent = '—';
+    } else {
+      if(fee < 0.1) warn = true;
+      $('damagedFeeShow').textContent = `￥${fee.toFixed(2)}`;
+      processFee = fee;
+    }
+    $('damagedFeeWarn').style.display = warn ? 'inline' : 'none';
+  } else {
+    $('damagedFeeRow').style.display = 'none';
+    $('damagedFeeLine').style.display = 'none';
+    $('damagedFeeWarn').style.display = 'none';
+    processFee = 0;
+  }
+
+  const total = baseFine + processFee;
+  $('damagedBookPrice').textContent = `￥${price.toFixed(2)}`;
+  $('damagedRatio').textContent = `${(ratio*100).toFixed(0)}%`;
+  $('damagedTotalFine').textContent = `￥${total.toFixed(2)}`;
+}
+
+/** 损坏 - 失焦时若值小于 0.1，自动夹到 0.1 */
+function clampDamagedFee(){
+  const el = $('damagedProcessFee');
+  let v = parseFloat(el.value);
+  if(el.value !== '' && !isNaN(v) && v < 0.1){
+    el.value = '0.1';
+    updateDamagedCalc();
+  }
+}
+
+function confirmDamaged(){
+  if(!damagedTarget) return;
+  const ratio = parseFloat($('damagedLevel').value);
+  const baseFine = damagedTarget.book.price * ratio;
+  const includeFee = $('damagedIncludeFee').checked;
+  let processFee = 0;
+  if(includeFee){
+    const raw = $('damagedProcessFee').value;
+    let fee = parseFloat(raw);
+    if(raw === '' || isNaN(fee)){
+      toast('请填写加工费金额（最少 0.1 元）', 'error');
+      $('damagedProcessFee').focus();
+      return;
+    }
+    if(fee < 0.1){
+      toast('加工费不能少于 0.1 元，请调整后再次确认', 'error');
+      $('damagedProcessFee').focus();
+      return;
+    }
+    processFee = parseFloat(fee.toFixed(2));
+  }
+  const totalFine = baseFine + processFee;
+  const feeDesc = includeFee ? `\n· 加工费：${processFee.toFixed(2)} 元` : '';
+  if(!confirm(`确认登记图书《${damagedTarget.book.title}》损坏？\n\n应赔金额：${totalFine.toFixed(2)} 元\n· 损坏赔偿（${(ratio*100).toFixed(0)}%）：${baseFine.toFixed(2)} 元${feeDesc}\n\n登记后该书进入「待修复」状态，罚款将记入罚款缴费。`)) return;
+  const b = damagedTarget;
+  b.damaged = true;
+  b.damagedFine = totalFine;
+  b.damagedRatio = ratio;
+  b.damagedIncludeFee = includeFee;
+  b.damagedProcessFee = processFee;
+  b.damagedTime = nowStr();
+  b.damagedDesc = $('damagedDesc').value.trim();
+  closeModal('damagedMask');
+  toast(`《${b.book.title.replace(/[《》]/g,'')}》损坏已登记，应赔金额 ￥${totalFine.toFixed(2)}`);
+  renderTable();
+}
+
+function openNoticeModal(){
+  const list = borrows.filter(b => statusOf(b) === 'overdue');
+  if(!list.length){ toast('当前没有逾期未还的借阅记录', 'warn'); return; }
+  $('noticeSummary').innerHTML = `共有 <b>${list.length}</b> 条逾期未还记录，涉及 <b>${new Set(list.map(x=>x.certNo)).size}</b> 位读者。`;
+  $('noticeList').innerHTML = `
+    <table class="pick-table">
+      <thead><tr><th>读者</th><th>图书</th><th style="width:96px">应还</th><th style="width:80px">逾期</th></tr></thead>
+      <tbody>
+        ${list.map(b => `
+          <tr>
+            <td>${esc(b.reader.name)} <span class="mono" style="color:#9ca3af">${esc(b.certNo)}</span></td>
+            <td class="pt-title">${esc(b.book.title)}</td>
+            <td class="mono">${b.dueDate}</td>
+            <td style="color:#dc2626;font-weight:600">${overdueDays(b)} 天</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+  $('noticeMask').classList.add('show');
+}
+function sendNoticeConfirm(){
+  const useSms = $('chSms').checked;
+  const useEmail = $('chEmail').checked;
+  const channels = [];
+  if(useSms) channels.push('sms');
+  if(useEmail) channels.push('email');
+  if(!channels.length){ toast('请至少选择一种催还方式', 'warn'); return; }
+  const list = borrows.filter(b => statusOf(b) === 'overdue');
+  const time = nowStr();
+  list.forEach(b => {
+    noticeLogs.unshift({
+      id: 'CH' + Date.now() + Math.floor(Math.random()*1000),
+      time, certNo: b.certNo, readerName: b.reader.name,
+      overdueDays: overdueDays(b), channels: [...channels], operator: '王管理员', status: 'ok'
+    });
+  });
+  closeModal('noticeMask');
+  toast(`已向 ${list.length} 条逾期记录发送催还通知`);
+}
+
+function openBorrowDetail(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  const b = borrows.find(x => x.id === id);
+  if(!b) return;
+  const st = statusOf(b);
+  const sm = STATUS_MAP[st];
+  const od = overdueDays(b);
+  const fine = fineOf(b);
+  const path = getLocationPath(b.book.shelfId, b.book.layer, b.book.slot);
+  const totalDays = diffDays(b.dueDate, b.borrowDate);
+  const remainingDays = b.retDate ? 0 : Math.max(0, diffDays(b.dueDate, todayStr()));
+
+  let fineDesc = '';
+  if(b.lost){
+    const pf = (typeof b.lostProcessFee === 'number') ? b.lostProcessFee : 5;
+    fineDesc = `图书定价 ￥${(b.book.price || 0).toFixed(2)} + 加工费 ￥${pf.toFixed(2)}`;
+  } else if(b.damaged){
+    fineDesc = `损坏赔偿比例 ${(b.damagedRatio*100).toFixed(0)}%`;
+    if(b.damagedIncludeFee) fineDesc += ` + 加工费 ￥${(b.damagedProcessFee || 0).toFixed(2)}`;
+  } else if(fine > 0){
+    fineDesc = `${b.fineRate.toFixed(2)} 元/天 × ${od} 天`;
+  }
+
+  let timeline = `
+    <div class="tl-item done">
+      <div class="tl-t">借出登记 <span class="tl-tag">${esc(path.fullPath)}（${esc(path.code)}）</span></div>
+      <div class="tl-d">${b.borrowDate} · 经办人 ${b.operator} · 借期 ${totalDays} 天</div>
+    </div>`;
+  if(b.renewCount > 0){
+    const renewDays = (RULES[b.reader.type] || RULES['学生']).renewDays;
+    timeline += `
+    <div class="tl-item done">
+      <div class="tl-t">续借 ${b.renewCount} 次 <span class="tl-tag warn">每次 +${renewDays} 天</span></div>
+      <div class="tl-d">应还日期延长至 ${b.dueDate}</div>
+    </div>`;
+  }
+  if(b.lost){
+    const pf = (typeof b.lostProcessFee === 'number') ? b.lostProcessFee : 0;
+    timeline += `
+    <div class="tl-item danger">
+      <div class="tl-t">登记遗失 <span class="tl-tag danger">罚款 ¥${b.lostFine.toFixed(2)}</span></div>
+      <div class="tl-d">${b.lostTime || ''} · 经办人 ${b.operator} · 加工费 ￥${pf.toFixed(2)}${b.lostRemark ? ' · ' + b.lostRemark : ''}</div>
+    </div>`;
+  } else if(b.damaged){
+    const feeTag = b.damagedIncludeFee ? ` + 加工费 ￥${(b.damagedProcessFee||0).toFixed(2)}` : '';
+    timeline += `
+    <div class="tl-item warn">
+      <div class="tl-t">登记损坏 <span class="tl-tag warn">罚款 ¥${b.damagedFine.toFixed(2)}（${(b.damagedRatio*100).toFixed(0)}%${feeTag}）</span></div>
+      <div class="tl-d">${b.damagedTime || ''} · 经办人 ${b.operator}${b.damagedDesc ? ' · ' + b.damagedDesc : ''}</div>
+    </div>`;
+  }
+  if(b.retDate){
+    timeline += `
+    <div class="tl-item ${st === 'late' ? 'warn' : 'done'}">
+      <div class="tl-t">归还登记 <span class="tl-tag ${st === 'late' ? 'warn' : 'green'}">${st === 'late' ? '逾期 ' + od + ' 天归还' : '按期归还'}</span></div>
+      <div class="tl-d">${b.retDate} · 经办人 王管理员${od > 0 ? ' · 逾期 ' + od + ' 天' : ''}</div>
+    </div>`;
+  } else if(!b.lost){
+    const tagCls = st === 'overdue' ? 'danger' : (st === 'duesoon' ? 'warn' : '');
+    const tagTxt = st === 'overdue' ? '已逾期 ' + od + ' 天' : (st === 'duesoon' ? '即将到期' : '借阅中');
+    timeline += `
+    <div class="tl-item ${st === 'overdue' ? 'danger' : 'active'}">
+      <div class="tl-t">${tagTxt} <span class="tl-tag ${tagCls}">应还 ${b.dueDate}</span></div>
+      <div class="tl-d">距离应还日期还有 ${remainingDays} 天</div>
+    </div>`;
+  }
+
+  $('detailBody').innerHTML = `
+    <div class="detail-hero">
+      <div class="dh-icon">📖</div>
+      <div class="dh-main">
+        <div class="dh-title">
+          借阅单号 ${esc(b.id)}
+          <span class="rec-badge ${sm.cls}">${sm.label}</span>
+          ${b.renewCount > 0 ? '<span class="rec-badge" style="background:#ecfdf5;color:#059669">已续借 ' + b.renewCount + ' 次</span>' : ''}
+          ${b.lost ? '<span class="rec-badge st-lost">已登记遗失</span>' : ''}
+          ${b.damaged ? '<span class="rec-badge st-damaged">已登记损坏</span>' : ''}
+        </div>
+        <div class="dh-sub">
+          <span>借出日期：<b>${b.borrowDate}</b></span>
+          <span style="color:#cbd5e1">|</span>
+          <span>应还日期：<b>${b.dueDate}</b></span>
+          <span style="color:#cbd5e1">|</span>
+          <span>归还日期：<b>${b.retDate || '尚未归还'}</b></span>
+        </div>
+      </div>
+      <div class="dh-meta">
+        <div class="mh">${b.lost ? '遗失赔偿' : (b.damaged ? '损坏赔偿' : '滞纳金')}</div>
+        <div class="mv" style="color:${fine > 0 ? '#dc2626' : '#16a34a'}">${fine > 0 ? '￥' + fine.toFixed(2) : '无'}</div>
+      </div>
+    </div>
+
+    <div class="detail-sec">
+      <h4>借阅信息</h4>
+      <dl class="detail-grid">
+        <dt>借阅状态</dt><dd><span class="rec-badge ${sm.cls}">${sm.label}</span>${od > 0 ? ' <span style="color:#dc2626;font-size:12.5px">逾期 ' + od + ' 天</span>' : ''}</dd>
+        <dt>借出日期</dt><dd class="mono">${b.borrowDate}</dd>
+        <dt>应还日期</dt><dd class="mono">${b.dueDate}</dd>
+        <dt>归还日期</dt><dd class="mono">${b.retDate || '尚未归还'}</dd>
+        <dt>续借</dt><dd>${b.renewCount} / ${b.maxRenew} 次</dd>
+        <dt>${b.lost ? '遗失赔偿' : (b.damaged ? '损坏赔偿' : '滞纳金')}</dt>
+        <dd>${fine > 0 ? '<span style="color:#dc2626;font-weight:600">￥' + fine.toFixed(2) + '</span>（' + fineDesc + '）' : '无'}</dd>
+      </dl>
+    </div>
+
+    <div class="detail-sec">
+      <h4>馆藏位置（精确到架位格）</h4>
+      <div style="padding:14px 16px;background:linear-gradient(135deg,#f0f9ff,#fdfdff);border:1px solid #bae6fd;border-radius:8px;font-size:13px;line-height:1.9">
+        <div style="color:#1e3a8a;font-weight:600;margin-bottom:6px">${esc(path.fullPath)}</div>
+        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:#0c4a6e">📍 编码：<b>${esc(path.code)}</b></div>
+      </div>
+    </div>
+
+    <div class="detail-sec">
+      <h4>图书信息</h4>
+      <dl class="detail-grid">
+        <dt>书名</dt><dd>${esc(b.book.title)}</dd>
+        <dt>索书号</dt><dd class="mono">${esc(b.book.callNo)}</dd>
+        <dt>条码号</dt><dd class="mono">${esc(b.barcode)}</dd>
+        <dt>ISBN</dt><dd class="mono">${esc(b.book.isbn || '')}</dd>
+        <dt>定价</dt><dd>￥${(b.book.price || 0).toFixed(2)}</dd>
+      </dl>
+    </div>
+
+    <div class="detail-sec">
+      <h4>读者信息 <span class="sec-extra">当前在借 ${borrowedCount(b.certNo)} / ${(RULES[b.reader.type]||RULES['学生']).quota} 册</span></h4>
+      <div class="reader-card" style="margin-top:0">
+        <div class="avatar ${b.reader.gender==='女'?'f':''}">${esc(b.reader.name[0])}</div>
+        <div style="min-width:0">
+          <div class="rc-name">${esc(b.reader.name)} <span class="tag t-${typeKey(b.reader.type)}">${b.reader.type}</span></div>
+          <div class="rc-sub">
+            <span class="mono">${esc(b.certNo)}</span>
+            <span>${esc(b.reader.dept)}</span>
+            <span class="mono">${esc(b.reader.phone)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-sec">
+      <h4>流转记录</h4>
+      <div class="timeline">${timeline}</div>
+    </div>
+  `;
+
+  $('detailFooter').innerHTML = `
+    <button class="btn" onclick="closeModal('detailMask')">关闭</button>
+    <button class="btn" onclick="printOne('${b.id}')">🖨️ 打印凭条</button>`;
+  $('detailMask').classList.add('show');
+}
+
+function printOne(id, ev){
+  if(ev) ev.stopPropagation();
+  $('rowMenu').style.display = 'none';
+  const b = borrows.find(x => x.id === id);
+  if(!b) return;
+  toast(`已生成借阅凭条：${b.book.title} · ${b.reader.name}`);
+}
+
+function closeModal(id){ $(id).classList.remove('show'); }
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    ['lendMask','returnMask','detailMask','noticeMask','lostMask','damagedMask'].forEach(id => $(id).classList.remove('show'));
+    $('rowMenu').style.display = 'none';
+  }
+});
+
+(function init(){
+  $('locLib').innerHTML = '<option value="">全部</option>' +
+    LIBRARIES.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('');
+  disableSelect($('locFloor'), '请先选馆藏地');
+  disableSelect($('locArea'),  '请先选楼层');
+  disableSelect($('locRow'),   '请先选区域');
+  disableSelect($('locShelf'), '请先选排');
+  disableSelect($('locLayer'), '请先选架');
+  disableSelect($('locSlot'),  '请先选层');
+  renderTable();
+})();
+  </script>
+</body>
+</html>
+

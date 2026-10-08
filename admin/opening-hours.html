@@ -1,0 +1,3060 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>开放全局配置</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+<style id="opening-example-scoped">
+.opening-example {
+  --primary:#2563eb;
+      --primary-hover:#1d4ed8;
+      --primary-light:#eff6ff;
+      --text:#1e293b;
+      --text-2:#64748b;
+      --text-3:#94a3b8;
+      --border:#e2e8f0;
+      --bg:#f1f5f9;
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --radius:10px;
+}
+
+.opening-example button { font-family:inherit; }
+
+.opening-example input, .opening-example select, .opening-example textarea { font-family:inherit; }
+
+.opening-example .page-tabs {
+  display:flex;gap:4px;margin-bottom:16px;
+      border-bottom:1px solid var(--border);
+}
+
+.opening-example .page-tab {
+  padding:11px 18px;font-size:14px;color:var(--text-2);cursor:pointer;
+      border-bottom:2px solid transparent;transition:.15s;user-select:none;
+      display:flex;align-items:center;gap:7px;
+}
+
+.opening-example .page-tab:hover { color:var(--text); }
+
+.opening-example .page-tab.active { color:var(--primary);border-bottom-color:var(--primary);font-weight:500; }
+
+.opening-example .card {
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      box-shadow:0 1px 2px rgba(15,23,42,.04);overflow:hidden;
+}
+
+.opening-example .card + .card { margin-top:16px; }
+
+.opening-example .filter-bar {
+  display:flex;flex-wrap:wrap;gap:14px 16px;padding:18px 20px;
+      align-items:flex-end;
+}
+
+.opening-example .filter-item { display:flex;flex-direction:column;gap:6px;min-width:160px;flex:1 1 160px; }
+
+.opening-example .filter-item label { font-size:12.5px;color:var(--text-2);font-weight:500; }
+
+.opening-example .filter-actions { display:flex;gap:10px;margin-left:auto;flex-shrink:0; }
+
+.opening-example .toolbar {
+  display:flex;align-items:center;justify-content:space-between;
+      gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;
+}
+
+.opening-example .toolbar-left { display:flex;gap:10px;flex-wrap:wrap; }
+
+.opening-example .stat { font-size:13px;color:var(--text-2); }
+
+.opening-example .stat b { color:var(--text);font-weight:600; }
+
+.opening-example input[type=text], .opening-example input[type=number], .opening-example input[type=time], .opening-example input[type=date], .opening-example select, .opening-example textarea {
+  width:100%;height:36px;border:1px solid var(--border);border-radius:8px;
+      padding:0 12px;font-size:13px;color:var(--text);background:#fff;outline:none;
+      transition:border-color .15s,box-shadow .15s;
+}
+
+.opening-example textarea { height:auto;min-height:74px;padding:8px 12px;resize:vertical;line-height:1.6; }
+
+.opening-example input::placeholder, .opening-example textarea::placeholder { color:var(--text-3); }
+
+.opening-example input:focus, .opening-example select:focus, .opening-example textarea:focus { border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+
+.opening-example input:disabled { background:#f8fafc;color:var(--text-3);cursor:not-allowed; }
+
+.opening-example select {
+  cursor:pointer;appearance:none;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+
+.opening-example .btn {
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      height:36px;padding:0 15px;border-radius:8px;border:1px solid var(--border);
+      background:#fff;color:var(--text);font-size:13px;cursor:pointer;
+      transition:.15s;white-space:nowrap;user-select:none;
+}
+
+.opening-example .btn:hover { border-color:#cbd5e1;background:#f8fafc; }
+
+.opening-example .btn:active { transform:translateY(1px); }
+
+.opening-example .btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+
+.opening-example .btn-primary { background:var(--primary);border-color:var(--primary);color:#fff; }
+
+.opening-example .btn-primary:hover { background:var(--primary-hover);border-color:var(--primary-hover); }
+
+.opening-example .btn-danger { color:var(--danger);border-color:#fecaca; }
+
+.opening-example .btn-danger:hover { background:#fef2f2;border-color:#fca5a5; }
+
+.opening-example .btn-danger-solid { background:var(--danger);border-color:var(--danger);color:#fff; }
+
+.opening-example .btn-danger-solid:hover { background:#dc2626;border-color:#dc2626; }
+
+.opening-example .btn-sm { height:30px;padding:0 12px;font-size:12.5px; }
+
+.opening-example .table-wrap { overflow-x:auto; }
+
+.opening-example table { width:100%;border-collapse:collapse; }
+
+.opening-example table.wide { min-width:1200px; }
+
+.opening-example thead th {
+  background:#f8fafc;color:var(--text-2);font-weight:600;font-size:12.5px;
+      text-align:left;padding:12px 16px;white-space:nowrap;
+      border-bottom:1px solid var(--border);letter-spacing:.3px;
+}
+
+.opening-example tbody td { padding:13px 16px;border-bottom:1px solid #f1f5f9;vertical-align:middle;font-size:13.5px; }
+
+.opening-example tbody tr:last-child td { border-bottom:none; }
+
+.opening-example tbody tr:hover { background:#f8fafc; }
+
+.opening-example .cell-main { font-size:13.5px;color:var(--text); }
+
+.opening-example .cell-main.strong { font-weight:600; }
+
+.opening-example .cell-sub { font-size:12px;color:var(--text-3);margin-top:2px; }
+
+.opening-example .ops { white-space:nowrap; }
+
+.opening-example .link-btn {
+  background:none;border:none;color:var(--primary);font-size:13px;
+      cursor:pointer;padding:3px 7px;border-radius:6px;transition:.15s;
+}
+
+.opening-example .link-btn:hover { background:var(--primary-light); }
+
+.opening-example .link-btn.danger { color:var(--danger); }
+
+.opening-example .link-btn.danger:hover { background:#fef2f2; }
+
+.opening-example .badge {
+  display:inline-flex;align-items:center;padding:2px 9px;border-radius:6px;
+      font-size:12px;line-height:19px;white-space:nowrap;
+}
+
+.opening-example .badge-green { background:#ecfdf5;color:#059669; }
+
+.opening-example .badge-gray { background:#f1f5f9;color:#64748b; }
+
+.opening-example .badge-blue { background:#eff6ff;color:#1d4ed8; }
+
+.opening-example .badge-orange { background:#fff7ed;color:#c2410c; }
+
+.opening-example .badge-red { background:#fef2f2;color:#dc2626; }
+
+.opening-example .badge-purple { background:#f5f3ff;color:#7c3aed; }
+
+.opening-example .week-cell {
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:12px;color:var(--text);
+}
+
+.opening-example .week-cell.base { color:var(--text-3);font-style:italic; }
+
+.opening-example .week-cell.closed { color:#dc2626; }
+
+.opening-example .week-cell.slots {
+  font-family:inherit;font-size:11.5px;color:#c2410c;
+      cursor:help;border-bottom:1px dashed #fdba74;padding-bottom:1px;
+}
+
+.opening-example .switch { position:relative;display:inline-block;width:40px;height:22px;vertical-align:middle; }
+
+.opening-example .switch input { opacity:0;width:0;height:0;position:absolute; }
+
+.opening-example .slider {
+  position:absolute;inset:0;background:#cbd5e1;border-radius:22px;
+      transition:.2s;cursor:pointer;
+}
+
+.opening-example .slider::before {
+  content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;
+      background:#fff;border-radius:50%;transition:.2s;
+      box-shadow:0 1px 3px rgba(0,0,0,.18);
+}
+
+.opening-example .switch input:checked + .slider { background:var(--success); }
+
+.opening-example .switch input:checked + .slider::before { transform:translateX(18px); }
+
+.opening-example .empty { padding:70px 20px;text-align:center;color:var(--text-3); }
+
+.opening-example .empty-icon { font-size:38px;margin-bottom:10px;opacity:.5; }
+
+.opening-example .empty-text { font-size:13.5px; }
+
+.opening-example .pager {
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:14px 20px;font-size:13px;color:var(--text-2);flex-wrap:wrap;
+      border-top:1px solid var(--border);
+}
+
+.opening-example .pager-info b { color:var(--text);font-weight:600; }
+
+.opening-example .pager-btns { display:flex;gap:6px;align-items:center; }
+
+.opening-example .pager-btn {
+  min-width:33px;height:33px;padding:0 9px;border:1px solid var(--border);
+      background:#fff;border-radius:7px;cursor:pointer;font-size:13px;color:var(--text);
+      transition:.15s;
+}
+
+.opening-example .pager-btn:hover:not(:disabled):not(.active) { border-color:var(--primary);color:var(--primary); }
+
+.opening-example .pager-btn.active { background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500; }
+
+.opening-example .pager-btn:disabled { opacity:.45;cursor:not-allowed; }
+
+.opening-example .pager-dots { padding:0 4px;color:var(--text-3); }
+
+.opening-example .target-tags { display:flex;flex-wrap:wrap;gap:4px;max-width:220px; }
+
+.opening-example .target-tag {
+  display:inline-flex;align-items:center;padding:1px 8px;
+      background:#eff6ff;color:#1d4ed8;border-radius:5px;
+      font-size:11.5px;line-height:18px;
+      white-space:nowrap;
+}
+
+.opening-example .target-tag.library { background:#ecfdf5;color:#059669; }
+
+.opening-example .target-tag.area { background:#fff7ed;color:#c2410c; }
+
+.opening-example .target-tag.all { background:#f5f3ff;color:#7c3aed; }
+
+.opening-example .target-tag.more { background:#f1f5f9;color:#64748b; }
+
+.opening-example .modal {
+  position:fixed;inset:0;background:rgba(15,23,42,.5);
+      display:none;align-items:center;justify-content:center;padding:20px;
+      backdrop-filter:blur(2px);
+}
+
+.opening-example .modal.show { display:flex; }
+
+.opening-example #formModal { z-index:100; }
+
+.opening-example #specialModal { z-index:150; }
+
+.opening-example #detailModal { z-index:180; }
+
+.opening-example #confirmModal { z-index:300; }
+
+.opening-example .modal-box {
+  background:#fff;border-radius:12px;width:100%;max-width:640px;
+      max-height:90vh;display:flex;flex-direction:column;
+      box-shadow:0 20px 50px rgba(15,23,42,.25);
+      animation:pop .18s cubic-bezier(.34,1.3,.64,1);
+}
+
+.opening-example .modal-box.small { max-width:430px; }
+
+.opening-example .modal-box.large { max-width:880px; }
+
+@keyframes pop { from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;} }
+
+.opening-example .modal-header {
+  padding:18px 24px;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:16px;font-weight:600;flex-shrink:0;
+}
+
+.opening-example .icon-btn {
+  width:30px;height:30px;border:none;background:none;border-radius:7px;
+      cursor:pointer;color:var(--text-3);font-size:16px;line-height:1;
+      display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+
+.opening-example .icon-btn:hover { background:#f1f5f9;color:var(--text); }
+
+.opening-example .modal-body { padding:22px 24px;overflow-y:auto;flex:1; }
+
+.opening-example .modal-footer {
+  padding:14px 24px;border-top:1px solid var(--border);
+      display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;
+}
+
+.opening-example .confirm-text { font-size:14px;color:var(--text-2);line-height:1.7; }
+
+.opening-example .form-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px 20px; }
+
+.opening-example .form-item { display:flex;flex-direction:column;gap:6px;min-width:0; }
+
+.opening-example .form-item.full { grid-column:1 / -1; }
+
+.opening-example .form-item > label { font-size:13px;color:var(--text-2);font-weight:500; }
+
+.opening-example .req { font-style:normal;color:var(--danger);margin-right:2px; }
+
+.opening-example .error-tip { font-size:12px;color:var(--danger);display:none; }
+
+.opening-example .form-item.has-error input, .opening-example .form-item.has-error select, .opening-example .form-item.has-error textarea { border-color:var(--danger); }
+
+.opening-example .form-item.has-error .error-tip { display:block; }
+
+.opening-example .radio-group { display:flex;gap:20px;align-items:center;height:36px;flex-wrap:wrap; }
+
+.opening-example .radio { display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text); }
+
+.opening-example .radio input { width:16px;height:16px;margin:0;accent-color:var(--primary);cursor:pointer; }
+
+.opening-example .form-hint { font-size:12px;color:var(--text-3);margin-top:2px; }
+
+.opening-example .granularity-bar {
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      padding:9px 12px;background:#f8fafc;border:1px solid var(--border);
+      border-radius:8px;margin-bottom:10px;font-size:12.5px;color:var(--text-2);
+}
+
+.opening-example .granularity-bar b { color:var(--text);font-weight:600; }
+
+.opening-example .granularity-bar select {
+  width:auto;height:30px;font-size:12.5px;padding:0 28px 0 10px;
+      border-radius:6px;background-position:right 8px center;
+}
+
+.opening-example .granularity-bar .quick { margin-left:auto;display:flex;gap:6px; }
+
+.opening-example .quick-btn {
+  height:26px;padding:0 10px;border:1px solid var(--border);background:#fff;
+      border-radius:6px;font-size:12px;color:var(--text-2);cursor:pointer;transition:.15s;
+}
+
+.opening-example .quick-btn:hover { border-color:var(--primary);color:var(--primary); }
+
+.opening-example .week-editor {
+  grid-column:1 / -1;
+      border:1px solid var(--border);border-radius:10px;overflow:hidden;
+}
+
+.opening-example .week-editor-head {
+  display:grid;grid-template-columns:90px 1fr;
+      background:#f8fafc;padding:10px 16px;gap:12px;
+      font-size:12.5px;color:var(--text-2);font-weight:600;
+      align-items:center;
+}
+
+.opening-example .week-head-right {
+  display:flex;align-items:center;justify-content:space-between;
+      gap:12px;flex-wrap:wrap;
+}
+
+.opening-example .week-head-right .granularity {
+  display:inline-flex;align-items:center;gap:6px;
+      font-weight:500;color:var(--text-2);font-size:12.5px;
+      white-space:nowrap;
+}
+
+.opening-example .week-head-right .granularity select {
+  width:auto;height:28px;font-size:12.5px;padding:0 26px 0 10px;
+      border-radius:6px;background-position:right 8px center;
+}
+
+.opening-example .week-row {
+  display:grid;grid-template-columns:90px 1fr;
+      padding:12px 16px;gap:12px;align-items:center;
+      border-top:1px solid #f1f5f9;
+}
+
+.opening-example .week-row:hover { background:#fafbfc; }
+
+.opening-example .week-day { display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text);font-weight:500; }
+
+.opening-example .day-options { display:flex;align-items:center;gap:14px;flex-wrap:wrap; }
+
+.opening-example .day-opt {
+  display:flex;align-items:center;gap:5px;cursor:pointer;
+      font-size:13px;color:var(--text-2);user-select:none;
+}
+
+.opening-example .day-opt input { accent-color:var(--primary);cursor:pointer;margin:0; }
+
+.opening-example .day-times {
+  display:grid;grid-template-columns:110px 16px 110px;gap:6px;align-items:center;
+      margin-left:auto;
+}
+
+.opening-example .day-times input[type=time] { height:32px;font-size:12.5px;padding:0 8px; }
+
+.opening-example .day-times .sep {
+  display:flex;align-items:center;justify-content:center;
+      color:var(--text-3);font-size:12px;
+}
+
+.opening-example .slot-picker { display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-top:8px; }
+
+.opening-example .slot-chip {
+  display:inline-flex;align-items:center;
+      padding:5px 10px;border:1px solid var(--border);border-radius:6px;
+      font-size:11.5px;color:var(--text-2);cursor:pointer;
+      transition:.15s;user-select:none;background:#fff;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+.opening-example .slot-chip:hover { border-color:var(--primary);color:var(--primary); }
+
+.opening-example .slot-chip.checked { background:var(--primary);border-color:var(--primary);color:#fff; }
+
+.opening-example .cascade-picker {
+  display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:0;
+      border:1px solid var(--border);border-radius:10px;overflow:hidden;
+      background:#fff;
+}
+
+.opening-example .cascade-col {
+  display:flex;flex-direction:column;
+      border-right:1px solid var(--border);
+}
+
+.opening-example .cascade-col:last-child { border-right:none; }
+
+.opening-example .cascade-col-title {
+  padding:8px 12px;background:#f8fafc;
+      font-size:12px;color:var(--text-2);font-weight:600;
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+}
+
+.opening-example .cascade-col-title .tip { font-size:11px;color:var(--text-3);font-weight:400; }
+
+.opening-example .cascade-list { flex:1;min-height:160px;max-height:220px;overflow-y:auto; }
+
+.opening-example .cascade-item {
+  padding:8px 12px;font-size:13px;color:var(--text-2);
+      cursor:pointer;transition:.12s;
+      display:flex;align-items:center;gap:6px;
+      user-select:none;
+}
+
+.opening-example .cascade-item:hover { background:#f8fafc;color:var(--text); }
+
+.opening-example .cascade-item.active { background:var(--primary-light);color:var(--primary);font-weight:500; }
+
+.opening-example .cascade-item.checked { color:var(--primary);font-weight:500; }
+
+.opening-example .cascade-item .check {
+  display:inline-block;width:14px;
+      color:var(--primary);font-size:12px;
+}
+
+.opening-example .cascade-item .empty-hint { color:var(--text-3);font-size:12.5px;padding:20px 0;text-align:center; }
+
+.opening-example .selected-chips { margin-top:10px;display:flex;flex-wrap:wrap;gap:6px; }
+
+.opening-example .selected-chip {
+  display:inline-flex;align-items:center;gap:5px;
+      padding:3px 8px;background:var(--primary-light);color:var(--primary);
+      border-radius:5px;font-size:12px;
+}
+
+.opening-example .selected-chip .rm {
+  cursor:pointer;font-size:13px;line-height:1;
+      color:var(--primary);
+}
+
+.opening-example .selected-chip .rm:hover { color:var(--danger); }
+
+.opening-example .target-picker {
+  grid-column:1 / -1;
+      border:1px solid var(--border);border-radius:10px;
+      padding:14px 16px;background:#fafbfc;
+}
+
+.opening-example .target-picker-title {
+  font-size:12.5px;color:var(--text-2);font-weight:600;
+      margin-bottom:10px;
+}
+
+.opening-example .target-option-list { display:flex;flex-wrap:wrap;gap:8px; }
+
+.opening-example .target-option {
+  display:flex;align-items:center;gap:6px;
+      padding:6px 12px;background:#fff;border:1px solid var(--border);
+      border-radius:8px;font-size:13px;cursor:pointer;
+      transition:.15s;user-select:none;
+}
+
+.opening-example .target-option:hover { border-color:var(--primary); }
+
+.opening-example .target-option.checked {
+  background:var(--primary-light);border-color:var(--primary);
+      color:var(--primary);font-weight:500;
+}
+
+.opening-example .target-option input { width:15px;height:15px;accent-color:var(--primary);cursor:pointer; }
+
+.opening-example .detail-section { margin-bottom:18px; }
+
+.opening-example .detail-section:last-child { margin-bottom:0; }
+
+.opening-example .detail-section h4 {
+  font-size:13px;color:var(--text-2);font-weight:600;
+      margin-bottom:8px;padding-bottom:6px;
+      border-bottom:1px dashed var(--border);
+}
+
+.opening-example .detail-row {
+  display:flex;gap:12px;padding:6px 0;font-size:13.5px;
+      align-items:flex-start;
+}
+
+.opening-example .detail-row .k { flex-shrink:0;width:100px;color:var(--text-2);font-size:13px; }
+
+.opening-example .detail-row .v { flex:1;color:var(--text); }
+
+.opening-example .detail-week-table { width:100%;border-collapse:collapse;font-size:13px; }
+
+.opening-example .detail-week-table td { padding:7px 10px;border:1px solid var(--border); }
+
+.opening-example .detail-week-table td:first-child { width:80px;background:#f8fafc;color:var(--text-2);font-weight:500; }
+
+.opening-example .toast {
+  position:fixed;top:26px;left:50%;z-index:999;
+      transform:translateX(-50%) translateY(-16px);
+      background:#1e293b;color:#fff;padding:11px 22px;border-radius:9px;
+      font-size:13.5px;opacity:0;pointer-events:none;
+      transition:opacity .25s,transform .25s;
+      box-shadow:0 8px 24px rgba(15,23,42,.28);
+      display:flex;align-items:center;gap:8px;max-width:80vw;
+}
+
+.opening-example .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+
+.opening-example .toast.error { background:#dc2626; }
+
+.opening-example .info-banner {
+  display:flex;align-items:flex-start;gap:10px;
+      padding:14px 16px;background:#eff6ff;border:1px solid #bfdbfe;
+      border-radius:8px;font-size:12.5px;color:#1e40af;line-height:1.7;
+      margin-bottom:16px;
+}
+
+.opening-example .info-banner .ico { font-size:15px;flex-shrink:0;margin-top:2px; }
+
+.opening-example .info-banner b { color:#1e3a8a; }
+
+.opening-example .info-banner ul { margin:6px 0 0 18px;padding:0; }
+
+.opening-example .info-banner li { margin:2px 0; }
+
+.opening-example .info-banner code {
+  background:#dbeafe;padding:1px 5px;border-radius:4px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:12px;
+}
+
+.opening-example .tip-pop {
+  position:fixed;left:0;top:0;z-index:900;
+      background:#1e293b;color:#fff;padding:9px 12px;border-radius:9px;
+      font-size:12px;line-height:1.7;opacity:0;pointer-events:none;
+      transition:opacity .13s;
+      box-shadow:0 10px 28px rgba(15,23,42,.32);
+      max-width:320px;
+}
+
+.opening-example .tip-pop.show { opacity:1; }
+
+.opening-example .tip-pop .tip-head { font-size:11px;color:#94a3b8;margin-bottom:5px; }
+
+.opening-example .tip-grid {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:2px 16px;
+}
+
+.opening-example .tip-grid span {
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      white-space:nowrap;
+}
+
+@media (max-width:768px) {
+  .opening-example .form-grid { grid-template-columns:1fr; }
+    .opening-example .filter-item { min-width:100%; }
+    .opening-example .filter-actions { width:100%;margin-left:0; }
+    .opening-example .filter-actions .btn { flex:1; }
+    .opening-example .week-editor-head, .opening-example .week-row { grid-template-columns:1fr; }
+    .opening-example .day-times { margin-left:0;grid-template-columns:1fr 16px 1fr;width:100%; }
+    .opening-example .cascade-picker { grid-template-columns:1fr; }
+    .opening-example .cascade-col { border-right:none;border-bottom:1px solid var(--border); }
+    .opening-example .cascade-col:last-child { border-bottom:none; }
+}
+</style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<div id="app-shell" style="background-color: var(--lib-bg);">
+<!-- 顶部导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-2">
+<span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+<span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden items-center sm:flex">
+<i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+<input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+</div>
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- Breadcrumb -->
+<nav class="mb-4 flex items-center gap-2 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:text-foreground transition-colors" href="dashboard.html">首页</a>
+<i class="h-4 w-4" data-lucide="chevron-right"></i>
+<span class="font-medium" style="color: var(--lib-ink);">开放全局配置</span>
+</nav>
+<div id="opening-scope" class="opening-example">
+
+      <div class="info-banner">
+        <span class="ico">ℹ️</span>
+        <div>
+          本页面<b>不维护馆藏地/区域的基础开放时间</b>（基础时间在各自页面维护，每天固定）。
+          本页面用于补充两类差异化规则：
+          <ul>
+            <li><b>周规则</b>：一周中某些天与基础时间不同，如周末提前闭馆、周一闭馆、周五缩短</li>
+            <li><b>特殊日期</b>：节假日闭馆、临时闭馆、考试周延长开放等，按日期范围覆盖</li>
+          </ul>
+          最终生效优先级：<code>特殊日期 &gt; 周规则 &gt; 基础时间</code>。
+          针对区域的时间按时段勾选，可覆盖全天 <code>00:00 - 24:00</code>，
+          时段长度支持 <b>2 / 3 / 4 小时</b> 三档自由切换。
+        </div>
+      </div>
+
+      <div class="page-tabs">
+        <div class="page-tab active" data-tab="week">
+          <span>📅</span><span>周规则（按星期调整）</span>
+        </div>
+        <div class="page-tab" data-tab="special">
+          <span>🎯</span><span>特殊日期（节假日/临时闭馆/延长）</span>
+        </div>
+      </div>
+
+      <!-- ========== Tab 1: 周规则 ========== -->
+      <div id="tabWeek">
+
+        <div class="card">
+          <div class="filter-bar">
+            <div class="filter-item">
+              <label>适用馆藏地</label>
+              <select id="fRuleLibrary">
+                <option value="">全部</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>适用区域</label>
+              <select id="fRuleArea">
+                <option value="">全部</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>关键字</label>
+              <input type="text" id="fRuleKeyword" placeholder="规则名称 / 备注">
+            </div>
+            <div class="filter-item">
+              <label>状态</label>
+              <select id="fRuleStatus">
+                <option value="">全部</option>
+                <option value="1">启用</option>
+                <option value="0">停用</option>
+              </select>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" id="btnRuleSearch">搜索</button>
+              <button class="btn" id="btnRuleReset">重置</button>
+              <button class="btn" id="btnRuleExport">导出</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <button class="btn btn-primary" id="btnAddRule">＋ 新增周规则</button>
+            </div>
+            <div class="toolbar-right">
+              <span class="stat">共 <b id="ruleTotal">0</b> 条规则 · 启用 <b id="ruleOn">0</b> 条</span>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="wide">
+              <thead>
+                <tr>
+                  <th>规则名称</th>
+                  <th>适用对象</th>
+                  <th>周一</th>
+                  <th>周二</th>
+                  <th>周三</th>
+                  <th>周四</th>
+                  <th>周五</th>
+                  <th>周六</th>
+                  <th>周日</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="weekTbody"></tbody>
+            </table>
+          </div>
+
+          <!-- 新增：周规则分页容器 -->
+          <div class="pager" id="rulePager">
+            <div class="pager-info" id="rulePagerInfo"></div>
+            <div class="pager-btns" id="rulePagerBtns"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========== Tab 2: 特殊日期 ========== -->
+      <div id="tabSpecial" style="display:none;">
+
+        <div class="card">
+          <div class="filter-bar">
+            <div class="filter-item">
+              <label>年份</label>
+              <select id="fYear">
+                <option value="">全部</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>类型</label>
+              <select id="fType">
+                <option value="">全部</option>
+                <option value="闭馆">闭馆</option>
+                <option value="调整开放时间">调整开放时间</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>关键字</label>
+              <input type="text" id="fKeyword" placeholder="备注 / 日期">
+            </div>
+            <div class="filter-item">
+              <label>状态</label>
+              <select id="fStatus">
+                <option value="">全部</option>
+                <option value="1">启用</option>
+                <option value="0">停用</option>
+              </select>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" id="btnSearch">搜索</button>
+              <button class="btn" id="btnReset">重置</button>
+              <button class="btn" id="btnExport">导出</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <button class="btn btn-primary" id="btnAddSpecial">＋ 新增特殊日期</button>
+              <button class="btn" id="btnImportHoliday">📥 导入法定节假日</button>
+            </div>
+            <div class="toolbar-right">
+              <span class="stat">共 <b id="specialTotal">0</b> 条记录</span>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="wide">
+              <thead>
+                <tr>
+                  <th>日期范围</th>
+                  <th>类型</th>
+                  <th>调整后开放时间</th>
+                  <th>适用对象</th>
+                  <th>备注</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="specialTbody"></tbody>
+            </table>
+          </div>
+
+          <div class="pager">
+            <div class="pager-info" id="specialPagerInfo"></div>
+            <div class="pager-btns" id="specialPagerBtns"></div>
+          </div>
+        </div>
+
+      </div>
+
+</div>
+</main>
+<div class="opening-example">
+<!-- 周规则表单弹窗 -->
+<div class="modal" id="formModal">
+  <div class="modal-box large">
+    <div class="modal-header">
+      <span id="formTitle">新增周规则</span>
+      <button class="icon-btn" id="btnCloseForm">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+
+        <div class="form-item">
+          <label><i class="req">*</i>规则名称</label>
+          <input type="text" id="ruleName" maxlength="30" placeholder="如：周末作息、周一闭馆">
+          <span class="error-tip"></span>
+        </div>
+        <div class="form-item">
+          <label>状态</label>
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="ruleStatus" value="1" checked><span>启用</span></label>
+            <label class="radio"><input type="radio" name="ruleStatus" value="0"><span>停用</span></label>
+          </div>
+        </div>
+
+        <div class="form-item full">
+          <label><i class="req">*</i>适用对象</label>
+          <div class="radio-group" style="height:auto;">
+            <label class="radio"><input type="radio" name="ruleScope" value="all" checked><span>全馆通用</span></label>
+            <label class="radio"><input type="radio" name="ruleScope" value="library"><span>指定馆藏地</span></label>
+            <label class="radio"><input type="radio" name="ruleScope" value="area"><span>指定区域</span></label>
+          </div>
+          <div class="form-hint">规则只会作用于所选的馆藏地/区域，且优先级高于其基础开放时间。</div>
+        </div>
+
+        <div class="form-item full" id="ruleLibraryItem" style="display:none;">
+          <label>选择馆藏地（可多选）</label>
+          <div class="target-picker">
+            <div class="target-option-list" id="ruleLibraryList"></div>
+          </div>
+          <span class="error-tip"></span>
+        </div>
+
+        <div class="form-item full" id="ruleAreaItem" style="display:none;">
+          <label>选择区域（按 馆藏地 › 楼层 › 区域 逐级选择）</label>
+          <div class="cascade-picker">
+            <div class="cascade-col">
+              <div class="cascade-col-title">馆藏地</div>
+              <div class="cascade-list" id="cascadeLibrary"></div>
+            </div>
+            <div class="cascade-col">
+              <div class="cascade-col-title">楼层</div>
+              <div class="cascade-list" id="cascadeFloor"></div>
+            </div>
+            <div class="cascade-col">
+              <div class="cascade-col-title">
+                <span>区域</span>
+                <span class="tip">点击可多选</span>
+              </div>
+              <div class="cascade-list" id="cascadeArea"></div>
+            </div>
+          </div>
+          <div class="selected-chips" id="ruleSelectedAreas"></div>
+          <span class="error-tip"></span>
+        </div>
+
+        <div class="form-item full">
+          <label>按星期设置</label>
+          <div class="week-editor">
+            <div class="week-editor-head">
+              <div>星期</div>
+              <div class="week-head-right">
+                <span id="weekEditorHint">规则（沿用基础时间 / 闭馆 / 调整为指定时间）</span>
+                <label class="granularity" id="weekGranularity" style="display:none;">
+                  时段长度
+                  <select id="weekSlotDuration">
+                    <option value="2">2 小时 / 段</option>
+                    <option value="3">3 小时 / 段</option>
+                    <option value="4">4 小时 / 段</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div id="weekEditorBody"></div>
+          </div>
+          <div class="form-hint" id="weekEditorFooterHint">
+            「沿用基础」表示该天不做调整，采用馆藏地/区域页面维护的基础时间。
+            「闭馆」表示该天整体不开放。「调整为」可自定义该天的起止时间。
+          </div>
+        </div>
+
+        <div class="form-item full">
+          <label>备注</label>
+          <textarea id="ruleRemark" maxlength="200" placeholder="选填，如该规则的适用说明"></textarea>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="btnCancelForm">取消</button>
+      <button class="btn btn-primary" id="btnSubmitForm">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 特殊日期表单弹窗 -->
+<div class="modal" id="specialModal">
+  <div class="modal-box large">
+    <div class="modal-header">
+      <span id="specialFormTitle">新增特殊日期</span>
+      <button class="icon-btn" id="btnCloseSpecial">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+
+        <div class="form-item">
+          <label><i class="req">*</i>开始日期</label>
+          <input type="date" id="spStart">
+          <span class="error-tip"></span>
+        </div>
+        <div class="form-item">
+          <label><i class="req">*</i>结束日期</label>
+          <input type="date" id="spEnd">
+          <span class="error-tip"></span>
+        </div>
+
+        <div class="form-item">
+          <label><i class="req">*</i>类型</label>
+          <select id="spType">
+            <option value="闭馆">闭馆</option>
+            <option value="调整开放时间">调整开放时间</option>
+          </select>
+        </div>
+        <div class="form-item" id="spTimeItem" style="display:none;">
+          <label>调整后开放时间（起止时间）</label>
+          <div style="display:grid;grid-template-columns:1fr 24px 1fr;gap:6px;align-items:center;">
+            <input type="time" id="spStartTime" value="08:00">
+            <div style="display:flex;align-items:center;justify-content:center;color:#94a3b8;">~</div>
+            <input type="time" id="spEndTime" value="23:00">
+          </div>
+        </div>
+        <div class="form-item full" id="spSlotsItem" style="display:none;">
+          <label>调整后开放时段（针对区域，可多选，覆盖全天 00:00-24:00）</label>
+          <div class="granularity-bar">
+            <span>时段长度</span>
+            <select id="spSlotDuration">
+              <option value="2">2 小时 / 段</option>
+              <option value="3">3 小时 / 段</option>
+              <option value="4">4 小时 / 段</option>
+            </select>
+            <div class="quick">
+              <button type="button" class="quick-btn" data-slot-quick="all">全选</button>
+              <button type="button" class="quick-btn" data-slot-quick="none">清空</button>
+            </div>
+          </div>
+          <div class="slot-picker" id="spSlotPicker" style="margin-left:0;"></div>
+        </div>
+
+        <div class="form-item full">
+          <label><i class="req">*</i>适用对象</label>
+          <select id="spScope">
+            <option value="all">全馆（所有馆藏地与区域）</option>
+            <option value="library">指定馆藏地</option>
+            <option value="area">指定区域</option>
+          </select>
+          <span class="error-tip"></span>
+        </div>
+
+        <div class="form-item full" id="spLibraryItem" style="display:none;">
+          <label>选择馆藏地（可多选）</label>
+          <div class="target-picker">
+            <div class="target-option-list" id="spLibraryList"></div>
+          </div>
+        </div>
+
+        <div class="form-item full" id="spAreaItem" style="display:none;">
+          <label>选择区域（按 馆藏地 › 楼层 › 区域 逐级选择）</label>
+          <div class="cascade-picker">
+            <div class="cascade-col">
+              <div class="cascade-col-title">馆藏地</div>
+              <div class="cascade-list" id="spCascadeLibrary"></div>
+            </div>
+            <div class="cascade-col">
+              <div class="cascade-col-title">楼层</div>
+              <div class="cascade-list" id="spCascadeFloor"></div>
+            </div>
+            <div class="cascade-col">
+              <div class="cascade-col-title">
+                <span>区域</span>
+                <span class="tip">点击可多选</span>
+              </div>
+              <div class="cascade-list" id="spCascadeArea"></div>
+            </div>
+          </div>
+          <div class="selected-chips" id="spSelectedAreas"></div>
+        </div>
+
+        <div class="form-item">
+          <label>状态</label>
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="spStatus" value="1" checked><span>启用</span></label>
+            <label class="radio"><input type="radio" name="spStatus" value="0"><span>停用</span></label>
+          </div>
+        </div>
+
+        <div class="form-item full">
+          <label>备注</label>
+          <textarea id="spRemark" maxlength="200" placeholder="如：国庆节闭馆、期末考试周延长开放"></textarea>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="btnCancelSpecial">取消</button>
+      <button class="btn btn-primary" id="btnSubmitSpecial">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal" id="detailModal">
+  <div class="modal-box large">
+    <div class="modal-header">
+      <span id="detailTitle">详情</span>
+      <button class="icon-btn" id="btnCloseDetail">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn" id="btnCloseDetailFooter">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="modal" id="confirmModal">
+  <div class="modal-box small">
+    <div class="modal-header">
+      <span id="confirmTitle">确认</span>
+      <button class="icon-btn" id="btnCloseConfirm">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="confirm-text" id="confirmText"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="btnCancelConfirm">取消</button>
+      <button class="btn btn-danger-solid" id="btnOkConfirm">确定删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    lucide.createIcons();
+  });
+</script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
+  { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+));
+
+let toastTimer = null;
+function toast(msg, type){
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type === 'error' ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.classList.remove('show'); }, 2200);
+}
+
+/* ============ 基础数据 ============ */
+const LIBRARIES = [
+  { id:1, name:'总馆' },
+  { id:2, name:'南区分馆' },
+  { id:3, name:'东校区分馆' },
+  { id:4, name:'医学分馆' },
+  { id:5, name:'西校区分馆' }
+];
+
+const FLOORS = [
+  { id:1,  libraryId:1, name:'一层', code:'ZG-1F' },
+  { id:2,  libraryId:1, name:'二层', code:'ZG-2F' },
+  { id:3,  libraryId:1, name:'三层', code:'ZG-3F' },
+  { id:4,  libraryId:1, name:'四层', code:'ZG-4F' },
+  { id:5,  libraryId:2, name:'一层', code:'NQ-1F' },
+  { id:6,  libraryId:2, name:'二层', code:'NQ-2F' },
+  { id:7,  libraryId:3, name:'一层', code:'DQ-1F' },
+  { id:8,  libraryId:3, name:'二层', code:'DQ-2F' },
+  { id:9,  libraryId:4, name:'一层', code:'YX-1F' },
+  { id:10, libraryId:4, name:'二层', code:'YX-2F' },
+  { id:11, libraryId:5, name:'一层', code:'XQ-1F' }
+];
+
+const AREAS = [
+  { id:1,  floorId:1, code:'A', name:'中文图书借阅区' },
+  { id:2,  floorId:1, code:'B', name:'外文图书借阅区' },
+  { id:3,  floorId:1, code:'C', name:'总服务台' },
+  { id:4,  floorId:2, code:'D', name:'外文书库' },
+  { id:5,  floorId:2, code:'E', name:'电子阅览室' },
+  { id:6,  floorId:3, code:'F', name:'中文期刊阅览室' },
+  { id:7,  floorId:3, code:'G', name:'自习区' },
+  { id:8,  floorId:4, code:'H', name:'古籍特藏室' },
+  { id:9,  floorId:5, code:'I', name:'综合借阅区' },
+  { id:10, floorId:6, code:'J', name:'报刊阅览室' },
+  { id:11, floorId:7, code:'K', name:'东校区阅览区' },
+  { id:12, floorId:9, code:'L', name:'医学图书借阅区' },
+  { id:13, floorId:11, code:'M', name:'西校区自习区' }
+];
+
+function getLibraryName(id){
+  const l = LIBRARIES.find(x => x.id === id);
+  return l ? l.name : '';
+}
+function getFloor(id){
+  return FLOORS.find(f => f.id === id) || null;
+}
+function getArea(id){
+  return AREAS.find(a => a.id === id) || null;
+}
+function getAreaFullPath(areaId){
+  const area = getArea(areaId);
+  if (!area) return '';
+  const floor = getFloor(area.floorId);
+  if (!floor) return area.name;
+  const lib = LIBRARIES.find(l => l.id === floor.libraryId);
+  return `${lib ? lib.name : ''} › ${floor.name} › ${area.name}`;
+}
+function getAreaLibraryId(areaId){
+  const area = getArea(areaId);
+  if (!area) return null;
+  const floor = getFloor(area.floorId);
+  return floor ? floor.libraryId : null;
+}
+
+const WEEK_DAYS = [
+  { key:'mon', label:'周一' },
+  { key:'tue', label:'周二' },
+  { key:'wed', label:'周三' },
+  { key:'thu', label:'周四' },
+  { key:'fri', label:'周五' },
+  { key:'sat', label:'周六' },
+  { key:'sun', label:'周日' }
+];
+
+/* ============================================================
+   时段工具
+   —— 覆盖全天 00:00 - 24:00，支持 2 / 3 / 4 小时三种粒度
+   ============================================================ */
+const SLOT_DURATION_OPTIONS = [2, 3, 4];
+
+let weekSlotDuration = 2;   // 周规则编辑器当前时段长度（小时）
+let spSlotDuration   = 2;   // 特殊日期弹窗当前时段长度（小时）
+let weekEditorScope  = 'all'; // 周编辑器当前渲染的作用域
+
+function pad2(n){ return String(n).padStart(2, '0'); }
+
+/** 按时长生成全天时段，如 2h → 00:00-02:00 ... 22:00-24:00（12 段） */
+function buildTimeSlots(hours){
+  const list = [];
+  for (let h = 0; h < 24; h += hours){
+    list.push(`${pad2(h)}:00-${pad2(h + hours)}:00`);
+  }
+  return list;
+}
+
+function timeToMinutes(t){
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m || 0);
+}
+function slotToRange(slot){
+  const [a, b] = slot.split('-');
+  return [timeToMinutes(a), timeToMinutes(b)];
+}
+
+/**
+ * 粒度切换时的选中项迁移：新时段只要与任一旧选中时段有重叠，就保留选中。
+ * 例：2h 下勾了 08:00-10:00、10:00-12:00 → 切 4h 后自动选中 08:00-12:00
+ */
+function remapSlots(selected, newSlots){
+  if (!selected || !selected.length) return [];
+  const ranges = selected.map(slotToRange);
+  return newSlots.filter(s => {
+    const [a, b] = slotToRange(s);
+    return ranges.some(([x, y]) => a < y && x < b);
+  });
+}
+
+/* ============ 周规则数据 ============ */
+let weekRules = [
+  {
+    id:1, name:'周末作息调整（全馆）',
+    scope:'all', libraryIds:[], areaIds:[],
+    status:1, remark:'周末比工作日早闭馆',
+    days: {
+      mon:{ type:'base' }, tue:{ type:'base' }, wed:{ type:'base' },
+      thu:{ type:'base' }, fri:{ type:'base' },
+      sat:{ type:'custom', start:'09:00', end:'17:00' },
+      sun:{ type:'custom', start:'09:00', end:'17:00' }
+    }
+  },
+  {
+    id:2, name:'古籍特藏室-仅工作日',
+    scope:'area', libraryIds:[], areaIds:[8],
+    status:1, remark:'周末闭馆，其它时间开放 09:00-17:00',
+    days: {
+      mon:{ type:'base' }, tue:{ type:'base' }, wed:{ type:'base' },
+      thu:{ type:'base' }, fri:{ type:'base' },
+      sat:{ type:'closed' }, sun:{ type:'closed' }
+    }
+  },
+  {
+    id:3, name:'总馆-周一上午闭馆',
+    scope:'library', libraryIds:[1], areaIds:[],
+    status:0, remark:'总馆每周一上午内部整理',
+    days: {
+      mon:{ type:'custom', start:'13:00', end:'21:30' },
+      tue:{ type:'base' }, wed:{ type:'base' }, thu:{ type:'base' },
+      fri:{ type:'base' }, sat:{ type:'base' }, sun:{ type:'base' }
+    }
+  },
+  {
+    id:4, name:'自习区-周末时段',
+    scope:'area', libraryIds:[], areaIds:[7],
+    status:1, remark:'自习区周末仅开放上午和下午时段',
+    days: {
+      mon:{ type:'base' }, tue:{ type:'base' }, wed:{ type:'base' },
+      thu:{ type:'base' }, fri:{ type:'base' },
+      sat:{ type:'custom', slots:['08:00-10:00','10:00-12:00','14:00-16:00','16:00-18:00'] },
+      sun:{ type:'custom', slots:['08:00-10:00','10:00-12:00','14:00-16:00','16:00-18:00'] }
+    }
+  },
+  {
+    id:5, name:'电子阅览室-缩短晚间',
+    scope:'area', libraryIds:[], areaIds:[5],
+    status:1, remark:'电子阅览室晚上 20:00 后不开放',
+    days: {
+      mon:{ type:'custom', slots:['08:00-10:00','10:00-12:00','12:00-14:00','14:00-16:00','16:00-18:00','18:00-20:00'] },
+      tue:{ type:'custom', slots:['08:00-10:00','10:00-12:00','12:00-14:00','14:00-16:00','16:00-18:00','18:00-20:00'] },
+      wed:{ type:'custom', slots:['08:00-10:00','10:00-12:00','12:00-14:00','14:00-16:00','16:00-18:00','18:00-20:00'] },
+      thu:{ type:'custom', slots:['08:00-10:00','10:00-12:00','12:00-14:00','14:00-16:00','16:00-18:00','18:00-20:00'] },
+      fri:{ type:'custom', slots:['08:00-10:00','10:00-12:00','12:00-14:00','14:00-16:00','16:00-18:00','18:00-20:00'] },
+      sat:{ type:'custom', slots:['10:00-12:00','14:00-16:00'] },
+      sun:{ type:'custom', slots:['10:00-12:00','14:00-16:00'] }
+    }
+  },
+  {
+    id:6, name:'南区分馆-寒暑假调整',
+    scope:'library', libraryIds:[2], areaIds:[],
+    status:0, remark:'寒暑假期间整体延后开放',
+    days: {
+      mon:{ type:'custom', start:'09:00', end:'17:00' },
+      tue:{ type:'custom', start:'09:00', end:'17:00' },
+      wed:{ type:'custom', start:'09:00', end:'17:00' },
+      thu:{ type:'custom', start:'09:00', end:'17:00' },
+      fri:{ type:'custom', start:'09:00', end:'17:00' },
+      sat:{ type:'closed' }, sun:{ type:'closed' }
+    }
+  }
+];
+
+let nextRuleId = 100;
+let editingRuleId = null;
+let confirmCallback = null;
+let ruleFilters = { libraryId:'', areaId:'', keyword:'', status:'' };
+// 新增：周规则分页状态
+let rulePage = 1;
+const RULE_PAGE_SIZE = 10;
+
+/* ============ 特殊日期数据 ============ */
+let specialDates = [
+  {
+    id:1, start:'2026-10-01', end:'2026-10-03',
+    type:'闭馆', startTime:'', endTime:'', slots:[],
+    scope:'all', libraryIds:[], areaIds:[],
+    remark:'国庆节法定假日闭馆', status:1
+  },
+  {
+    id:2, start:'2026-12-20', end:'2026-12-31',
+    type:'调整开放时间', startTime:'08:00', endTime:'23:00', slots:[],
+    scope:'all', libraryIds:[], areaIds:[],
+    remark:'期末考试周延长开放', status:1
+  },
+  {
+    id:3, start:'2026-11-15', end:'2026-11-15',
+    type:'闭馆', startTime:'', endTime:'', slots:[],
+    scope:'library', libraryIds:[1], areaIds:[],
+    remark:'总馆空调系统检修', status:1
+  },
+  {
+    id:4, start:'2026-12-25', end:'2026-12-25',
+    type:'调整开放时间', startTime:'', endTime:'',
+    slots:['10:00-12:00','14:00-16:00'],
+    scope:'area', libraryIds:[], areaIds:[5,7],
+    remark:'电子阅览室与自习区节假日缩短开放时段', status:1
+  },
+  {
+    id:5, start:'2026-09-28', end:'2026-09-28',
+    type:'闭馆', startTime:'', endTime:'', slots:[],
+    scope:'all', libraryIds:[], areaIds:[],
+    remark:'系统升级临时闭馆', status:0
+  },
+  {
+    id:6, start:'2026-04-05', end:'2026-04-05',
+    type:'调整开放时间', startTime:'10:00', endTime:'20:00', slots:[],
+    scope:'library', libraryIds:[1,2], areaIds:[],
+    remark:'清明节缩短开放', status:1
+  },
+  {
+    id:7, start:'2026-05-01', end:'2026-05-05',
+    type:'闭馆', startTime:'', endTime:'', slots:[],
+    scope:'all', libraryIds:[], areaIds:[],
+    remark:'劳动节法定假日闭馆', status:1
+  },
+  {
+    id:8, start:'2026-06-20', end:'2026-06-22',
+    type:'调整开放时间', startTime:'09:00', endTime:'18:00', slots:[],
+    scope:'library', libraryIds:[3], areaIds:[],
+    remark:'东校区分馆端午缩短开放', status:1
+  },
+  {
+    id:9, start:'2026-02-15', end:'2026-02-21',
+    type:'闭馆', startTime:'', endTime:'', slots:[],
+    scope:'all', libraryIds:[], areaIds:[],
+    remark:'春节法定假日闭馆', status:1
+  },
+  {
+    id:10, start:'2026-01-20', end:'2026-01-22',
+    type:'调整开放时间', startTime:'', endTime:'',
+    slots:['08:00-10:00','10:00-12:00','14:00-16:00'],
+    scope:'area', libraryIds:[], areaIds:[1,2],
+    remark:'盘点期间中文图书借阅区仅开放部分时段', status:1
+  }
+];
+
+let nextSpId = 100;
+let editingSpId = null;
+let filters = { year:'', type:'', keyword:'', status:'' };
+let spPage = 1;
+const SP_PAGE_SIZE = 10;
+
+/* ============ 通用工具 ============ */
+function renderTargetTags(scope, libraryIds, areaIds){
+  if (scope === 'all'){
+    return `<span class="target-tag all">全馆通用</span>`;
+  }
+  if (scope === 'library'){
+    const ids = libraryIds || [];
+    if (!ids.length) return `<span style="color:#94a3b8;">—</span>`;
+    const shown = ids.slice(0, 3).map(id => {
+      const l = LIBRARIES.find(x => x.id === id);
+      return l ? `<span class="target-tag library">${esc(l.name)}</span>` : '';
+    }).join('');
+    const more = ids.length > 3 ? `<span class="target-tag more">+${ids.length - 3}</span>` : '';
+    return `<div class="target-tags">${shown}${more}</div>`;
+  }
+  if (scope === 'area'){
+    const ids = areaIds || [];
+    if (!ids.length) return `<span style="color:#94a3b8;">—</span>`;
+    const shown = ids.slice(0, 2).map(id => {
+      const a = getArea(id);
+      return a ? `<span class="target-tag area">${esc(a.name)}</span>` : '';
+    }).join('');
+    const more = ids.length > 2 ? `<span class="target-tag more">+${ids.length - 2}</span>` : '';
+    return `<div class="target-tags">${shown}${more}</div>`;
+  }
+  return '';
+}
+
+/** 表格中的「N 个时段」带 data-slots，鼠标悬浮展示明细 */
+function renderSlotCell(slots){
+  if (!slots || !slots.length){
+    return `<span class="week-cell closed">闭馆</span>`;
+  }
+  return `<span class="week-cell slots" data-slots="${esc(slots.join('|'))}">${slots.length} 个时段</span>`;
+}
+
+function renderDayCell(day){
+  if (!day || day.type === 'base'){
+    return `<span class="week-cell base">沿用基础</span>`;
+  }
+  if (day.type === 'closed'){
+    return `<span class="week-cell closed">闭馆</span>`;
+  }
+  if (day.slots){
+    return renderSlotCell(day.slots);
+  }
+  return `<span class="week-cell">${esc(day.start)}-${esc(day.end)}</span>`;
+}
+
+/* ============ 悬浮提示（时段明细） ============ */
+const tipPop = document.createElement('div');
+tipPop.className = 'tip-pop';
+document.getElementById('opening-scope').appendChild(tipPop);
+
+function positionTip(el){
+  const r = el.getBoundingClientRect();
+  const tw = tipPop.offsetWidth;
+  const th = tipPop.offsetHeight;
+  let left = r.left + r.width / 2 - tw / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+  let top = r.top - th - 8;
+  if (top < 8) top = r.bottom + 8;
+  tipPop.style.left = left + 'px';
+  tipPop.style.top = top + 'px';
+}
+
+function showTip(el){
+  const slots = String(el.dataset.slots || '').split('|').filter(Boolean);
+  if (!slots.length) return;
+  tipPop.innerHTML =
+    `<div class="tip-head">开放时段（共 ${slots.length} 段）</div>` +
+    `<div class="tip-grid">${slots.map(s => `<span>${esc(s)}</span>`).join('')}</div>`;
+  tipPop.classList.add('show');
+  positionTip(el);
+}
+function hideTip(){ tipPop.classList.remove('show'); }
+
+document.addEventListener('pointerover', e => {
+  const el = e.target.closest && e.target.closest('[data-slots]');
+  if (el && !el.contains(e.relatedTarget)) showTip(el);
+});
+document.addEventListener('pointerout', e => {
+  const el = e.target.closest && e.target.closest('[data-slots]');
+  if (el && !el.contains(e.relatedTarget)) hideTip();
+});
+window.addEventListener('scroll', hideTip, true);
+window.addEventListener('resize', hideTip);
+
+/* ============ Tab 切换 ============ */
+function switchTab(tab){
+  document.querySelectorAll('.page-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  $('tabWeek').style.display = tab === 'week' ? '' : 'none';
+  $('tabSpecial').style.display = tab === 'special' ? '' : 'none';
+  hideTip();
+  if (tab === 'week') renderWeekTable();
+  else renderSpecialTable();
+}
+
+/* ============ 周规则渲染 ============ */
+function getFilteredRules(){
+  const kw = ruleFilters.keyword.toLowerCase();
+  return weekRules.filter(r => {
+    if (ruleFilters.libraryId){
+      const lid = Number(ruleFilters.libraryId);
+      const match = r.scope === 'all'
+        || (r.scope === 'library' && (r.libraryIds || []).includes(lid))
+        || (r.scope === 'area' && (r.areaIds || []).some(aid => getAreaLibraryId(aid) === lid));
+      if (!match) return false;
+    }
+    if (ruleFilters.areaId){
+      const aid = Number(ruleFilters.areaId);
+      const match = r.scope === 'all'
+        || (r.scope === 'area' && (r.areaIds || []).includes(aid));
+      if (!match) return false;
+    }
+    if (kw){
+      const hit = r.name.toLowerCase().includes(kw) || String(r.remark || '').toLowerCase().includes(kw);
+      if (!hit) return false;
+    }
+    if (ruleFilters.status !== '' && String(r.status) !== ruleFilters.status) return false;
+    return true;
+  });
+}
+
+/** 周规则列表渲染（带分页） */
+function renderWeekTable(){
+  hideTip();
+  const list = getFilteredRules();
+  const total = list.length;
+  const totalPages = Math.max(1, Math.ceil(total / RULE_PAGE_SIZE));
+  if (rulePage > totalPages) rulePage = totalPages;
+  if (rulePage < 1) rulePage = 1;
+
+  const start = (rulePage - 1) * RULE_PAGE_SIZE;
+  const rows = list.slice(start, start + RULE_PAGE_SIZE);
+  const tbody = $('weekTbody');
+
+  if (!rows.length){
+    tbody.innerHTML = `<tr><td colspan="11"><div class="empty"><div class="empty-icon">📅</div><div class="empty-text">暂无符合条件的周规则</div></div></td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(r => {
+      const cells = WEEK_DAYS.map(d => `<td>${renderDayCell(r.days[d.key])}</td>`).join('');
+      return `
+        <tr>
+          <td>
+            <div class="cell-main strong">${esc(r.name)}</div>
+            ${r.remark ? `<div class="cell-sub">${esc(r.remark)}</div>` : ''}
+          </td>
+          <td>${renderTargetTags(r.scope, r.libraryIds, r.areaIds)}</td>
+          ${cells}
+          <td>
+            <label class="switch">
+              <input type="checkbox" data-action="toggle-rule" data-id="${r.id}" ${r.status ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+          </td>
+          <td class="ops">
+            <button class="link-btn" data-action="detail-rule" data-id="${r.id}">详情</button>
+            <button class="link-btn" data-action="edit-rule" data-id="${r.id}">编辑</button>
+            <button class="link-btn danger" data-action="del-rule" data-id="${r.id}">删除</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  $('ruleTotal').textContent = total;
+  $('ruleOn').textContent = list.filter(r => r.status === 1).length;
+  renderRulePager(total, totalPages, start, rows.length);
+}
+
+/** 周规则分页渲染 */
+function renderRulePager(total, totalPages, start, count){
+  $('rulePagerInfo').innerHTML = total
+    ? `共 <b>${total}</b> 条记录，当前第 ${start + 1}-${start + count} 条，第 ${rulePage}/${totalPages} 页`
+    : `共 0 条记录`;
+
+  let pages = [];
+  if (totalPages <= 7){
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else if (rulePage <= 4){
+    pages = [1, 2, 3, 4, 5, '...', totalPages];
+  } else if (rulePage >= totalPages - 3){
+    pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  } else {
+    pages = [1, '...', rulePage - 1, rulePage, rulePage + 1, '...', totalPages];
+  }
+
+  const btns = [];
+  btns.push(`<button class="pager-btn" data-page="${rulePage - 1}" ${rulePage <= 1 ? 'disabled' : ''}>上一页</button>`);
+  pages.forEach(p => {
+    if (p === '...') btns.push(`<span class="pager-dots">···</span>`);
+    else btns.push(`<button class="pager-btn ${p === rulePage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+  });
+  btns.push(`<button class="pager-btn" data-page="${rulePage + 1}" ${rulePage >= totalPages ? 'disabled' : ''}>下一页</button>`);
+
+  const wrap = $('rulePagerBtns');
+  wrap.innerHTML = btns.join('');
+  wrap.querySelectorAll('button[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = Number(btn.dataset.page);
+      if (p < 1 || p > totalPages || p === rulePage) return;
+      rulePage = p;
+      renderWeekTable();
+    });
+  });
+}
+
+/* ============ 级联选择器（馆藏地›楼层›区域） ============ */
+function createCascadePicker(config){
+  const state = {
+    currentLibraryId: null,
+    currentFloorId: null,
+    selected: new Set(config.initialSelected || [])
+  };
+
+  function renderLibraries(){
+    const el = config.libraryEl;
+    el.innerHTML = LIBRARIES.map(l => `
+      <div class="cascade-item ${state.currentLibraryId === l.id ? 'active' : ''}" data-lib="${l.id}">
+        ${esc(l.name)}
+      </div>
+    `).join('');
+    el.querySelectorAll('[data-lib]').forEach(item => {
+      item.addEventListener('click', () => {
+        state.currentLibraryId = Number(item.dataset.lib);
+        state.currentFloorId = null;
+        renderLibraries();
+        renderFloors();
+        renderAreas();
+      });
+    });
+  }
+
+  function renderFloors(){
+    const el = config.floorEl;
+    if (!state.currentLibraryId){
+      el.innerHTML = `<div class="empty-hint">请先选择馆藏地</div>`;
+      return;
+    }
+    const floors = FLOORS.filter(f => f.libraryId === state.currentLibraryId);
+    if (!floors.length){
+      el.innerHTML = `<div class="empty-hint">该馆藏地暂无楼层</div>`;
+      return;
+    }
+    el.innerHTML = floors.map(f => `
+      <div class="cascade-item ${state.currentFloorId === f.id ? 'active' : ''}" data-floor="${f.id}">
+        ${esc(f.name)} <span style="color:#94a3b8;font-size:11px;">(${esc(f.code)})</span>
+      </div>
+    `).join('');
+    el.querySelectorAll('[data-floor]').forEach(item => {
+      item.addEventListener('click', () => {
+        state.currentFloorId = Number(item.dataset.floor);
+        renderFloors();
+        renderAreas();
+      });
+    });
+  }
+
+  function renderAreas(){
+    const el = config.areaEl;
+    if (!state.currentFloorId){
+      el.innerHTML = `<div class="empty-hint">请先选择楼层</div>`;
+      return;
+    }
+    const areas = AREAS.filter(a => a.floorId === state.currentFloorId);
+    if (!areas.length){
+      el.innerHTML = `<div class="empty-hint">该楼层暂无区域</div>`;
+      return;
+    }
+    el.innerHTML = areas.map(a => {
+      const checked = state.selected.has(a.id);
+      return `
+        <div class="cascade-item ${checked ? 'checked' : ''}" data-area="${a.id}">
+          <span class="check">${checked ? '✓' : ''}</span>
+          <span>${esc(a.code)} ${esc(a.name)}</span>
+        </div>
+      `;
+    }).join('');
+    el.querySelectorAll('[data-area]').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = Number(item.dataset.area);
+        if (state.selected.has(id)) state.selected.delete(id);
+        else state.selected.add(id);
+        renderAreas();
+        renderSelected();
+      });
+    });
+  }
+
+  function renderSelected(){
+    const el = config.selectedEl;
+    const ids = Array.from(state.selected);
+    if (!ids.length){
+      el.innerHTML = '';
+      return;
+    }
+    el.innerHTML = ids.map(id => `
+      <span class="selected-chip" data-id="${id}">
+        ${esc(getAreaFullPath(id))}
+        <span class="rm" title="移除">✕</span>
+      </span>
+    `).join('');
+    el.querySelectorAll('.selected-chip .rm').forEach(rm => {
+      rm.addEventListener('click', () => {
+        const id = Number(rm.parentElement.dataset.id);
+        state.selected.delete(id);
+        renderAreas();
+        renderSelected();
+      });
+    });
+  }
+
+  renderLibraries();
+  renderFloors();
+  renderAreas();
+  renderSelected();
+
+  return {
+    getSelected: () => Array.from(state.selected),
+    setSelected: (ids) => {
+      state.selected = new Set(ids || []);
+      renderAreas();
+      renderSelected();
+    }
+  };
+}
+
+let ruleAreaPicker = null;
+let spAreaPicker = null;
+
+/* ============ 周规则表单：周编辑器 ============ */
+/** 从当前 DOM 中收集周设置（用于切换作用域 / 时段长度时保留已填内容） */
+function collectWeekEditorDays(scope){
+  const days = {};
+  $('weekEditorBody').querySelectorAll('.week-row').forEach(row => {
+    const dayKey = row.dataset.day;
+    const checked = row.querySelector(`input[name="day-${dayKey}"]:checked`);
+    const type = checked ? checked.value : 'base';
+
+    if (type === 'custom'){
+      if (scope === 'area'){
+        const picker = row.querySelector('.slot-picker');
+        days[dayKey] = {
+          type:'custom',
+          slots: picker
+            ? Array.from(picker.querySelectorAll('.slot-chip.checked')).map(c => c.dataset.slot)
+            : []
+        };
+      } else {
+        const s = row.querySelector('.day-start');
+        const e = row.querySelector('.day-end');
+        days[dayKey] = {
+          type:'custom',
+          start: s ? s.value : '08:00',
+          end: e ? e.value : '22:00'
+        };
+      }
+    } else {
+      days[dayKey] = { type };
+    }
+  });
+  return days;
+}
+
+function renderWeekEditor(days, scope){
+  weekEditorScope = scope;
+
+  const body = $('weekEditorBody');
+  const isArea = scope === 'area';
+  const allSlots = buildTimeSlots(weekSlotDuration);
+
+  // 时段长度选择器只在「指定区域」时出现
+  $('weekGranularity').style.display = isArea ? '' : 'none';
+  $('weekSlotDuration').value = String(weekSlotDuration);
+
+  if (isArea){
+    $('weekEditorHint').textContent = '规则（沿用基础 / 闭馆 / 勾选时段）';
+    $('weekEditorFooterHint').innerHTML =
+      '「沿用基础」表示该天采用区域页面维护的基础时段。「闭馆」表示该天整体不开放。' +
+      `「调整为」可勾选当天开放的时段，当前每段 <b>${weekSlotDuration} 小时</b>，覆盖全天 00:00 - 24:00。`;
+  } else {
+    $('weekEditorHint').textContent = '规则（沿用基础时间 / 闭馆 / 调整为指定时间）';
+    $('weekEditorFooterHint').innerHTML =
+      '「沿用基础」表示该天不做调整，采用馆藏地/区域页面维护的基础时间。' +
+      '「闭馆」表示该天整体不开放。「调整为」可自定义该天的起止时间。';
+  }
+
+  body.innerHTML = WEEK_DAYS.map(d => {
+    const day = days && days[d.key] ? days[d.key] : { type:'base' };
+    const isBase = day.type === 'base';
+    const isClosed = day.type === 'closed';
+    const isCustom = day.type === 'custom';
+
+    if (isArea){
+      // 兼容旧数据：把已保存的时段按当前粒度重新映射
+      const daySlots = remapSlots(day.slots || [], allSlots);
+      const slotsHtml = allSlots.map(slot => {
+        const checked = daySlots.includes(slot);
+        return `<div class="slot-chip ${checked ? 'checked' : ''}" data-day="${d.key}" data-slot="${slot}">${slot}</div>`;
+      }).join('');
+      return `
+        <div class="week-row" data-day="${d.key}">
+          <div class="week-day">${d.label}</div>
+          <div class="day-options">
+            <label class="day-opt">
+              <input type="radio" name="day-${d.key}" value="base" ${isBase ? 'checked' : ''}>
+              <span>沿用基础</span>
+            </label>
+            <label class="day-opt">
+              <input type="radio" name="day-${d.key}" value="closed" ${isClosed ? 'checked' : ''}>
+              <span>闭馆</span>
+            </label>
+            <label class="day-opt">
+              <input type="radio" name="day-${d.key}" value="custom" ${isCustom ? 'checked' : ''}>
+              <span>调整为</span>
+            </label>
+          </div>
+          <div class="slot-picker" data-day="${d.key}" style="${isCustom ? '' : 'display:none;'}">
+            ${slotsHtml}
+          </div>
+        </div>
+      `;
+    } else {
+      const start = day.start || '08:00';
+      const end = day.end || '22:00';
+      return `
+        <div class="week-row" data-day="${d.key}">
+          <div class="week-day">${d.label}</div>
+          <div class="day-options">
+            <label class="day-opt">
+              <input type="radio" name="day-${d.key}" value="base" ${isBase ? 'checked' : ''}>
+              <span>沿用基础</span>
+            </label>
+            <label class="day-opt">
+              <input type="radio" name="day-${d.key}" value="closed" ${isClosed ? 'checked' : ''}>
+              <span>闭馆</span>
+            </label>
+            <label class="day-opt">
+              <input type="radio" name="day-${d.key}" value="custom" ${isCustom ? 'checked' : ''}>
+              <span>调整为</span>
+            </label>
+            <div class="day-times" data-day="${d.key}">
+              <input type="time" class="day-start" value="${esc(start)}" ${isCustom ? '' : 'disabled'}>
+              <div class="sep">~</div>
+              <input type="time" class="day-end" value="${esc(end)}" ${isCustom ? '' : 'disabled'}>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }).join('');
+
+  // 绑定「沿用基础 / 闭馆 / 调整为」切换
+  body.querySelectorAll('.week-row').forEach(row => {
+    const dayKey = row.dataset.day;
+    const radios = row.querySelectorAll(`input[name="day-${dayKey}"]`);
+    radios.forEach(r => {
+      r.addEventListener('change', () => {
+        const isCustomNow = row.querySelector(`input[name="day-${dayKey}"][value="custom"]`).checked;
+        if (isArea){
+          const picker = row.querySelector('.slot-picker');
+          if (picker) picker.style.display = isCustomNow ? '' : 'none';
+        } else {
+          const startInput = row.querySelector('.day-start');
+          const endInput = row.querySelector('.day-end');
+          if (startInput) startInput.disabled = !isCustomNow;
+          if (endInput) endInput.disabled = !isCustomNow;
+        }
+      });
+    });
+  });
+
+  // 时段勾选交互
+  body.querySelectorAll('.slot-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('checked');
+    });
+  });
+}
+
+function openRuleForm(id){
+  editingRuleId = id ?? null;
+  document.querySelectorAll('#formModal .form-item').forEach(el => el.classList.remove('has-error'));
+  document.querySelectorAll('#formModal .error-tip').forEach(el => el.textContent = '');
+
+  renderRuleLibraryList();
+  if (!ruleAreaPicker){
+    ruleAreaPicker = createCascadePicker({
+      libraryEl: $('cascadeLibrary'),
+      floorEl: $('cascadeFloor'),
+      areaEl: $('cascadeArea'),
+      selectedEl: $('ruleSelectedAreas'),
+      initialSelected: []
+    });
+  }
+
+  if (id){
+    const r = weekRules.find(x => x.id === id);
+    if (!r) return;
+    $('formTitle').textContent = '编辑周规则';
+    $('ruleName').value = r.name;
+    $('ruleRemark').value = r.remark || '';
+    document.querySelector(`input[name="ruleStatus"][value="${r.status}"]`).checked = true;
+    document.querySelector(`input[name="ruleScope"][value="${r.scope}"]`).checked = true;
+
+    document.querySelectorAll('.rule-lib-check').forEach(c => {
+      const checked = (r.libraryIds || []).includes(Number(c.value));
+      c.checked = checked;
+      c.closest('.target-option').classList.toggle('checked', checked);
+    });
+    ruleAreaPicker.setSelected(r.areaIds || []);
+
+    renderWeekEditor(r.days, r.scope);
+  } else {
+    $('formTitle').textContent = '新增周规则';
+    $('ruleName').value = '';
+    $('ruleRemark').value = '';
+    document.querySelector('input[name="ruleStatus"][value="1"]').checked = true;
+    document.querySelector('input[name="ruleScope"][value="all"]').checked = true;
+    document.querySelectorAll('.rule-lib-check').forEach(c => {
+      c.checked = false;
+      c.closest('.target-option').classList.remove('checked');
+    });
+    ruleAreaPicker.setSelected([]);
+
+    renderWeekEditor(null, 'all');
+  }
+
+  updateRuleScopeUI(true);
+  $('formModal').classList.add('show');
+  setTimeout(() => $('ruleName').focus(), 60);
+}
+
+function closeRuleForm(){
+  $('formModal').classList.remove('show');
+  editingRuleId = null;
+}
+
+function submitRuleForm(){
+  const name = $('ruleName').value.trim();
+  if (!name){
+    const item = $('ruleName').closest('.form-item');
+    item.classList.add('has-error');
+    item.querySelector('.error-tip').textContent = '请输入规则名称';
+    return;
+  }
+  const dup = weekRules.some(r => r.name === name && r.id !== editingRuleId);
+  if (dup){
+    const item = $('ruleName').closest('.form-item');
+    item.classList.add('has-error');
+    item.querySelector('.error-tip').textContent = '规则名称已存在';
+    return;
+  }
+
+  const scope = document.querySelector('input[name="ruleScope"]:checked').value;
+  let libraryIds = [], areaIds = [];
+
+  if (scope === 'library'){
+    libraryIds = Array.from(document.querySelectorAll('.rule-lib-check:checked')).map(c => Number(c.value));
+    if (!libraryIds.length) return toast('请至少选择一个馆藏地', 'error');
+  } else if (scope === 'area'){
+    areaIds = ruleAreaPicker ? ruleAreaPicker.getSelected() : [];
+    if (!areaIds.length) return toast('请至少选择一个区域', 'error');
+  }
+
+  const status = Number(document.querySelector('input[name="ruleStatus"]:checked').value);
+  const remark = $('ruleRemark').value.trim();
+
+  const days = {};
+  let hasError = false;
+
+  $('weekEditorBody').querySelectorAll('.week-row').forEach(row => {
+    const dayKey = row.dataset.day;
+    const type = row.querySelector(`input[name="day-${dayKey}"]:checked`).value;
+
+    if (type === 'custom'){
+      if (scope === 'area'){
+        const picker = row.querySelector('.slot-picker');
+        const slots = Array.from(picker.querySelectorAll('.slot-chip.checked')).map(c => c.dataset.slot);
+        days[dayKey] = { type:'custom', slots };
+      } else {
+        const start = row.querySelector('.day-start').value;
+        const end = row.querySelector('.day-end').value;
+        if (start >= end) hasError = true;
+        days[dayKey] = { type:'custom', start, end };
+      }
+    } else {
+      days[dayKey] = { type };
+    }
+  });
+
+  if (hasError){
+    return toast('结束时间必须大于开始时间', 'error');
+  }
+
+  const data = { name, scope, libraryIds, areaIds, status, remark, days };
+
+  if (editingRuleId){
+    const r = weekRules.find(x => x.id === editingRuleId);
+    if (r) Object.assign(r, data);
+    toast('保存成功');
+  } else {
+    weekRules.push({ id: nextRuleId++, ...data });
+    toast('新增成功');
+  }
+
+  closeRuleForm();
+  renderWeekTable();
+}
+
+/* ============ 馆藏地选择器 ============ */
+function renderRuleLibraryList(){
+  const list = $('ruleLibraryList');
+  list.innerHTML = LIBRARIES.map(l => `
+    <label class="target-option" data-id="${l.id}">
+      <input type="checkbox" class="rule-lib-check" value="${l.id}">
+      <span>${esc(l.name)}</span>
+    </label>
+  `).join('');
+  bindTargetOptionClick(list);
+}
+
+function bindTargetOptionClick(container){
+  container.querySelectorAll('.target-option').forEach(opt => {
+    const check = opt.querySelector('input[type=checkbox]');
+    opt.addEventListener('click', e => {
+      if (e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+        check.checked = !check.checked;
+      }
+      opt.classList.toggle('checked', check.checked);
+    });
+    check.addEventListener('change', () => {
+      opt.classList.toggle('checked', check.checked);
+    });
+  });
+}
+
+/**
+ * 作用域切换。
+ * silent = true 时只做显示切换（打开表单时用），不重渲染周编辑器
+ */
+function updateRuleScopeUI(silent){
+  const scope = document.querySelector('input[name="ruleScope"]:checked').value;
+  $('ruleLibraryItem').style.display = scope === 'library' ? '' : 'none';
+  $('ruleAreaItem').style.display = scope === 'area' ? '' : 'none';
+
+  if (silent) return;
+
+  // 保留已填内容后按新作用域重渲染（区域↔非区域 的编辑模式不同）
+  const days = collectWeekEditorDays(weekEditorScope);
+  renderWeekEditor(days, scope);
+}
+
+/* ============ 特殊日期渲染 ============ */
+function getFilteredSpecial(){
+  const kw = filters.keyword.toLowerCase();
+  return specialDates
+    .filter(it => {
+      if (filters.year){
+        const year = String(it.start).slice(0,4);
+        if (year !== filters.year && String(it.end).slice(0,4) !== filters.year) return false;
+      }
+      if (filters.type && it.type !== filters.type) return false;
+      if (kw){
+        const hit = String(it.remark || '').toLowerCase().includes(kw)
+          || String(it.start).includes(kw)
+          || String(it.end).includes(kw);
+        if (!hit) return false;
+      }
+      if (filters.status !== '' && String(it.status) !== filters.status) return false;
+      return true;
+    })
+    .sort((a, b) => String(b.start).localeCompare(String(a.start)));
+}
+
+function renderSpecialTable(){
+  hideTip();
+  const list = getFilteredSpecial();
+  const total = list.length;
+  const totalPages = Math.max(1, Math.ceil(total / SP_PAGE_SIZE));
+  if (spPage > totalPages) spPage = totalPages;
+  if (spPage < 1) spPage = 1;
+
+  const start = (spPage - 1) * SP_PAGE_SIZE;
+  const rows = list.slice(start, start + SP_PAGE_SIZE);
+  const tbody = $('specialTbody');
+
+  if (!rows.length){
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="empty-icon">🎯</div><div class="empty-text">暂无特殊日期记录</div></div></td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(it => {
+      const dateStr = it.start === it.end
+        ? `<span class="week-cell">${esc(it.start)}</span>`
+        : `<span class="week-cell">${esc(it.start)} <span style="color:#94a3b8;">→</span> ${esc(it.end)}</span>`;
+
+      const typeBadge = it.type === '闭馆'
+        ? `<span class="badge badge-red">闭馆</span>`
+        : `<span class="badge badge-purple">调整开放时间</span>`;
+
+      let timeStr = `<span style="color:#94a3b8;">—</span>`;
+      if (it.type === '调整开放时间'){
+        if (it.slots && it.slots.length){
+          timeStr = renderSlotCell(it.slots);
+        } else {
+          timeStr = `<span class="week-cell">${esc(it.startTime)} - ${esc(it.endTime)}</span>`;
+        }
+      }
+
+      return `
+        <tr>
+          <td>${dateStr}</td>
+          <td>${typeBadge}</td>
+          <td>${timeStr}</td>
+          <td>${renderTargetTags(it.scope, it.libraryIds, it.areaIds)}</td>
+          <td><div class="cell-main">${esc(it.remark) || '<span style="color:#94a3b8;">—</span>'}</div></td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" data-action="toggle-sp" data-id="${it.id}" ${it.status ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+          </td>
+          <td class="ops">
+            <button class="link-btn" data-action="detail-sp" data-id="${it.id}">详情</button>
+            <button class="link-btn" data-action="edit-sp" data-id="${it.id}">编辑</button>
+            <button class="link-btn danger" data-action="del-sp" data-id="${it.id}">删除</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  $('specialTotal').textContent = total;
+  renderSpecialPager(total, totalPages, start, rows.length);
+}
+
+function renderSpecialPager(total, totalPages, start, count){
+  $('specialPagerInfo').innerHTML = total
+    ? `共 <b>${total}</b> 条记录，当前第 ${start + 1}-${start + count} 条，第 ${spPage}/${totalPages} 页`
+    : `共 0 条记录`;
+
+  let pages = [];
+  if (totalPages <= 7){
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else if (spPage <= 4){
+    pages = [1, 2, 3, 4, 5, '...', totalPages];
+  } else if (spPage >= totalPages - 3){
+    pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  } else {
+    pages = [1, '...', spPage - 1, spPage, spPage + 1, '...', totalPages];
+  }
+
+  const btns = [];
+  btns.push(`<button class="pager-btn" data-page="${spPage - 1}" ${spPage <= 1 ? 'disabled' : ''}>上一页</button>`);
+  pages.forEach(p => {
+    if (p === '...') btns.push(`<span class="pager-dots">···</span>`);
+    else btns.push(`<button class="pager-btn ${p === spPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+  });
+  btns.push(`<button class="pager-btn" data-page="${spPage + 1}" ${spPage >= totalPages ? 'disabled' : ''}>下一页</button>`);
+
+  const wrap = $('specialPagerBtns');
+  wrap.innerHTML = btns.join('');
+  wrap.querySelectorAll('button[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = Number(btn.dataset.page);
+      if (p < 1 || p > totalPages || p === spPage) return;
+      spPage = p;
+      renderSpecialTable();
+    });
+  });
+}
+
+/* ============ 特殊日期表单 ============ */
+function initSpecialForm(){
+  const years = new Set();
+  specialDates.forEach(it => {
+    years.add(String(it.start).slice(0,4));
+    years.add(String(it.end).slice(0,4));
+  });
+  years.add(String(new Date().getFullYear()));
+  const sel = $('fYear');
+  sel.innerHTML = '<option value="">全部</option>'
+    + Array.from(years).sort().reverse().map(y => `<option value="${y}">${y}年</option>`).join('');
+
+  $('fRuleLibrary').innerHTML = '<option value="">全部</option>'
+    + LIBRARIES.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('');
+
+  // 修改1：适用区域下拉框改为「馆藏地 > 楼层 > 区域」格式
+  $('fRuleArea').innerHTML = '<option value="">全部</option>'
+    + AREAS.map(a => `<option value="${a.id}">${esc(getAreaFullPath(a.id))}</option>`).join('');
+
+  const spLibList = $('spLibraryList');
+  spLibList.innerHTML = LIBRARIES.map(l => `
+    <label class="target-option" data-id="${l.id}">
+      <input type="checkbox" class="sp-lib-check" value="${l.id}">
+      <span>${esc(l.name)}</span>
+    </label>
+  `).join('');
+  bindTargetOptionClick(spLibList);
+
+  renderSpSlotPicker([]);
+
+  if (!spAreaPicker){
+    spAreaPicker = createCascadePicker({
+      libraryEl: $('spCascadeLibrary'),
+      floorEl: $('spCascadeFloor'),
+      areaEl: $('spCascadeArea'),
+      selectedEl: $('spSelectedAreas'),
+      initialSelected: []
+    });
+  }
+}
+
+/** 渲染特殊日期的时段勾选器（全天 00:00-24:00，粒度跟随 spSlotDuration） */
+function renderSpSlotPicker(selected){
+  const el = $('spSlotPicker');
+  const allSlots = buildTimeSlots(spSlotDuration);
+  const checked = remapSlots(selected || [], allSlots);
+
+  $('spSlotDuration').value = String(spSlotDuration);
+
+  el.innerHTML = allSlots.map(slot => {
+    const isChecked = checked.includes(slot);
+    return `<div class="slot-chip ${isChecked ? 'checked' : ''}" data-slot="${slot}">${slot}</div>`;
+  }).join('');
+
+  el.querySelectorAll('.slot-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('checked');
+    });
+  });
+}
+
+function getSpSlotPickerSelected(){
+  return Array.from(document.querySelectorAll('#spSlotPicker .slot-chip.checked'))
+    .map(c => c.dataset.slot);
+}
+
+function openSpecialForm(id){
+  editingSpId = id ?? null;
+  document.querySelectorAll('#specialModal .form-item').forEach(el => el.classList.remove('has-error'));
+  document.querySelectorAll('#specialModal .error-tip').forEach(el => el.textContent = '');
+
+  if (id){
+    const it = specialDates.find(x => x.id === id);
+    if (!it) return;
+    $('specialFormTitle').textContent = '编辑特殊日期';
+    $('spStart').value = it.start;
+    $('spEnd').value = it.end;
+    $('spType').value = it.type;
+    $('spStartTime').value = it.startTime || '08:00';
+    $('spEndTime').value = it.endTime || '23:00';
+    $('spScope').value = it.scope;
+    $('spRemark').value = it.remark || '';
+    document.querySelector(`input[name="spStatus"][value="${it.status}"]`).checked = true;
+
+    document.querySelectorAll('.sp-lib-check').forEach(c => {
+      const checked = (it.libraryIds || []).includes(Number(c.value));
+      c.checked = checked;
+      c.closest('.target-option').classList.toggle('checked', checked);
+    });
+    if (spAreaPicker) spAreaPicker.setSelected(it.areaIds || []);
+    renderSpSlotPicker(it.slots || []);
+  } else {
+    $('specialFormTitle').textContent = '新增特殊日期';
+    const today = new Date().toISOString().slice(0, 10);
+    $('spStart').value = today;
+    $('spEnd').value = today;
+    $('spType').value = '闭馆';
+    $('spStartTime').value = '08:00';
+    $('spEndTime').value = '23:00';
+    $('spScope').value = 'all';
+    $('spRemark').value = '';
+    document.querySelector('input[name="spStatus"][value="1"]').checked = true;
+    document.querySelectorAll('.sp-lib-check').forEach(c => {
+      c.checked = false;
+      c.closest('.target-option').classList.remove('checked');
+    });
+    if (spAreaPicker) spAreaPicker.setSelected([]);
+    renderSpSlotPicker([]);
+  }
+
+  updateSpecialTypeUI();
+  updateSpecialScopeUI();
+  $('specialModal').classList.add('show');
+}
+
+function updateSpecialTypeUI(){
+  const type = $('spType').value;
+  const scope = $('spScope').value;
+  const isAdjust = type === '调整开放时间';
+  const isArea = scope === 'area';
+
+  if (!isAdjust){
+    $('spTimeItem').style.display = 'none';
+    $('spSlotsItem').style.display = 'none';
+  } else if (isArea){
+    $('spTimeItem').style.display = 'none';
+    $('spSlotsItem').style.display = '';
+  } else {
+    $('spTimeItem').style.display = '';
+    $('spSlotsItem').style.display = 'none';
+  }
+}
+
+function updateSpecialScopeUI(){
+  const scope = $('spScope').value;
+  $('spLibraryItem').style.display = scope === 'library' ? '' : 'none';
+  $('spAreaItem').style.display = scope === 'area' ? '' : 'none';
+  updateSpecialTypeUI();
+}
+
+function closeSpecialForm(){
+  $('specialModal').classList.remove('show');
+  editingSpId = null;
+}
+
+function submitSpecialForm(){
+  const start = $('spStart').value;
+  const end = $('spEnd').value;
+  const type = $('spType').value;
+  const scope = $('spScope').value;
+  const remark = $('spRemark').value.trim();
+  const status = Number(document.querySelector('input[name="spStatus"]:checked').value);
+
+  if (!start || !end){
+    return toast('请选择开始日期和结束日期', 'error');
+  }
+  if (start > end){
+    return toast('结束日期不能早于开始日期', 'error');
+  }
+
+  let startTime = '', endTime = '', slots = [];
+
+  if (type === '调整开放时间'){
+    if (scope === 'area'){
+      slots = getSpSlotPickerSelected();
+      if (!slots.length) return toast('请至少勾选一个时段', 'error');
+    } else {
+      startTime = $('spStartTime').value;
+      endTime = $('spEndTime').value;
+      if (startTime >= endTime) return toast('结束时间必须大于开始时间', 'error');
+    }
+  }
+
+  let libraryIds = [], areaIds = [];
+  if (scope === 'library'){
+    libraryIds = Array.from(document.querySelectorAll('.sp-lib-check:checked')).map(c => Number(c.value));
+    if (!libraryIds.length) return toast('请至少选择一个馆藏地', 'error');
+  } else if (scope === 'area'){
+    areaIds = spAreaPicker ? spAreaPicker.getSelected() : [];
+    if (!areaIds.length) return toast('请至少选择一个区域', 'error');
+  }
+
+  const data = {
+    start, end, type,
+    startTime, endTime, slots,
+    scope, libraryIds, areaIds, remark, status
+  };
+
+  if (editingSpId){
+    const it = specialDates.find(x => x.id === editingSpId);
+    if (it) Object.assign(it, data);
+    toast('保存成功');
+  } else {
+    specialDates.push({ id: nextSpId++, ...data });
+    toast('新增成功');
+  }
+
+  closeSpecialForm();
+  initSpecialForm();
+  renderSpecialTable();
+}
+
+/* ============ 详情弹窗 ============ */
+function openRuleDetail(id){
+  const r = weekRules.find(x => x.id === id);
+  if (!r) return;
+
+  let html = '';
+  html += `<div class="detail-section">
+    <h4>基本信息</h4>
+    <div class="detail-row"><div class="k">规则名称</div><div class="v">${esc(r.name)}</div></div>
+    <div class="detail-row"><div class="k">状态</div><div class="v">${r.status ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-gray">停用</span>'}</div></div>
+    <div class="detail-row"><div class="k">备注</div><div class="v">${esc(r.remark) || '<span style="color:#94a3b8;">—</span>'}</div></div>
+  </div>`;
+
+  html += `<div class="detail-section">
+    <h4>适用对象</h4>
+    <div class="detail-row"><div class="k">类型</div><div class="v">${
+      r.scope === 'all' ? '全馆通用' : r.scope === 'library' ? '指定馆藏地' : '指定区域'
+    }</div></div>`;
+  if (r.scope === 'library' && r.libraryIds && r.libraryIds.length){
+    html += `<div class="detail-row"><div class="k">馆藏地</div><div class="v">${
+      r.libraryIds.map(id => esc(getLibraryName(id))).join('、')
+    }</div></div>`;
+  }
+  if (r.scope === 'area' && r.areaIds && r.areaIds.length){
+    html += `<div class="detail-row"><div class="k">区域</div><div class="v">${
+      r.areaIds.map(id => esc(getAreaFullPath(id))).map(s => `<div>· ${s}</div>`).join('')
+    }</div></div>`;
+  }
+  html += `</div>`;
+
+  html += `<div class="detail-section">
+    <h4>按星期设置</h4>
+    <table class="detail-week-table">`;
+  WEEK_DAYS.forEach(d => {
+    const day = r.days[d.key];
+    let content = '';
+    if (!day || day.type === 'base'){
+      content = '<span style="color:#94a3b8;">沿用基础开放时间</span>';
+    } else if (day.type === 'closed'){
+      content = '<span style="color:#dc2626;">闭馆</span>';
+    } else if (day.type === 'custom'){
+      if (day.slots){
+        if (!day.slots.length){
+          content = '<span style="color:#dc2626;">无时段（闭馆）</span>';
+        } else {
+          content = `<span style="color:#c2410c;">${day.slots.map(esc).join('、')}</span>`;
+        }
+      } else {
+        content = `<span class="week-cell">${esc(day.start)} - ${esc(day.end)}</span>`;
+      }
+    }
+    html += `<tr><td>${d.label}</td><td>${content}</td></tr>`;
+  });
+  html += `</table></div>`;
+
+  $('detailTitle').textContent = '周规则详情';
+  $('detailBody').innerHTML = html;
+  $('detailModal').classList.add('show');
+}
+
+function openSpecialDetail(id){
+  const it = specialDates.find(x => x.id === id);
+  if (!it) return;
+
+  let html = '';
+  html += `<div class="detail-section">
+    <h4>基本信息</h4>
+    <div class="detail-row"><div class="k">日期范围</div><div class="v">${esc(it.start)} ~ ${esc(it.end)}</div></div>
+    <div class="detail-row"><div class="k">类型</div><div class="v">${
+      it.type === '闭馆' ? '<span class="badge badge-red">闭馆</span>' : '<span class="badge badge-purple">调整开放时间</span>'
+    }</div></div>`;
+
+  if (it.type === '调整开放时间'){
+    if (it.slots && it.slots.length){
+      html += `<div class="detail-row"><div class="k">开放时段</div><div class="v">${
+        it.slots.map(s => `<div>· ${esc(s)}</div>`).join('')
+      }</div></div>`;
+    } else {
+      html += `<div class="detail-row"><div class="k">开放时间</div><div class="v"><span class="week-cell">${esc(it.startTime)} - ${esc(it.endTime)}</span></div></div>`;
+    }
+  }
+
+  html += `<div class="detail-row"><div class="k">状态</div><div class="v">${it.status ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-gray">停用</span>'}</div></div>
+    <div class="detail-row"><div class="k">备注</div><div class="v">${esc(it.remark) || '<span style="color:#94a3b8;">—</span>'}</div></div>
+  </div>`;
+
+  html += `<div class="detail-section">
+    <h4>适用对象</h4>
+    <div class="detail-row"><div class="k">类型</div><div class="v">${
+      it.scope === 'all' ? '全馆（所有馆藏地与区域）' : it.scope === 'library' ? '指定馆藏地' : '指定区域'
+    }</div></div>`;
+
+  if (it.scope === 'library' && it.libraryIds && it.libraryIds.length){
+    html += `<div class="detail-row"><div class="k">馆藏地</div><div class="v">${
+      it.libraryIds.map(id => esc(getLibraryName(id))).map(s => `<div>· ${s}</div>`).join('')
+    }</div></div>`;
+  }
+  if (it.scope === 'area' && it.areaIds && it.areaIds.length){
+    html += `<div class="detail-row"><div class="k">区域</div><div class="v">${
+      it.areaIds.map(id => esc(getAreaFullPath(id))).map(s => `<div>· ${s}</div>`).join('')
+    }</div></div>`;
+  }
+  html += `</div>`;
+
+  $('detailTitle').textContent = '特殊日期详情';
+  $('detailBody').innerHTML = html;
+  $('detailModal').classList.add('show');
+}
+
+function closeDetailModal(){
+  $('detailModal').classList.remove('show');
+}
+
+/* ============ 确认弹窗 ============ */
+function askConfirm(title, text, cb, options){
+  options = options || {};
+  $('confirmTitle').textContent = title;
+  $('confirmText').textContent = text;
+  confirmCallback = cb;
+  const btn = $('btnOkConfirm');
+  btn.textContent = options.confirmText || '确定删除';
+  btn.className = options.danger === false ? 'btn btn-primary' : 'btn btn-danger-solid';
+  $('confirmModal').classList.add('show');
+}
+function closeConfirm(){
+  $('confirmModal').classList.remove('show');
+  confirmCallback = null;
+}
+
+/* ============ 导出 ============ */
+function exportRulesCSV(){
+  const list = getFilteredRules();
+  if (!list.length) return toast('没有可导出的数据', 'error');
+
+  const headers = ['规则名称','适用对象','周一','周二','周三','周四','周五','周六','周日','状态','备注'];
+  const getDayText = (day) => {
+    if (!day || day.type === 'base') return '沿用基础';
+    if (day.type === 'closed') return '闭馆';
+    if (day.slots) return day.slots.length ? day.slots.join('|') : '无时段';
+    return `${day.start}-${day.end}`;
+  };
+  const getScopeText = (r) => {
+    if (r.scope === 'all') return '全馆通用';
+    if (r.scope === 'library') return '馆藏地:' + (r.libraryIds||[]).map(id=>getLibraryName(id)).join(',');
+    return '区域:' + (r.areaIds||[]).map(id=>getAreaFullPath(id)).join(',');
+  };
+  const rows = list.map(r => [
+    r.name, getScopeText(r),
+    getDayText(r.days.mon), getDayText(r.days.tue), getDayText(r.days.wed),
+    getDayText(r.days.thu), getDayText(r.days.fri), getDayText(r.days.sat), getDayText(r.days.sun),
+    r.status ? '启用' : '停用', r.remark || ''
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+
+  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `周规则_${new Date().toISOString().slice(0,10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  toast('导出成功');
+}
+
+function exportSpecialCSV(){
+  const list = getFilteredSpecial();
+  if (!list.length) return toast('没有可导出的数据', 'error');
+
+  const headers = ['开始日期','结束日期','类型','开放时间/时段','适用对象','状态','备注'];
+  const rows = list.map(it => {
+    let timeText = '';
+    if (it.type === '调整开放时间'){
+      timeText = (it.slots && it.slots.length) ? it.slots.join('|') : `${it.startTime}-${it.endTime}`;
+    }
+    let scopeText = '';
+    if (it.scope === 'all') scopeText = '全馆';
+    else if (it.scope === 'library') scopeText = '馆藏地:' + (it.libraryIds||[]).map(id=>getLibraryName(id)).join(',');
+    else scopeText = '区域:' + (it.areaIds||[]).map(id=>getAreaFullPath(id)).join(',');
+
+    return [
+      it.start, it.end, it.type, timeText, scopeText,
+      it.status ? '启用' : '停用', it.remark || ''
+    ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+  });
+
+  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `特殊日期_${new Date().toISOString().slice(0,10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  toast('导出成功');
+}
+
+/* ============ 事件绑定 ============ */
+function bindEvents(){
+  document.querySelectorAll('.page-tab').forEach(t => {
+    t.addEventListener('click', () => switchTab(t.dataset.tab));
+  });
+
+  /* ----- 周规则筛选 ----- */
+  $('btnRuleSearch').addEventListener('click', () => {
+    ruleFilters.libraryId = $('fRuleLibrary').value;
+    ruleFilters.areaId = $('fRuleArea').value;
+    ruleFilters.keyword = $('fRuleKeyword').value.trim();
+    ruleFilters.status = $('fRuleStatus').value;
+    rulePage = 1; // 新增：搜索后重置到第一页
+    renderWeekTable();
+  });
+  $('btnRuleReset').addEventListener('click', () => {
+    $('fRuleLibrary').value = '';
+    $('fRuleArea').value = '';
+    $('fRuleKeyword').value = '';
+    $('fRuleStatus').value = '';
+    ruleFilters = { libraryId:'', areaId:'', keyword:'', status:'' };
+    rulePage = 1; // 新增：重置后回到第一页
+    renderWeekTable();
+  });
+  $('btnRuleExport').addEventListener('click', exportRulesCSV);
+  $('fRuleKeyword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('btnRuleSearch').click();
+  });
+
+  /* ----- 周规则操作 ----- */
+  $('btnAddRule').addEventListener('click', () => openRuleForm());
+
+  $('weekTbody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.tagName === 'INPUT') return;
+    const action = btn.dataset.action;
+    const id = Number(btn.dataset.id);
+
+    if (action === 'detail-rule') openRuleDetail(id);
+    if (action === 'edit-rule') openRuleForm(id);
+    if (action === 'del-rule'){
+      const r = weekRules.find(x => x.id === id);
+      if (!r) return;
+      askConfirm('删除周规则',
+        `确定要删除规则「${r.name}」吗？删除后对应馆藏地/区域将恢复使用基础开放时间。`,
+        () => {
+          weekRules = weekRules.filter(x => x.id !== id);
+          toast('删除成功');
+          renderWeekTable();
+        });
+    }
+  });
+
+  $('weekTbody').addEventListener('change', e => {
+    const el = e.target;
+    if (el.dataset.action === 'toggle-rule'){
+      const id = Number(el.dataset.id);
+      const r = weekRules.find(x => x.id === id);
+      if (!r) return;
+      r.status = el.checked ? 1 : 0;
+      toast(el.checked ? `「${r.name}」已启用` : `「${r.name}」已停用`);
+      renderWeekTable();
+    }
+  });
+
+  document.querySelectorAll('input[name="ruleScope"]').forEach(r => {
+    r.addEventListener('change', () => updateRuleScopeUI(false));
+  });
+
+  /* ----- 周编辑器：时段长度切换 ----- */
+  $('weekSlotDuration').addEventListener('change', () => {
+    if (weekEditorScope !== 'area') return;
+    const days = collectWeekEditorDays('area');
+    weekSlotDuration = Number($('weekSlotDuration').value);
+    renderWeekEditor(days, 'area');
+  });
+
+  $('btnCloseForm').addEventListener('click', closeRuleForm);
+  $('btnCancelForm').addEventListener('click', closeRuleForm);
+  $('btnSubmitForm').addEventListener('click', submitRuleForm);
+  $('formModal').addEventListener('click', e => {
+    if (e.target === $('formModal')) closeRuleForm();
+  });
+
+  /* ----- 特殊日期 ----- */
+  $('btnAddSpecial').addEventListener('click', () => openSpecialForm());
+  $('btnImportHoliday').addEventListener('click', () => {
+    askConfirm('导入法定节假日',
+      '将导入 2026 年国家法定节假日（元旦、春节、清明、劳动、端午、中秋、国庆）作为全馆闭馆日期，是否继续？',
+      () => {
+        const holidays = [
+          { start:'2026-01-01', end:'2026-01-01', remark:'元旦' },
+          { start:'2026-02-15', end:'2026-02-21', remark:'春节' },
+          { start:'2026-04-04', end:'2026-04-06', remark:'清明节' },
+          { start:'2026-05-01', end:'2026-05-05', remark:'劳动节' },
+          { start:'2026-06-19', end:'2026-06-21', remark:'端午节' },
+          { start:'2026-09-25', end:'2026-09-27', remark:'中秋节' },
+          { start:'2026-10-01', end:'2026-10-07', remark:'国庆节' }
+        ];
+        let added = 0;
+        holidays.forEach(h => {
+          const dup = specialDates.some(it =>
+            it.start === h.start && it.end === h.end && it.type === '闭馆'
+          );
+          if (dup) return;
+          specialDates.push({
+            id: nextSpId++,
+            start: h.start, end: h.end,
+            type:'闭馆', startTime:'', endTime:'', slots:[],
+            scope:'all', libraryIds:[], areaIds:[],
+            remark: h.remark + '法定假日闭馆', status:1
+          });
+          added++;
+        });
+        toast(`成功导入 ${added} 条节假日记录`);
+        initSpecialForm();
+        renderSpecialTable();
+      },
+      { confirmText:'确定导入', danger:false }
+    );
+  });
+
+  $('btnSearch').addEventListener('click', () => {
+    filters.year = $('fYear').value;
+    filters.type = $('fType').value;
+    filters.keyword = $('fKeyword').value.trim();
+    filters.status = $('fStatus').value;
+    spPage = 1;
+    renderSpecialTable();
+  });
+
+  $('btnReset').addEventListener('click', () => {
+    $('fYear').value = '';
+    $('fType').value = '';
+    $('fKeyword').value = '';
+    $('fStatus').value = '';
+    filters = { year:'', type:'', keyword:'', status:'' };
+    spPage = 1;
+    renderSpecialTable();
+  });
+
+  $('btnExport').addEventListener('click', exportSpecialCSV);
+
+  $('fKeyword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('btnSearch').click();
+  });
+
+  $('specialTbody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.tagName === 'INPUT') return;
+    const action = btn.dataset.action;
+    const id = Number(btn.dataset.id);
+
+    if (action === 'detail-sp') openSpecialDetail(id);
+    if (action === 'edit-sp') openSpecialForm(id);
+    if (action === 'del-sp'){
+      const it = specialDates.find(x => x.id === id);
+      if (!it) return;
+      const dateStr = it.start === it.end ? it.start : `${it.start} ~ ${it.end}`;
+      askConfirm('删除特殊日期',
+        `确定要删除「${dateStr} ${it.remark || ''}」吗？删除后不可恢复。`,
+        () => {
+          specialDates = specialDates.filter(x => x.id !== id);
+          toast('删除成功');
+          renderSpecialTable();
+        });
+    }
+  });
+
+  $('specialTbody').addEventListener('change', e => {
+    const el = e.target;
+    if (el.dataset.action === 'toggle-sp'){
+      const id = Number(el.dataset.id);
+      const it = specialDates.find(x => x.id === id);
+      if (!it) return;
+      it.status = el.checked ? 1 : 0;
+      toast(el.checked ? '已启用' : '已停用');
+      renderSpecialTable();
+    }
+  });
+
+  $('btnCloseSpecial').addEventListener('click', closeSpecialForm);
+  $('btnCancelSpecial').addEventListener('click', closeSpecialForm);
+  $('btnSubmitSpecial').addEventListener('click', submitSpecialForm);
+  $('specialModal').addEventListener('click', e => {
+    if (e.target === $('specialModal')) closeSpecialForm();
+  });
+
+  $('spType').addEventListener('change', updateSpecialTypeUI);
+  $('spScope').addEventListener('change', updateSpecialScopeUI);
+
+  /* ----- 特殊日期：时段长度切换 & 快捷操作 ----- */
+  $('spSlotDuration').addEventListener('change', () => {
+    const cur = getSpSlotPickerSelected();
+    spSlotDuration = Number($('spSlotDuration').value);
+    renderSpSlotPicker(cur);
+  });
+
+  document.querySelectorAll('[data-slot-quick]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.slotQuick;
+      const chips = document.querySelectorAll('#spSlotPicker .slot-chip');
+      chips.forEach(c => c.classList.toggle('checked', mode === 'all'));
+    });
+  });
+
+  /* ----- 详情弹窗 ----- */
+  $('btnCloseDetail').addEventListener('click', closeDetailModal);
+  $('btnCloseDetailFooter').addEventListener('click', closeDetailModal);
+  $('detailModal').addEventListener('click', e => {
+    if (e.target === $('detailModal')) closeDetailModal();
+  });
+
+  /* ----- 确认弹窗 ----- */
+  $('btnCloseConfirm').addEventListener('click', closeConfirm);
+  $('btnCancelConfirm').addEventListener('click', closeConfirm);
+  $('btnOkConfirm').addEventListener('click', () => {
+    const cb = confirmCallback;
+    closeConfirm();
+    if (cb) cb();
+  });
+  $('confirmModal').addEventListener('click', e => {
+    if (e.target === $('confirmModal')) closeConfirm();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('confirmModal').classList.contains('show')) closeConfirm();
+    else if ($('detailModal').classList.contains('show')) closeDetailModal();
+    else if ($('specialModal').classList.contains('show')) closeSpecialForm();
+    else if ($('formModal').classList.contains('show')) closeRuleForm();
+  });
+}
+
+/* ============ 初始化 ============ */
+function init(){
+  bindEvents();
+  initSpecialForm();
+  renderWeekTable();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+    [data-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      background-color: currentColor;
+    }
+  </style>
+</body>
+</html>

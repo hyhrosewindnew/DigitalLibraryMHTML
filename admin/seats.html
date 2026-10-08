@@ -1,0 +1,4038 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>座位管理 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+<style id="seat-example-styles">
+.seat-example {
+--primary: #1677ff; --primary-h: #4096ff; --primary-l: #e6f4ff;
+    --border: #e8eaed; --text: #1f2329; --text-2: #5f6672; --text-3: #8f96a3;
+    --bg: #f4f6f9; --danger: #f5222d; --success: #16a34a; --warning: #d97706; --radius: 8px;
+}
+.seat-example .card {
+background: #fff; border-radius: var(--radius); box-shadow: 0 1px 2px rgba(0,0,0,.04); overflow: hidden;
+}
+.seat-example .filter-bar {
+padding: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+}
+.seat-example .search-box {
+position: relative;
+}
+.seat-example .search-box .input {
+width: 210px; padding-left: 32px;
+}
+.seat-example .search-box svg {
+position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none;
+}
+.seat-example .input, .seat-example .select {
+font-family: inherit; font-size: 14px; color: var(--text); outline: none; transition: .2s;
+}
+.seat-example .input, .seat-example .select {
+height: 34px; padding: 0 12px; border: 1px solid #d9dde3; border-radius: 6px; background-color: #fff; width: 100%;
+}
+.seat-example .select {
+appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f96a3' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 28px; cursor: pointer;
+}
+.seat-example .filter-bar .select {
+width: 150px;
+}
+.seat-example .input:focus, .seat-example .select:focus {
+border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,.12);
+}
+.seat-example .select:disabled {
+background-color: #f7f8fa; color: var(--text-3); cursor: not-allowed;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cbd5e1' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+}
+.seat-example .input::placeholder {
+color: var(--text-3);
+}
+.seat-example .btn {
+height: 34px; padding: 0 16px; border-radius: 6px; border: 1px solid #d9dde3;
+    background: #fff; color: var(--text); cursor: pointer; font-size: 14px;
+    font-family: inherit; display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; white-space: nowrap; transition: .2s;
+}
+.seat-example .btn:hover {
+border-color: var(--primary); color: var(--primary);
+}
+.seat-example .btn-primary {
+background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.seat-example .btn-primary:hover {
+background: var(--primary-h); border-color: var(--primary-h); color: #fff;
+}
+.seat-example .list-header-bar {
+padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.seat-example .table-wrap {
+overflow-x: auto;
+}
+.seat-example table {
+width: 100%; border-collapse: collapse; min-width: 1240px;
+}
+.seat-example thead th {
+background: #fafbfc; color: var(--text-2); font-weight: 500; text-align: left;
+    padding: 12px 16px; font-size: 13px; white-space: nowrap; border-bottom: 1px solid var(--border);
+}
+.seat-example tbody td {
+padding: 12px 16px; border-bottom: 1px solid #f2f3f5; vertical-align: middle; color: var(--text);
+}
+.seat-example tbody tr:hover {
+background: #fafcff;
+}
+.seat-example tbody tr:last-child td {
+border-bottom: none;
+}
+.seat-example .actions {
+display: flex; gap: 2px; flex-wrap: wrap; align-items: center;
+}
+.seat-example .link-btn {
+background: none; border: none; color: var(--primary); cursor: pointer;
+    font-size: 13px; font-family: inherit; padding: 4px 8px; border-radius: 4px;
+    transition: .2s; white-space: nowrap;
+}
+.seat-example .link-btn:hover {
+background: var(--primary-l);
+}
+.seat-example .link-btn.danger {
+color: var(--danger);
+}
+.seat-example .link-btn.danger:hover {
+background: #fff1f0;
+}
+.seat-example .pos-empty {
+color: var(--text-3);
+}
+.seat-example .loc-tag {
+display: inline-block; padding: 4px 10px; background: #f5f7fa;
+    border-radius: 5px; font-size: 12.5px; color: var(--text);
+    line-height: 1.4; white-space: nowrap;
+}
+.seat-example .row-checkbox, .seat-example #selectAll {
+width: 15px; height: 15px; cursor: pointer; accent-color: var(--primary); vertical-align: middle;
+}
+.seat-example .switch {
+position: relative; display: inline-block; width: 38px; height: 20px; vertical-align: middle;
+}
+.seat-example .switch input {
+opacity: 0; width: 0; height: 0;
+}
+.seat-example .switch .slider {
+position: absolute; cursor: pointer; inset: 0; background: #cbd5e1; border-radius: 20px; transition: .2s;
+}
+.seat-example .switch .slider::before {
+content: ""; position: absolute; height: 16px; width: 16px; left: 2px; top: 2px;
+    background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.seat-example .switch input:checked + .slider {
+background: var(--success);
+}
+.seat-example .switch input:checked + .slider::before {
+transform: translateX(18px);
+}
+.seat-example .empty {
+padding: 64px 0; text-align: center; color: var(--text-3);
+}
+.seat-example .empty .icon {
+font-size: 42px; margin-bottom: 8px; line-height: 1;
+}
+.seat-example .pagination {
+display: flex; align-items: center; gap: 8px; padding: 14px 16px; flex-wrap: wrap;
+}
+.seat-example .pagination .info {
+color: var(--text-2); font-size: 13px; margin-right: auto;
+}
+.seat-example .pagination .select {
+width: 110px; height: 32px;
+}
+.seat-example .page-btn {
+min-width: 32px; height: 32px; padding: 0 8px; border: 1px solid #d9dde3;
+    background: #fff; border-radius: 6px; cursor: pointer; font-size: 13px;
+    font-family: inherit; color: var(--text); transition: .2s;
+}
+.seat-example .page-btn:hover:not(:disabled):not(.active) {
+border-color: var(--primary); color: var(--primary);
+}
+.seat-example .page-btn.active {
+background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.seat-example .page-btn:disabled {
+opacity: .45; cursor: not-allowed;
+}
+.seat-example .ellipsis {
+color: var(--text-3); padding: 0 2px;
+}
+.seat-example .modal-mask {
+position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    display: none; align-items: flex-start; justify-content: center;
+    z-index: 100; padding: 40px 16px; overflow-y: auto;
+}
+.seat-example .modal-mask.show {
+display: flex;
+}
+.seat-example .modal {
+background: #fff; border-radius: 10px; width: 100%; max-width: 560px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.16); animation: pop .18s ease; margin: auto 0;
+}
+@keyframes pop {
+from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: none; }
+}
+.seat-example .modal-header {
+padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+}
+.seat-example .modal-title {
+font-size: 16px; font-weight: 600;
+}
+.seat-example .modal-close {
+border: none; background: none; font-size: 22px; line-height: 1;
+    color: var(--text-3); cursor: pointer; padding: 2px 8px; border-radius: 4px; transition: .2s;
+}
+.seat-example .modal-close:hover {
+background: #f1f2f4; color: var(--text);
+}
+.seat-example .modal-body {
+padding: 20px;
+}
+.seat-example .modal-footer {
+padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px;
+}
+.seat-example .form-grid {
+display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+.seat-example .form-item {
+display: flex; flex-direction: column; gap: 6px;
+}
+.seat-example .form-item.full {
+grid-column: 1 / -1;
+}
+.seat-example .form-item label {
+font-size: 13px; color: var(--text-2);
+}
+.seat-example .form-item label .req {
+color: var(--danger); margin-left: 2px;
+}
+.seat-example .form-item label .opt {
+color: var(--text-3); margin-left: 4px; font-size: 12px;
+}
+.seat-example .form-item .input, .seat-example .form-item .select {
+height: 36px;
+}
+.seat-example .form-hint {
+font-size: 12px; color: var(--text-3); margin-top: 2px;
+}
+.seat-example .pos-block {
+background: #f5f7fa; border-radius: 6px; padding: 12px;
+}
+.seat-example .pos-block-title {
+font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+}
+.seat-example .pos-block-title .tip {
+font-weight: 400; color: var(--text-3); font-size: 11px;
+}
+.seat-example .pos-inputs {
+display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.seat-example .pos-inputs.three {
+grid-template-columns: 1fr 1fr 1fr;
+}
+.seat-example .pos-field {
+display: flex; align-items: center; gap: 8px;
+    background: #fff; border: 1px solid #d9dde3; border-radius: 6px;
+    padding: 0 12px; height: 36px; transition: .15s;
+}
+.seat-example .pos-field:focus-within {
+border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,.12);
+}
+.seat-example .pos-field .pos-label {
+color: var(--text-3); font-size: 12px; flex-shrink: 0;
+}
+.seat-example .pos-field .input {
+border: none; background: transparent; padding: 0; height: auto; flex: 1; min-width: 0;
+    font-size: 14px; text-align: center; font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 600;
+}
+.seat-example .pos-field .input:focus {
+box-shadow: none; border: none;
+}
+.seat-example .detail-row {
+display: flex; align-items: baseline; gap: 8px; font-size: 13px; padding: 6px 0;
+}
+.seat-example .detail-row .label {
+color: var(--text-3); flex-shrink: 0; min-width: 80px;
+}
+.seat-example .detail-row .value {
+color: var(--text); word-break: break-all;
+}
+.seat-example .detail-divider {
+border-top: 1px dashed var(--border); margin: 12px 0; padding-top: 12px;
+}
+.seat-example .detail-subtitle {
+font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 6px;
+}
+.seat-example .badge {
+display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; white-space: nowrap;
+}
+.seat-example .badge::before {
+content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+}
+.seat-example .badge-free {
+color: var(--success); background: #e8f8ee;
+}
+.seat-example .badge-occupied {
+color: var(--danger); background: #fff1f0;
+}
+.seat-example .badge-reserved {
+color: var(--warning); background: #fef4e6;
+}
+.seat-example .badge-disabled {
+color: var(--text-3); background: #f1f2f4;
+}
+.seat-example .toast-wrap {
+position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 999; display: flex; flex-direction: column; gap: 8px;
+    align-items: center; pointer-events: none;
+}
+.seat-example .toast {
+background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.12); border-radius: 8px;
+    padding: 10px 18px; font-size: 14px; border-left: 3px solid var(--success);
+    animation: slideDown .2s ease; white-space: nowrap;
+}
+.seat-example .toast.error {
+border-left-color: var(--danger);
+}
+.seat-example .toast.info {
+border-left-color: var(--primary);
+}
+.seat-example .toast.warning {
+border-left-color: var(--warning);
+}
+@keyframes slideDown {
+from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; }
+}
+.seat-example #layoutEditorModal {
+padding: 0; align-items: stretch;
+}
+.seat-example .le-wrap {
+width: 100%; height: 100%; background: #f0f2f5;
+    display: flex; flex-direction: column; overflow: hidden; font-size: 13px;
+    animation: pop .18s ease;
+}
+.seat-example .le-toolbar {
+background: #fff; border-bottom: 1px solid var(--border);
+    padding: 10px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04); z-index: 50; flex-shrink: 0;
+}
+.seat-example .le-title {
+font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+}
+.seat-example .le-title::before {
+content: ""; width: 3px; height: 16px; background: var(--primary); border-radius: 2px;
+}
+.seat-example .le-loc {
+display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.seat-example .le-loc .le-select {
+height: 30px; padding: 0 26px 0 10px; font-size: 12.5px;
+    border: 1px solid #d9d9d9; border-radius: 6px; background-color: #fff;
+    font-family: inherit; color: var(--text); cursor: pointer;
+    appearance: none; -webkit-appearance: none; width: auto;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f96a3' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 9px center;
+    outline: none; transition: .15s;
+}
+.seat-example .le-sep {
+width: 1px; height: 20px; background: var(--border); margin: 0 4px;
+}
+.seat-example .le-spacer {
+flex: 1;
+}
+.seat-example .le-btn {
+height: 30px; padding: 0 13px; border-radius: 6px; border: 1px solid #d9d9d9;
+    background: #fff; color: var(--text); cursor: pointer; font-size: 13px;
+    font-family: inherit; display: inline-flex; align-items: center; gap: 5px;
+    transition: .15s; white-space: nowrap;
+}
+.seat-example .le-btn:hover {
+border-color: var(--primary); color: var(--primary);
+}
+.seat-example .le-btn:disabled {
+opacity: .45; cursor: not-allowed;
+}
+.seat-example .le-btn.le-primary {
+background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.seat-example .le-btn.le-primary:hover {
+background: var(--primary-h); border-color: var(--primary-h); color: #fff;
+}
+.seat-example .le-btn.le-danger {
+color: var(--danger); border-color: #ffccc7;
+}
+.seat-example .le-btn.le-danger:hover {
+border-color: var(--danger); color: var(--danger); background: #fff1f0;
+}
+.seat-example .le-btn.le-on {
+background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.seat-example .le-btn.le-icon {
+width: 30px; padding: 0; justify-content: center;
+}
+.seat-example .le-cols {
+display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2);
+    background: #f5f7fa; padding: 4px 10px; border-radius: 6px;
+}
+.seat-example .le-cols input {
+width: 48px; height: 22px; border: 1px solid #d9d9d9; border-radius: 4px;
+    text-align: center; font-size: 12px; font-family: inherit; outline: none;
+}
+.seat-example .le-slots {
+background: #fff; border-bottom: 1px solid var(--border);
+    padding: 8px 20px; display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0; overflow-x: auto;
+}
+.seat-example .le-slots-label {
+font-size: 12px; color: var(--text-3); font-weight: 600;
+    flex-shrink: 0; display: flex; align-items: center; gap: 5px;
+    padding-right: 10px; border-right: 1px solid #eef0f3; height: 20px;
+}
+.seat-example .le-slots-label::before {
+content: "🕒"; font-size: 14px;
+}
+.seat-example .le-slot-chips {
+display: flex; gap: 8px; flex-wrap: nowrap;
+}
+.seat-example .le-slot-chip {
+display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
+    background: #f6f8fb; border: 1px solid #e6ecf3; border-radius: 999px;
+    font-size: 12px; color: var(--text-2); white-space: nowrap;
+}
+.seat-example .le-slot-chip .n {
+font-weight: 600; color: var(--text);
+}
+.seat-example .le-slot-chip .t {
+color: var(--text-3); font-family: ui-monospace, monospace; font-size: 11.5px;
+}
+.seat-example .le-body {
+flex: 1; display: flex; min-height: 0; overflow: hidden;
+}
+.seat-example .le-lib {
+width: 240px; flex-shrink: 0; background: #fff; border-right: 1px solid var(--border);
+    overflow-y: auto; display: flex; flex-direction: column;
+}
+.seat-example .le-lib-header {
+padding: 12px 16px 8px; font-size: 12px; color: var(--text-3); font-weight: 600;
+    letter-spacing: .3px; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.seat-example .le-lib-header span {
+font-weight: 400; margin-top: 2px; display: block; font-size: 11px;
+}
+.seat-example .le-cat {
+border-bottom: 1px solid #f5f5f5;
+}
+.seat-example .le-cat-head {
+padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none; font-weight: 600; font-size: 12.5px;
+    color: var(--text-2);
+}
+.seat-example .le-cat-head:hover {
+background: #fafcff;
+}
+.seat-example .le-cat-head .left {
+display: flex; align-items: center; gap: 6px;
+}
+.seat-example .le-cat-head .arrow {
+font-size: 9px; color: var(--text-3); transition: transform .2s;
+}
+.seat-example .le-cat.collapsed .arrow {
+transform: rotate(-90deg);
+}
+.seat-example .le-cat.collapsed .le-cat-body {
+display: none;
+}
+.seat-example .le-cat-head .count {
+font-size: 11px; color: var(--text-3); font-weight: 400;
+}
+.seat-example .le-cat-body {
+padding: 4px 8px 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+}
+.seat-example .le-lib-item {
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; padding: 8px 4px; background: #fafbfc; border: 1px solid #eef0f3;
+    border-radius: 6px; cursor: pointer; transition: .15s; font-family: inherit;
+    text-align: center; user-select: none; position: relative;
+}
+.seat-example .le-lib-item:hover {
+border-color: var(--primary); background: var(--primary-l); transform: translateY(-1px);
+}
+.seat-example .le-lib-item.active {
+border-color: var(--primary); background: var(--primary-l); box-shadow: 0 0 0 2px rgba(22,119,255,.15);
+}
+.seat-example .le-lib-item .ic {
+font-size: 18px; line-height: 1; height: 22px; display: flex; align-items: center; justify-content: center;
+}
+.seat-example .le-lib-item .ic .seat-svg {
+width: 20px; height: 20px;
+}
+.seat-example .le-lib-item .lb {
+font-size: 11px; color: var(--text); line-height: 1.2; word-break: break-all;
+}
+.seat-example .le-lib-item .sz {
+font-size: 9.5px; color: var(--text-3);
+}
+.seat-example .le-canvas-area {
+flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+.seat-example .le-placing {
+display: none; background: linear-gradient(90deg, #e6f4ff, #f0f9ff);
+    border-bottom: 1px solid #91caff; padding: 8px 20px; align-items: center;
+    gap: 10px; font-size: 12.5px; color: #0958d9; flex-shrink: 0;
+}
+.seat-example .le-placing.show {
+display: flex;
+}
+.seat-example .le-placing .cancel {
+margin-left: auto; background: rgba(9,88,217,.1); border: none; color: #0958d9;
+    padding: 3px 10px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px;
+}
+.seat-example .le-canvas-scroll {
+flex: 1; overflow: auto; padding: 20px; background: #f0f2f5;
+    background-image:
+      linear-gradient(45deg, #e8eaed 25%, transparent 25%),
+      linear-gradient(-45deg, #e8eaed 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e8eaed 75%),
+      linear-gradient(-45deg, transparent 75%, #e8eaed 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, 10px 0px;
+}
+.seat-example .le-canvas {
+display: grid; grid-template-columns: repeat(24, 48px);
+    grid-auto-rows: 48px; gap: 4px; width: max-content;
+    position: relative; margin: 0 auto;
+}
+.seat-example .le-cell {
+background: #fff; border-radius: 5px; border: 1px solid #f0f0f0; pointer-events: none;
+}
+.seat-example .le-item {
+border-radius: 5px; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 1px; cursor: pointer;
+    transition: box-shadow .12s, border-color .12s; position: relative; user-select: none;
+    padding: 2px 3px; text-align: center; border: 1.5px solid transparent;
+    font-size: 10.5px; line-height: 1.15; overflow: visible;
+}
+.seat-example .le-item:hover {
+z-index: 5;
+}
+.seat-example .le-item .it-icon {
+font-size: 16px; line-height: 1; flex-shrink: 0;
+}
+.seat-example .le-item .it-name {
+font-weight: 600; color: inherit; max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.seat-example .le-item .it-sub {
+font-size: 9.5px; opacity: .75; max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.seat-example .le-item.big .it-icon {
+font-size: 22px;
+}
+.seat-example .le-item.big {
+font-size: 11.5px;
+}
+.seat-example .le-item .seat-svg {
+display: block; flex-shrink: 0; width: 22px; height: 22px;
+}
+.seat-example .le-item.big .seat-svg {
+width: 30px; height: 30px;
+}
+.seat-example .le-item.selected {
+outline: 2px solid var(--primary); outline-offset: 1px; z-index: 6;
+    box-shadow: 0 4px 12px rgba(22,119,255,.3);
+}
+.seat-example .le-item.selected.no-resize {
+outline-style: dashed; outline-color: var(--text-3);
+}
+.seat-example .le-item.draggable {
+cursor: grab;
+}
+.seat-example .le-item.dragging {
+opacity: .35;
+}
+.seat-example .le-item .status-dot {
+position: absolute; top: 3px; right: 3px; width: 7px; height: 7px;
+    border-radius: 50%; box-shadow: 0 0 0 1.5px #fff; z-index: 2;
+}
+.seat-example .le-item.status-free .status-dot {
+background: #16a34a;
+}
+.seat-example .le-item.status-occupied .status-dot {
+background: #f5222d;
+}
+.seat-example .le-item.status-reserved .status-dot {
+background: #d97706;
+}
+.seat-example .le-item.status-disabled .status-dot {
+background: #bfbfbf;
+}
+.seat-example .le-resizer {
+position: absolute; width: 9px; height: 9px; background: #fff;
+    border: 1.5px solid var(--primary); border-radius: 50%; z-index: 20;
+    display: none; box-shadow: 0 1px 3px rgba(22,119,255,.4);
+}
+.seat-example .le-item.selected.resizable .le-resizer {
+display: block;
+}
+.seat-example .le-r-nw {
+top: -5px; left: -5px; cursor: nwse-resize;
+}
+.seat-example .le-r-n {
+top: -5px; left: calc(50% - 4.5px); cursor: ns-resize;
+}
+.seat-example .le-r-ne {
+top: -5px; right: -5px; cursor: nesw-resize;
+}
+.seat-example .le-r-e {
+top: calc(50% - 4.5px); right: -5px; cursor: ew-resize;
+}
+.seat-example .le-r-se {
+bottom: -5px; right: -5px; cursor: nwse-resize;
+}
+.seat-example .le-r-s {
+bottom: -5px; left: calc(50% - 4.5px); cursor: ns-resize;
+}
+.seat-example .le-r-sw {
+bottom: -5px; left: -5px; cursor: nesw-resize;
+}
+.seat-example .le-r-w {
+top: calc(50% - 4.5px); left: -5px; cursor: ew-resize;
+}
+.seat-example .le-bubble {
+position: fixed; background: #1f2329; color: #fff; padding: 4px 10px;
+    border-radius: 5px; font-size: 12px; font-family: ui-monospace, monospace;
+    pointer-events: none; z-index: 500; box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    display: none; white-space: nowrap;
+}
+.seat-example .le-bubble.show {
+display: block;
+}
+.seat-example .le-place-preview {
+position: absolute; border-radius: 5px; background: rgba(22,119,255,.15);
+    border: 2px solid var(--primary); pointer-events: none; z-index: 100;
+    display: none; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--primary); font-weight: 600;
+}
+.seat-example .le-place-preview.invalid {
+background: rgba(245,34,45,.15); border-color: var(--danger); color: var(--danger);
+}
+.seat-example .le-move-preview {
+position: absolute; border-radius: 5px; background: rgba(22,119,255,.18);
+    border: 2px dashed var(--primary); pointer-events: none; z-index: 99; display: none;
+}
+.seat-example .le-move-preview.invalid {
+background: rgba(245,34,45,.18); border-color: var(--danger);
+}
+.seat-example .le-stats {
+background: #fff; border-bottom: 1px solid var(--border);
+    padding: 7px 20px; display: flex; align-items: center; gap: 14px;
+    font-size: 12.5px; color: var(--text-2); flex-shrink: 0; flex-wrap: wrap;
+}
+.seat-example .le-stats .total {
+font-weight: 600;
+}
+.seat-example .le-stats .total b {
+color: var(--text); font-size: 15px; margin-left: 4px;
+}
+.seat-example .le-stats b {
+color: var(--primary); margin-left: 3px; font-size: 13px;
+}
+.seat-example .le-stats .hint {
+margin-left: auto; color: var(--text-3); font-size: 11.5px;
+}
+.seat-example .le-marquee {
+position: absolute; border: 1.5px dashed var(--primary);
+    background: rgba(22,119,255,.10); pointer-events: none; z-index: 150;
+    display: none; border-radius: 4px;
+}
+.seat-example .le-item.marquee-hit {
+outline: 2px solid var(--primary); outline-offset: 1px;
+}
+.seat-example .le-inspector {
+width: 300px; flex-shrink: 0; background: #fff; border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; overflow-y: auto;
+}
+.seat-example .le-ins-header {
+padding: 14px 16px; font-size: 13px; font-weight: 600;
+    border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+    position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.seat-example .le-ins-header::before {
+content: ""; width: 3px; height: 13px; background: var(--primary); border-radius: 2px;
+}
+.seat-example .le-ins-empty {
+flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 40px 24px; text-align: center;
+    color: var(--text-3); gap: 10px; font-size: 12px; line-height: 1.7;
+}
+.seat-example .le-ins-empty .big-icon {
+font-size: 40px; opacity: .35;
+}
+.seat-example .le-ins-body {
+padding: 16px; display: none; flex-direction: column; gap: 14px;
+}
+.seat-example .le-ins-body.show {
+display: flex;
+}
+.seat-example .le-ins-preview {
+padding: 14px; border-radius: 8px; display: flex; align-items: center;
+    gap: 12px; border: 1px solid;
+}
+.seat-example .le-ins-preview .pv-icon {
+font-size: 28px; line-height: 1; display: flex; align-items: center;
+    justify-content: center; width: 32px; height: 32px;
+}
+.seat-example .le-ins-preview .pv-icon .seat-svg {
+width: 30px; height: 30px;
+}
+.seat-example .le-ins-preview .pv-info {
+flex: 1; min-width: 0;
+}
+.seat-example .le-ins-preview .pv-name {
+font-size: 14px; font-weight: 600; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+}
+.seat-example .le-ins-preview .pv-type {
+font-size: 11.5px; opacity: .75; margin-top: 2px;
+}
+.seat-example .le-form-row {
+display: flex; flex-direction: column; gap: 5px;
+}
+.seat-example .le-form-row > label {
+font-size: 12px; color: var(--text-2); font-weight: 500;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.seat-example .le-form-row > label .lock {
+font-size: 11px; color: var(--warning); font-weight: 400;
+}
+.seat-example .le-form-row input[type="text"], .seat-example .le-form-row input[type="number"], .seat-example .le-form-row select, .seat-example .le-form-row textarea {
+width: 100%; padding: 7px 10px; border: 1px solid #d9d9d9;
+    border-radius: 5px; font-size: 12.5px; font-family: inherit;
+    outline: none; transition: .15s; background: #fff; color: var(--text);
+}
+.seat-example .le-form-row input:focus, .seat-example .le-form-row select:focus, .seat-example .le-form-row textarea:focus {
+border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,.12);
+}
+.seat-example .le-form-row input:disabled, .seat-example .le-form-row select:disabled, .seat-example .le-form-row textarea:disabled {
+background: #f5f5f5; color: var(--text-3); cursor: not-allowed;
+}
+.seat-example .le-form-row textarea {
+resize: vertical; min-height: 56px;
+}
+.seat-example .le-size-inputs {
+display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;
+}
+.seat-example .le-size-inputs .sep {
+color: var(--text-3); font-size: 12px;
+}
+.seat-example .le-size-wrap {
+display: flex; align-items: center; gap: 4px; background: #fafbfc;
+    border: 1px solid #d9d9d9; border-radius: 5px; padding: 0 8px;
+}
+.seat-example .le-size-wrap.locked {
+background: #f5f5f5; border-color: #e0e0e0;
+}
+.seat-example .le-size-wrap input {
+border: none; background: transparent; padding: 7px 0; width: 100%;
+    text-align: center; font-family: ui-monospace, monospace;
+    font-size: 13px; outline: none; color: var(--text);
+}
+.seat-example .le-size-wrap input:disabled {
+color: var(--text-3); cursor: not-allowed;
+}
+.seat-example .le-size-wrap .unit {
+font-size: 11px; color: var(--text-3);
+}
+.seat-example .le-pos {
+display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;
+}
+.seat-example .le-pos .p {
+background: #f5f7fa; padding: 8px 10px; border-radius: 5px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.seat-example .le-pos .p .k {
+color: var(--text-3);
+}
+.seat-example .le-pos .p .v {
+font-weight: 600; font-family: ui-monospace, monospace;
+    border: 1px solid #d9d9d9; border-radius: 4px;
+    padding: 2px 4px; width: 52px; text-align: center;
+    background: #fff; color: var(--text); outline: none; transition: .15s;
+}
+.seat-example .le-pos .p .v:focus {
+border-color: var(--primary);
+}
+.seat-example .le-pos .p .v:disabled {
+background: #f0f0f0; color: var(--text-3); cursor: not-allowed;
+}
+.seat-example .le-shortcut {
+font-size: 11px; color: var(--text-3); background: #fafbfc; border-radius: 5px; padding: 8px 10px; line-height: 1.9;
+}
+.seat-example .le-shortcut kbd {
+display: inline-block; background: #fff; border: 1px solid #d9d9d9;
+    border-radius: 3px; padding: 0 5px; font-family: ui-monospace, monospace;
+    font-size: 10.5px; color: var(--text);
+}
+.seat-example .le-ins-actions {
+display: flex; gap: 8px; padding-top: 12px; border-top: 1px dashed var(--border); flex-wrap: wrap;
+}
+.seat-example .le-ins-actions .le-btn {
+flex: 1 1 60px; justify-content: center;
+}
+.seat-example .le-lib::-webkit-scrollbar, .seat-example .le-canvas-scroll::-webkit-scrollbar, .seat-example .le-inspector::-webkit-scrollbar {
+width: 8px; height: 8px;
+}
+.seat-example .le-lib::-webkit-scrollbar-thumb, .seat-example .le-canvas-scroll::-webkit-scrollbar-thumb, .seat-example .le-inspector::-webkit-scrollbar-thumb {
+background: #d9d9d9; border-radius: 8px;
+}
+@media (max-width: 900px) {
+.seat-example .form-grid {
+grid-template-columns: 1fr;
+}
+.seat-example .search-box .input {
+width: 100%;
+}
+.seat-example .filter-bar > * {
+flex: 1 1 140px;
+}
+.seat-example .filter-bar .select {
+width: 100%;
+}
+.seat-example .le-lib {
+display: none;
+}
+.seat-example .le-inspector {
+width: 260px;
+}
+}
+</style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="seat-example p-6 flex flex-col gap-4" id="main-content" style="background-color: var(--lib-bg);">
+<nav class="text-caption mb-4" style="color: var(--lib-ink-3);">
+<span style="color: var(--lib-ink-2);">空间管理</span><span class="mx-2">/</span><span style="color: var(--lib-ink);">座位管理</span>
+</nav>
+<div class="card">
+        <div class="filter-bar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.5-3.5"></path>
+            </svg>
+            <input id="keyword" class="input" type="text" placeholder="搜索座位号 / 座位类型">
+          </div>
+          <select id="filterVenue" class="select"><option value="">全部馆藏地</option></select>
+          <select id="filterFloor" class="select" disabled><option value="">请先选择馆藏地</option></select>
+          <select id="filterArea" class="select" disabled><option value="">请先选择楼层</option></select>
+          <select id="filterEnabled" class="select">
+            <option value="">全部状态</option>
+            <option value="on">启用</option>
+            <option value="off">停用</option>
+          </select>
+          <select id="filterUsage" class="select">
+            <option value="">全部使用状态</option>
+            <option value="free">空闲</option>
+            <option value="occupied">使用中</option>
+            <option value="reserved">已预约</option>
+          </select>
+          <button class="btn btn-primary" id="btnSearch">搜索</button>
+          <button class="btn" id="btnReset">重置</button>
+          <button class="btn" id="btnExport">导出</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="list-header-bar">
+          <button class="btn btn-primary" id="btnAddSeat">＋ 新增座位</button>
+          <button class="btn" id="btnBatchAddSeat">⊕ 批量新增</button>
+          <button class="btn" id="btnBatchDisable">⛔ 批量停用</button>
+          <button class="btn" id="btnBatchDelete" style="color:var(--danger);border-color:#ffccc7;">🗑️ 批量删除</button>
+          <button class="btn" id="btnShowSeatMap">🗺️ 座位排布</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px"><input type="checkbox" id="selectAll" title="全选本页"></th>
+                <th style="width:56px">序号</th>
+                <th style="width:110px">座位号</th>
+                <th style="width:240px">位置</th>
+                <th style="width:120px">座位类型</th>
+                <th style="width:140px">排 / 列</th>
+                <th style="width:100px">使用状态</th>
+                <th>备注</th>
+                <th style="width:80px">启用</th>
+                <th style="width:190px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+</main>
+<div class="seat-example">
+<!-- ============ 座位排布编辑器（纯可视化） ============ -->
+<div class="modal-mask" id="layoutEditorModal">
+  <div class="le-wrap">
+    <header class="le-toolbar">
+      <div class="le-title">座位排布编辑器</div>
+      <div class="le-loc">
+        <select class="le-select" id="edVenue"></select>
+        <select class="le-select" id="edFloor"></select>
+        <select class="le-select" id="edArea"></select>
+      </div>
+      <div class="le-sep"></div>
+      <div class="le-cols">
+        <span>列数</span>
+        <input type="number" id="edColsInput" value="24" min="8" max="48">
+      </div>
+      <div class="le-sep"></div>
+      <button class="le-btn le-icon" id="edUndo" title="撤销 (Ctrl+Z)">↩️</button>
+      <button class="le-btn le-icon" id="edRedo" title="重做 (Ctrl+Y)">↪️</button>
+      <div class="le-sep"></div>
+      <button class="le-btn" id="edToggleMode">👁️ 预览模式</button>
+      <button class="le-btn le-danger" id="edClear">🗑️ 清空画布</button>
+      <div class="le-spacer"></div>
+      <button class="le-btn" id="edLoadDemo">📥 加载示例</button>
+      <button class="le-btn" id="edClose">✕ 关闭</button>
+      <button class="le-btn le-primary" id="edSave">💾 保存布局</button>
+    </header>
+    <div class="le-slots">
+      <div class="le-slots-label">可预约时段</div>
+      <div class="le-slot-chips" id="edSlots"></div>
+    </div>
+    <div class="le-stats" id="edStats">
+      <span class="total">总座位 <b id="edStatTotal">0</b></span>
+      <span class="le-sep"></span>
+      <span>普通 <b id="edStatNormal">0</b></span>
+      <span>靠窗 <b id="edStatWindow">0</b></span>
+      <span>电源 <b id="edStatPower">0</b></span>
+      <span>独立隔间 <b id="edStatSingle">0</b></span>
+      <span>研讨座位 <b id="edStatRound">0</b></span>
+      <span class="le-sep"></span>
+      <span>设施 <b id="edStatFacility">0</b></span>
+      <span class="hint">拖拽空白处圈选 · Ctrl+点击加选/减选 · 选中后可整组拖动</span>
+    </div>
+    <div class="le-body">
+      <aside class="le-lib">
+        <div class="le-lib-header">
+          物品库
+          <span>点击物品 → 在画布中点击放置</span>
+        </div>
+        <div id="edLibBody"></div>
+      </aside>
+      <section class="le-canvas-area">
+        <div class="le-placing" id="edPlacingBar">
+          <span>👆 正在放置 <b id="edPlacingLabel">--</b>（点击画布放置，按 ESC 取消）</span>
+          <button class="cancel" id="edCancelPlacing">取消放置</button>
+        </div>
+        <div class="le-canvas-scroll" id="edCanvasScroll">
+          <div class="le-canvas" id="edCanvas"></div>
+        </div>
+      </section>
+      <aside class="le-inspector">
+        <div class="le-ins-header">属性面板</div>
+        <div class="le-ins-empty" id="edInsEmpty">
+          <div class="big-icon">🖱️</div>
+          <div>点击画布中的物品<br>查看并编辑其属性</div>
+        </div>
+        <div class="le-ins-body" id="edInsBody">
+          <div class="le-ins-preview" id="edInsPreview">
+            <span class="pv-icon" id="edInsIcon">--</span>
+            <div class="pv-info">
+              <div class="pv-name" id="edInsTypeName">--</div>
+              <div class="pv-type" id="edInsCategory">--</div>
+            </div>
+          </div>
+          <div class="le-form-row">
+            <label>名称</label>
+            <input type="text" id="edInsName" placeholder="输入名称">
+          </div>
+          <div class="le-form-row">
+            <label>尺寸 <span class="lock" id="edInsSizeHint"></span></label>
+            <div class="le-size-inputs">
+              <div class="le-size-wrap" id="edInsWWrap">
+                <input type="number" id="edInsW" min="1" max="48">
+                <span class="unit">宽</span>
+              </div>
+              <span class="sep">×</span>
+              <div class="le-size-wrap" id="edInsHWrap">
+                <input type="number" id="edInsH" min="1" max="99">
+                <span class="unit">高</span>
+              </div>
+            </div>
+          </div>
+          <div class="le-form-row">
+            <label>画布位置 <span class="lock" style="color:var(--text-3)">仅影响排布显示</span></label>
+            <div class="le-pos">
+              <div class="p">
+                <span class="k">列</span>
+                <input type="number" class="v" id="edInsX" min="1" max="48">
+              </div>
+              <div class="p">
+                <span class="k">行</span>
+                <input type="number" class="v" id="edInsY" min="1" max="99">
+              </div>
+            </div>
+          </div>
+          <div class="le-form-row" id="edSeatStatusRow">
+            <label>使用状态</label>
+            <select id="edInsStatus">
+              <option value="free">空闲</option>
+              <option value="occupied">使用中</option>
+              <option value="reserved">已预约</option>
+              <option value="disabled">停用</option>
+            </select>
+          </div>
+          <div class="le-form-row" id="edSeatTypeRow">
+            <label>座位类型</label>
+            <select id="edInsSeatType">
+              <option value="seat_normal">普通座位</option>
+              <option value="seat_window">靠窗座位</option>
+              <option value="seat_power">电源座位</option>
+              <option value="seat_single">独立隔间</option>
+              <option value="seat_round">研讨座位</option>
+              <option value="seat_sofa">沙发座位</option>
+            </select>
+          </div>
+          <div class="le-form-row">
+            <label>备注</label>
+            <textarea id="edInsRemark" placeholder="添加备注信息（选填）"></textarea>
+          </div>
+          <div class="le-shortcut">
+            <div><kbd>方向键</kbd> 移动选中物品</div>
+            <div id="edShortcutResize"><kbd>Shift</kbd> + <kbd>方向键</kbd> 调整大小</div>
+            <div><kbd>R</kbd> 旋转 90°</div>
+            <div><kbd>Delete</kbd> 删除选中物品</div>
+          </div>
+          <div class="le-ins-actions">
+            <button class="le-btn" id="edRotate" title="旋转 90° (R)">🔄 旋转</button>
+            <button class="le-btn le-danger" id="edDelete">🗑️ 删除</button>
+            <button class="le-btn" id="edDeselect">取消选择</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 座位详情 ============ -->
+<div class="modal-mask" id="detailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="detailTitle">座位详情</div>
+      <button class="modal-close" type="button" id="btnCloseDetail">×</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn" type="button" id="btnCloseDetail2">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 新增/编辑座位 ============ -->
+<div class="modal-mask" id="seatModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="seatModalTitle">新增座位</div>
+      <button class="modal-close" type="button" id="btnCloseSeat">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-item">
+          <label>馆藏地 <span class="req">*</span></label>
+          <select class="select" id="seatVenue"></select>
+        </div>
+        <div class="form-item">
+          <label>楼层 <span class="req">*</span></label>
+          <select class="select" id="seatFloor"></select>
+        </div>
+        <div class="form-item">
+          <label>区域 <span class="req">*</span></label>
+          <select class="select" id="seatArea"></select>
+        </div>
+        <div class="form-item">
+          <label>座位号 <span class="req">*</span></label>
+          <input class="input" id="seatNo" placeholder="如 A019">
+        </div>
+        <div class="form-item">
+          <label>座位类型 <span class="req">*</span></label>
+          <select class="select" id="seatType"></select>
+        </div>
+        <div class="form-item">
+          <label>初始状态</label>
+          <select class="select" id="seatStatus">
+            <option value="free">启用</option>
+            <option value="disabled">停用</option>
+          </select>
+        </div>
+
+        <div class="form-item full">
+          <div class="pos-block">
+            <div class="pos-block-title">
+              <span>📍 座位位置 <span style="color:var(--text-3);font-weight:400;font-size:11px;">（可选）</span></span>
+              <span class="tip">留空表示暂不设置位置</span>
+            </div>
+            <div class="pos-inputs">
+              <div class="pos-field">
+                <span class="pos-label">第</span>
+                <input class="input" id="seatRow" type="number" min="1" max="999">
+                <span class="pos-label">排</span>
+              </div>
+              <div class="pos-field">
+                <span class="pos-label">第</span>
+                <input class="input" id="seatCol" type="number" min="1" max="999">
+                <span class="pos-label">列</span>
+              </div>
+            </div>
+            <div class="form-hint" style="margin-top:8px;">
+              💡 位置完全由您手动输入决定。如果留空，则位置显示为空，不会自动分配。
+            </div>
+          </div>
+        </div>
+
+        <div class="form-item full">
+          <label>备注 <span class="opt">选填</span></label>
+          <input class="input" id="seatRemark" placeholder="如：靠窗、有电源等">
+        </div>
+      </div>
+      <div class="form-hint" id="seatNoHint" style="margin-top:10px;">座位号在馆藏地内全局唯一，建议自动生成</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" type="button" id="btnCancelSeat">取消</button>
+      <button class="btn btn-primary" type="button" id="btnSaveSeat">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 批量新增 ============ -->
+<div class="modal-mask" id="batchModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <div class="modal-title">批量新增座位</div>
+      <button class="modal-close" type="button" id="btnCloseBatch">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-item">
+          <label>馆藏地 <span class="req">*</span></label>
+          <select class="select" id="batchVenue"></select>
+        </div>
+        <div class="form-item">
+          <label>楼层 <span class="req">*</span></label>
+          <select class="select" id="batchFloor"></select>
+        </div>
+        <div class="form-item">
+          <label>区域 <span class="req">*</span></label>
+          <select class="select" id="batchArea"></select>
+        </div>
+        <div class="form-item">
+          <label>座位类型 <span class="req">*</span></label>
+          <select class="select" id="batchType"></select>
+        </div>
+        <div class="form-item">
+          <label>座位号前缀 <span class="req">*</span></label>
+          <input class="input" id="batchPrefix" placeholder="如 A" maxlength="3">
+        </div>
+        <div class="form-item">
+          <label>起始编号 <span class="req">*</span></label>
+          <input class="input" id="batchStart" type="number" min="1" value="1">
+        </div>
+        <div class="form-item">
+          <label>新增数量 <span class="req">*</span></label>
+          <input class="input" id="batchCount" type="number" min="1" max="200" value="10">
+        </div>
+        <div class="form-item">
+          <label>编号位数</label>
+          <select class="select" id="batchPad">
+            <option value="2">2 位（如 A01）</option>
+            <option value="3" selected>3 位（如 A001）</option>
+            <option value="4">4 位（如 A0001）</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <label>初始状态</label>
+          <select class="select" id="batchStatus">
+            <option value="free">启用</option>
+            <option value="disabled">停用</option>
+          </select>
+        </div>
+
+        <div class="form-item full">
+          <div class="pos-block">
+            <div class="pos-block-title">
+              <span>📍 批量设置位置 <span style="color:var(--text-3);font-weight:400;font-size:11px;">（可选）</span></span>
+              <span class="tip">全部留空则不设置位置</span>
+            </div>
+            <div class="pos-inputs three">
+              <div class="pos-field">
+                <span class="pos-label">起始第</span>
+                <input class="input" id="batchStartRow" type="number" min="1">
+                <span class="pos-label">排</span>
+              </div>
+              <div class="pos-field">
+                <span class="pos-label">起始第</span>
+                <input class="input" id="batchStartCol" type="number" min="1">
+                <span class="pos-label">列</span>
+              </div>
+              <div class="pos-field">
+                <span class="pos-label">每行</span>
+                <input class="input" id="batchPerRow" type="number" min="1" max="48">
+                <span class="pos-label">个</span>
+              </div>
+            </div>
+            <div class="form-hint" style="margin-top:8px;">
+              💡 三项都填写才会按位置排布；任意一项留空则所有新座位的"位置"字段为空。
+            </div>
+          </div>
+        </div>
+
+        <div class="form-item full">
+          <label>备注 <span class="opt">选填</span></label>
+          <input class="input" id="batchRemark" placeholder="如：2024年新增区域">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" type="button" id="btnCancelBatch">取消</button>
+      <button class="btn btn-primary" type="button" id="btnSaveBatch">批量新增</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 通用确认 ============ -->
+<div class="modal-mask" id="confirmModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <div class="modal-title" id="confirmTitle">操作确认</div>
+      <button class="modal-close" type="button" data-close>×</button>
+    </div>
+    <div class="modal-body" id="confirmText">确定要执行此操作吗？</div>
+    <div class="modal-footer">
+      <button class="btn" type="button" data-close>取消</button>
+      <button class="btn btn-primary" type="button" id="btnConfirmOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+</div>
+</div>
+<script>lucide.createIcons();</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+/* ============================================================
+ *  数据定义
+ * ============================================================ */
+const VENUES = [
+  { id: 'v-main',   name: '总馆' },
+  { id: 'v-branch', name: '南区分馆' }
+];
+const FLOORS = [
+  { id: 'f-main-2',   venueId: 'v-main',   name: '2F' },
+  { id: 'f-main-3',   venueId: 'v-main',   name: '3F' },
+  { id: 'f-main-4',   venueId: 'v-main',   name: '4F' },
+  { id: 'f-branch-1', venueId: 'v-branch', name: '1F' },
+  { id: 'f-branch-2', venueId: 'v-branch', name: '2F' }
+];
+const AREAS = [
+  { id: 'a1', floorId: 'f-main-2',   name: '自习区A',    cols: 24, prefix: 'A' },
+  { id: 'a2', floorId: 'f-main-2',   name: '自习区B',    cols: 24, prefix: 'B' },
+  { id: 'a3', floorId: 'f-main-3',   name: '电子阅览区', cols: 24, prefix: 'C' },
+  { id: 'a4', floorId: 'f-main-4',   name: '研讨区',     cols: 24, prefix: 'D' },
+  { id: 'a5', floorId: 'f-branch-1', name: '综合阅览区', cols: 24, prefix: 'E' },
+  { id: 'a6', floorId: 'f-branch-2', name: '少儿阅读区', cols: 24, prefix: 'F' }
+];
+const SEAT_TYPES = ['普通座位', '靠窗座位', '电源座位', '独立隔间', '研讨座位'];
+
+const SEAT_TYPE_TO_KEY = {
+  '普通座位': 'seat_normal', '靠窗座位': 'seat_window',
+  '电源座位': 'seat_power', '独立隔间': 'seat_single', '研讨座位': 'seat_round'
+};
+const KEY_TO_SEAT_TYPE = {
+  seat_normal: '普通座位', seat_window: '靠窗座位',
+  seat_power: '电源座位', seat_single: '独立隔间',
+  seat_round: '研讨座位', seat_sofa: '普通座位'
+};
+
+/* ============================================================
+ *  座位数据（gx = 列，gy = 排）
+ * ============================================================ */
+let seats = [];
+let seatIdSeq = 1;
+
+(function generateSeats() {
+  const configs = [
+    { areaId: 'a1', prefix: 'A', count: 24 },
+    { areaId: 'a2', prefix: 'B', count: 18 },
+    { areaId: 'a3', prefix: 'C', count: 24 },
+    { areaId: 'a4', prefix: 'D', count: 12 },
+    { areaId: 'a5', prefix: 'E', count: 18 },
+    { areaId: 'a6', prefix: 'F', count: 12 }
+  ];
+  const statuses = ['free','free','free','occupied','occupied','reserved','free','free','occupied','free','free','reserved','free','free','free','occupied'];
+  const names = ['张伟','李娜','王芳','刘洋','陈静','杨磊','赵敏','黄强','周涛','吴丽','徐鹏','孙悦','马超','朱婷','胡军','郭华','林峰','何静','高翔','罗敏'];
+  const cards = ['2024001','2024002','2024003','2024004','2024005','2024006','2024007','2024008','2024009','2024010','2024011','2024012','2024013','2024014','2024015','2024016','2024017','2024018','2024019','2024020'];
+
+  configs.forEach(cfg => {
+    for (let i = 0; i < cfg.count; i++) {
+      const status = statuses[(i + cfg.prefix.charCodeAt(0)) % statuses.length];
+      const seatNo = cfg.prefix + String(i + 1).padStart(3, '0');
+      const type = SEAT_TYPES[(i + cfg.prefix.charCodeAt(0)) % SEAT_TYPES.length];
+      const order = i + 1;
+      let reader = null, startTime = null;
+      if (status === 'occupied' || status === 'reserved') {
+        const nameIdx = (i * 3 + cfg.prefix.charCodeAt(0)) % names.length;
+        reader = { name: names[nameIdx], cardNo: cards[nameIdx] };
+        if (status === 'occupied') {
+          const h = 8 + (i % 10);
+          const m = (i * 7) % 60;
+          startTime = `2024-06-15 ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+      }
+      const defaultRow = Math.floor(i / 6) + 1;
+      const defaultCol = (i % 6) + 1;
+
+      seats.push({
+        id: seatIdSeq++, seatNo, areaId: cfg.areaId, order,
+        gx: defaultCol, gy: defaultRow,
+        type, status, reader, startTime, remark: ''
+      });
+    }
+  });
+})();
+
+/* ============================================================
+ *  状态
+ * ============================================================ */
+const state = {
+  page: 1, pageSize: 20, keyword: '',
+  filterVenueId: '', filterFloorId: '', filterAreaId: '',
+  filterEnabled: '', filterUsage: '',
+  editingSeatId: null, confirmHandler: null
+};
+
+/* ============================================================
+ *  工具
+ * ============================================================ */
+function esc(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function toast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'error' ? ' error' : type === 'info' ? ' info' : type === 'warning' ? ' warning' : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = '.25s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-8px)';
+    setTimeout(() => el.remove(), 250);
+  }, 2200);
+}
+
+const STATUS_MAP = {
+  free:     { label: '空闲',   cls: 'badge-free',     seatCls: 'free' },
+  occupied: { label: '使用中', cls: 'badge-occupied', seatCls: 'occupied' },
+  reserved: { label: '已预约', cls: 'badge-reserved', seatCls: 'reserved' },
+  disabled: { label: '停用',   cls: 'badge-disabled', seatCls: 'disabled' }
+};
+
+function getVenue(id) { return VENUES.find(v => v.id === id) || null; }
+function getFloor(id) { return FLOORS.find(f => f.id === id) || null; }
+function getArea(id) { return AREAS.find(a => a.id === id) || null; }
+function getFloorsByVenue(venueId) { return FLOORS.filter(f => f.venueId === venueId); }
+function getAreasByFloor(floorId) { return AREAS.filter(a => a.floorId === floorId); }
+
+function getSeatPath(seat) {
+  const area = getArea(seat.areaId);
+  const floor = area ? getFloor(area.floorId) : null;
+  const venue = floor ? getVenue(floor.venueId) : null;
+  return {
+    venueName: venue ? venue.name : '—', venueId: venue ? venue.id : '',
+    floorName: floor ? floor.name : '—', floorId: floor ? floor.id : '',
+    areaName: area ? area.name : '—', areaId: area ? area.id : ''
+  };
+}
+
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function getSeatPosition(seat) {
+  if (seat.gx && seat.gy) return { row: seat.gy, col: seat.gx };
+  return null;
+}
+
+function isPositionOccupied(areaId, row, col, excludeSeatId) {
+  return seats.some(s =>
+    s.areaId === areaId &&
+    s.id !== excludeSeatId &&
+    s.gx === col && s.gy === row
+  );
+}
+
+function suggestSeatNo(areaId) {
+  const area = getArea(areaId);
+  if (!area) return '';
+  const prefix = area.prefix;
+  const nums = seats.filter(s => s.areaId === areaId).map(s => {
+    const m = String(s.seatNo).match(new RegExp('^' + prefix + '(\\d+)$'));
+    return m ? parseInt(m[1], 10) : 0;
+  }).filter(n => n > 0);
+  const next = nums.length ? Math.max(...nums) + 1 : 1;
+  return prefix + String(next).padStart(3, '0');
+}
+
+/* ============================================================
+ *  筛选
+ * ============================================================ */
+function getFiltered() {
+  const kw = state.keyword.trim().toLowerCase();
+  return seats.filter(s => {
+    const path = getSeatPath(s);
+    if (state.filterVenueId && path.venueId !== state.filterVenueId) return false;
+    if (state.filterFloorId && path.floorId !== state.filterFloorId) return false;
+    if (state.filterAreaId && s.areaId !== state.filterAreaId) return false;
+    if (state.filterEnabled) {
+      const isOn = s.status !== 'disabled';
+      if (state.filterEnabled === 'on' && !isOn) return false;
+      if (state.filterEnabled === 'off' && isOn) return false;
+    }
+    if (state.filterUsage && s.status !== state.filterUsage) return false;
+    if (kw) {
+      const hay = [s.seatNo, path.venueName, path.floorName, path.areaName, s.type, s.remark || ''].join(' ').toLowerCase();
+      if (!hay.includes(kw)) return false;
+    }
+    return true;
+  });
+}
+
+function fillFilterVenueSelect() {
+  const sel = document.getElementById('filterVenue');
+  sel.innerHTML = '<option value="">全部馆藏地</option>' + VENUES.map(v =>
+    `<option value="${v.id}" ${v.id === state.filterVenueId ? 'selected' : ''}>${esc(v.name)}</option>`
+  ).join('');
+}
+
+function fillFilterFloorSelect() {
+  const sel = document.getElementById('filterFloor');
+  if (!state.filterVenueId) {
+    sel.innerHTML = '<option value="">请先选择馆藏地</option>';
+    sel.disabled = true; sel.value = ''; return;
+  }
+  sel.disabled = false;
+  const floors = getFloorsByVenue(state.filterVenueId);
+  const cur = state.filterFloorId;
+  sel.innerHTML = '<option value="">请选择楼层</option>' + floors.map(f =>
+    `<option value="${f.id}" ${f.id === cur ? 'selected' : ''}>${esc(f.name)}</option>`
+  ).join('');
+  if (!floors.some(f => f.id === cur)) { state.filterFloorId = ''; sel.value = ''; }
+}
+
+function fillFilterAreaSelect() {
+  const sel = document.getElementById('filterArea');
+  if (!state.filterVenueId) {
+    sel.innerHTML = '<option value="">请先选择馆藏地</option>';
+    sel.disabled = true; sel.value = ''; return;
+  }
+  if (!state.filterFloorId) {
+    sel.innerHTML = '<option value="">请先选择楼层</option>';
+    sel.disabled = true; sel.value = ''; return;
+  }
+  sel.disabled = false;
+  const areas = getAreasByFloor(state.filterFloorId);
+  const cur = state.filterAreaId;
+  sel.innerHTML = '<option value="">请选择区域</option>' + areas.map(a =>
+    `<option value="${a.id}" ${a.id === cur ? 'selected' : ''}>${esc(a.name)}</option>`
+  ).join('');
+  if (!areas.some(a => a.id === cur)) { state.filterAreaId = ''; sel.value = ''; }
+}
+
+/* ============================================================
+ *  表格渲染
+ * ============================================================ */
+function renderTable() {
+  const data = getFiltered();
+  const totalPages = Math.max(1, Math.ceil(data.length / state.pageSize));
+  if (state.page > totalPages) state.page = totalPages;
+  const start = (state.page - 1) * state.pageSize;
+  const rows = data.slice(start, start + state.pageSize);
+  const tbody = document.getElementById('tbody');
+
+  if (!rows.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="10">
+        <div class="empty">
+          <div class="icon">🪑</div>
+          <div>暂无符合条件的座位数据</div>
+        </div>
+      </td></tr>`;
+    const selAll = document.getElementById('selectAll');
+    if (selAll) selAll.checked = false;
+    renderPagination(data.length);
+    return;
+  }
+
+  tbody.innerHTML = rows.map((s, i) => {
+    const seq = start + i + 1;
+    const path = getSeatPath(s);
+    const pos = getSeatPosition(s);
+    const enabled = s.status !== 'disabled';
+    const st = STATUS_MAP[s.status] || STATUS_MAP.free;
+    // 馆藏地 / 楼层 / 区域 合并为位置标签
+    const locHtml = `<span class="loc-tag">${esc(path.venueName)} / ${esc(path.floorName)} / ${esc(path.areaName)}</span>`;
+    const posHtml = pos
+      ? `第 ${pos.row} 排 · 第 ${pos.col} 列`
+      : `<span class="pos-empty">—</span>`;
+    return `
+      <tr data-id="${s.id}">
+        <td><input type="checkbox" class="row-checkbox" data-id="${s.id}"></td>
+        <td>${seq}</td>
+        <td><span style="font-weight:500;">${esc(s.seatNo)}</span></td>
+        <td>${locHtml}</td>
+        <td>${esc(s.type)}</td>
+        <td>${posHtml}</td>
+        <td><span class="badge ${st.cls}">${st.label}</span></td>
+        <td>${s.remark ? esc(s.remark) : '<span style="color:var(--text-3);">—</span>'}</td>
+        <td>
+          <label class="switch" title="${enabled ? '点击停用' : '点击启用'}">
+            <input type="checkbox" data-toggle-id="${s.id}" ${enabled ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        </td>
+        <td>
+          <div class="actions">
+            <button class="link-btn" data-act="detail" data-id="${s.id}">详情</button>
+            <button class="link-btn" data-act="edit" data-id="${s.id}">编辑</button>
+            <button class="link-btn danger" data-act="del" data-id="${s.id}">删除</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+  const selAll = document.getElementById('selectAll');
+  if (selAll) selAll.checked = false;
+  renderPagination(data.length);
+}
+
+function renderPagination(total) {
+  const el = document.getElementById('pagination');
+  const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+  let html = `<div class="info">共 ${total} 条记录，第 ${state.page} / ${totalPages} 页</div>`;
+  html += `<select class="select" id="pageSize">` +
+    [10, 20, 50, 100].map(n =>
+      `<option value="${n}" ${n === state.pageSize ? 'selected' : ''}>${n} 条/页</option>`
+    ).join('') + `</select>`;
+  html += `<button class="page-btn" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>上一页</button>`;
+  pageNumbers(state.page, totalPages).forEach(p => {
+    html += p === '...' ? `<span class="ellipsis">···</span>`
+      : `<button class="page-btn ${p === state.page ? 'active' : ''}" data-page="${p}">${p}</button>`;
+  });
+  html += `<button class="page-btn" data-page="${state.page + 1}" ${state.page === totalPages ? 'disabled' : ''}>下一页</button>`;
+  el.innerHTML = html;
+}
+
+function pageNumbers(cur, total) {
+  const arr = [];
+  if (total <= 7) { for (let i = 1; i <= total; i++) arr.push(i); return arr; }
+  arr.push(1);
+  let start = Math.max(2, cur - 1), end = Math.min(total - 1, cur + 1);
+  if (cur <= 3) { start = 2; end = 4; }
+  if (cur >= total - 2) { start = total - 3; end = total - 1; }
+  if (start > 2) arr.push('...');
+  for (let i = start; i <= end; i++) arr.push(i);
+  if (end < total - 1) arr.push('...');
+  arr.push(total);
+  return arr;
+}
+
+function renderAll() { renderTable(); }
+
+/* ============================================================
+ *  详情
+ * ============================================================ */
+function openDetail(id) {
+  const s = seats.find(x => x.id === id);
+  if (!s) return;
+  const st = STATUS_MAP[s.status] || STATUS_MAP.free;
+  const path = getSeatPath(s);
+  const pos = getSeatPosition(s);
+  document.getElementById('detailTitle').textContent = `座位 ${s.seatNo} - 详情`;
+  let readerHtml = s.reader
+    ? `<div class="detail-row"><span class="label">读者姓名</span><span class="value">${esc(s.reader.name)}</span></div>
+       <div class="detail-row"><span class="label">读者证号</span><span class="value">${esc(s.reader.cardNo)}</span></div>`
+    : `<div class="detail-row"><span class="label">当前读者</span><span class="value" style="color:var(--text-3);">无</span></div>`;
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-row"><span class="label">座位号</span><span class="value" style="font-weight:600;">${esc(s.seatNo)}</span></div>
+    <div class="detail-row"><span class="label">位置</span><span class="value"><span class="loc-tag">${esc(path.venueName)} / ${esc(path.floorName)} / ${esc(path.areaName)}</span></span></div>
+    <div class="detail-row"><span class="label">座位类型</span><span class="value">${esc(s.type)}</span></div>
+    <div class="detail-row"><span class="label">排 / 列</span><span class="value">${pos ? `第 ${pos.row} 排 · 第 ${pos.col} 列` : '<span style="color:var(--text-3);">未设置</span>'}</span></div>
+    <div class="detail-row"><span class="label">当前状态</span><span class="value"><span class="badge ${st.cls}">${st.label}</span></span></div>
+    <div class="detail-row"><span class="label">开始使用</span><span class="value">${s.startTime ? esc(s.startTime) : '<span style="color:var(--text-3);">—</span>'}</span></div>
+    ${s.remark ? `<div class="detail-row"><span class="label">备注</span><span class="value">${esc(s.remark)}</span></div>` : ''}
+    <div class="detail-divider">
+      <div class="detail-subtitle">读者信息</div>
+      ${readerHtml}
+    </div>`;
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeDetail() { document.getElementById('detailModal').classList.remove('show'); }
+
+/* ============================================================
+ *  下拉框填充工具
+ * ============================================================ */
+function fillVenueSelect(sel, selectedId) {
+  sel.innerHTML = VENUES.map(v =>
+    `<option value="${v.id}" ${v.id === selectedId ? 'selected' : ''}>${esc(v.name)}</option>`
+  ).join('');
+}
+function fillFloorSelect(sel, venueId, selectedId) {
+  const floors = getFloorsByVenue(venueId);
+  sel.innerHTML = floors.map(f =>
+    `<option value="${f.id}" ${f.id === selectedId ? 'selected' : ''}>${esc(f.name)}</option>`
+  ).join('');
+  return floors.some(f => f.id === sel.value) ? sel.value : (floors[0] ? floors[0].id : '');
+}
+function fillAreaSelect(sel, floorId, selectedId) {
+  const areas = getAreasByFloor(floorId);
+  sel.innerHTML = areas.map(a =>
+    `<option value="${a.id}" ${a.id === selectedId ? 'selected' : ''}>${esc(a.name)}</option>`
+  ).join('');
+  return areas.some(a => a.id === sel.value) ? sel.value : (areas[0] ? areas[0].id : '');
+}
+
+/* ============================================================
+ *  新增/编辑座位弹窗
+ * ============================================================ */
+function openSeatModal(seatId) {
+  state.editingSeatId = seatId || null;
+  const venueSel = document.getElementById('seatVenue');
+  const floorSel = document.getElementById('seatFloor');
+  const areaSel = document.getElementById('seatArea');
+  const typeSel = document.getElementById('seatType');
+  const statusSel = document.getElementById('seatStatus');
+  const rowInput = document.getElementById('seatRow');
+  const colInput = document.getElementById('seatCol');
+  typeSel.innerHTML = SEAT_TYPES.map(t => `<option value="${t}">${esc(t)}</option>`).join('');
+
+  if (seatId) {
+    const s = seats.find(x => x.id === seatId);
+    if (!s) return;
+    const path = getSeatPath(s);
+    document.getElementById('seatModalTitle').textContent = '编辑座位';
+    fillVenueSelect(venueSel, path.venueId);
+    fillFloorSelect(floorSel, path.venueId, path.floorId);
+    fillAreaSelect(areaSel, path.floorId, path.areaId);
+    document.getElementById('seatNo').value = s.seatNo;
+    typeSel.value = s.type;
+    statusSel.value = s.status === 'disabled' ? 'disabled' : 'free';
+    statusSel.disabled = false;
+    statusSel.parentElement.style.opacity = '';
+    document.getElementById('seatRemark').value = s.remark || '';
+    document.getElementById('seatNoHint').textContent = '座位号在馆藏地内全局唯一，请勿与其他座位重复';
+
+    if (s.gx && s.gy) {
+      rowInput.value = s.gy;
+      colInput.value = s.gx;
+    } else {
+      rowInput.value = '';
+      colInput.value = '';
+    }
+  } else {
+    document.getElementById('seatModalTitle').textContent = '新增座位';
+    fillVenueSelect(venueSel, VENUES[0].id);
+    const fid = fillFloorSelect(floorSel, VENUES[0].id, '');
+    const aid = fillAreaSelect(areaSel, fid, '');
+    document.getElementById('seatNo').value = suggestSeatNo(aid);
+    typeSel.value = SEAT_TYPES[0];
+    statusSel.value = 'free';
+    statusSel.disabled = false;
+    statusSel.parentElement.style.opacity = '';
+    document.getElementById('seatRemark').value = '';
+    document.getElementById('seatNoHint').textContent = '座位号在馆藏地内全局唯一，建议自动生成';
+    rowInput.value = '';
+    colInput.value = '';
+  }
+  document.getElementById('seatModal').classList.add('show');
+  setTimeout(() => document.getElementById('seatNo').focus(), 60);
+}
+function closeSeatModal() {
+  document.getElementById('seatModal').classList.remove('show');
+  state.editingSeatId = null;
+}
+
+document.getElementById('seatVenue').addEventListener('change', e => {
+  const fid = fillFloorSelect(document.getElementById('seatFloor'), e.target.value, '');
+  const aid = fillAreaSelect(document.getElementById('seatArea'), fid, '');
+  if (!state.editingSeatId) document.getElementById('seatNo').value = suggestSeatNo(aid);
+});
+document.getElementById('seatFloor').addEventListener('change', e => {
+  const aid = fillAreaSelect(document.getElementById('seatArea'), e.target.value, '');
+  if (!state.editingSeatId) document.getElementById('seatNo').value = suggestSeatNo(aid);
+});
+document.getElementById('seatArea').addEventListener('change', e => {
+  if (!state.editingSeatId) document.getElementById('seatNo').value = suggestSeatNo(e.target.value);
+});
+
+function saveSeat() {
+  const areaId = document.getElementById('seatArea').value;
+  const seatNo = document.getElementById('seatNo').value.trim();
+  const type = document.getElementById('seatType').value;
+  const status = document.getElementById('seatStatus').value;
+  const remark = document.getElementById('seatRemark').value.trim();
+  const rowRaw = document.getElementById('seatRow').value.trim();
+  const colRaw = document.getElementById('seatCol').value.trim();
+
+  if (!areaId) { toast('请选择区域', 'error'); return; }
+  if (!seatNo) { toast('请填写座位号', 'error'); return; }
+  const dup = seats.some(s => s.seatNo === seatNo && s.id !== state.editingSeatId);
+  if (dup) { toast(`座位号 ${seatNo} 已存在`, 'error'); return; }
+
+  let targetRow = null, targetCol = null;
+  if (rowRaw !== '' && colRaw !== '') {
+    targetRow = parseInt(rowRaw, 10);
+    targetCol = parseInt(colRaw, 10);
+    if (isNaN(targetRow) || targetRow < 1 || isNaN(targetCol) || targetCol < 1) {
+      toast('位置必须为正整数', 'error'); return;
+    }
+    if (isPositionOccupied(areaId, targetRow, targetCol, state.editingSeatId)) {
+      toast(`第 ${targetRow} 排 · 第 ${targetCol} 列 已被其他座位占用`, 'error');
+      return;
+    }
+  } else if (rowRaw !== '' || colRaw !== '') {
+    toast('请同时填写「排」和「列」，或都留空', 'error');
+    return;
+  }
+
+  if (state.editingSeatId) {
+    const s = seats.find(x => x.id === state.editingSeatId);
+    if (!s) return;
+    const oldAreaId = s.areaId;
+
+    if (oldAreaId !== areaId) {
+      const maxOrder = seats.filter(x => x.areaId === areaId).reduce((m, x) => Math.max(m, x.order), 0);
+      s.areaId = areaId;
+      s.order = maxOrder + 1;
+    }
+
+    s.gx = targetCol;
+    s.gy = targetRow;
+
+    s.seatNo = seatNo;
+    s.type = type;
+    s.remark = remark;
+    if (s.status === 'occupied' || s.status === 'reserved') {
+      if (status === 'disabled') { toast('该座位正在使用或已预约，无法停用', 'error'); return; }
+    } else {
+      s.status = status === 'disabled' ? 'disabled' : 'free';
+      if (s.status === 'free') { s.reader = null; s.startTime = null; }
+    }
+    toast('座位信息已更新');
+  } else {
+    const maxOrder = seats.filter(x => x.areaId === areaId).reduce((m, x) => Math.max(m, x.order), 0);
+    seats.push({
+      id: seatIdSeq++, seatNo, areaId, order: maxOrder + 1,
+      gx: targetCol, gy: targetRow,
+      type, status: status === 'disabled' ? 'disabled' : 'free',
+      reader: null, startTime: null, remark
+    });
+    toast('座位已新增');
+  }
+  closeSeatModal();
+  renderAll();
+}
+
+/* ============================================================
+ *  批量新增
+ * ============================================================ */
+function openBatchModal() {
+  const venueSel = document.getElementById('batchVenue');
+  const floorSel = document.getElementById('batchFloor');
+  const areaSel = document.getElementById('batchArea');
+  const typeSel = document.getElementById('batchType');
+  typeSel.innerHTML = SEAT_TYPES.map(t => `<option value="${t}">${esc(t)}</option>`).join('');
+  fillVenueSelect(venueSel, VENUES[0].id);
+  const fid = fillFloorSelect(floorSel, VENUES[0].id, '');
+  const aid = fillAreaSelect(areaSel, fid, '');
+  const area = getArea(aid);
+  document.getElementById('batchPrefix').value = area ? area.prefix : '';
+  document.getElementById('batchStart').value = 1;
+  document.getElementById('batchCount').value = 10;
+  document.getElementById('batchPad').value = '3';
+  document.getElementById('batchStatus').value = 'free';
+  document.getElementById('batchRemark').value = '';
+  document.getElementById('batchStartRow').value = '';
+  document.getElementById('batchStartCol').value = '';
+  document.getElementById('batchPerRow').value = '';
+  document.getElementById('batchModal').classList.add('show');
+}
+function closeBatchModal() { document.getElementById('batchModal').classList.remove('show'); }
+
+document.getElementById('batchVenue').addEventListener('change', e => {
+  const fid = fillFloorSelect(document.getElementById('batchFloor'), e.target.value, '');
+  const aid = fillAreaSelect(document.getElementById('batchArea'), fid, '');
+  const area = getArea(aid);
+  if (area) document.getElementById('batchPrefix').value = area.prefix;
+});
+document.getElementById('batchFloor').addEventListener('change', e => {
+  const aid = fillAreaSelect(document.getElementById('batchArea'), e.target.value, '');
+  const area = getArea(aid);
+  if (area) document.getElementById('batchPrefix').value = area.prefix;
+});
+document.getElementById('batchArea').addEventListener('change', e => {
+  const area = getArea(e.target.value);
+  if (area) document.getElementById('batchPrefix').value = area.prefix;
+});
+
+function saveBatch() {
+  const areaId = document.getElementById('batchArea').value;
+  const type = document.getElementById('batchType').value;
+  const prefix = document.getElementById('batchPrefix').value.trim();
+  const start = parseInt(document.getElementById('batchStart').value, 10);
+  const count = parseInt(document.getElementById('batchCount').value, 10);
+  const pad = parseInt(document.getElementById('batchPad').value, 10);
+  const status = document.getElementById('batchStatus').value;
+  const remark = document.getElementById('batchRemark').value.trim();
+
+  const startRowRaw = document.getElementById('batchStartRow').value.trim();
+  const startColRaw = document.getElementById('batchStartCol').value.trim();
+  const perRowRaw = document.getElementById('batchPerRow').value.trim();
+
+  if (!areaId) { toast('请选择区域', 'error'); return; }
+  if (!prefix) { toast('请填写座位号前缀', 'error'); return; }
+  if (isNaN(start) || start < 1) { toast('起始编号需为大于 0 的整数', 'error'); return; }
+  if (isNaN(count) || count < 1 || count > 200) { toast('新增数量需为 1-200', 'error'); return; }
+
+  const anyPosFilled = startRowRaw !== '' || startColRaw !== '' || perRowRaw !== '';
+  const allPosFilled = startRowRaw !== '' && startColRaw !== '' && perRowRaw !== '';
+  if (anyPosFilled && !allPosFilled) {
+    toast('位置设置请全部填写或全部留空', 'error');
+    return;
+  }
+
+  let startRow = null, startCol = null, perRow = null;
+  if (allPosFilled) {
+    startRow = parseInt(startRowRaw, 10);
+    startCol = parseInt(startColRaw, 10);
+    perRow = parseInt(perRowRaw, 10);
+    if (isNaN(startRow) || startRow < 1) { toast('起始排需为大于 0 的整数', 'error'); return; }
+    if (isNaN(startCol) || startCol < 1) { toast('起始列需为大于 0 的整数', 'error'); return; }
+    if (isNaN(perRow) || perRow < 1) { toast('每行数量需为正整数', 'error'); return; }
+  }
+
+  const existing = new Set(seats.map(s => s.seatNo));
+  let maxOrder = seats.filter(x => x.areaId === areaId).reduce((m, x) => Math.max(m, x.order), 0);
+  const toAdd = [];
+  let skippedNo = 0;
+  let skippedPos = 0;
+  const placedPos = new Set();
+
+  for (let i = 0; i < count; i++) {
+    const num = start + i;
+    const seatNo = prefix + String(num).padStart(pad, '0');
+    if (existing.has(seatNo)) { skippedNo++; continue; }
+
+    let gx = null, gy = null;
+    if (allPosFilled) {
+      const row = startRow + Math.floor(i / perRow);
+      const col = startCol + (i % perRow);
+      const posKey = row + ',' + col;
+      if (isPositionOccupied(areaId, row, col, null) || placedPos.has(posKey)) {
+        skippedPos++; continue;
+      }
+      gx = col;
+      gy = row;
+      placedPos.add(posKey);
+    }
+
+    existing.add(seatNo);
+    toAdd.push({
+      id: seatIdSeq++, seatNo, areaId, order: ++maxOrder,
+      gx, gy,
+      type, status: status === 'disabled' ? 'disabled' : 'free',
+      reader: null, startTime: null, remark
+    });
+  }
+
+  if (!toAdd.length) {
+    toast('没有可新增的座位，请检查座位号或位置是否冲突', 'error');
+    return;
+  }
+  seats.push(...toAdd);
+  closeBatchModal();
+  renderAll();
+
+  const notes = [];
+  if (skippedNo > 0) notes.push(`${skippedNo} 个座位号重复`);
+  if (skippedPos > 0) notes.push(`${skippedPos} 个位置冲突`);
+  if (notes.length) toast(`已新增 ${toAdd.length} 个座位（${notes.join('，')}被跳过）`, 'warning');
+  else toast(`已批量新增 ${toAdd.length} 个座位`);
+}
+
+/* ============================================================
+ *  启用/停用
+ * ============================================================ */
+function toggleSeatEnabled(seatId, enabled) {
+  const s = seats.find(x => x.id === seatId);
+  if (!s) return false;
+  if (enabled) {
+    if (s.status !== 'disabled') return true;
+    s.status = 'free'; s.reader = null; s.startTime = null;
+    toast(`座位 ${s.seatNo} 已启用`);
+    return true;
+  } else {
+    if (s.status === 'disabled') return true;
+    if (s.status === 'occupied' || s.status === 'reserved') {
+      toast('该座位正在使用或已预约，无法停用', 'error'); return false;
+    }
+    s.status = 'disabled'; s.reader = null; s.startTime = null;
+    toast(`座位 ${s.seatNo} 已停用`);
+    return true;
+  }
+}
+
+/* ============================================================
+ *  批量停用（使用中/已预约的座位会被跳过）
+ * ============================================================ */
+function batchDisableSeats() {
+  const checked = document.querySelectorAll('.row-checkbox:checked');
+  if (!checked.length) { toast('请先勾选要停用的座位', 'warning'); return; }
+
+  const ids = [...checked].map(cb => Number(cb.dataset.id));
+  const list = ids.map(id => seats.find(s => s.id === id)).filter(Boolean);
+
+  const blocked         = list.filter(s => s.status === 'occupied' || s.status === 'reserved');
+  const alreadyDisabled = list.filter(s => s.status === 'disabled');
+  const disableable     = list.filter(s => s.status !== 'disabled'
+                                       && s.status !== 'occupied'
+                                       && s.status !== 'reserved');
+
+  if (!disableable.length) {
+    const msgs = [];
+    if (blocked.length)         msgs.push(`${blocked.length} 个正在使用/已预约`);
+    if (alreadyDisabled.length) msgs.push(`${alreadyDisabled.length} 个已是停用状态`);
+    toast(`无法停用：${msgs.join('，')}`, 'error');
+    return;
+  }
+
+  const note = blocked.length
+    ? `（${blocked.length} 个使用中/已预约的座位将被跳过）`
+    : '';
+
+  openConfirm('批量停用座位',
+    `确定要停用选中的 ${disableable.length} 个座位吗？${note}`,
+    () => {
+      disableable.forEach(s => {
+        s.status = 'disabled';
+        s.reader = null;
+        s.startTime = null;
+      });
+      renderAll();
+      const parts = [`已停用 ${disableable.length} 个座位`];
+      if (blocked.length)         parts.push(`${blocked.length} 个使用中/已预约已跳过`);
+      if (alreadyDisabled.length) parts.push(`${alreadyDisabled.length} 个已是停用状态`);
+      toast(parts.join('，'));
+    },
+    'btn btn-primary');
+}
+
+/* ============================================================
+ *  批量删除（使用中/已预约的座位会被跳过）
+ * ============================================================ */
+function batchDeleteSeats() {
+  const checked = document.querySelectorAll('.row-checkbox:checked');
+  if (!checked.length) { toast('请先勾选要删除的座位', 'warning'); return; }
+
+  const ids = [...checked].map(cb => Number(cb.dataset.id));
+  const list = ids.map(id => seats.find(s => s.id === id)).filter(Boolean);
+
+  // 使用中 / 已预约 → 不可删除
+  const blocked   = list.filter(s => s.status === 'occupied' || s.status === 'reserved');
+  const deletable = list.filter(s => s.status !== 'occupied' && s.status !== 'reserved');
+
+  if (!deletable.length) {
+    toast(`无法删除：${blocked.length} 个座位正在使用或已预约`, 'error');
+    return;
+  }
+
+  const note = blocked.length
+    ? `（${blocked.length} 个使用中/已预约的座位将被跳过）`
+    : '';
+
+  openConfirm('批量删除座位',
+    `确定要删除选中的 ${deletable.length} 个座位吗？${note}此操作不可恢复。`,
+    () => {
+      const delIds = new Set(deletable.map(s => s.id));
+      seats = seats.filter(s => !delIds.has(s.id));
+
+      // 同步删除编辑器布局中对应的座位项
+      Object.values(areaLayouts).forEach(layout => {
+        if (!layout || !layout.items) return;
+        layout.items = layout.items.filter(it =>
+          it.kind !== 'seat' || !delIds.has(it.seatId)
+        );
+      });
+
+      renderAll();
+      const parts = [`已删除 ${deletable.length} 个座位`];
+      if (blocked.length) parts.push(`${blocked.length} 个使用中/已预约已跳过`);
+      toast(parts.join('，'));
+    },
+    'btn btn-primary');
+}
+
+/* ============================================================
+ *  通用确认 / 导出
+ * ============================================================ */
+function openConfirm(title, text, onOk, okClass) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmText').textContent = text;
+  const btn = document.getElementById('btnConfirmOk');
+  btn.className = okClass || 'btn btn-primary';
+  state.confirmHandler = onOk;
+  document.getElementById('confirmModal').classList.add('show');
+}
+function closeConfirm() {
+  document.getElementById('confirmModal').classList.remove('show');
+  state.confirmHandler = null;
+}
+
+function exportCSV() {
+  const data = getFiltered();
+  if (!data.length) { toast('没有可导出的数据', 'error'); return; }
+  const headers = ['座位号', '位置', '座位类型', '排', '列', '启用状态', '使用状态', '当前读者', '读者证号', '开始使用时间', '备注'];
+  const rows = data.map(s => {
+    const path = getSeatPath(s);
+    const pos = getSeatPosition(s);
+    const st = STATUS_MAP[s.status] || STATUS_MAP.free;
+    return [s.seatNo, `${path.venueName} / ${path.floorName} / ${path.areaName}`, s.type,
+      pos ? pos.row : '', pos ? pos.col : '',
+      s.status === 'disabled' ? '停用' : '启用', st.label,
+      s.reader ? s.reader.name : '', s.reader ? s.reader.cardNo : '',
+      s.startTime || '', s.remark || ''];
+  });
+  const csv = [headers, ...rows].map(r =>
+    r.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')
+  ).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `座位列表_${today()}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast(`已导出 ${data.length} 条座位记录`);
+}
+
+/* ============================================================
+ *  编辑器（座位排布可视化，与座位位置数据完全独立）
+ * ============================================================ */
+const CELL_STEP = 52;
+
+const ED_CATEGORIES = {
+  seat:      { label: '座位',     icon: '💺' },
+  table:     { label: '桌台',     icon: '🟫' },
+  furniture: { label: '家具',     icon: '🪑' },
+  equipment: { label: '设备',     icon: '🖥️' },
+  service:   { label: '服务台',   icon: '🛎️' },
+  building:  { label: '建筑结构', icon: '🏛️' },
+  decor:     { label: '装饰',     icon: '🌿' },
+  room:      { label: '独立房间', icon: '🏠' }
+};
+
+const ED_ITEM_TYPES = {
+  seat_normal: { cat:'seat', label:'普通座位',  icon:'', w:1, h:1, bg:'#f6ffed', bd:'#b7eb8f', tx:'#389e0d', resizable: false },
+  seat_window: { cat:'seat', label:'靠窗座位',  icon:'', w:1, h:1, bg:'#f0f5ff', bd:'#adc6ff', tx:'#2f54eb', resizable: false },
+  seat_power:  { cat:'seat', label:'电源座位',  icon:'', w:1, h:1, bg:'#fffbe6', bd:'#ffe58f', tx:'#d48806', resizable: false },
+  seat_single: { cat:'seat', label:'独立隔间',  icon:'', w:1, h:1, bg:'#f9f0ff', bd:'#d3adf7', tx:'#722ed1', resizable: false },
+  seat_round:  { cat:'seat', label:'研讨座位',  icon:'', w:1, h:1, bg:'#fff0f6', bd:'#ffadd2', tx:'#c41d7f', resizable: false },
+  seat_sofa:   { cat:'seat', label:'沙发座位',  icon:'', w:1, h:1, bg:'#fff2e8', bd:'#ffbb96', tx:'#d4380d', resizable: false },
+
+  reading_table: { cat:'table', label:'阅览桌',     icon:'📖', w:2, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  long_table:    { cat:'table', label:'长条桌',     icon:'🪵', w:4, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  single_desk:   { cat:'table', label:'单人书桌',   icon:'🟫', w:1, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  computer_desk: { cat:'table', label:'电脑桌',     icon:'🖥️', w:2, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  group_table:   { cat:'table', label:'组合讨论桌', icon:'🧩', w:2, h:2, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  coffee_table:  { cat:'table', label:'茶几',       icon:'☕', w:1, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+
+  shelf:       { cat:'furniture', label:'书架',      icon:'📚', w:3, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  shelf_tall:  { cat:'furniture', label:'高书架',    icon:'📚', w:1, h:3, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  magazine:    { cat:'furniture', label:'期刊架',    icon:'📰', w:2, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  newspaper:   { cat:'furniture', label:'报纸架',    icon:'📄', w:2, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  locker:      { cat:'furniture', label:'储物柜',    icon:'🗄️', w:2, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+  bookcase:    { cat:'furniture', label:'展示柜',    icon:'🗄️', w:3, h:1, bg:'#fff7e6', bd:'#ffd591', tx:'#d46b08', resizable: true },
+
+  self_borrow: { cat:'equipment', label:'自助借还机', icon:'🏧', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  search_kiosk:{ cat:'equipment', label:'检索机',     icon:'🖥️', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  printer:     { cat:'equipment', label:'打印机',     icon:'🖨️', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  copier:      { cat:'equipment', label:'复印机',     icon:'📠', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  water:       { cat:'equipment', label:'饮水机',     icon:'💧', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  charging:    { cat:'equipment', label:'充电桩',     icon:'🔌', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  ac:          { cat:'equipment', label:'空调',       icon:'❄️', w:2, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  tv:          { cat:'equipment', label:'显示屏',     icon:'📺', w:2, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  computer:    { cat:'equipment', label:'计算机',     icon:'💻', w:1, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+
+  service_desk:{ cat:'service', label:'服务台',   icon:'🛎️', w:3, h:1, bg:'#f9f0ff', bd:'#d3adf7', tx:'#722ed1', resizable: true },
+  info_desk:   { cat:'service', label:'咨询台',   icon:'ℹ️', w:2, h:1, bg:'#f9f0ff', bd:'#d3adf7', tx:'#722ed1', resizable: true },
+  reading_desk:{ cat:'service', label:'阅览台',   icon:'📖', w:3, h:2, bg:'#f9f0ff', bd:'#d3adf7', tx:'#722ed1', resizable: true },
+  return_desk: { cat:'service', label:'还书台',   icon:'📥', w:2, h:1, bg:'#f9f0ff', bd:'#d3adf7', tx:'#722ed1', resizable: true },
+
+  door:        { cat:'building', label:'出入口',       icon:'🚪', w:2, h:1, bg:'#fafafa', bd:'#d9d9d9', tx:'#262626', resizable: true },
+  door_emerg:  { cat:'building', label:'安全出口',     icon:'🚨', w:2, h:1, bg:'#fff1f0', bd:'#ffa39e', tx:'#a8071a', resizable: true },
+  stairs:      { cat:'building', label:'楼梯',         icon:'🪜', w:2, h:2, bg:'#fafafa', bd:'#d9d9d9', tx:'#262626', resizable: true },
+  elevator:    { cat:'building', label:'电梯',         icon:'🛗', w:2, h:2, bg:'#fafafa', bd:'#d9d9d9', tx:'#262626', resizable: true },
+  escalator:   { cat:'building', label:'自动扶梯',     icon:'🎢', w:2, h:3, bg:'#fafafa', bd:'#d9d9d9', tx:'#262626', resizable: true },
+  toilet_m:    { cat:'building', label:'男卫生间',     icon:'🚹', w:3, h:2, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  toilet_f:    { cat:'building', label:'女卫生间',     icon:'🚺', w:3, h:2, bg:'#fff0f6', bd:'#ffadd2', tx:'#c41d7f', resizable: true },
+  toilet_acc:  { cat:'building', label:'无障碍卫生间', icon:'♿', w:2, h:2, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true },
+  fire_hydrant:{ cat:'building', label:'消防栓',       icon:'🧯', w:1, h:1, bg:'#fff1f0', bd:'#ffa39e', tx:'#a8071a', resizable: true },
+  pillar:      { cat:'building', label:'立柱',         icon:'⬛', w:1, h:1, bg:'#f0f0f0', bd:'#bfbfbf', tx:'#262626', resizable: true },
+  window:      { cat:'building', label:'窗户',         icon:'🪟', w:4, h:1, bg:'#e6f7ff', bd:'#91d5ff', tx:'#0958d9', resizable: true },
+  corridor:    { cat:'building', label:'走廊通道',     icon:'↔️', w:6, h:1, bg:'#f5f5f5', bd:'#e0e0e0', tx:'#595959', resizable: true },
+
+  plant:       { cat:'decor', label:'绿植',     icon:'🌱', w:1, h:1, bg:'#f6ffed', bd:'#b7eb8f', tx:'#389e0d', resizable: true },
+  flower:      { cat:'decor', label:'花架',     icon:'🌸', w:1, h:1, bg:'#fff0f6', bd:'#ffadd2', tx:'#c41d7f', resizable: true },
+  art:         { cat:'decor', label:'装饰画',   icon:'🖼️', w:2, h:1, bg:'#f9f0ff', bd:'#d3adf7', tx:'#722ed1', resizable: true },
+  statue:      { cat:'decor', label:'雕塑',     icon:'🗿', w:1, h:1, bg:'#fafafa', bd:'#d9d9d9', tx:'#262626', resizable: true },
+  clock:       { cat:'decor', label:'挂钟',     icon:'🕐', w:1, h:1, bg:'#fafafa', bd:'#d9d9d9', tx:'#262626', resizable: true },
+
+  study_room:   { cat:'room', label:'研修室',       icon:'🏠', w:4, h:3, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true },
+  meeting_room: { cat:'room', label:'会议室',       icon:'🏛️', w:5, h:3, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true },
+  discussion:   { cat:'room', label:'讨论间',       icon:'💬', w:3, h:2, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true },
+  e_reading:    { cat:'room', label:'电子阅览室',   icon:'💻', w:5, h:4, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true },
+  lecture_hall: { cat:'room', label:'报告厅',       icon:'🎤', w:6, h:4, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true },
+  study_carrel: { cat:'room', label:'研习间',       icon:'📔', w:2, h:2, bg:'#e6fffb', bd:'#87e8de', tx:'#006d75', resizable: true }
+};
+
+function renderSeatIcon(typeKey, color) {
+  const base = `
+    <path d="M8 4 h8 a2 2 0 0 1 2 2 v7 h-12 v-7 a2 2 0 0 1 2 -2 z"/>
+    <path d="M5 13 h14 v2 a2 2 0 0 1 -2 2 h-10 a2 2 0 0 1 -2 -2 z"/>
+    <line x1="8" y1="17" x2="8" y2="20"/>
+    <line x1="16" y1="17" x2="16" y2="20"/>`;
+  const wrap = inner => `<svg class="seat-svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+  switch (typeKey) {
+    case 'seat_normal': return wrap(base);
+    case 'seat_window': return wrap(`${base}<rect x="16" y="3" width="5" height="5" rx="0.5" opacity="0.6"/><line x1="18.5" y1="3" x2="18.5" y2="8" opacity="0.6"/><line x1="16" y1="5.5" x2="21" y2="5.5" opacity="0.6"/>`);
+    case 'seat_power':  return wrap(`${base}<path d="M12.5 5.5 l-2.5 4 h2.5 l-1.5 3.5" stroke-width="1.4"/>`);
+    case 'seat_single': return wrap(`${base}<line x1="3" y1="4" x2="3" y2="20" opacity="0.7"/><line x1="21" y1="4" x2="21" y2="20" opacity="0.7"/>`);
+    case 'seat_round':  return wrap(`<circle cx="12" cy="11" r="6"/><circle cx="12" cy="11" r="2.5" opacity="0.55"/><line x1="6.5" y1="16" x2="4.5" y2="20"/><line x1="17.5" y1="16" x2="19.5" y2="20"/>`);
+    case 'seat_sofa':   return wrap(`<path d="M4 10 v-3 a2 2 0 0 1 2 -2 h12 a2 2 0 0 1 2 2 v3"/><path d="M3 10 a2 2 0 0 1 2 2 v4 h14 v-4 a2 2 0 0 1 2 -2 v6 h-18 z"/>`);
+    default: return '';
+  }
+}
+
+const AREA_SLOTS = [
+  { name: '上午一', start: '08:00', end: '10:00' },
+  { name: '上午二', start: '10:00', end: '12:00' },
+  { name: '中午',   start: '12:00', end: '14:00' },
+  { name: '下午一', start: '14:00', end: '16:00' },
+  { name: '下午二', start: '16:00', end: '18:00' },
+  { name: '晚上一', start: '18:00', end: '20:00' },
+  { name: '晚上二', start: '20:00', end: '22:00' }
+];
+
+const areaLayouts = {};
+
+const ed = {
+  open: false, areaId: null, cols: 24, items: [], nextId: 1,
+  selectedId: null, placingType: null, editMode: true, selectedIds: new Set(),
+  history: [], historyIndex: -1
+};
+
+let edPreviewEl = null;
+let edMovePreviewEl = null;
+let edDragState = null;
+let edResizeState = null;
+let edMarquee = null;
+let edMarqueeEl = null;
+let edMarqueeClickHandled = false;
+
+const $e = id => document.getElementById(id);
+
+function edGetType(key) { return ED_ITEM_TYPES[key] || null; }
+function edIsResizable(key) {
+  const def = edGetType(key);
+  return def ? def.resizable !== false : false;
+}
+
+function canPlaceInItems(items, cols, x, y, w, h, excludeId) {
+  if (x < 1 || y < 1) return false;
+  if (x + w - 1 > cols) return false;
+  for (let dx = 0; dx < w; dx++) {
+    for (let dy = 0; dy < h; dy++) {
+      const cx = x + dx, cy = y + dy;
+      const hit = items.some(it =>
+        it.id !== excludeId &&
+        cx >= it.gx && cx < it.gx + it.w &&
+        cy >= it.gy && cy < it.gy + it.h
+      );
+      if (hit) return false;
+    }
+  }
+  return true;
+}
+function edCanPlace(layout, x, y, w, h, excludeId) {
+  return canPlaceInItems(layout.items, layout.cols, x, y, w, h, excludeId);
+}
+function edFindEmptySlot(layout, w, h) {
+  for (let y = 1; y < 800; y++) {
+    for (let x = 1; x <= layout.cols - w + 1; x++) {
+      if (edCanPlace(layout, x, y, w, h)) return { x, y };
+    }
+  }
+  return { x: 1, y: 1 };
+}
+
+/* ---- 默认布局 ---- */
+function generateDefaultLayout(areaId) {
+  const areaSeats = seats.filter(s => s.areaId === areaId).sort((a, b) => a.order - b.order);
+  const items = [];
+  let nextId = 1;
+  if (!areaSeats.length) return { cols: 24, items, nextId };
+
+  const byType = { seat_normal: [], seat_window: [], seat_power: [], seat_single: [], seat_round: [] };
+  areaSeats.forEach(s => {
+    const key = SEAT_TYPE_TO_KEY[s.type] || 'seat_normal';
+    (byType[key] = byType[key] || []).push(s);
+  });
+
+  const COLS = 24;
+
+  function tryAdd(kind, typeKey, name, gx, gy, seatRef) {
+    const def = ED_ITEM_TYPES[typeKey];
+    if (!def) return null;
+    if (gx < 1 || gy < 1 || gx + def.w - 1 > COLS) return null;
+    if (!canPlaceInItems(items, COLS, gx, gy, def.w, def.h)) return null;
+    const item = {
+      id: nextId++, kind, type: typeKey, name, gx, gy,
+      w: def.w, h: def.h,
+      status: kind === 'seat' ? (seatRef ? seatRef.status : 'free') : '',
+      remark: seatRef ? (seatRef.remark || '') : '',
+      seatId: seatRef ? seatRef.id : undefined
+    };
+    items.push(item);
+    return item;
+  }
+  const addSeat = (s, gx, gy) => tryAdd('seat', SEAT_TYPE_TO_KEY[s.type] || 'seat_normal', s.seatNo, gx, gy, s);
+  const addFacility = (typeKey, gx, gy, name) => tryAdd('facility', typeKey, name || ED_ITEM_TYPES[typeKey].label, gx, gy);
+
+  let winIdx = 1;
+  for (let x = 2; x <= 19; x += 4) {
+    addFacility('window', x, 1, `窗户${winIdx++}`);
+  }
+  let wy = 2, wIdx = 0;
+  while (wIdx < byType.seat_window.length && wy < 40) {
+    for (let col = 23; col <= 24 && wIdx < byType.seat_window.length; col++) {
+      if (addSeat(byType.seat_window[wIdx], col, wy)) wIdx++;
+    }
+    wy++;
+  }
+  let sy = 2;
+  byType.seat_single.forEach(s => {
+    if (sy < 40) { if (addSeat(s, 1, sy)) sy++; }
+  });
+  const normalList = [];
+  const maxN = Math.max(byType.seat_normal.length, byType.seat_power.length);
+  for (let i = 0; i < maxN; i++) {
+    if (i < byType.seat_normal.length) normalList.push(byType.seat_normal[i]);
+    if (i < byType.seat_power.length) normalList.push(byType.seat_power[i]);
+  }
+  let tRow = 3, tCol = 4, sIdx = 0, guard = 0;
+  const COL_START = 4, COL_END = 20, STEP = 3;
+  while (sIdx < normalList.length && guard++ < 200) {
+    if (tCol + 1 > COL_END) { tCol = COL_START; tRow += 3; continue; }
+    addFacility('reading_table', tCol, tRow, `阅览桌${tRow}-${tCol}`);
+    if (sIdx < normalList.length) addSeat(normalList[sIdx++], tCol, tRow - 1);
+    if (sIdx < normalList.length) addSeat(normalList[sIdx++], tCol + 1, tRow - 1);
+    if (sIdx < normalList.length) addSeat(normalList[sIdx++], tCol, tRow + 1);
+    if (sIdx < normalList.length) addSeat(normalList[sIdx++], tCol + 1, tRow + 1);
+    tCol += STEP;
+  }
+  const maxSeatY = items.reduce((m, it) => it.kind === 'seat' ? Math.max(m, it.gy + it.h - 1) : m, 0);
+  let ry = Math.max(maxSeatY + 2, tRow + 2), rx = 3;
+  byType.seat_round.forEach(s => {
+    if (rx > 10) { rx = 3; ry++; }
+    if (addSeat(s, rx, ry)) rx++;
+  });
+  const maxY = items.reduce((m, it) => Math.max(m, it.gy + it.h - 1), 0);
+  const baseY = maxY + 2;
+  addFacility('door',         1,  baseY, '主入口');
+  addFacility('service_desk', 4,  baseY, '总服务台');
+  addFacility('self_borrow',  8,  baseY, '自助借还机');
+  addFacility('search_kiosk', 9,  baseY, '检索机');
+  addFacility('printer',      10, baseY, '打印机');
+  addFacility('stairs',       12, baseY, '楼梯');
+  addFacility('elevator',     14, baseY, '电梯');
+  addFacility('toilet_m',     17, baseY, '男卫生间');
+  addFacility('toilet_f',     20, baseY, '女卫生间');
+  addFacility('plant',    1,  baseY + 2, '绿植1');
+  addFacility('water',    4,  baseY + 2, '饮水机');
+  addFacility('charging', 5,  baseY + 2, '充电桩');
+  addFacility('ac',       8,  baseY + 2, '空调');
+  addFacility('tv',       11, baseY + 2, '显示屏');
+  addFacility('plant',    20, baseY + 2, '绿植2');
+
+  return { cols: COLS, items, nextId };
+}
+
+function getAreaLayout(areaId) {
+  if (!areaLayouts[areaId]) areaLayouts[areaId] = generateDefaultLayout(areaId);
+  return areaLayouts[areaId];
+}
+
+function buildEditorItems(areaId) {
+  const layout = getAreaLayout(areaId);
+  const areaSeats = seats.filter(s => s.areaId === areaId);
+  const seatIdSet = new Set(areaSeats.map(s => s.id));
+
+  layout.items = layout.items.filter(it => it.kind !== 'seat' || seatIdSet.has(it.seatId));
+
+  const placedSeatIds = new Set(
+    layout.items.filter(it => it.kind === 'seat').map(it => it.seatId)
+  );
+  const unplaced = areaSeats.filter(s => !placedSeatIds.has(s.id));
+
+  let autoIdx = layout.items.filter(it => it.kind === 'seat').length;
+  unplaced.forEach(s => {
+    const perRow = 12;
+    const gx = (autoIdx % perRow) + 1;
+    const gy = Math.floor(autoIdx / perRow) * 2 + 1;
+    const pos = canPlaceInItems(layout.items, layout.cols, gx, gy, 1, 1)
+      ? { x: gx, y: gy }
+      : edFindEmptySlot(layout, 1, 1);
+    autoIdx++;
+    layout.items.push({
+      id: layout.nextId++, kind: 'seat', seatId: s.id,
+      type: SEAT_TYPE_TO_KEY[s.type] || 'seat_normal',
+      name: s.seatNo, gx: pos.x, gy: pos.y, w: 1, h: 1,
+      status: s.status, remark: s.remark || ''
+    });
+  });
+
+  layout.items.forEach(it => {
+    if (it.kind !== 'seat') return;
+    const s = seats.find(x => x.id === it.seatId);
+    if (!s) return;
+    it.name = s.seatNo;
+    it.status = s.status;
+    it.remark = s.remark || '';
+    it.type = SEAT_TYPE_TO_KEY[s.type] || it.type;
+  });
+
+  return layout;
+}
+
+/* ---- 历史 ---- */
+function edSaveHistory() {
+  ed.history = ed.history.slice(0, ed.historyIndex + 1);
+  ed.history.push({ items: JSON.parse(JSON.stringify(ed.items)), nextId: ed.nextId });
+  ed.historyIndex = ed.history.length - 1;
+  if (ed.history.length > 60) { ed.history.shift(); ed.historyIndex--; }
+  edUpdateUndoRedoBtns();
+}
+function edUndo() {
+  if (ed.historyIndex <= 0) return;
+  ed.historyIndex--;
+  const snap = ed.history[ed.historyIndex];
+  ed.items = JSON.parse(JSON.stringify(snap.items));
+  ed.nextId = snap.nextId;
+  edClearSelection();
+  renderEd(); edUpdateInspector(); edUpdateUndoRedoBtns();
+  toast('已撤销', 'info');
+}
+function edRedo() {
+  if (ed.historyIndex >= ed.history.length - 1) return;
+  ed.historyIndex++;
+  const snap = ed.history[ed.historyIndex];
+  ed.items = JSON.parse(JSON.stringify(snap.items));
+  ed.nextId = snap.nextId;
+  edClearSelection();
+  renderEd(); edUpdateInspector(); edUpdateUndoRedoBtns();
+  toast('已重做', 'info');
+}
+function edUpdateUndoRedoBtns() {
+  $e('edUndo').disabled = ed.historyIndex <= 0;
+  $e('edRedo').disabled = ed.historyIndex >= ed.history.length - 1;
+}
+
+/* ---- 物品库 ---- */
+function renderEdLibrary() {
+  const container = $e('edLibBody');
+  let html = '';
+  Object.entries(ED_CATEGORIES).forEach(([catKey, catDef]) => {
+    const items = Object.entries(ED_ITEM_TYPES).filter(([, v]) => v.cat === catKey);
+    if (!items.length) return;
+    html += `
+      <div class="le-cat" data-cat="${catKey}">
+        <div class="le-cat-head">
+          <div class="left">
+            <span class="arrow">▼</span>
+            <span>${catDef.icon} ${catDef.label}</span>
+          </div>
+          <span class="count">${items.length}</span>
+        </div>
+        <div class="le-cat-body">
+          ${items.map(([typeKey, def]) => {
+            const isSeatCat = def.cat === 'seat';
+            const iconHtml = isSeatCat ? renderSeatIcon(typeKey, def.tx) : def.icon;
+            const hint = isSeatCat ? '点击后放置一个新座位' : '点击后放置设施';
+            return `
+              <button type="button" class="le-lib-item" data-type="${typeKey}" title="${def.label}（${def.w}×${def.h}）· ${hint}">
+                <span class="ic">${iconHtml}</span>
+                <span class="lb">${def.label}</span>
+                <span class="sz">${def.w}×${def.h}</span>
+              </button>`;
+          }).join('')}
+        </div>
+      </div>`;
+  });
+  container.innerHTML = html;
+
+  container.querySelectorAll('.le-cat-head').forEach(header => {
+    header.addEventListener('click', () => header.closest('.le-cat').classList.toggle('collapsed'));
+  });
+
+  container.querySelectorAll('.le-lib-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!ed.editMode) { toast('请先退出预览模式', 'warning'); return; }
+      startEdPlacing(btn.dataset.type);
+    });
+  });
+}
+
+function renderEdSlotStrip() {
+  const wrap = $e('edSlots');
+  if (!wrap) return;
+  wrap.innerHTML = AREA_SLOTS.map(s => `
+    <div class="le-slot-chip" title="${s.name} ${s.start} - ${s.end}">
+      <span class="n">${s.name}</span>
+      <span class="t">${s.start} - ${s.end}</span>
+    </div>`).join('');
+}
+
+/* ---- 放置模式 ---- */
+function startEdPlacing(typeKey) {
+  const def = edGetType(typeKey);
+  if (!def) return;
+  ed.placingType = typeKey;
+  edClearSelection();
+  edUpdateInspector();
+  document.querySelectorAll('.le-lib-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.type === typeKey);
+  });
+  $e('edPlacingBar').classList.add('show');
+  $e('edPlacingLabel').textContent = `${def.label}（${def.w}×${def.h}）`;
+  renderEd();
+}
+function cancelEdPlacing() {
+  ed.placingType = null;
+  document.querySelectorAll('.le-lib-item').forEach(el => el.classList.remove('active'));
+  $e('edPlacingBar').classList.remove('show');
+  hideEdPreview();
+}
+
+/* ---- 渲染画布 ---- */
+function renderEd() {
+  const canvas = $e('edCanvas');
+  if (!canvas) return;
+  canvas.style.gridTemplateColumns = `repeat(${ed.cols}, 48px)`;
+
+  let maxRow = 22;
+  ed.items.forEach(it => maxRow = Math.max(maxRow, it.gy + it.h - 1));
+  if (ed.editMode) maxRow += 1;
+
+  let html = '';
+  for (let y = 1; y <= maxRow; y++) {
+    for (let x = 1; x <= ed.cols; x++) {
+      html += `<div class="le-cell" style="grid-column:${x};grid-row:${y};"></div>`;
+    }
+  }
+
+  ed.items.forEach(item => {
+    const def = edGetType(item.type);
+    if (!def) return;
+    const isBig = item.w > 1 || item.h > 1;
+    const isSelected = edIsSelected(item.id);
+    const isSeatItem = item.kind === 'seat';
+    const resizable = edIsResizable(item.type);
+    const statusCls = isSeatItem ? `status-${item.status || 'free'}` : '';
+    const draggable = ed.editMode ? 'draggable="true"' : '';
+
+    const style = `grid-column:${item.gx}/span ${item.w};grid-row:${item.gy}/span ${item.h};` +
+      `background:${def.bg};border-color:${def.bd};color:${def.tx};`;
+
+    let content;
+    if (def.cat === 'seat') {
+      const nameCls = (item.w === 1 && item.h === 1) ? 'it-sub' : 'it-name';
+      content = `${renderSeatIcon(item.type, def.tx)}<span class="${nameCls}">${esc(item.name)}</span>`;
+    } else {
+      content = `<span class="it-icon">${def.icon}</span><span class="it-name">${esc(item.name)}</span>`;
+    }
+
+    const showResizers = isSelected && ed.editMode && resizable;
+    let extraCls = isSelected ? (resizable ? 'resizable' : 'no-resize') : '';
+
+    html += `
+      <div class="le-item ${isBig ? 'big' : ''} ${isSelected ? 'selected' : ''} ${extraCls} ${statusCls} ${ed.editMode ? 'draggable' : ''}"
+           style="${style}" data-id="${item.id}" data-type="${item.type}" ${draggable}
+           title="${esc(item.name)}（${def.label}）">
+        ${isSeatItem ? `<span class="status-dot"></span>` : ''}
+        ${content}
+        ${showResizers ? renderEdResizers() : ''}
+      </div>`;
+  });
+
+  canvas.innerHTML = html;
+  ensureEdPreviewEl();
+  ensureEdMovePreviewEl();
+  bindEdCanvasEvents();
+  updateEdStats();
+}
+
+function renderEdResizers() {
+  const dirs = ['nw','n','ne','e','se','s','sw','w'];
+  return dirs.map(d => `<div class="le-resizer le-r-${d}" data-dir="${d}"></div>`).join('');
+}
+
+/* ---- 坐标计算 ---- */
+function calcEdGridPos(e) {
+  const canvas = $e('edCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - rect.left) / CELL_STEP) + 1;
+  const y = Math.floor((e.clientY - rect.top) / CELL_STEP) + 1;
+  if (x < 1 || y < 1 || x > ed.cols) return null;
+  return { x, y };
+}
+function calcEdDropPos(e) {
+  if (!edDragState) return calcEdGridPos(e);
+  const canvas = $e('edCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const left = e.clientX - edDragState.offsetX - rect.left;
+  const top  = e.clientY - edDragState.offsetY - rect.top;
+  const x = Math.floor(left / CELL_STEP) + 1;
+  const y = Math.floor(top  / CELL_STEP) + 1;
+  if (x < 1 || y < 1 || x > ed.cols) return null;
+  return { x, y };
+}
+
+/* ---- 预览 ---- */
+function ensureEdPreviewEl() {
+  const canvas = $e('edCanvas');
+  if (!canvas) return;
+  if (!edPreviewEl) {
+    edPreviewEl = document.createElement('div');
+    edPreviewEl.className = 'le-place-preview';
+  }
+  if (edPreviewEl.parentNode !== canvas) canvas.appendChild(edPreviewEl);
+}
+function hideEdPreview() { if (edPreviewEl) edPreviewEl.style.display = 'none'; }
+function updateEdPreview(x, y) {
+  if (!ed.placingType || !edPreviewEl) return;
+  const def = edGetType(ed.placingType);
+  if (!def) return;
+  const valid = edCanPlace({ cols: ed.cols, items: ed.items }, x, y, def.w, def.h);
+  edPreviewEl.style.display = 'flex';
+  edPreviewEl.style.left = ((x - 1) * CELL_STEP) + 'px';
+  edPreviewEl.style.top = ((y - 1) * CELL_STEP) + 'px';
+  edPreviewEl.style.width = (def.w * 48 + (def.w - 1) * 4) + 'px';
+  edPreviewEl.style.height = (def.h * 48 + (def.h - 1) * 4) + 'px';
+  edPreviewEl.textContent = valid ? '' : '✕';
+  edPreviewEl.classList.toggle('invalid', !valid);
+}
+function ensureEdMovePreviewEl() {
+  const canvas = $e('edCanvas');
+  if (!canvas) return;
+  if (!edMovePreviewEl) {
+    edMovePreviewEl = document.createElement('div');
+    edMovePreviewEl.className = 'le-move-preview';
+  }
+  if (edMovePreviewEl.parentNode !== canvas) canvas.appendChild(edMovePreviewEl);
+}
+function hideEdMovePreview() { if (edMovePreviewEl) edMovePreviewEl.style.display = 'none'; }
+function updateEdMovePreview(x, y, w, h, valid) {
+  ensureEdMovePreviewEl();
+  if (!edMovePreviewEl) return;
+  edMovePreviewEl.style.display = 'block';
+  edMovePreviewEl.style.left = ((x - 1) * CELL_STEP) + 'px';
+  edMovePreviewEl.style.top = ((y - 1) * CELL_STEP) + 'px';
+  edMovePreviewEl.style.width = (w * 48 + (w - 1) * 4) + 'px';
+  edMovePreviewEl.style.height = (h * 48 + (h - 1) * 4) + 'px';
+  edMovePreviewEl.classList.toggle('invalid', !valid);
+}
+
+/* ---- 放置物品 ---- */
+function edNextFacilityName(typeKey) {
+  const def = edGetType(typeKey);
+  if (!def) return '物品';
+  return def.label + (ed.items.filter(it => it.type === typeKey).length + 1);
+}
+
+function tryEdPlaceAt(x, y) {
+  if (!ed.placingType) return;
+  const def = edGetType(ed.placingType);
+  if (!def) return;
+  const layout = { cols: ed.cols, items: ed.items };
+  if (!edCanPlace(layout, x, y, def.w, def.h)) {
+    toast(`该位置无法放置（需要 ${def.w}×${def.h} 空间，可能已被占用）`, 'error');
+    return;
+  }
+
+  if (def.cat === 'seat') {
+    const area = getArea(ed.areaId);
+    if (!area) return;
+    const seatTypeName = KEY_TO_SEAT_TYPE[ed.placingType] || '普通座位';
+    const seatNo = suggestSeatNo(ed.areaId);
+    const maxOrder = seats.filter(s => s.areaId === ed.areaId).reduce((m, s) => Math.max(m, s.order), 0);
+    const newSeat = {
+      id: seatIdSeq++, seatNo, areaId: ed.areaId, order: maxOrder + 1,
+      gx: null, gy: null,
+      type: seatTypeName, status: 'free',
+      reader: null, startTime: null, remark: ''
+    };
+    seats.push(newSeat);
+    ed.items.push({
+      id: ed.nextId++, kind: 'seat', seatId: newSeat.id,
+      type: ed.placingType, name: seatNo, gx: x, gy: y,
+      w: 1, h: 1, status: 'free', remark: ''
+    });
+    edSaveHistory();
+    renderEd();
+    renderAll();
+    toast(`已新增座位「${seatNo}」`);
+    return;
+  }
+
+  ed.items.push({
+    id: ed.nextId++, kind: 'facility', type: ed.placingType,
+    name: edNextFacilityName(ed.placingType),
+    gx: x, gy: y, w: def.w, h: def.h, status: '', remark: ''
+  });
+  edSaveHistory();
+  toast(`已添加「${ed.items[ed.items.length - 1].name}」`);
+  renderEd();
+}
+
+/* ---- 多选 & 统计 ---- */
+function edClearSelection() {
+  ed.selectedIds.clear();
+  ed.selectedId = null;
+}
+function edIsSelected(id) { return ed.selectedIds.has(id); }
+function edSelectedArray() { return ed.items.filter(it => ed.selectedIds.has(it.id)); }
+function edCanMoveGroup(items, cols, group, dx, dy) {
+  const excludeIds = new Set(group.map(it => it.id));
+  for (const it of group) {
+    const nx = it.gx + dx, ny = it.gy + dy;
+    if (nx < 1 || ny < 1 || nx + it.w - 1 > cols) return false;
+    const block = items.some(o =>
+      !excludeIds.has(o.id) &&
+      nx < o.gx + o.w && o.gx < nx + it.w &&
+      ny < o.gy + o.h && o.gy < ny + it.h
+    );
+    if (block) return false;
+  }
+  return true;
+}
+function updateEdStats() {
+  const seatItems = ed.items.filter(it => it.kind === 'seat');
+  const counts = { seat_normal: 0, seat_window: 0, seat_power: 0, seat_single: 0, seat_round: 0 };
+  seatItems.forEach(it => { if (counts[it.type] != null) counts[it.type]++; });
+  const set = (id, v) => { const el = $e(id); if (el) el.textContent = v; };
+  set('edStatTotal', seatItems.length);
+  set('edStatNormal', counts.seat_normal);
+  set('edStatWindow', counts.seat_window);
+  set('edStatPower', counts.seat_power);
+  set('edStatSingle', counts.seat_single);
+  set('edStatRound', counts.seat_round);
+  set('edStatFacility', ed.items.length - seatItems.length);
+}
+
+/* ---- 圈选 ---- */
+function ensureEdMarqueeEl() {
+  const canvas = $e('edCanvas');
+  if (!canvas) return;
+  if (!edMarqueeEl) { edMarqueeEl = document.createElement('div'); edMarqueeEl.className = 'le-marquee'; }
+  if (edMarqueeEl.parentNode !== canvas) canvas.appendChild(edMarqueeEl);
+}
+function edStartMarquee(e) {
+  if (!ed.editMode || ed.placingType) return;
+  const pos = calcEdGridPos(e);
+  if (!pos) return;
+  edMarquee = { startX: pos.x, startY: pos.y, moved: false, startClientX: e.clientX, startClientY: e.clientY };
+  ensureEdMarqueeEl();
+  document.addEventListener('mousemove', onEdMarqueeMove);
+  document.addEventListener('mouseup', onEdMarqueeEnd);
+  document.body.style.userSelect = 'none';
+}
+function onEdMarqueeMove(e) {
+  if (!edMarquee) return;
+  const dx = e.clientX - edMarquee.startClientX, dy = e.clientY - edMarquee.startClientY;
+  if (!edMarquee.moved && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+  edMarquee.moved = true;
+  const canvas = $e('edCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const curX = Math.max(1, Math.min(ed.cols, Math.floor((e.clientX - rect.left) / CELL_STEP) + 1));
+  const curY = Math.max(1, Math.floor((e.clientY - rect.top) / CELL_STEP) + 1);
+  const left = Math.min(edMarquee.startX, curX), top = Math.min(edMarquee.startY, curY);
+  const right = Math.max(edMarquee.startX, curX), bottom = Math.max(edMarquee.startY, curY);
+  edMarquee.left = left; edMarquee.top = top; edMarquee.right = right; edMarquee.bottom = bottom;
+  if (edMarqueeEl) {
+    edMarqueeEl.style.display = 'block';
+    edMarqueeEl.style.left = ((left - 1) * CELL_STEP) + 'px';
+    edMarqueeEl.style.top = ((top - 1) * CELL_STEP) + 'px';
+    edMarqueeEl.style.width = ((right - left + 1) * 48 + (right - left) * 4) + 'px';
+    edMarqueeEl.style.height = ((bottom - top + 1) * 48 + (bottom - top) * 4) + 'px';
+  }
+  document.querySelectorAll('.le-item').forEach(el => {
+    const it = ed.items.find(x => x.id === Number(el.dataset.id));
+    const hit = it && it.gx <= right && it.gx + it.w - 1 >= left && it.gy <= bottom && it.gy + it.h - 1 >= top;
+    el.classList.toggle('marquee-hit', !!hit);
+  });
+}
+function onEdMarqueeEnd(e) {
+  document.removeEventListener('mousemove', onEdMarqueeMove);
+  document.removeEventListener('mouseup', onEdMarqueeEnd);
+  document.body.style.userSelect = '';
+  if (!edMarquee) return;
+  const m = edMarquee;
+  edMarquee = null;
+  if (edMarqueeEl) edMarqueeEl.style.display = 'none';
+  document.querySelectorAll('.le-item.marquee-hit').forEach(el => el.classList.remove('marquee-hit'));
+  edMarqueeClickHandled = true;
+  if (!m.moved) {
+    if (!e.ctrlKey && !e.metaKey) { edClearSelection(); renderEd(); edUpdateInspector(); }
+    return;
+  }
+  const ids = ed.items
+    .filter(it => it.gx <= m.right && it.gx + it.w - 1 >= m.left &&
+                 it.gy <= m.bottom && it.gy + it.h - 1 >= m.top)
+    .map(it => it.id);
+  if (!ids.length) {
+    if (!e.ctrlKey && !e.metaKey) { edClearSelection(); renderEd(); edUpdateInspector(); }
+    return;
+  }
+  if (e.ctrlKey || e.metaKey) {
+    ids.forEach(id => ed.selectedIds.add(id));
+  } else {
+    ed.selectedIds = new Set(ids);
+  }
+  ed.selectedId = ids[ids.length - 1];
+  renderEd(); edUpdateInspector();
+}
+
+/* ---- 批量删除（编辑器内） ---- */
+function edDeleteSelected() {
+  const sel = edSelectedArray();
+  if (!sel.length) return;
+  const seatItems = sel.filter(it => it.kind === 'seat');
+  const facilityCount = sel.length - seatItems.length;
+  const doDelete = () => {
+    const seatIds = new Set(seatItems.map(it => it.seatId));
+    seats = seats.filter(s => !seatIds.has(s.id));
+    const idSet = new Set(sel.map(it => it.id));
+    ed.items = ed.items.filter(it => !idSet.has(it.id));
+    edClearSelection();
+    edSaveHistory(); renderEd(); edUpdateInspector(); renderAll();
+    toast(`已删除 ${sel.length} 个物品（座位 ${seatItems.length} 个，设施 ${facilityCount} 个）`);
+  };
+  if (seatItems.length) {
+    openConfirm('删除选中物品',
+      `确定要删除选中的 ${sel.length} 个物品吗？其中 ${seatItems.length} 个座位将被彻底删除（含读者信息）。`, doDelete, 'btn btn-primary');
+  } else {
+    doDelete();
+  }
+}
+
+/* ---- 选中 & 属性面板 ---- */
+function selectEdItem(id) {
+  edClearSelection();
+  ed.selectedIds.add(id);
+  ed.selectedId = id;
+  renderEd();
+  edUpdateInspector();
+}
+function deselectEd() {
+  edClearSelection();
+  ed.placingType = null;
+  document.querySelectorAll('.le-lib-item').forEach(el => el.classList.remove('active'));
+  $e('edPlacingBar').classList.remove('show');
+  hideEdPreview();
+  renderEd();
+  edUpdateInspector();
+}
+
+function edUpdateInspector() {
+  const empty = $e('edInsEmpty');
+  const body = $e('edInsBody');
+  if (ed.selectedIds.size > 1) {
+    const sel = edSelectedArray();
+    const seatCount = sel.filter(it => it.kind === 'seat').length;
+    empty.style.display = 'flex';
+    empty.innerHTML = `<div class="big-icon">🖱️</div>
+      <div style="color:var(--text);font-weight:600;font-size:13px">已选中 ${sel.length} 个物品</div>
+      <div>含 ${seatCount} 个座位<br>拖动画布整组移动 · Delete 删除 · Esc 取消</div>`;
+    body.classList.remove('show');
+    return;
+  }
+  if (ed.selectedId == null) {
+    empty.style.display = 'flex';
+    empty.innerHTML = '<div class="big-icon">🖱️</div><div>点击画布中的物品<br>查看并编辑其属性</div><div style="font-size:11px;opacity:.75">拖拽空白圈选 · Ctrl+点击加选 · 选中后整组移动</div>';
+    body.classList.remove('show');
+    return;
+  }
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) { empty.style.display = 'flex'; body.classList.remove('show'); return; }
+  const def = edGetType(item.type);
+  if (!def) return;
+
+  empty.style.display = 'none';
+  body.classList.add('show');
+
+  const pv = $e('edInsPreview');
+  pv.style.background = def.bg;
+  pv.style.borderColor = def.bd;
+  pv.style.color = def.tx;
+
+  if (def.cat === 'seat') $e('edInsIcon').innerHTML = renderSeatIcon(item.type, def.tx);
+  else $e('edInsIcon').textContent = def.icon;
+
+  $e('edInsTypeName').textContent = def.label;
+  $e('edInsCategory').textContent = (ED_CATEGORIES[def.cat]?.label || '') +
+    (item.kind === 'seat' ? ' · 座位' : ' · 设施');
+
+  $e('edInsName').value = item.name || '';
+  $e('edInsX').value = item.gx;
+  $e('edInsY').value = item.gy;
+  $e('edInsW').value = item.w;
+  $e('edInsH').value = item.h;
+  $e('edInsRemark').value = item.remark || '';
+
+  const isSeatItem = item.kind === 'seat';
+  $e('edSeatStatusRow').style.display = isSeatItem ? '' : 'none';
+  $e('edSeatTypeRow').style.display = isSeatItem ? '' : 'none';
+  if (isSeatItem) {
+    $e('edInsStatus').value = item.status || 'free';
+    $e('edInsSeatType').value = item.type;
+  }
+
+  const resizable = edIsResizable(item.type);
+  const editable = ed.editMode && !isSeatItem;
+
+  $e('edInsName').disabled = !editable;
+  $e('edInsRemark').disabled = !ed.editMode;
+  $e('edInsStatus').disabled = !ed.editMode;
+  $e('edInsSeatType').disabled = !ed.editMode;
+  $e('edInsW').disabled = !editable || !resizable;
+  $e('edInsH').disabled = !editable || !resizable;
+  $e('edInsX').disabled = !ed.editMode;
+  $e('edInsY').disabled = !ed.editMode;
+  $e('edDelete').disabled = !ed.editMode;
+  $e('edRotate').disabled = !editable || (item.w === 1 && item.h === 1);
+
+  $e('edInsWWrap').classList.toggle('locked', !resizable);
+  $e('edInsHWrap').classList.toggle('locked', !resizable);
+
+  if (isSeatItem) $e('edInsSizeHint').textContent = '🔒 座位尺寸固定';
+  else if (!resizable) $e('edInsSizeHint').textContent = '🔒 尺寸固定';
+  else $e('edInsSizeHint').textContent = '';
+
+  $e('edShortcutResize').style.display = (!isSeatItem && resizable) ? '' : 'none';
+}
+
+/* ---- 属性面板事件 ---- */
+$e('edInsName').addEventListener('input', e => {
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) return;
+  item.name = e.target.value;
+  const el = document.querySelector(`.le-item[data-id="${item.id}"]`);
+  if (el) el.querySelectorAll('.it-name, .it-sub').forEach(n => n.textContent = item.name);
+});
+$e('edInsRemark').addEventListener('input', e => {
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) return;
+  item.remark = e.target.value;
+});
+$e('edInsStatus').addEventListener('change', e => {
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) return;
+  item.status = e.target.value;
+  edSaveHistory(); renderEd(); edUpdateInspector();
+});
+$e('edInsSeatType').addEventListener('change', e => {
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) return;
+  item.type = e.target.value;
+  edSaveHistory(); renderEd(); edUpdateInspector();
+  toast('已更新座位类型', 'info');
+});
+function applyEdSizeInputs() {
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) return;
+  if (item.kind === 'seat' || !edIsResizable(item.type)) {
+    $e('edInsW').value = item.w;
+    $e('edInsH').value = item.h;
+    return;
+  }
+  const w = Math.max(1, Math.min(ed.cols, parseInt($e('edInsW').value, 10) || 1));
+  const h = Math.max(1, Math.min(99, parseInt($e('edInsH').value, 10) || 1));
+  if (w === item.w && h === item.h) return;
+  if (!edCanPlace({ cols: ed.cols, items: ed.items }, item.gx, item.gy, w, h, item.id)) {
+    toast('该尺寸超出边界或与其他物品冲突', 'error');
+    $e('edInsW').value = item.w; $e('edInsH').value = item.h;
+    return;
+  }
+  item.w = w; item.h = h;
+  edSaveHistory(); renderEd(); edUpdateInspector();
+}
+$e('edInsW').addEventListener('change', applyEdSizeInputs);
+$e('edInsH').addEventListener('change', applyEdSizeInputs);
+$e('edInsW').addEventListener('keydown', e => { if (e.key === 'Enter') applyEdSizeInputs(); });
+$e('edInsH').addEventListener('keydown', e => { if (e.key === 'Enter') applyEdSizeInputs(); });
+
+function applyEdPosInputs() {
+  const item = ed.items.find(it => it.id === ed.selectedId);
+  if (!item) return;
+  let nx = parseInt($e('edInsX').value, 10);
+  let ny = parseInt($e('edInsY').value, 10);
+  if (isNaN(nx) || nx < 1) nx = 1;
+  if (isNaN(ny) || ny < 1) ny = 1;
+  if (nx + item.w - 1 > ed.cols) nx = Math.max(1, ed.cols - item.w + 1);
+
+  if (nx === item.gx && ny === item.gy) {
+    $e('edInsX').value = item.gx;
+    $e('edInsY').value = item.gy;
+    return;
+  }
+  if (!edCanPlace({ cols: ed.cols, items: ed.items }, nx, ny, item.w, item.h, item.id)) {
+    toast('该位置与其他物品冲突或超出边界', 'error');
+    $e('edInsX').value = item.gx;
+    $e('edInsY').value = item.gy;
+    return;
+  }
+  item.gx = nx; item.gy = ny;
+  edSaveHistory(); renderEd(); edUpdateInspector();
+  toast(`画布位置已更新（第 ${ny} 行 · 第 ${nx} 列）`, 'info');
+}
+$e('edInsX').addEventListener('change', applyEdPosInputs);
+$e('edInsY').addEventListener('change', applyEdPosInputs);
+$e('edInsX').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applyEdPosInputs(); } });
+$e('edInsY').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applyEdPosInputs(); } });
+
+$e('edRotate').addEventListener('click', () => { if (ed.selectedId != null) edRotateItem(ed.selectedId); });
+$e('edDelete').addEventListener('click', () => { if (ed.selectedIds.size) edDeleteSelected(); });
+$e('edDeselect').addEventListener('click', deselectEd);
+
+/* ---- 旋转 ---- */
+function edRotateItem(id) {
+  if (!ed.editMode) return;
+  const item = ed.items.find(it => it.id === id);
+  if (!item || item.kind === 'seat') { toast('座位尺寸固定，无法旋转', 'warning'); return; }
+  if (item.w === 1 && item.h === 1) { toast('该物品旋转后无变化', 'warning'); return; }
+  const newW = item.h, newH = item.w;
+  const layout = { cols: ed.cols, items: ed.items };
+  if (edCanPlace(layout, item.gx, item.gy, newW, newH, item.id)) {
+    item.w = newW; item.h = newH;
+  } else {
+    const pos = edFindNearestPlace(item.gx, item.gy, newW, newH, item.id);
+    if (!pos) { toast('旋转后空间不足，无法旋转', 'error'); return; }
+    item.w = newW; item.h = newH; item.gx = pos.x; item.gy = pos.y;
+  }
+  edSaveHistory(); renderEd(); edUpdateInspector();
+  toast('已旋转 90°');
+}
+function edFindNearestPlace(x, y, w, h, excludeId) {
+  const layout = { cols: ed.cols, items: ed.items };
+  for (let radius = 0; radius <= 15; radius++) {
+    for (let dx = -radius; dx <= radius; dx++) {
+      for (let dy = -radius; dy <= radius; dy++) {
+        if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) continue;
+        const nx = x + dx, ny = y + dy;
+        if (edCanPlace(layout, nx, ny, w, h, excludeId)) return { x: nx, y: ny };
+      }
+    }
+  }
+  return null;
+}
+
+/* ---- 删除 ---- */
+function edDeleteItem(id) {
+  const item = ed.items.find(it => it.id === id);
+  if (!item) return;
+  if (item.kind === 'seat') {
+    openConfirm('删除座位',
+      `座位「${item.name}」将被彻底删除（包括其读者信息），确定继续吗？`, () => {
+      seats = seats.filter(s => s.id !== item.seatId);
+      ed.items = ed.items.filter(it => it.id !== id);
+      edClearSelection();
+      edSaveHistory(); renderEd(); edUpdateInspector(); renderAll();
+      toast(`已删除座位「${item.name}」`);
+    }, 'btn btn-primary');
+    return;
+  }
+  ed.items = ed.items.filter(it => it.id !== id);
+  edClearSelection();
+  edSaveHistory(); renderEd(); edUpdateInspector();
+  toast(`已删除「${item.name}」`);
+}
+
+/* ---- 画布事件 ---- */
+function bindEdCanvasEvents() {
+  const canvas = $e('edCanvas');
+  const scroll = $e('edCanvasScroll');
+  if (!canvas || !scroll) return;
+
+  canvas.onclick = function(e) {
+    if (edMarqueeClickHandled) { edMarqueeClickHandled = false; return; }
+    if (e.target.classList.contains('le-resizer')) return;
+    const el = e.target.closest('.le-item');
+
+    if (el) {
+      if (ed.placingType) return;
+      const id = Number(el.dataset.id);
+      if (e.ctrlKey || e.metaKey) {
+        if (ed.selectedIds.has(id)) {
+          ed.selectedIds.delete(id);
+          ed.selectedId = ed.selectedIds.size ? [...ed.selectedIds][ed.selectedIds.size - 1] : null;
+        } else {
+          ed.selectedIds.add(id);
+          ed.selectedId = id;
+        }
+        renderEd(); edUpdateInspector();
+      } else {
+        selectEdItem(id);
+      }
+      return;
+    }
+
+    if (ed.placingType) {
+      const pos = calcEdGridPos(e);
+      if (pos) tryEdPlaceAt(pos.x, pos.y);
+      return;
+    }
+    deselectEd();
+  };
+
+  canvas.ondragstart = function(e) {
+    if (!ed.editMode) return;
+    const el = e.target.closest('.le-item');
+    if (!el) return;
+    const id = Number(el.dataset.id);
+    const rect = el.getBoundingClientRect();
+    const group = ed.selectedIds.has(id)
+      ? edSelectedArray()
+      : [ed.items.find(it => it.id === id)];
+    if (!group.length) return;
+    edDragState = {
+      id,
+      group: group.map(it => it.id),
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      dx: 0, dy: 0
+    };
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', String(id)); } catch (err) {}
+  };
+
+  canvas.ondragend = function(e) {
+    const el = e.target.closest('.le-item');
+    if (el) el.classList.remove('dragging');
+    hideEdMovePreview();
+    edDragState = null;
+  };
+
+  scroll.ondragover = function(e) {
+    if (!edDragState) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const srcItem = ed.items.find(it => it.id === edDragState.id);
+    if (!srcItem) return;
+    const pos = calcEdDropPos(e);
+    if (!pos) { hideEdMovePreview(); return; }
+    const group = edDragState.group.map(gid => ed.items.find(it => it.id === gid)).filter(Boolean);
+    if (!group.length) return;
+    const dx = pos.x - srcItem.gx, dy = pos.y - srcItem.gy;
+    const valid = (dx === 0 && dy === 0) || edCanMoveGroup(ed.items, ed.cols, group, dx, dy);
+    const minX = Math.min(...group.map(it => it.gx)), minY = Math.min(...group.map(it => it.gy));
+    const maxX = Math.max(...group.map(it => it.gx + it.w - 1)), maxY = Math.max(...group.map(it => it.gy + it.h - 1));
+    updateEdMovePreview(minX + dx, minY + dy, maxX - minX + 1, maxY - minY + 1, valid);
+    edDragState.dx = dx; edDragState.dy = dy;
+  };
+
+  scroll.ondrop = function(e) {
+    if (!edDragState) return;
+    e.preventDefault();
+    const srcItem = ed.items.find(it => it.id === edDragState.id);
+    if (!srcItem) { edDragState = null; hideEdMovePreview(); return; }
+    const group = edDragState.group.map(gid => ed.items.find(it => it.id === gid)).filter(Boolean);
+    if (!group.length) { edDragState = null; hideEdMovePreview(); return; }
+
+    if (group.length === 1) {
+      const targetEl = e.target.closest('.le-item');
+      if (targetEl) {
+        const tid = Number(targetEl.dataset.id);
+        if (tid !== srcItem.id) {
+          const dstItem = ed.items.find(it => it.id === tid);
+          if (dstItem) {
+            const layout = { cols: ed.cols, items: ed.items };
+            if (edCanPlace(layout, dstItem.gx, dstItem.gy, srcItem.w, srcItem.h, srcItem.id) &&
+                edCanPlace(layout, srcItem.gx, srcItem.gy, dstItem.w, dstItem.h, dstItem.id)) {
+              const tx = srcItem.gx, ty = srcItem.gy;
+              srcItem.gx = dstItem.gx; srcItem.gy = dstItem.gy;
+              dstItem.gx = tx; dstItem.gy = ty;
+              edSaveHistory(); renderEd(); selectEdItem(srcItem.id);
+              toast('已交换位置');
+            } else {
+              toast('交换后空间不足', 'error');
+            }
+            hideEdMovePreview();
+            edDragState = null;
+            return;
+          }
+        }
+      }
+    }
+
+    const dx = edDragState.dx || 0, dy = edDragState.dy || 0;
+    if (dx === 0 && dy === 0) { hideEdMovePreview(); edDragState = null; return; }
+    if (!edCanMoveGroup(ed.items, ed.cols, group, dx, dy)) {
+      toast('目标位置空间不足', 'error');
+      hideEdMovePreview(); edDragState = null; return;
+    }
+    group.forEach(it => { it.gx += dx; it.gy += dy; });
+    edSaveHistory(); renderEd(); edUpdateInspector();
+    toast(group.length > 1 ? `已移动 ${group.length} 个物品` : '已移动');
+    hideEdMovePreview();
+    edDragState = null;
+  };
+
+  canvas.onmousedown = function(e) {
+    if (e.button !== 0) return;
+    const r = e.target.closest('.le-resizer');
+    if (r) {
+      if (!ed.editMode) return;
+      const itemEl = r.closest('.le-item');
+      if (!itemEl) return;
+      startEdResize(e, Number(itemEl.dataset.id), r.dataset.dir);
+      return;
+    }
+    if (e.target.closest('.le-item')) return;
+    edStartMarquee(e);
+  };
+
+  scroll.onmousemove = function(e) {
+    if (!ed.placingType) { hideEdPreview(); return; }
+    const pos = calcEdGridPos(e);
+    if (!pos) { hideEdPreview(); return; }
+    updateEdPreview(pos.x, pos.y);
+  };
+  scroll.onmouseleave = function() { hideEdPreview(); };
+}
+
+/* ---- 缩放 ---- */
+function startEdResize(e, itemId, dir) {
+  if (!ed.editMode) return;
+  e.stopPropagation(); e.preventDefault();
+  const item = ed.items.find(it => it.id === itemId);
+  if (!item) return;
+  if (item.kind === 'seat' || !edIsResizable(item.type)) {
+    toast('该物品尺寸固定，无法调整', 'warning');
+    return;
+  }
+  edResizeState = {
+    id: itemId, dir,
+    startMouseX: e.clientX, startMouseY: e.clientY,
+    startX: item.gx, startY: item.gy, startW: item.w, startH: item.h,
+    changed: false
+  };
+  document.body.style.userSelect = 'none';
+  document.addEventListener('mousemove', onEdResizeMove);
+  document.addEventListener('mouseup', onEdResizeEnd);
+  showEdBubble(e.clientX, e.clientY, item.w, item.h);
+}
+function onEdResizeMove(e) {
+  if (!edResizeState) return;
+  const { id, dir, startMouseX, startMouseY, startX, startY, startW, startH } = edResizeState;
+  const dx = Math.round((e.clientX - startMouseX) / CELL_STEP);
+  const dy = Math.round((e.clientY - startMouseY) / CELL_STEP);
+  let newX = startX, newY = startY, newW = startW, newH = startH;
+  if (dir.includes('e')) newW = Math.max(1, startW + dx);
+  if (dir.includes('w')) { newW = Math.max(1, startW - dx); newX = startX + startW - newW; }
+  if (dir.includes('s')) newH = Math.max(1, startH + dy);
+  if (dir.includes('n')) { newH = Math.max(1, startH - dy); newY = startY + startH - newH; }
+  if (newX < 1) { const diff = 1 - newX; newX = 1; newW = Math.max(1, newW - diff); }
+  if (newX + newW - 1 > ed.cols) newW = ed.cols - newX + 1;
+  if (newY < 1) { const diff = 1 - newY; newY = 1; newH = Math.max(1, newH - diff); }
+  if (!edCanPlace({ cols: ed.cols, items: ed.items }, newX, newY, newW, newH, id)) {
+    showEdBubble(e.clientX, e.clientY, newW, newH, true);
+    return;
+  }
+  const item = ed.items.find(it => it.id === id);
+  if (!item) return;
+  const changed = item.gx !== newX || item.gy !== newY || item.w !== newW || item.h !== newH;
+  item.gx = newX; item.gy = newY; item.w = newW; item.h = newH;
+  if (changed) edResizeState.changed = true;
+  const el = document.querySelector(`.le-item[data-id="${id}"]`);
+  if (el) {
+    el.style.gridColumn = `${newX} / span ${newW}`;
+    el.style.gridRow = `${newY} / span ${newH}`;
+    el.classList.toggle('big', newW > 1 || newH > 1);
+  }
+  showEdBubble(e.clientX, e.clientY, newW, newH);
+  if (ed.selectedId === id) {
+    $e('edInsW').value = newW; $e('edInsH').value = newH;
+    $e('edInsX').value = newX; $e('edInsY').value = newY;
+  }
+}
+function onEdResizeEnd() {
+  if (!edResizeState) return;
+  const changed = edResizeState.changed;
+  edResizeState = null;
+  document.body.style.userSelect = '';
+  document.removeEventListener('mousemove', onEdResizeMove);
+  document.removeEventListener('mouseup', onEdResizeEnd);
+  hideEdBubble();
+  if (changed) { edSaveHistory(); renderEd(); edUpdateInspector(); }
+}
+function showEdBubble(x, y, w, h, invalid) {
+  const bubble = $e('edSizeBubble');
+  if (!bubble) return;
+  bubble.textContent = `${w} × ${h}${invalid ? '  ✕' : ''}`;
+  bubble.style.left = (x + 14) + 'px';
+  bubble.style.top = (y + 14) + 'px';
+  bubble.classList.add('show');
+  bubble.style.background = invalid ? '#a8071a' : '#1f2329';
+}
+function hideEdBubble() { const b = $e('edSizeBubble'); if (b) b.classList.remove('show'); }
+
+/* ---- 位置选择器 ---- */
+function fillEdVenueSelect(selectedId) {
+  const sel = $e('edVenue');
+  if (!sel) return;
+  sel.innerHTML = VENUES.map(v =>
+    `<option value="${v.id}" ${v.id === selectedId ? 'selected' : ''}>${esc(v.name)}</option>`
+  ).join('');
+}
+function fillEdFloorSelect(venueId, selectedId) {
+  const sel = $e('edFloor');
+  const floors = getFloorsByVenue(venueId);
+  sel.innerHTML = floors.map(f =>
+    `<option value="${f.id}" ${f.id === selectedId ? 'selected' : ''}>${esc(f.name)}</option>`
+  ).join('');
+  const val = floors.some(f => f.id === selectedId) ? selectedId : (floors[0] ? floors[0].id : '');
+  sel.value = val;
+  return val;
+}
+function fillEdAreaSelect(floorId, selectedId) {
+  const sel = $e('edArea');
+  const areas = getAreasByFloor(floorId);
+  sel.innerHTML = areas.map(a =>
+    `<option value="${a.id}" ${a.id === selectedId ? 'selected' : ''}>${esc(a.name)}</option>`
+  ).join('');
+  const val = areas.some(a => a.id === selectedId) ? selectedId : (areas[0] ? areas[0].id : '');
+  sel.value = val;
+  return val;
+}
+function syncEdLocationSelects(areaId) {
+  const area = getArea(areaId);
+  if (!area) return;
+  const floor = getFloor(area.floorId);
+  const venueId = floor ? floor.venueId : VENUES[0].id;
+  fillEdVenueSelect(venueId);
+  fillEdFloorSelect(venueId, area.floorId);
+  fillEdAreaSelect(area.floorId, areaId);
+}
+
+/* ---- 加载区域 ---- */
+function loadEditorArea(areaId) {
+  const area = getArea(areaId);
+  if (!area) return;
+  ed.areaId = areaId;
+  const layout = buildEditorItems(areaId);
+  ed.cols = layout.cols || 24;
+  ed.items = layout.items;
+  ed.nextId = layout.nextId;
+  edClearSelection();
+  ed.placingType = null;
+  ed.editMode = true;
+  ed.history = [];
+  ed.historyIndex = -1;
+
+  $e('edColsInput').value = ed.cols;
+  $e('edToggleMode').textContent = '👁️ 预览模式';
+  $e('edToggleMode').classList.remove('le-on');
+  $e('edPlacingBar').classList.remove('show');
+  document.querySelectorAll('.le-lib-item').forEach(el => el.classList.remove('active'));
+
+  syncEdLocationSelects(areaId);
+  hideEdPreview(); hideEdMovePreview();
+
+  edSaveHistory();
+  renderEd();
+  edUpdateInspector();
+  renderEdSlotStrip();
+}
+
+/* ---- 保存布局 ---- */
+function saveEdLayout() {
+  if (!ed.areaId) return;
+  const layout = areaLayouts[ed.areaId];
+  if (!layout) return;
+  layout.cols = ed.cols;
+  layout.items = ed.items;
+  layout.nextId = ed.nextId;
+
+  const remainingSeatIds = new Set(
+    ed.items.filter(it => it.kind === 'seat').map(it => it.seatId)
+  );
+  seats = seats.filter(s => s.areaId !== ed.areaId || remainingSeatIds.has(s.id));
+
+  ed.items.forEach(it => {
+    if (it.kind !== 'seat') return;
+    const s = seats.find(x => x.id === it.seatId);
+    if (!s) return;
+    s.status = it.status;
+    s.remark = it.remark || '';
+    const mapped = KEY_TO_SEAT_TYPE[it.type];
+    if (mapped) s.type = mapped;
+  });
+
+  renderAll();
+}
+
+/* ---- 打开/关闭编辑器 ---- */
+function openLayoutEditor(targetSeatId) {
+  ed.open = true;
+  $e('layoutEditorModal').classList.add('show');
+  fillEdVenueSelect(VENUES[0].id);
+
+  let targetAreaId = state.filterAreaId;
+  let seatToSelect = null;
+
+  if (targetSeatId != null && typeof targetSeatId === 'number') {
+    const s = seats.find(x => x.id === targetSeatId);
+    if (s) { targetAreaId = s.areaId; seatToSelect = s; }
+  }
+
+  if (!targetAreaId || !getArea(targetAreaId)) {
+    if (state.filterFloorId) {
+      const areas = getAreasByFloor(state.filterFloorId);
+      targetAreaId = areas.length ? areas[0].id : AREAS[0].id;
+    } else if (state.filterVenueId) {
+      const floors = getFloorsByVenue(state.filterVenueId);
+      const areas = floors.length ? getAreasByFloor(floors[0].id) : [];
+      targetAreaId = areas.length ? areas[0].id : AREAS[0].id;
+    } else {
+      targetAreaId = AREAS[0].id;
+    }
+  }
+
+  loadEditorArea(targetAreaId);
+  renderEdLibrary();
+
+  if (seatToSelect) {
+    const item = ed.items.find(it => it.seatId === seatToSelect.id);
+    if (item) {
+      selectEdItem(item.id);
+      setTimeout(() => {
+        const el = document.querySelector(`.le-item[data-id="${item.id}"]`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      }, 180);
+    }
+  }
+}
+function closeLayoutEditor() {
+  if (ed.areaId) saveEdLayout();
+  ed.open = false;
+  ed.placingType = null;
+  $e('layoutEditorModal').classList.remove('show');
+  hideEdPreview(); hideEdMovePreview();
+  renderAll();
+}
+
+/* ---- 加载示例 ---- */
+function edLoadDemo() {
+  if (!ed.areaId) return;
+  const facilityCount = ed.items.filter(it => it.kind === 'facility').length;
+  if (facilityCount) {
+    openConfirm('加载示例',
+      '示例布局会清空当前区域的设施（座位保持不动），确定继续吗？', () => edApplyDemo(), 'btn btn-primary');
+    return;
+  }
+  edApplyDemo();
+}
+function edApplyDemo() {
+  ed.items = ed.items.filter(it => it.kind === 'seat');
+  const add = (typeKey, x, y, name) => {
+    const def = edGetType(typeKey);
+    if (!def) return;
+    if (!canPlaceInItems(ed.items, ed.cols, x, y, def.w, def.h)) return;
+    ed.items.push({
+      id: ed.nextId++, kind: 'facility', type: typeKey,
+      name: name || edNextFacilityName(typeKey),
+      gx: x, gy: y, w: def.w, h: def.h, status: '', remark: ''
+    });
+  };
+  const lastRow = ed.items.reduce((m, it) => Math.max(m, it.gy + it.h - 1), 0);
+  const base = Math.max(lastRow + 2, 1);
+
+  add('door', 1, base, '主入口');
+  add('service_desk', 4, base, '总服务台');
+  add('self_borrow', 8, base, '自助借还机');
+  add('search_kiosk', 9, base, '检索机');
+  add('printer', 10, base, '打印机');
+  add('stairs', 14, base, '楼梯');
+  add('elevator', 16, base, '电梯');
+  add('toilet_m', 19, base, '男卫生间');
+
+  add('water', 8, base + 2, '饮水机');
+  add('charging', 9, base + 2, '充电桩');
+  add('ac', 12, base + 2, '空调');
+
+  add('shelf', 1, base + 4, '书架A');
+  add('shelf', 5, base + 4, '书架B');
+  add('magazine', 9, base + 4, '期刊架');
+  add('newspaper', 12, base + 4, '报纸架');
+  add('shelf_tall', 16, base + 4, '高书架');
+  add('toilet_f', 19, base + 4, '女卫生间');
+
+  add('reading_table', 1, base + 7, '阅览桌1');
+  add('reading_table', 4, base + 7, '阅览桌2');
+  add('long_table', 7, base + 7, '长条桌');
+  add('group_table', 12, base + 7, '讨论桌');
+  add('plant', 16, base + 7, '绿植');
+
+  edSaveHistory(); renderEd(); edUpdateInspector();
+  toast('示例布局已加载');
+}
+
+/* ---- 编辑器事件 ---- */
+function bindEditorEvents() {
+  $e('edVenue').addEventListener('change', e => {
+    const fid = fillEdFloorSelect(e.target.value, '');
+    const aid = fillEdAreaSelect(fid, '');
+    if (aid) loadEditorArea(aid);
+  });
+  $e('edFloor').addEventListener('change', e => {
+    const aid = fillEdAreaSelect(e.target.value, '');
+    if (aid) loadEditorArea(aid);
+  });
+  $e('edArea').addEventListener('change', e => {
+    if (e.target.value) loadEditorArea(e.target.value);
+  });
+  $e('edColsInput').addEventListener('change', e => {
+    const val = Math.max(8, Math.min(48, parseInt(e.target.value, 10) || 24));
+    e.target.value = val;
+    const overflow = ed.items.filter(it => it.gx + it.w - 1 > val);
+    if (overflow.length) {
+      openConfirm('调整列数',
+        `有 ${overflow.length} 个物品将超出新的列数，是否继续？`,
+        () => {
+          ed.cols = val;
+          overflow.forEach(it => {
+            const pos = edFindEmptySlot({ cols: ed.cols, items: ed.items }, it.w, it.h);
+            it.gx = pos.x; it.gy = pos.y;
+          });
+          edSaveHistory(); renderEd();
+        }, 'btn btn-primary');
+    } else {
+      ed.cols = val;
+      edSaveHistory(); renderEd();
+    }
+  });
+  $e('edUndo').addEventListener('click', edUndo);
+  $e('edRedo').addEventListener('click', edRedo);
+  $e('edCancelPlacing').addEventListener('click', cancelEdPlacing);
+  $e('edToggleMode').addEventListener('click', () => {
+    ed.editMode = !ed.editMode;
+    const btn = $e('edToggleMode');
+    btn.textContent = ed.editMode ? '👁️ 预览模式' : '✏️ 编辑模式';
+    btn.classList.toggle('le-on', !ed.editMode);
+    cancelEdPlacing();
+    edClearSelection();
+    renderEd();
+    edUpdateInspector();
+    toast(ed.editMode ? '已进入编辑模式' : '已进入预览模式', 'info');
+  });
+  $e('edClear').addEventListener('click', () => {
+    const itemCount = ed.items.length;
+    if (!itemCount) { toast('画布上暂无物品', 'warning'); return; }
+    openConfirm('清空画布',
+      `确定要清空当前区域的全部 ${itemCount} 个物品吗？（座位与设施都会被移除）`, () => {
+      ed.items = [];
+      edClearSelection();
+      cancelEdPlacing();
+      edSaveHistory(); renderEd(); edUpdateInspector();
+      toast('画布已清空');
+    }, 'btn btn-primary');
+  });
+  $e('edLoadDemo').addEventListener('click', edLoadDemo);
+  $e('edSave').addEventListener('click', () => {
+    saveEdLayout();
+    const seatCount = ed.items.filter(it => it.kind === 'seat').length;
+    const facilityCount = ed.items.filter(it => it.kind === 'facility').length;
+    toast(`布局已保存（座位 ${seatCount} 个，设施 ${facilityCount} 个）`);
+  });
+  $e('edClose').addEventListener('click', closeLayoutEditor);
+}
+
+/* ---- 编辑器键盘快捷键 ---- */
+document.addEventListener('keydown', e => {
+  if (!ed.open) return;
+  if (document.activeElement.matches('input, textarea, select')) return;
+
+  if (e.key === 'Escape') {
+    if (ed.placingType) { cancelEdPlacing(); e.preventDefault(); return; }
+    if (ed.selectedIds.size) { deselectEd(); e.preventDefault(); }
+    return;
+  }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && ed.selectedIds.size) {
+    e.preventDefault(); edDeleteSelected(); return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+    e.preventDefault(); edUndo(); return;
+  }
+  if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+    e.preventDefault(); edRedo(); return;
+  }
+  if (e.key.toLowerCase() === 'r' && !e.ctrlKey && !e.metaKey && !e.altKey &&
+      ed.selectedId != null && ed.editMode) {
+    e.preventDefault(); edRotateItem(ed.selectedId); return;
+  }
+  const arrowMap = { 'ArrowLeft': 'w', 'ArrowRight': 'e', 'ArrowUp': 'n', 'ArrowDown': 's' };
+  const dir = arrowMap[e.key];
+  if (dir && ed.selectedIds.size && ed.editMode) {
+    e.preventDefault();
+    const group = edSelectedArray();
+    if (!group.length) return;
+    const mainItem = group.find(it => it.id === ed.selectedId) || group[0];
+
+    if (group.length === 1 && e.shiftKey && mainItem.kind !== 'seat') {
+      if (!edIsResizable(mainItem.type)) { toast('该物品尺寸固定', 'warning'); return; }
+      let newX = mainItem.gx, newY = mainItem.gy, newW = mainItem.w, newH = mainItem.h;
+      if (dir === 'e') newW = Math.max(1, newW + 1);
+      if (dir === 'w') { newW = Math.max(1, newW + 1); newX = mainItem.gx - 1; }
+      if (dir === 's') newH = Math.max(1, newH + 1);
+      if (dir === 'n') { newH = Math.max(1, newH + 1); newY = mainItem.gy - 1; }
+      if (newX < 1) { newX = 1; newW = mainItem.w; }
+      if (newX + newW - 1 > ed.cols) newW = ed.cols - newX + 1;
+      if (!edCanPlace({ cols: ed.cols, items: ed.items }, newX, newY, newW, newH, mainItem.id)) {
+        toast('调整后空间不足', 'error'); return;
+      }
+      mainItem.gx = newX; mainItem.gy = newY; mainItem.w = newW; mainItem.h = newH;
+      edSaveHistory(); renderEd(); edUpdateInspector();
+      return;
+    }
+
+    let dx = 0, dy = 0;
+    if (dir === 'e') dx = 1;
+    if (dir === 'w') dx = -1;
+    if (dir === 's') dy = 1;
+    if (dir === 'n') dy = -1;
+    if (!edCanMoveGroup(ed.items, ed.cols, group, dx, dy)) {
+      toast('该方向空间不足', 'error'); return;
+    }
+    group.forEach(it => { it.gx += dx; it.gy += dy; });
+    edSaveHistory(); renderEd(); edUpdateInspector();
+  }
+});
+
+/* ============================================================
+ *  主页面事件绑定
+ * ============================================================ */
+function bindEvents() {
+  document.getElementById('filterVenue').addEventListener('change', e => {
+    state.filterVenueId = e.target.value;
+    state.filterFloorId = ''; state.filterAreaId = '';
+    fillFilterFloorSelect(); fillFilterAreaSelect();
+    state.page = 1; renderTable();
+  });
+  document.getElementById('filterFloor').addEventListener('change', e => {
+    state.filterFloorId = e.target.value;
+    state.filterAreaId = '';
+    fillFilterAreaSelect();
+    state.page = 1; renderTable();
+  });
+  document.getElementById('filterArea').addEventListener('change', e => {
+    state.filterAreaId = e.target.value;
+    state.page = 1; renderTable();
+  });
+  document.getElementById('filterEnabled').addEventListener('change', e => {
+    state.filterEnabled = e.target.value;
+    state.page = 1; renderTable();
+  });
+  document.getElementById('filterUsage').addEventListener('change', e => {
+    state.filterUsage = e.target.value;
+    state.page = 1; renderTable();
+  });
+  document.getElementById('btnSearch').addEventListener('click', () => {
+    state.keyword = document.getElementById('keyword').value.trim();
+    state.page = 1; renderTable();
+  });
+  document.getElementById('keyword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('btnSearch').click(); }
+  });
+  document.getElementById('btnReset').addEventListener('click', () => {
+    document.getElementById('keyword').value = '';
+    state.keyword = '';
+    state.filterVenueId = ''; state.filterFloorId = ''; state.filterAreaId = '';
+    state.filterEnabled = ''; state.filterUsage = '';
+    document.getElementById('filterEnabled').value = '';
+    document.getElementById('filterUsage').value = '';
+    fillFilterVenueSelect(); fillFilterFloorSelect(); fillFilterAreaSelect();
+    state.page = 1; renderTable();
+    toast('筛选条件已重置', 'info');
+  });
+  document.getElementById('btnExport').addEventListener('click', exportCSV);
+  document.getElementById('btnShowSeatMap').addEventListener('click', () => openLayoutEditor());
+  document.getElementById('btnAddSeat').addEventListener('click', () => openSeatModal(null));
+  document.getElementById('btnBatchAddSeat').addEventListener('click', openBatchModal);
+  document.getElementById('btnBatchDisable').addEventListener('click', batchDisableSeats);
+  document.getElementById('btnBatchDelete').addEventListener('click', batchDeleteSeats);
+  document.getElementById('selectAll').addEventListener('change', e => {
+    document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked);
+  });
+  document.getElementById('btnCloseSeat').addEventListener('click', closeSeatModal);
+  document.getElementById('btnCancelSeat').addEventListener('click', closeSeatModal);
+  document.getElementById('seatModal').addEventListener('click', e => {
+    if (e.target.id === 'seatModal') closeSeatModal();
+  });
+  document.getElementById('btnSaveSeat').addEventListener('click', saveSeat);
+  document.getElementById('btnCloseBatch').addEventListener('click', closeBatchModal);
+  document.getElementById('btnCancelBatch').addEventListener('click', closeBatchModal);
+  document.getElementById('batchModal').addEventListener('click', e => {
+    if (e.target.id === 'batchModal') closeBatchModal();
+  });
+  document.getElementById('btnSaveBatch').addEventListener('click', saveBatch);
+  document.getElementById('btnCloseDetail').addEventListener('click', closeDetail);
+  document.getElementById('btnCloseDetail2').addEventListener('click', closeDetail);
+  document.getElementById('detailModal').addEventListener('click', e => {
+    if (e.target.id === 'detailModal') closeDetail();
+  });
+  document.getElementById('tbody').addEventListener('change', e => {
+    const cb = e.target.closest('[data-toggle-id]');
+    if (!cb) return;
+    const id = Number(cb.dataset.toggleId);
+    const ok = toggleSeatEnabled(id, cb.checked);
+    if (!ok) { cb.checked = !cb.checked; return; }
+    renderAll();
+  });
+  document.getElementById('tbody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    const act = btn.dataset.act;
+    const s = seats.find(x => x.id === id);
+    if (!s) return;
+    if (act === 'detail') openDetail(id);
+    else if (act === 'edit') openSeatModal(id);
+    else if (act === 'del') {
+      openConfirm('删除座位', `确定要删除座位 ${s.seatNo} 吗？`, () => {
+        seats = seats.filter(x => x.id !== id);
+        toast(`座位 ${s.seatNo} 已删除`);
+        renderAll();
+      }, 'btn btn-primary');
+    }
+  });
+  const pagination = document.getElementById('pagination');
+  pagination.addEventListener('click', e => {
+    const btn = e.target.closest('[data-page]');
+    if (!btn || btn.disabled) return;
+    const p = Number(btn.dataset.page);
+    if (p >= 1) {
+      state.page = p; renderTable();
+      document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  pagination.addEventListener('change', e => {
+    if (e.target.id === 'pageSize') {
+      state.pageSize = Number(e.target.value);
+      state.page = 1; renderTable();
+    }
+  });
+  document.getElementById('confirmModal').addEventListener('click', e => {
+    if (e.target.id === 'confirmModal' || e.target.hasAttribute('data-close')) closeConfirm();
+  });
+  document.getElementById('btnConfirmOk').addEventListener('click', () => {
+    const handler = state.confirmHandler;
+    closeConfirm();
+    if (typeof handler === 'function') handler();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (ed.open) return;
+      closeDetail(); closeSeatModal(); closeBatchModal(); closeConfirm();
+    }
+  });
+}
+
+/* ============================================================
+ *  初始化
+ * ============================================================ */
+function init() {
+  fillFilterVenueSelect();
+  fillFilterFloorSelect();
+  fillFilterAreaSelect();
+  bindEvents();
+  bindEditorEvents();
+  renderAll();
+  renderEdSlotStrip();
+}
+
+init();
+});
+</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+  </style>
+</body>
+</html>

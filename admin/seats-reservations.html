@@ -1,0 +1,1787 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>座位预约记录 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 座位预约记录 */
+    body {
+      --primary:#2563eb; --primary-dark:#1d4ed8; --primary-light:#eff6ff;
+      --border:#e5e9f0; --text:#1f2937; --text-2:#6b7280; --text-3:#9ca3af;
+      --bg:#f0f2f5; --radius:8px; --success:#16a34a; --warning:#d97706; --danger:#dc2626;
+    }
+    .content{flex:1;overflow-y:auto;padding:16px 20px 28px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card + .card{margin-top:14px}
+.filter-panel{padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.filter-panel .search-box{position:relative;width:240px}
+.filter-panel .search-box input{width:100%;height:32px;border:1px solid #d8dee8;border-radius:6px;padding:0 10px 0 30px;font-size:13px;outline:none;transition:.15s;font-family:inherit;background:#fff;color:var(--text)}
+.filter-panel .search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.filter-panel .search-box .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9aa6b8;font-size:13px;pointer-events:none}
+.filter-spacer{flex:1}
+select.filter{height:32px;border:1px solid #d8dee8;border-radius:6px;padding:0 26px 0 10px;font-size:13px;outline:none;background:#fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239aa6b8'/%3E%3C/svg%3E") no-repeat right 9px center;appearance:none;cursor:pointer;font-family:inherit;color:var(--text);transition:.15s}
+select.filter:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+select.filter:disabled{background:#f1f5f9;color:#9ca3af;cursor:not-allowed;border-color:#e2e8f0}
+.filter-panel select.filter{min-width:120px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 12px;height:32px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;font-family:inherit}
+.btn:hover{border-color:#c3cfdf;background:#f8fafc}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff}
+.btn-ghost{background:#fff;color:var(--primary);border-color:#bfdbfe}
+.btn-ghost:hover{background:var(--primary-light);border-color:#93c5fd}
+.btn-danger{background:#fff;color:#dc2626;border-color:#fecaca}
+.btn-danger:hover{background:#fef2f2;border-color:#fca5a5;color:#b91c1c}
+.btn-sm{height:28px;padding:0 10px;font-size:12.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.list-toolbar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:#fcfdfe}
+.list-toolbar .lt-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.list-toolbar .lt-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.batch-bar{display:none;align-items:center;gap:12px;padding:10px 16px;background:var(--primary-light);border-bottom:1px solid #dbeafe;font-size:13px;color:#1e40af;flex-wrap:wrap}
+.batch-bar.show{display:flex}
+.batch-bar b{font-weight:600}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:1420px}
+thead th{background:#fafbfc;color:#4b5563;font-weight:500;text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:12.5px}
+tbody td{padding:10px 12px;border-bottom:1px solid #f1f4f9;vertical-align:middle}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:#f8fafc}
+tbody tr:last-child td{border-bottom:none}
+.mono{font-family:'SF Mono',ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:-.2px}
+.user-cell{display:flex;align-items:center;gap:9px}
+.avatar-sm{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+.avatar-sm.f{background:linear-gradient(135deg,#f472b6,#ec4899)}
+.user-name-sm{font-weight:500;color:#111827;line-height:1.3;font-size:13px}
+.user-sub-sm{font-size:11.5px;color:var(--text-3);line-height:1.3;margin-top:1px}
+.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:11.5px;line-height:18px;white-space:nowrap;font-weight:500}
+.t-stu{background:#eff6ff;color:#2563eb}
+.t-tea{background:#f5f3ff;color:#7c3aed}
+.t-tmp{background:#fff7ed;color:#ea580c}
+.t-alu{background:#ecfeff;color:#0891b2}
+.t-out{background:#f3f4f6;color:#4b5563}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;white-space:nowrap}
+.status i{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.s-pending{color:#9b6f00}.s-pending i{background:#d97706}
+.s-inuse{color:#136b3e}.s-inuse i{background:#22c55e}
+.s-temp{color:#1e4a8b}.s-temp i{background:#3b82f6}
+.s-supervised{color:#b45309}.s-supervised i{background:#d97706}
+.s-cancelled{color:#5e6f8c}.s-cancelled i{background:#9ca3af}
+.s-noshow{color:#b91c1c}.s-noshow i{background:#ef4444}
+.s-overtime{color:#c2410c}.s-overtime i{background:#ea580c}
+.s-nocheckout{color:#991b1b}.s-nocheckout i{background:#dc2626}
+.s-supervised-return{color:#a11212}.s-supervised-return i{background:#dc2626}
+.s-done{color:#075985}.s-done i{background:#0ea5e9}
+.seat-meta{font-size:11.5px;padding:2px 8px;border-radius:30px;display:inline-block;margin-left:5px;font-weight:500}
+.seat-number{font-weight:600;background:#eef4ff;padding:2px 9px;border-radius:30px;font-size:12.5px;color:#1a3b6e;display:inline-block;font-family:ui-monospace,Menlo,monospace;cursor:pointer;transition:.15s}
+.seat-number:hover{background:#dbeafe;color:var(--primary);text-decoration:underline}
+.actions-cell{white-space:nowrap}
+.link{color:var(--primary);cursor:pointer;font-size:12.5px;user-select:none}
+.link:hover{text-decoration:underline}
+.link.danger{color:#dc2626}
+.op-sep{color:#e2e8f0;margin:0 5px}
+.row-checkbox{width:15px;height:15px;cursor:pointer;accent-color:var(--primary)}
+.empty{padding:50px 0;text-align:center;color:var(--text-3);font-size:13px}
+.empty .big{font-size:32px;display:block;margin-bottom:8px;opacity:.5}
+.text-muted{color:var(--text-3);font-size:12px}
+.text-danger{color:#b91c1c;font-weight:500}
+.text-urgent{color:#c2410c;font-weight:500}
+.pager{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.pager-info{font-size:12.5px;color:var(--text-2)}
+.pager-ctrl{display:flex;align-items:center;gap:5px}
+.page-btn{min-width:30px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;border-radius:6px;font-size:12.5px;color:#4b5563;cursor:pointer;transition:.15s;font-family:inherit}
+.page-btn:hover:not(:disabled):not(.active){border-color:var(--primary);color:var(--primary)}
+.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500}
+.page-btn:disabled{opacity:.45;cursor:not-allowed}
+.page-size{height:30px;border:1px solid var(--border);border-radius:6px;font-size:12.5px;padding:0 6px;outline:none;cursor:pointer;font-family:inherit;color:#4b5563;background:#fff}
+.mask{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;animation:fadeIn .16s ease}
+.mask.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.modal{background:#fff;border-radius:10px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(15,23,42,.22);animation:popIn .2s cubic-bezier(.16,1,.3,1);overflow:hidden}
+.modal-header{height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600}
+.modal-close{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;cursor:pointer;color:#94a3b8;font-size:14px;transition:.15s;line-height:1}
+.modal-close:hover{background:#f1f5f9;color:#475569}
+.modal-body{padding:20px;overflow-y:auto;flex:1;min-height:0}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;background:#fcfdfe}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px}
+.form-item{display:flex;flex-direction:column;gap:6px;min-width:0}
+.form-item.full{grid-column:1/-1}
+.form-item label{font-size:12.5px;color:#4b5563}
+.form-item label .req{color:#ef4444;margin-left:2px}
+.form-item input, .form-item select, .form-item textarea{width:100%;height:34px;border:1px solid #d8dee8;border-radius:6px;padding:0 10px;font-size:13px;outline:none;font-family:inherit;background:#fff;color:var(--text);transition:.15s}
+.form-item input:disabled, .form-item select:disabled{background:#f1f5f9;color:#94a3b8;cursor:not-allowed;border-color:#e2e8f0}
+.form-item select{padding-right:26px;background:#fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239aa6b8'/%3E%3C/svg%3E") no-repeat right 10px center;appearance:none;cursor:pointer}
+.form-item textarea{height:auto;padding:8px 10px;resize:vertical;line-height:1.5}
+.form-item input:focus, .form-item select:focus, .form-item textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.form-tip{font-size:11.5px;color:var(--text-3);margin-top:1px}
+.reader-pick{position:relative}
+.reader-pick-list{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:260px;overflow-y:auto;background:#fff;border:1px solid #d8dee8;border-radius:8px;box-shadow:0 8px 26px rgba(15,23,42,.14);z-index:50;display:none}
+.reader-pick-list.show{display:block}
+.reader-pick-item{padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.12s;border-bottom:1px solid #f1f5f9;font-size:13px}
+.reader-pick-item:last-child{border-bottom:none}
+.reader-pick-item:hover{background:#f1f5f9}
+.reader-pick-item .ri-info{flex:1;min-width:0}
+.reader-pick-item .ri-name{font-weight:500}
+.reader-pick-item .ri-meta{font-size:11.5px;color:var(--text-3);margin-top:2px}
+.seat-section{border:1px solid var(--border);border-radius:8px;padding:14px;background:#fcfdfe;margin-top:4px}
+.seat-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12.5px;color:var(--text-2);flex-wrap:wrap;gap:8px}
+.seat-section-head .legend{display:flex;gap:10px;flex-wrap:wrap}
+.seat-section-head .legend-item{display:flex;align-items:center;gap:4px;font-size:11.5px}
+.seat-section-head .legend-dot{width:12px;height:12px;border-radius:3px;border:1.5px solid}
+.sgp-canvas{display:grid;gap:5px;max-height:300px;overflow:auto;padding:10px;background:#f8fafc;border-radius:6px}
+.sgp-cell{width:38px;height:38px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer;transition:.12s;border:1.5px solid;user-select:none;background:#fff}
+.sgp-cell.free{background:#f0fdf4;border-color:#86efac;color:#166534}
+.sgp-cell.free:hover{background:#dcfce7;border-color:#4ade80;transform:scale(1.06)}
+.sgp-cell.selected{background:#2563eb!important;border-color:#2563eb!important;color:#fff!important;transform:scale(1.08);box-shadow:0 2px 8px rgba(37,99,235,.4)}
+.sgp-cell.occupied{background:#fef2f2;border-color:#fca5a5;color:#991b1b;cursor:not-allowed;opacity:.75}
+.sgp-cell.facility{background:#eef2f7;border:1.5px dashed #cbd5e1;color:#64748b;cursor:default;font-size:13px}
+.empty-mini{padding:30px;text-align:center;color:var(--text-3);font-size:12.5px;background:#f8fafc;border-radius:6px}
+.detail-section{margin-bottom:18px}
+.detail-section:last-child{margin-bottom:0}
+.detail-section h4{font-size:13px;font-weight:600;color:#111827;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.detail-section h4::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--primary)}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 16px}
+.info-item{display:flex;flex-direction:column;gap:3px}
+.info-item .label{font-size:11.5px;color:var(--text-3)}
+.info-item .value{font-size:13px;color:#111827;font-weight:500}
+.info-item.full{grid-column:1/-1}
+.timeline{position:relative;padding-left:18px}
+.timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:#eef2f7}
+.timeline-item{position:relative;padding-bottom:12px;font-size:13px;color:#1f2937}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-item::before{content:"";position:absolute;left:-18px;top:5px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #cbd5e1}
+.timeline-item.active::before{background:#2563eb;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.timeline-item .ti-time{font-size:11.5px;color:var(--text-3);font-family:ui-monospace,monospace;margin-top:2px}
+.confirm-icon{width:48px;height:48px;border-radius:50%;background:#fff8e5;color:#9b6f00;display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+.confirm-icon.danger{background:#ffe9e9;color:#b91c1c}
+.confirm-icon.success{background:#e3f2e8;color:#136b3e}
+.confirm-icon.info{background:var(--primary-light);color:var(--primary)}
+.confirm-title{font-size:15px;font-weight:600;margin-bottom:6px;color:#111827}
+.confirm-text{font-size:13px;color:#6b7280;line-height:1.7}
+.confirm-detail{background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:11px 13px;margin-top:11px;font-size:12.5px;line-height:1.85;color:#1f2937}
+.legal-cat{margin-bottom:18px}
+.legal-cat:last-child{margin-bottom:0}
+.legal-cat-title{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#111827;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.legal-cat-title::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--primary)}
+.legal-card{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;background:#fcfdfe}
+.legal-card:last-child{margin-bottom:0}
+.legal-card-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.legal-name{font-size:13.5px;font-weight:600;color:#111827}
+.legal-card-body{font-size:12.5px;color:#4b5563;line-height:1.85}
+.legal-card-body b{color:#1f2937}
+.legal-flow{background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:12px 14px;margin-top:8px;font-size:12.5px;line-height:1.95;color:#1f2937;font-family:ui-monospace,Menlo,monospace}
+.legal-flow b{color:var(--primary)}
+.legal-summary{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+.legal-summary th{background:#f8fafc;text-align:left;padding:8px 10px;border:1px solid var(--border);font-weight:600;color:#4b5563;font-size:11.5px}
+.legal-summary td{padding:8px 10px;border:1px solid var(--border);color:#374151;vertical-align:top;line-height:1.7}
+.legal-summary td:first-child{font-weight:600;color:#111827;white-space:nowrap}
+
+/* ===== 座位使用及预约状态弹窗 ===== */
+#usageMask .modal{width:1060px}
+.usage-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.usage-toolbar .ut-label{font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:5px;font-weight:500}
+.chk-inline{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#4b5563;cursor:pointer;margin-left:auto;user-select:none}
+.chk-inline input{width:15px;height:15px;accent-color:var(--primary);cursor:pointer}
+.usage-dates{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.date-tab{padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:#fff;cursor:pointer;font-size:12.5px;color:#4b5563;transition:.15s;line-height:1.35;text-align:center;user-select:none;font-family:inherit}
+.date-tab:hover{border-color:#93c5fd;color:var(--primary);background:var(--primary-light)}
+.date-tab.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.28)}
+.date-tab .dt-d{display:block;font-size:10.5px;opacity:.85;margin-top:2px}
+.usage-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}
+.usage-stat{background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:10px 8px;text-align:center}
+.usage-stat .us-v{font-size:18px;font-weight:650;color:#1e3a8a;font-variant-numeric:tabular-nums;line-height:1.2}
+.usage-stat .us-v.ok{color:#136b3e}
+.usage-stat .us-v.warn{color:#c2410c}
+.usage-stat .us-l{font-size:11.5px;color:var(--text-2);margin-top:4px}
+.usage-legend{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--text-2);margin-bottom:10px}
+.usage-legend .lg-title{font-weight:600;margin-right:4px}
+.usage-legend .lg{display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:3px 8px;border-radius:6px;transition:.15s;user-select:none}
+.usage-legend .lg:hover{background:#f1f5f9}
+.usage-legend .lg.active{background:var(--primary-light);box-shadow:inset 0 0 0 1px #bfdbfe;color:var(--primary);font-weight:600}
+.usage-legend .lg i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #e2e8f0}
+.usage-legend .lg-clear{cursor:pointer;font-size:11.5px;color:#dc2626;padding:3px 8px;border-radius:6px;user-select:none;margin-left:2px}
+.usage-legend .lg-clear:hover{background:#fef2f2}
+.u-matrix-wrap{overflow:auto;max-height:430px;border:1px solid var(--border);border-radius:8px}
+table.u-matrix{border-collapse:separate;border-spacing:0;font-size:12px;width:100%;table-layout:fixed;min-width:0}
+table.u-matrix th,table.u-matrix td{padding:0;border-bottom:1px solid #f1f4f9;border-right:1px solid #f1f4f9;white-space:nowrap}
+table.u-matrix thead th{position:sticky;top:0;z-index:3;background:#fafbfc;padding:7px 4px;font-weight:500;font-size:11px;color:#4b5563;text-align:center;border-bottom:1px solid var(--border);line-height:1.4}
+table.u-matrix thead th .slot-t{display:block;font-size:10px;color:#9ca3af;font-weight:400;font-family:ui-monospace,monospace}
+table.u-matrix th.seat-col{position:sticky;left:0;z-index:2;background:#fff;text-align:left;padding:0 12px;width:100px;font-size:12.5px;font-weight:600;color:#1a3b6e;font-family:ui-monospace,Menlo,monospace;border-right:1px solid var(--border)}
+table.u-matrix thead th.seat-col{z-index:5;background:#fafbfc;color:#4b5563;font-weight:500;font-family:inherit}
+table.u-matrix tbody tr:hover th.seat-col{background:#f8fafc}
+.u-cell{height:34px;line-height:34px;display:block;text-align:center;font-size:11.5px;color:#dbe2ea;padding:0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.u-cell.free{background:#fcfdfe}
+.u-cell.filled{cursor:pointer}
+.u-cell.filled:hover{filter:brightness(.95)}
+.u-legend-note{font-size:11.5px;color:var(--text-3);margin-top:10px;line-height:1.7}
+.u-pager{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:12.5px;color:var(--text-2);flex-wrap:wrap;gap:10px}
+.u-pager .up-ctrl{display:flex;align-items:center;gap:5px}
+.u-pager .up-btn{min-width:28px;height:28px;padding:0 8px;border:1px solid var(--border);background:#fff;border-radius:6px;font-size:12.5px;color:#4b5563;cursor:pointer;transition:.15s;font-family:inherit}
+.u-pager .up-btn:hover:not(:disabled):not(.active){border-color:var(--primary);color:var(--primary)}
+.u-pager .up-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500}
+.u-pager .up-btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ===== 座位详情弹窗 ===== */
+#seatDetailMask .modal{width:700px}
+.sd-section{margin-bottom:18px}
+.sd-section:last-child{margin-bottom:0}
+.sd-section h4{font-size:13px;font-weight:600;color:#111827;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sd-section h4::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--primary)}
+.sd-list{display:flex;flex-direction:column;gap:8px}
+.sd-card{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;font-size:12.5px}
+.sd-card .sd-time{font-family:ui-monospace,monospace;color:#4b5563;font-weight:600;width:100px;flex-shrink:0}
+.sd-card .sd-reader{font-weight:500;color:#111827;width:80px;flex-shrink:0}
+.sd-card .sd-status{flex-shrink:0}
+.sd-card .sd-meta{color:var(--text-3);font-size:11.5px;margin-left:auto}
+.sd-empty{padding:30px;text-align:center;color:var(--text-3);font-size:12.5px;background:#f8fafc;border-radius:6px}
+
+#toastWrap{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:#fff;border:1px solid var(--border);border-left:3px solid #22c55e;border-radius:8px;padding:10px 18px;font-size:13px;color:#1f2937;box-shadow:08px 26px rgba(15,23,42,.14);animation:popIn .2s ease;transition:.3s;max-width:520px;line-height:1.5}
+.toast.error{border-left-color:#ef4444}
+.toast.warn{border-left-color:#f59e0b}
+.toast.out{opacity:0;transform:translateY(-8px)}
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">座位预约记录</span>
+</nav>
+
+<div class="card">
+        <div class="filter-panel">
+          <div class="search-box"><span class="si">🔍</span><input type="text" id="kw" placeholder="座位号 / 读者姓名 / 学号 / 工号" onkeydown="if(event.key==='Enter')doSearch()"></div>
+          <select class="filter" id="fStatus" onchange="onFilter()">
+            <option value="">全部状态</option>
+            <option>待履约</option><option>使用中</option><option>暂离中</option><option>被监督中</option>
+            <option>已取消</option><option>未签到</option><option>暂离超时</option>
+            <option>未签离</option><option>被监督未返回</option><option>已完成</option>
+          </select>
+          <select class="filter" id="fType" onchange="onFilter()">
+            <option value="">全部读者类型</option>
+            <option>学生</option><option>教师</option><option>临时</option><option>校友</option><option>校外读者</option>
+          </select>
+          <select class="filter" id="fDate" onchange="onFilter()">
+            <option value="today">今日</option><option value="yesterday">昨日</option>
+            <option value="thisweek">本周</option><option value="all">全部时间</option>
+          </select>
+          <span class="filter-label" style="font-size:13px;font-weight:500;color:#374151;display:flex;align-items:center;gap:4px;margin-left:4px"><i class="fas fa-map-marker-alt" style="color:#2a5c9a"></i>位置</span>
+          <select class="filter" id="fVenue" onchange="onVenueFilter()">
+            <option value="">全部馆藏地</option>
+            <option value="v-main">总馆</option>
+            <option value="v-branch">南区分馆</option>
+          </select>
+          <select class="filter" id="fFloor" onchange="onFloorFilter()" disabled>
+            <option value="">请先选择馆藏地</option>
+          </select>
+          <select class="filter" id="fArea" onchange="onAreaFilter()" disabled>
+            <option value="">请先选择楼层</option>
+          </select>
+          <div class="filter-spacer"></div>
+          <button class="btn btn-primary" onclick="doSearch()">搜索</button>
+          <button class="btn" onclick="resetFilter()">重置</button>
+          <button class="btn btn-ghost" onclick="exportList()">📤 导出</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="list-toolbar">
+          <div class="lt-left">
+            <button class="btn btn-primary" onclick="openAddModal()">＋ 新增预约</button>
+            <button class="btn btn-ghost" onclick="openLegal()" title="查看10 种状态流转与释义"><i class="fas fa-book-open"></i> 状态说明</button>
+            <button class="btn btn-ghost" onclick="openUsage()" title="查看座位当天的使用情况与未来预约">🪑 座位使用及预约状态</button>
+          </div>
+        </div>
+        <div class="batch-bar" id="batchBar">
+          <span>已选择 <b id="selCount">0</b> 条预约</span>
+          <button class="btn btn-sm" onclick="batchAction('checkin')">批量签到</button>
+          <button class="btn btn-sm" onclick="batchAction('checkout')">批量签退</button>
+          <button class="btn btn-sm" onclick="batchAction('supervise')">批量监督</button>
+          <button class="btn btn-sm btn-danger" onclick="batchAction('cancel')">批量取消</button>
+          <button class="btn btn-sm" onclick="batchExport()">导出选中</button>
+          <button class="btn btn-sm" onclick="clearSelection()">取消选择</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:38px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
+              <th style="width:96px">记录ID</th>
+              <th style="width:60px">类型</th>
+              <th style="width:170px">读者信息</th>
+              <th style="width:80px">座位</th>
+              <th style="width:200px">位置（馆/楼层/区域）</th>
+              <th style="width:170px">预约时段</th>
+              <th style="width:90px">状态</th>
+              <th style="width:90px">座位物理</th>
+              <th>最后操作 / 超时</th>
+              <th style="width:200px">操作</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <div class="pager-info">共 <b id="totalNum">0</b> 条 &nbsp;|&nbsp; 每页 <select class="page-size" id="pageSize" onchange="changePageSize(this.value)"><option value="10">10</option><option value="20">20</option><option value="50">50</option></select> 条</div>
+          <div class="pager-ctrl" id="pagerCtrl"></div>
+        </div>
+      </div>
+</main>
+
+<div class="mask" id="legalMask"><div class="modal" style="width:780px"><div class="modal-header"><span><i class="fas fa-book-open" style="color:var(--primary);margin-right:8px"></i>座位预约 · 10 种状态说明与流转</span><div class="modal-close" onclick="closeModal('legalMask')">✕</div></div><div class="modal-body" id="legalBody"></div><div class="modal-footer"><button class="btn" onclick="closeModal('legalMask')">关闭</button></div></div></div>
+
+<div class="mask" id="addMask"><div class="modal" style="width:760px"><div class="modal-header"><span>新增座位预约</span><div class="modal-close" onclick="closeModal('addMask')">✕</div></div><div class="modal-body"><div class="form-grid">
+ <div class="form-item full reader-pick"><label>选择读者<span class="req">*</span></label><input type="text" id="addReaderSearch" placeholder="输入姓名 / 学号 / 工号 搜索（仅显示「正常」状态）" autocomplete="off"><div class="reader-pick-list" id="readerPickList"></div><div class="form-tip">冻结 / 挂失 / 注销 / 过期的读者无法预约</div></div>
+  <div class="form-item"><label>馆藏地<span class="req">*</span></label><select id="addVenue" onchange="onVenueChange()"><option value="">请选择馆藏地</option><option value="v-main">总馆</option><option value="v-branch">南区分馆</option></select></div>
+  <div class="form-item"><label>楼层<span class="req">*</span></label><select id="addFloor" onchange="onFloorChange()" disabled><option value="">请先选择馆藏地</option></select></div>
+  <div class="form-item"><label>区域<span class="req">*</span></label><select id="addArea" onchange="onAreaChange()" disabled><option value="">请先选择楼层</option></select></div>
+  <div class="form-item"><label>预约日期<span class="req">*</span></label><input type="date" id="addDate"><div class="form-tip">可预约今日起 7 天内的座位</div></div>
+  <div class="form-item"><label>预约时段<span class="req">*</span></label><select id="addSlot"><option value="0">上午一 (08:00-10:00)</option><option value="1">上午二 (10:00-12:00)</option><option value="2">中午 (12:00-14:00)</option><option value="3">下午一 (14:00-16:00)</option><option value="4">下午二 (16:00-18:00)</option><option value="5" selected>晚上一 (18:00-20:00)</option><option value="6">晚上二 (20:00-22:00)</option></select></div>
+  <div class="form-item"><label>预约时长<span class="req">*</span></label><select id="addDuration"><option value="1">1 个时段（2 小时）</option><option value="2" selected>2 个时段（4 小时·单次最长）</option></select></div>
+  <div class="form-item full"><label>选择座位<span class="req">*</span></label><div class="seat-section"><div class="seat-section-head"><div>已选座位：<b id="pickedSeatText" style="color:var(--primary)">未选择</b></div><div class="legend"><div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border-color:#86efac"></div>空闲</div><div class="legend-item"><div class="legend-dot" style="background:#fef2f2;border-color:#fca5a5"></div>已被占用</div><div class="legend-item"><div class="legend-dot" style="background:#2563eb;border-color:#2563eb"></div>已选</div></div></div><div id="seatContainer"><div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div></div></div><input type="hidden" id="pickedSeat" value=""></div>
+  <div class="form-item full"><label>备注</label><textarea id="addRemark" rows="2" placeholder="选填"></textarea></div>
+</div></div><div class="modal-footer"><button class="btn" onclick="closeModal('addMask')">取消</button><button class="btn btn-primary" onclick="submitAdd()" id="addSubmitBtn" disabled>提交预约</button></div></div></div>
+
+<div class="mask" id="detailMask" style="z-index:130"><div class="modal" style="width:720px"><div class="modal-header"><span>预约详情</span><div class="modal-close" onclick="closeModal('detailMask')">✕</div></div><div class="modal-body" id="detailBody"></div><div class="modal-footer"><button class="btn" onclick="closeModal('detailMask')">关闭</button></div></div></div>
+
+<div class="mask" id="usageMask">
+  <div class="modal" style="width:1060px">
+    <div class="modal-header">
+      <span>🪑 座位使用及预约状态</span>
+      <div class="modal-close" onclick="closeModal('usageMask')">✕</div>
+    </div>
+    <div class="modal-body" id="usageBody"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('usageMask')">关闭</button></div>
+  </div>
+</div>
+
+<!-- 座位详情弹窗（点击座位号弹出） -->
+<div class="mask" id="seatDetailMask">
+  <div class="modal" style="width:700px">
+    <div class="modal-header">
+      <span id="seatDetailTitle">座位详情</span>
+      <div class="modal-close" onclick="closeModal('seatDetailMask')">✕</div>
+    </div>
+    <div class="modal-body" id="seatDetailBody"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('seatDetailMask')">关闭</button></div>
+  </div>
+</div>
+
+<div class="mask" id="confirmMask"><div class="modal" style="width:460px"><div class="modal-header"><span id="confirmTitle">操作确认</span><div class="modal-close" onclick="closeModal('confirmMask')">✕</div></div><div class="modal-body"><div class="confirm-icon" id="confirmIcon"><i class="fas fa-exclamation-triangle"></i></div><div class="confirm-title" id="confirmQuestion">确定要执行该操作吗？</div><div class="confirm-text" id="confirmText"></div><div class="confirm-detail" id="confirmDetail" style="display:none"></div></div><div class="modal-footer"><button class="btn" onclick="closeModal('confirmMask')">取消</button><button class="btn btn-primary" id="confirmOkBtn">确定</button></div></div></div>
+
+<div id="toastWrap"></div>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <script>
+const VENUES = [{id:'v-main',name:'总馆'},{id:'v-branch',name:'南区分馆'}];
+const FLOORS = [{id:'f-main-2',venueId:'v-main',name:'2F'},{id:'f-main-3',venueId:'v-main',name:'3F'},{id:'f-main-4',venueId:'v-main',name:'4F'},{id:'f-branch-1',venueId:'v-branch',name:'1F'},{id:'f-branch-2',venueId:'v-branch',name:'2F'}];
+const AREAS = [{id:'a1',floorId:'f-main-2',name:'自习区A',cols:12,rows:5,prefix:'A'},{id:'a2',floorId:'f-main-2',name:'自习区B',cols:12,rows:5,prefix:'B'},{id:'a3',floorId:'f-main-3',name:'电子阅览区',cols:12,rows:5,prefix:'C'},{id:'a4',floorId:'f-main-4',name:'研讨区',cols:10,rows:4,prefix:'D'},{id:'a5',floorId:'f-branch-1',name:'综合阅览区',cols:10,rows:4,prefix:'E'},{id:'a6',floorId:'f-branch-2',name:'少儿阅读区',cols:8,rows:4,prefix:'F'}];
+const SLOT_RANGES = ['08:00 - 10:00','10:00 - 12:00','12:00 - 14:00','14:00 - 16:00','16:00 - 18:00','18:00 - 20:00','20:00 - 22:00'];
+const SLOT_NAMES = ['上午一','上午二','中午','下午一','下午二','晚上一','晚上二'];
+function typeKeyFn(t){return {'学生':'stu','教师':'tea','临时':'tmp','校友':'alu','校外读者':'out'}[t]||'out';}
+const READERS = [
+ {name:'陈思远',gender:'男',type:'学生',certNo:'2022010301',dept:'计算机科学与技术学院',status:'正常',violations:1},
+  {name:'李婉清',gender:'女',type:'学生',certNo:'2023051208',dept:'外国语学院',status:'正常',violations:0},
+  {name:'王振宇',gender:'男',type:'教师',certNo:'T20160128',dept:'电子信息工程学院',status:'正常',violations:0},
+  {name:'赵敏',gender:'女',type:'教师',certNo:'T201904',dept:'经济管理学院',status:'正常',violations:0},
+  {name:'周雨桐',gender:'女',type:'学生',certNo:'2023070822',dept:'文学院',status:'正常',violations:0},
+  {name:'郑晓岚',gender:'女',type:'临时',certNo:'L20240312',dept:'图书馆',status:'正常',violations:0},
+  {name:'何静怡',gender:'女',type:'学生',certNo:'2023012245',dept:'经济管理学院',status:'正常',violations:0},
+  {name:'马天宇',gender:'男',type:'学生',certNo:'2021060889',dept:'电子信息工程学院',status:'正常',violations:1},
+  {name:'林晓彤',gender:'女',type:'校友',certNo:'A20150123',dept:'计算机科学与技术学院',status:'正常',violations:0},
+  {name:'唐雅琴',gender:'女',type:'教师',certNo:'T20200678',dept:'文学院',status:'正常',violations:0},
+  {name:'许诗涵',gender:'女',type:'学生',certNo:'2023090245',dept:'外国语学院',status:'正常',violations:1}
+];
+const TODAY = '2025-04-09';
+let data = [
+ /* ===== 今日 · 原有记录 ===== */
+ {id:'R24040901',readerIdx:0,seatNo:'A-102',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'签到剩余 12 分钟',lat:'normal',remark:'外语学院荐购席',createdAt:'2025-04-09 13:42'},
+ {id:'R24040902',readerIdx:2,seatNo:'B-215',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'已使用 1h 22m',lat:'normal',remark:'',createdAt:'2025-04-09 09:25',signInAt:'2025-04-09 09:32'},
+ {id:'R24040903',readerIdx:4,seatNo:'A-078',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 08:32',lat:'normal',remark:'',createdAt:'2025-04-09 11:55',signInAt:'2025-04-09 12:03',tempAt:'2025-04-09 13:48'},
+ {id:'R24040904',readerIdx:6,seatNo:'C-032',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'supervised',st:'被监督中',sc:'s-supervised',sp:'监督中',bg:'#fff1e0',tx:'#b45309',la:'需 8 分钟内返回',lat:'urgent',remark:'邻座读者发起监督',createdAt:'2025-04-09 15:50',signInAt:'2025-04-09 16:01',supervisedAt:'2025-04-09 17:24'},
+ {id:'R24040905',readerIdx:1,seatNo:'A-156',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'1',duration:'1',time:'10:00 - 12:00',sk:'cancelled',st:'已取消',sc:'s-cancelled',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'用户主动取消 08:42',lat:'normal',remark:'',createdAt:'2025-04-09 08:30'},
+ {id:'R24040907',readerIdx:7,seatNo:'A-045',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'0',duration:'1',time:'08:00 - 10:00',sk:'noshow',st:'未签到',sc:'s-noshow',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'超时 30 分钟未签到',lat:'violation',remark:'',createdAt:'2025-04-09 07:50'},
+ {id:'R24040908',readerIdx:3,seatNo:'B-231',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'overtime',st:'暂离超时',sc:'s-overtime',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'超时 22 分钟',lat:'violation',remark:'',createdAt:'2025-04-09 09:55',signInAt:'2025-04-09 10:05',tempAt:'2025-04-09 11:30'},
+ {id:'R24040909',readerIdx:8,seatNo:'C-118',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'nocheckout',st:'未签离',sc:'s-nocheckout',sp:'已强制释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'离开未签退 · 超时 45 分钟',lat:'violation',remark:'',createdAt:'2025-04-09 11:50',signInAt:'2025-04-09 12:00'},
+ {id:'R24040910',readerIdx:9,seatNo:'A-203',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'supervised-return',st:'被监督未返回',sc:'s-supervised-return',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'监督超时未返回',lat:'violation',remark:'邻座发起监督 · 10 分钟未回',createdAt:'2025-04-09 15:55',signInAt:'2025-04-09 16:00',supervisedAt:'2025-04-09 17:10'},
+ {id:'R24040912',readerIdx:5,seatNo:'C-088',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'0',duration:'1',time:'08:00 - 10:00',sk:'done',st:'已完成',sc:'s-done',sp:'已释放',bg:'#e0f2fe',tx:'#075985',la:'正常使用 2h 后签退',lat:'normal',remark:'',createdAt:'2025-04-09 07:50',signInAt:'2025-04-09 08:02',checkoutAt:'2025-04-09 10:00'},
+
+ /* ===== 今日 · 补充记录（覆盖各种状态，便于图例筛选） ===== */
+ {id:'R24040920',readerIdx:5, seatNo:'A-005',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'已使用 42m',lat:'normal',remark:'',createdAt:'2025-04-09 09:50',signInAt:'2025-04-09 10:02'},
+ {id:'R24040921',readerIdx:8, seatNo:'A-008',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 12:20',lat:'normal',remark:'',createdAt:'2025-04-09 13:50',signInAt:'2025-04-09 14:05',tempAt:'2025-04-09 15:10'},
+ {id:'R24040922',readerIdx:10,seatNo:'A-012',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'supervised',st:'被监督中',sc:'s-supervised',sp:'监督中',bg:'#fff1e0',tx:'#b45309',la:'需 5 分钟内返回',lat:'urgent',remark:'邻座发起监督',createdAt:'2025-04-09 15:50',signInAt:'2025-04-09 16:03',supervisedAt:'2025-04-09 17:30'},
+ {id:'R24040923',readerIdx:3, seatNo:'A-018',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'0',duration:'1',time:'08:00 - 10:00',sk:'done',st:'已完成',sc:'s-done',sp:'已释放',bg:'#e0f2fe',tx:'#075985',la:'正常使用 2h 后签退',lat:'normal',remark:'',createdAt:'2025-04-09 07:45',signInAt:'2025-04-09 08:01',checkoutAt:'2025-04-09 09:58'},
+ {id:'R24040924',readerIdx:6, seatNo:'A-022',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'cancelled',st:'已取消',sc:'s-cancelled',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'用户主动取消 11:20',lat:'normal',remark:'',createdAt:'2025-04-09 11:10'},
+ {id:'R24040925',readerIdx:2, seatNo:'A-025',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'0',duration:'1',time:'08:00 - 10:00',sk:'noshow',st:'未签到',sc:'s-noshow',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'超时 30 分钟未签到',lat:'violation',remark:'',createdAt:'2025-04-09 07:40'},
+ {id:'R24040926',readerIdx:9, seatNo:'A-028',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'overtime',st:'暂离超时',sc:'s-overtime',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'超时 18 分钟',lat:'violation',remark:'',createdAt:'2025-04-09 13:55',signInAt:'2025-04-09 14:06',tempAt:'2025-04-09 15:20'},
+ {id:'R24040927',readerIdx:1, seatNo:'A-031',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'nocheckout',st:'未签离',sc:'s-nocheckout',sp:'已强制释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'离开未签退 · 超时 40 分钟',lat:'violation',remark:'',createdAt:'2025-04-09 09:50',signInAt:'2025-04-09 10:03'},
+ {id:'R24040928',readerIdx:7, seatNo:'A-035',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'supervised-return',st:'被监督未返回',sc:'s-supervised-return',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'监督超时未返回',lat:'violation',remark:'10 分钟未回',createdAt:'2025-04-09 15:50',signInAt:'2025-04-09 16:02',supervisedAt:'2025-04-09 17:00'},
+ {id:'R24040929',readerIdx:4, seatNo:'A-040',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'已使用 25m',lat:'normal',remark:'',createdAt:'2025-04-09 17:50',signInAt:'2025-04-09 18:03'},
+ {id:'R24040930',readerIdx:0, seatNo:'A-042',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'6',duration:'1',time:'20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'签到剩余 25 分钟',lat:'normal',remark:'',createdAt:'2025-04-09 18:10'},
+ {id:'R24040931',readerIdx:5, seatNo:'A-050',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'done',st:'已完成',sc:'s-done',sp:'已释放',bg:'#e0f2fe',tx:'#075985',la:'正常签退',lat:'normal',remark:'',createdAt:'2025-04-09 13:45',signInAt:'2025-04-09 14:01',checkoutAt:'2025-04-09 17:55'},
+ {id:'R24040932',readerIdx:8, seatNo:'A-055',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'已使用 1h 05m',lat:'normal',remark:'',createdAt:'2025-04-09 11:50',signInAt:'2025-04-09 12:02'},
+ {id:'R24040933',readerIdx:3, seatNo:'A-058',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 22:10',lat:'normal',remark:'',createdAt:'2025-04-09 09:55',signInAt:'2025-04-09 10:04',tempAt:'2025-04-09 11:50'},
+ {id:'R24040934',readerIdx:6, seatNo:'B-005',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'已使用 55m',lat:'normal',remark:'',createdAt:'2025-04-09 09:55',signInAt:'2025-04-09 10:05'},
+ {id:'R24040935',readerIdx:1, seatNo:'B-010',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 06:30',lat:'normal',remark:'',createdAt:'2025-04-09 13:50',signInAt:'2025-04-09 14:03',tempAt:'2025-04-09 15:30'},
+ {id:'R24040936',readerIdx:4, seatNo:'B-015',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'done',st:'已完成',sc:'s-done',sp:'已释放',bg:'#e0f2fe',tx:'#075985',la:'正常签退',lat:'normal',remark:'',createdAt:'2025-04-09 07:40',signInAt:'2025-04-09 08:03',checkoutAt:'2025-04-09 11:55'},
+ {id:'R24040937',readerIdx:10,seatNo:'B-020',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slotStart:'5',duration:'1',time:'18:00 - 20:00',sk:'noshow',st:'未签到',sc:'s-noshow',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'超时未签到',lat:'violation',remark:'',createdAt:'2025-04-09 17:30'},
+ {id:'R24040938',readerIdx:2, seatNo:'C-005',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'已使用 1h 30m',lat:'normal',remark:'',createdAt:'2025-04-09 11:55',signInAt:'2025-04-09 12:04'},
+ {id:'R24040939',readerIdx:9, seatNo:'C-010',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'supervised',st:'被监督中',sc:'s-supervised',sp:'监督中',bg:'#fff1e0',tx:'#b45309',la:'需 7 分钟内返回',lat:'urgent',remark:'邻座发起监督',createdAt:'2025-04-09 15:55',signInAt:'2025-04-09 16:00',supervisedAt:'2025-04-09 17:20'},
+ {id:'R24040940',readerIdx:7, seatNo:'C-015',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 15:40',lat:'normal',remark:'',createdAt:'2025-04-09 09:50',signInAt:'2025-04-09 10:01',tempAt:'2025-04-09 11:40'},
+
+ /* ===== 未来 · 原有记录 ===== */
+ {id:'R25041001',readerIdx:0, seatNo:'A-102',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:12'},
+ {id:'R25041002',readerIdx:1, seatNo:'A-156',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:20'},
+ {id:'R25041003',readerIdx:4, seatNo:'A-078',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:25'},
+ {id:'R25041004',readerIdx:9, seatNo:'A-203',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:31'},
+ {id:'R25041005',readerIdx:7, seatNo:'A-045',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'6',duration:'1',time:'20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:33'},
+ {id:'R25041006',readerIdx:2, seatNo:'B-215',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,1),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:40'},
+ {id:'R25041007',readerIdx:6, seatNo:'B-102',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,1),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:42'},
+ {id:'R25041008',readerIdx:8, seatNo:'B-231',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,1),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:45'},
+ {id:'R25041009',readerIdx:3, seatNo:'C-032',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,1),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:50'},
+ {id:'R25041010',readerIdx:5, seatNo:'C-088',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,1),slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:52'},
+ {id:'R25041011',readerIdx:10,seatNo:'C-118',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,1),slotStart:'6',duration:'1',time:'20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:55'},
+ {id:'R25041101',readerIdx:4, seatNo:'A-102',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,2),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:02'},
+ {id:'R25041102',readerIdx:0, seatNo:'A-156',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,2),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:05'},
+ {id:'R25041103',readerIdx:9, seatNo:'A-078',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,2),slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:08'},
+ {id:'R25041104',readerIdx:3, seatNo:'B-215',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,2),slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:10'},
+ {id:'R25041105',readerIdx:10,seatNo:'B-102',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,2),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:12'},
+ {id:'R25041106',readerIdx:2, seatNo:'C-032',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,2),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:15'},
+ {id:'R25041107',readerIdx:8, seatNo:'C-118',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,2),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:18'},
+ {id:'R25041108',readerIdx:6, seatNo:'D-005',venueId:'v-main',floorId:'f-main-4',areaId:'a4',dateKey:addDays(TODAY,2),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:22'},
+ {id:'R25041109',readerIdx:5, seatNo:'D-018',venueId:'v-main',floorId:'f-main-4',areaId:'a4',dateKey:addDays(TODAY,2),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:25'},
+ {id:'R25041201',readerIdx:1, seatNo:'A-102',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,3),slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:30'},
+ {id:'R25041202',readerIdx:7, seatNo:'A-203',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,3),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:32'},
+ {id:'R25041203',readerIdx:8, seatNo:'E-012',venueId:'v-branch',floorId:'f-branch-1',areaId:'a5',dateKey:addDays(TODAY,3),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:35'},
+ {id:'R25041204',readerIdx:5, seatNo:'E-020',venueId:'v-branch',floorId:'f-branch-1',areaId:'a5',dateKey:addDays(TODAY,3),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:38'},
+ {id:'R25041205',readerIdx:4, seatNo:'F-003',venueId:'v-branch',floorId:'f-branch-2',areaId:'a6',dateKey:addDays(TODAY,3),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:40'},
+ {id:'R25041301',readerIdx:0, seatNo:'B-215',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,4),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:45'},
+ {id:'R25041302',readerIdx:9, seatNo:'C-088',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,4),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:47'},
+ {id:'R25041303',readerIdx:3, seatNo:'D-018',venueId:'v-main',floorId:'f-main-4',areaId:'a4',dateKey:addDays(TODAY,4),slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:50'},
+ {id:'R25041401',readerIdx:2, seatNo:'A-102',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,5),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:55'},
+ {id:'R25041402',readerIdx:6, seatNo:'B-231',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,5),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 17:58'},
+ {id:'R25041501',readerIdx:10,seatNo:'C-032',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,6),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:02'},
+ {id:'R25041502',readerIdx:7, seatNo:'E-012',venueId:'v-branch',floorId:'f-branch-1',areaId:'a5',dateKey:addDays(TODAY,6),slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:05'},
+
+ /* ===== 未来 · 补充记录（便于图例筛选） ===== */
+ {id:'R25041601',readerIdx:5, seatNo:'A-005',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:20'},
+ {id:'R25041602',readerIdx:8, seatNo:'A-008',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:22'},
+ {id:'R25041603',readerIdx:3, seatNo:'A-018',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:25'},
+ {id:'R25041604',readerIdx:6, seatNo:'A-012',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,2),slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:28'},
+ {id:'R25041605',readerIdx:4, seatNo:'A-022',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,2),slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:30'},
+ {id:'R25041606',readerIdx:2, seatNo:'A-025',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,3),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:32'},
+ {id:'R25041607',readerIdx:9, seatNo:'B-005',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,1),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:35'},
+ {id:'R25041608',readerIdx:10,seatNo:'B-010',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,2),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:38'},
+ {id:'R25041609',readerIdx:1, seatNo:'C-005',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,1),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:40'},
+ {id:'R25041610',readerIdx:7, seatNo:'C-010',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,3),slotStart:'6',duration:'1',time:'20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:42'}
+];
+const occupancy = {};
+function rebuildOccupancy(){
+ for(let k in occupancy) delete occupancy[k];
+  data.forEach(function(r){
+    const slotStart = parseInt(r.slotStart, 10);
+    const duration = parseInt(r.duration, 10);
+    const release = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'].indexOf(r.sk) >= 0;
+    for(let k=0;k<duration;k++){
+      const key = r.areaId + '|' + r.dateKey + '|' + (slotStart+k);
+      if(!occupancy[key]) occupancy[key] = new Set();
+      if(!release) occupancy[key].add(r.seatNo);
+    }
+  });
+}
+rebuildOccupancy();
+let state = {page:1, pageSize:10, keyword:'', status:'', type:'', date:'today', venue:'', floor:'', area:'', selected:new Set(), addReader:null};
+const $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pad2(n){ return String(n).padStart(2,'0'); }
+function fmtDate(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function fmtNow(){ const d=new Date(); return fmtDate(d)+' '+pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds()); }
+function addDays(dateLike,n){
+  const d = (dateLike instanceof Date) ? new Date(dateLike.getTime()) : new Date(dateLike+'T00:00:00');
+  d.setDate(d.getDate()+n); return fmtDate(d);
+}
+function toast(msg,type){
+  const el=document.createElement('div');
+  el.className='toast'+(type?' '+type:'');
+  el.textContent=msg;
+  $('toastWrap').appendChild(el);
+  setTimeout(function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); }, 320); }, 2600);
+}
+function closeModal(id){ $(id).classList.remove('show'); }
+function isToday(dk){ return dk===TODAY; }
+function isYesterday(dk){ const d=new Date(); d.setDate(d.getDate()-1); return dk===fmtDate(d); }
+function isThisWeek(dk){
+  const d=new Date(dk+'T00:00:00'); const mon=new Date(TODAY+'T00:00:00');
+  const day=mon.getDay()||7; const m=new Date(mon); m.setDate(mon.getDate()-day+1);
+  const s=new Date(m); s.setDate(m.getDate()+7); return d>=m && d<s;
+}
+
+/*筛选区三级联动：馆藏地 → 楼层 → 区域 */
+function onVenueFilter(){
+  state.venue = $('fVenue').value;
+  state.floor = '';
+  state.area = '';
+  const floorSel = $('fFloor');
+  const areaSel = $('fArea');
+  if(state.venue){
+    const floors = FLOORS.filter(function(f){ return f.venueId===state.venue; });
+    floorSel.innerHTML = '<option value="">请选择楼层</option>' + floors.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
+    floorSel.disabled = false;
+    floorSel.value = '';
+    areaSel.innerHTML = '<option value="">请先选择楼层</option>';
+    areaSel.disabled = true;
+  } else {
+    floorSel.innerHTML = '<option value="">请先选择馆藏地</option>';
+    floorSel.disabled = true;
+    areaSel.innerHTML = '<option value="">请先选择楼层</option>';
+    areaSel.disabled = true;
+  }
+  state.page =1;
+ renderTable();
+}
+function onFloorFilter(){
+  state.floor = $('fFloor').value;
+  state.area = '';
+  const areaSel = $('fArea');
+  if(state.floor){
+    const areas = AREAS.filter(function(a){ return a.floorId===state.floor; });
+    areaSel.innerHTML = '<option value="">请选择区域</option>' + areas.map(function(a){ return '<option value="'+a.id+'">'+a.name+'</option>'; }).join('');
+    areaSel.disabled = false;
+    areaSel.value = '';
+  } else {
+    areaSel.innerHTML = '<option value="">请先选择楼层</option>';
+    areaSel.disabled = true;
+  }
+  state.page = 1;
+  renderTable();
+}
+function onAreaFilter(){
+  state.area = $('fArea').value;
+  state.page = 1;
+  renderTable();
+}
+
+function getFiltered(){
+  const k = state.keyword.trim().toLowerCase();
+  return data.filter(function(r){
+    if(state.status && r.st !== state.status) return false;
+    if(state.type){
+      const reader = READERS[r.readerIdx];
+      if(reader.type !== state.type) return false;
+    }
+    if(state.venue && r.venueId !== state.venue) return false;
+    if(state.floor && r.floorId !== state.floor) return false;
+    if(state.area && r.areaId !== state.area) return false;
+    if(state.date==='today' && !isToday(r.dateKey)) return false;
+    if(state.date==='yesterday' && !isYesterday(r.dateKey)) return false;
+    if(state.date==='thisweek' && !isThisWeek(r.dateKey)) return false;
+    if(k){
+      const reader = READERS[r.readerIdx];
+      const hay = (r.seatNo + ' ' + reader.name + ' ' + reader.certNo).toLowerCase();
+      if(hay.indexOf(k)===-1) return false;
+    }
+    return true;
+  });
+}
+function getBtns(r){
+  const id=r.id, sk=r.sk;
+  const detail='<span class="link" data-act="detail" data-id="'+id+'">详情</span>';
+  if(sk==='pending'){
+    return '<span class="link" data-act="force-checkin" data-id="'+id+'">强制签到</span><span class="op-sep">|</span><span class="link danger" data-act="cancel" data-id="'+id+'">取消</span><span class="op-sep">|</span>'+detail;
+  }
+  if(sk==='inuse'){
+    return '<span class="link" data-act="force-checkout" data-id="'+id+'">强制签退</span><span class="op-sep">|</span><span class="link" data-act="supervise" data-id="'+id+'">发起监督</span><span class="op-sep">|</span>'+detail;
+  }
+  if(sk==='temp'){
+    return '<span class="link" data-act="force-checkout" data-id="'+id+'">强制签退</span><span class="op-sep">|</span><span class="link" data-act="restore" data-id="'+id+'">恢复使用</span><span class="op-sep">|</span><span class="link" data-act="supervise" data-id="'+id+'">监督</span><span class="op-sep">|</span>'+detail;
+  }
+  if(sk==='supervised'){
+    return '<span class="link danger" data-act="force-release" data-id="'+id+'">强制释放</span><span class="op-sep">|</span><span class="link" data-act="restore" data-id="'+id+'">恢复使用</span><span class="op-sep">|</span>'+detail;
+  }
+  if(sk==='cancelled'){
+    return '<span class="link" data-act="reopen" data-id="'+id+'">重新启用</span><span class="op-sep">|</span>'+detail;
+  }
+  if(sk==='done'){
+    return '<span class="text-muted">已结束</span><span class="op-sep">|</span>'+detail;
+  }
+  return '<span class="link" data-act="clear-violation" data-id="'+id+'">消除违约</span><span class="op-sep">|</span>'+detail;
+}
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total/state.pageSize));
+  if(state.page>pages) state.page=pages;
+  const start = (state.page-1)*state.pageSize;
+  const rows = list.slice(start, start+state.pageSize);
+  const tbody = $('tbody');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="11"><div class="empty"><span class="big">📭</span>没有找到符合条件的预约记录</div></td></tr>';
+  } else {
+    let html = '';
+    rows.forEach(function(r){
+      const reader = READERS[r.readerIdx];
+      const venue = VENUES.find(function(v){ return v.id===r.venueId; });
+      const floor = FLOORS.find(function(f){ return f.id===r.floorId; });
+      const area = AREAS.find(function(a){ return a.id===r.areaId; });
+      const ls = r.lat==='violation' ? 'text-danger' : (r.lat==='urgent' ? 'text-urgent' : '');
+      const checked = state.selected.has(r.id) ? 'checked' : '';
+      const locStr = venue.name+' / '+floor.name+' / '+area.name;
+      html += '<tr>';
+      html += '<td><input type="checkbox" class="row-checkbox" data-id="'+r.id+'" '+checked+'></td>';
+      html += '<td><span class="text-muted mono">#'+r.id+'</span></td>';
+      html += '<td><span class="tag t-'+typeKeyFn(reader.type)+'">'+esc(reader.type)+'</span></td>';
+      html += '<td><div class="user-cell"><div class="avatar-sm '+(reader.gender==='女'?'f':'')+'">'+esc(reader.name[0])+'</div><div><div class="user-name-sm">'+esc(reader.name)+'</div><div class="user-sub-sm mono">'+esc(reader.certNo)+'</div></div></div></td>';
+      html += '<td><span class="seat-number" onclick="openSeatDetail(\''+r.seatNo+'\',\''+r.areaId+'\')" title="查看该座位的使用及预约情况">'+r.seatNo+'</span></td>';
+      html += '<td><span class="seat-meta" style="background:'+r.bg+';color:'+r.tx+'">'+locStr+'</span></td>';
+      html += '<td><div style="font-size:12.5px">'+r.dateKey+'</div><div class="text-muted mono" style="margin-top:2px">'+r.time+'</div></td>';
+      html += '<td><span class="status '+r.sc+'"><i></i>'+r.st+'</span></td>';
+      html += '<td><span class="seat-meta" style="background:'+r.bg+';color:'+r.tx+'">'+r.sp+'</span></td>';
+      html += '<td class="'+ls+'">'+r.la+'</td>';
+      html += '<td class="actions-cell">'+getBtns(r)+'</td>';
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+  $('totalNum').textContent = total;
+  renderPager(pages);
+  updateBatchBar();
+  const allChecked = rows.length>0 && rows.every(function(r){ return state.selected.has(r.id); });
+  $('checkAll').checked = allChecked;
+}
+function renderPager(pages){
+  let h = '<button class="page-btn" '+(state.page===1?'disabled':'')+' onclick="gotoPage('+(state.page-1)+')">‹</button>';
+  const show = [];
+  if(pages<=7){ for(let i=1;i<=pages;i++) show.push(i); }
+  else {
+    show.push(1);
+    if(state.page>3) show.push('...');
+    for(let i=Math.max(2,state.page-1); i<=Math.min(pages-1,state.page+1); i++) show.push(i);
+    if(state.page<pages-2) show.push('...');
+    show.push(pages);
+  }
+  show.forEach(function(p){
+    if(p==='...') h += '<span style="color:#9ca3af;padding:0 4px">···</span>';
+    else h += '<button class="page-btn '+(p===state.page?'active':'')+'" onclick="gotoPage('+p+')">'+p+'</button>';
+  });
+  h += '<button class="page-btn" '+(state.page===pages?'disabled':'')+' onclick="gotoPage('+(state.page+1)+')">›</button>';
+  $('pagerCtrl').innerHTML = h;
+}
+function gotoPage(p){
+  const pages = Math.max(1, Math.ceil(getFiltered().length/state.pageSize));
+  if(p<1||p>pages) return;
+  state.page = p; renderTable();
+}
+function act(a, id){
+  const r = data.find(function(x){ return x.id===id; });
+  if(!r) return;
+  if(a==='detail'){ openDetail(id); return; }
+  const reader = READERS[r.readerIdx];
+  switch(a){
+    case 'force-checkin':
+      confirmDialog({title:'强制签到',icon:'info',question:'确定要为读者「'+reader.name+'」强制签到吗？',text:'强制签到后预约立即进入「使用中」状态，开始计时。',detail:'读者：'+reader.name+'（'+reader.certNo+'）<br>座位：'+r.seatNo+' · '+r.time,okText:'确认签到',okClass:'btn btn-primary',onOk:function(){
+        r.sk='inuse';r.st='使用中';r.sc='s-inuse';r.sp='在用';r.bg='#e3f2e8';r.tx='#136b3e';r.la='管理员强制签到';r.lat='normal';r.signInAt=fmtNow();
+        rebuildOccupancy();renderTable();toast('已为 '+reader.name+' 强制签到','success');
+      }});
+      break;
+    case 'cancel':
+      confirmDialog({title:'取消预约',icon:'warning',question:'确定要取消该预约吗？',text:'取消后座位将立即释放，归档为「已取消」。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+r.time,okText:'确认取消',okClass:'btn btn-primary',onOk:function(){
+        r.sk='cancelled';r.st='已取消';r.sc='s-cancelled';r.sp='已释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员取消预约';r.lat='normal';
+        rebuildOccupancy();renderTable();toast('已取消 '+reader.name+' 的预约','warn');
+      }});
+      break;
+    case 'force-checkout':
+      confirmDialog({title:'强制签退',icon:'warning',question:'确定要强制签退吗？',text:'强制签退将记入读者违约档案（未签离）。',detail:'读者：'+reader.name+'（当前累计违约 '+reader.violations+' 次）<br>座位：'+r.seatNo+' · '+r.time,okText:'确认签退',okClass:'btn btn-primary',onOk:function(){
+        r.sk='nocheckout';r.st='未签离';r.sc='s-nocheckout';r.sp='已强制释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员强制签退';r.lat='violation';
+        rebuildOccupancy();renderTable();toast('已强制签退，座位 '+r.seatNo+' 已释放','warn');
+      }});
+      break;
+    case 'restore':
+      r.sk='inuse';r.st='使用中';r.sc='s-inuse';r.sp='在用';r.bg='#e3f2e8';r.tx='#136b3e';r.la='管理员恢复使用';r.lat='normal';
+      rebuildOccupancy();renderTable();toast('已恢复 '+reader.name+' 的座位 '+r.seatNo+' 为「使用中」','success');
+      break;
+    case 'supervise':
+      confirmDialog({title:'发起监督',icon:'warning',question:'确定要对该座位发起监督吗？',text:'发起监督后读者有10分钟时间返回扫码自证，超时将记违约。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+r.time,okText:'发起监督',okClass:'btn btn-primary',onOk:function(){
+        r.sk='supervised';r.st='被监督中';r.sc='s-supervised';r.sp='监督中';r.bg='#fff1e0';r.tx='#b45309';r.la='管理员发起监督 · 10分钟内返回';r.lat='urgent';r.supervisedAt=fmtNow();
+        renderTable();toast('已对 '+reader.name+' '+r.seatNo+' 发起监督','warn');
+      }});
+      break;
+    case 'force-release':
+      confirmDialog({title:'强制释放',icon:'danger',question:'确定要强制释放该座位吗？',text:'强制释放将把记录归档为「已取消」，不记违约。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+r.time,okText:'强制释放',okClass:'btn btn-danger',onOk:function(){
+        r.sk='cancelled';r.st='已取消';r.sc='s-cancelled';r.sp='已释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员强制释放';r.lat='normal';
+        rebuildOccupancy();renderTable();toast('已强制释放座位 '+r.seatNo,'warn');
+      }});
+      break;
+    case 'reopen':
+      r.sk='pending';r.st='待履约';r.sc='s-pending';r.sp='已预约';r.bg='#fff8e5';r.tx='#9b6f00';r.la='管理员重新启用';r.lat='normal';
+      rebuildOccupancy();renderTable();toast('已重新启用 '+reader.name+' 的预约','success');
+      break;
+    case 'clear-violation':
+      confirmDialog({title:'消除违约',icon:'success',question:'确定要消除该违约记录吗？',text:'消除后记录将归档为「已取消」，并撤销读者信用扣分。',detail:'读者：'+reader.name+'（当前累计 '+reader.violations+' 次）<br>违约类型：'+r.st+'<br>座位：'+r.seatNo,okText:'消除违约',okClass:'btn btn-primary',onOk:function(){
+        reader.violations = Math.max(0, reader.violations-1);
+        r.sk='cancelled';r.st='已取消';r.sc='s-cancelled';r.sp='已释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员消除违约';r.lat='normal';
+        rebuildOccupancy();renderTable();toast('已消除 '+reader.name+' 的违约记录','success');
+      }});
+      break;
+  }
+}
+function batchAction(type){
+  const ids = [];
+  state.selected.forEach(function(id){ ids.push(id); });
+  if(!ids.length){ toast('请先勾选要操作的预约','warn'); return; }
+  const list = ids.map(function(id){ return data.find(function(x){ return x.id===id; }); }).filter(Boolean);
+  const titles = {checkin:'批量签到',checkout:'批量签退',supervise:'批量监督',cancel:'批量取消'};
+  const icons = {checkin:'info',checkout:'warning',supervise:'warning',cancel:'danger'};
+  const texts = {checkin:'所有「待履约」记录将变为「使用中」并开始计时。',checkout:'所有「使用中/暂离中」记录将变为「未签离」并记违约。',supervise:'所有「使用中/暂离中」记录将进入10分钟监督限时。',cancel:'所有「待履约」记录将归档为「已取消」。'};
+  confirmDialog({
+    title:titles[type], icon:icons[type],
+    question:'确定要对选中的 '+list.length+' 条预约执行「'+titles[type]+'」吗？',
+    text:texts[type],
+    detail:'共 '+list.length+' 条记录',
+    okText:'确认操作', okClass:'btn btn-primary',
+    onOk:function(){
+      let count=0, skip=0;
+      list.forEach(function(r){
+        if(type==='checkin' && r.sk==='pending'){r.sk='inuse';r.st='使用中';r.sc='s-inuse';r.sp='在用';r.bg='#e3f2e8';r.tx='#136b3e';r.la='管理员批量签到';r.lat='normal';r.signInAt=fmtNow();count++;}
+        else if(type==='checkout' && (r.sk==='inuse'||r.sk==='temp')){r.sk='nocheckout';r.st='未签离';r.sc='s-nocheckout';r.sp='已强制释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员批量签退';r.lat='violation';count++;}
+        else if(type==='supervise' && (r.sk==='inuse'||r.sk==='temp')){r.sk='supervised';r.st='被监督中';r.sc='s-supervised';r.sp='监督中';r.bg='#fff1e0';r.tx='#b45309';r.la='管理员批量监督';r.lat='urgent';count++;}
+        else if(type==='cancel' && r.sk==='pending'){r.sk='cancelled';r.st='已取消';r.sc='s-cancelled';r.sp='已释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员批量取消';r.lat='normal';count++;}
+        else skip++;
+      });
+      rebuildOccupancy(); clearSelection(); renderTable();
+      if(skip) toast('已处理 '+count+' 条，'+skip+' 条状态不符已跳过','warn');
+      else toast('已批量处理 '+count+' 条记录','success');
+    }
+  });
+}
+function batchExport(){ toast('已导出 '+state.selected.size+' 条预约记录'); clearSelection(); }
+function clearSelection(){ state.selected.clear(); renderTable(); }
+function updateBatchBar(){
+  $('selCount').textContent = state.selected.size;
+  $('batchBar').classList.toggle('show', state.selected.size>0);
+}
+function openDetail(id){
+  const r = data.find(function(x){ return x.id===id; });
+  if(!r) return;
+  const reader = READERS[r.readerIdx];
+  const venue = VENUES.find(function(v){ return v.id===r.venueId; });
+  const floor = FLOORS.find(function(f){ return f.id===r.floorId; });
+  const area = AREAS.find(function(a){ return a.id===r.areaId; });
+  const slotStart = parseInt(r.slotStart,10);
+  const slotEnd = slotStart + parseInt(r.duration,10);
+  let slotsHtml = '';
+  for(let i=slotStart;i<slotEnd;i++){ slotsHtml += '<span class="seat-meta" style="background:#eff6ff;color:#2563eb">'+SLOT_NAMES[i]+' '+SLOT_RANGES[i]+'</span>'; }
+  const endStates = ['cancelled','noshow','nocheckout','overtime','supervised-return','done'];
+  const signedStates = ['inuse','temp','supervised','overtime','nocheckout','supervised-return','done'];
+  const tempStates = ['temp','overtime'];
+  const supStates = ['supervised','supervised-return'];
+  const doneStates = ['done'];
+  let timelineHtml = '<div class="timeline-item active"><div>预约创建</div><div class="ti-time">'+r.createdAt+'</div></div>';
+  if(r.signInAt) timelineHtml += '<div class="timeline-item '+(signedStates.indexOf(r.sk)>=0?'active':'')+'"><div>读者签到</div><div class="ti-time">'+r.signInAt+'</div></div>';
+  if(r.tempAt) timelineHtml += '<div class="timeline-item '+(tempStates.indexOf(r.sk)>=0?'active':'')+'"><div>读者暂离</div><div class="ti-time">'+r.tempAt+'</div></div>';
+  if(r.supervisedAt) timelineHtml += '<div class="timeline-item '+(supStates.indexOf(r.sk)>=0?'active':'')+'"><div>发起监督</div><div class="ti-time">'+r.supervisedAt+'</div></div>';
+  if(r.checkoutAt) timelineHtml += '<div class="timeline-item '+(doneStates.indexOf(r.sk)>=0?'active':'')+'"><div>读者签退</div><div class="ti-time">'+r.checkoutAt+'</div></div>';
+  if(endStates.indexOf(r.sk)>=0) timelineHtml += '<div class="timeline-item active"><div>记录终结 · '+r.st+'</div><div class="ti-time">'+fmtNow().substr(11)+'</div></div>';
+  let remarkHtml = '';
+  if(r.remark) remarkHtml = '<div class="info-item full"><div class="label">备注</div><div class="value">'+esc(r.remark)+'</div></div>';
+  $('detailBody').innerHTML = ''
++ '<div class="detail-section"><h4>基本信息</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">记录ID</div><div class="value mono">#'+r.id+'</div></div>'
++   '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
++   '<div class="info-item"><div class="label">当前状态</div><div class="value"><span class="status '+r.sc+'"><i></i>'+r.st+'</span></div></div>'
++   '<div class="info-item"><div class="label">座位物理状态</div><div class="value">'+r.sp+'</div></div>'
++ '</div></div>'
++ '<div class="detail-section"><h4>读者信息</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">姓名</div><div class="value">'+esc(reader.name)+'</div></div>'
++   '<div class="info-item"><div class="label">读者类型</div><div class="value"><span class="tag t-'+typeKeyFn(reader.type)+'">'+esc(reader.type)+'</span></div></div>'
++   '<div class="info-item"><div class="label">借阅凭证号</div><div class="value mono">'+esc(reader.certNo)+'</div></div>'
++   '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(reader.dept)+'</div></div>'
++   '<div class="info-item"><div class="label">读者状态</div><div class="value">'+esc(reader.status)+'</div></div>'
++   '<div class="info-item"><div class="label">累计违约</div><div class="value" style="color:'+(reader.violations>0?'#b91c1c':'#111827')+'">'+reader.violations+' 次</div></div>'
++ '</div></div>'
++ '<div class="detail-section"><h4>座位与时段</h4><div class="info-grid">'
++   '<div class="info-item"><div class="label">座位号</div><div class="value"><span class="seat-number">'+r.seatNo+'</span></div></div>'
++   '<div class="info-item"><div class="label">位置</div><div class="value">'+venue.name+' / '+floor.name+' / '+area.name+'</div></div>'
++   '<div class="info-item"><div class="label">预约日期</div><div class="value mono">'+r.dateKey+'</div></div>'
++   '<div class="info-item"><div class="label">时段</div><div class="value">'+r.time+'</div></div>'
++   '<div class="info-item full"><div class="label">占用时段明细</div><div class="value" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'+slotsHtml+'</div></div>'
++   remarkHtml
++ '</div></div>'
++ '<div class="detail-section"><h4>操作时间线</h4><div class="timeline">'+timelineHtml+'</div></div>'
++ '<div class="detail-section"><h4>最后操作</h4><div class="confirm-detail">'+r.la+'</div></div>';
+  $('detailMask').classList.add('show');
+}
+function openLegal(){
+  $('legalBody').innerHTML = ''
++ '<div class="legal-cat"><div class="legal-cat-title">一、正常流转中的状态（5 种）</div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-pending"><i></i></span><span class="legal-name">1. 待履约（pending）</span></div>'
++     '<div class="legal-card-body">读者已预约成功，但还没到馆签到。系统已为他保留座位。<br><b>典型场景</b>：张明远早上7:50预约A-102，8:00生效，人还没走到图书馆。<br><b>座位物理状态</b>：<b>已预约</b>（座位已被锁定，其他读者约不了，只是使用者还没来）<br><b>后台可操作</b>：强制签到、取消预约、详情<br><b>超时规则</b>：预约生效后15~30分钟内必须签到，超时系统自动释放座位，记一次「未签到」违约。</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-inuse"><i></i></span><span class="legal-name">2. 使用中（inuse）</span></div>'
++     '<div class="legal-card-body">读者已经签到，正坐在座位上使用。<b>这是最正常的状态</b>。<br><b>典型场景</b>：陈雅欣9:32扫码签到，开始在B-215学习。<br><b>座位物理状态</b>：在用<br><b>后台可操作</b>：强制签退、发起监督、详情</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-temp"><i></i></span><span class="legal-name">3. 暂离中（temp）</span></div>'
++     '<div class="legal-card-body">读者在使用过程中临时离开，主动点了「暂离」。座位为他保留一段时间。<br><b>典型场景</b>：李思哲11:20点「暂离」去食堂，系统给他保留30~60分钟。<br><b>座位物理状态</b>：<b>暂离保留</b><br><b>后台可操作</b>：强制签退、恢复使用、发起监督、详情</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-supervised"><i></i></span><span class="legal-name">4. 被监督中（supervised）</span></div>'
++     '<div class="legal-card-body">有人发现这个座位显示有人用、实际没人，发起了监督。系统给原使用者一个限时（通常10分钟）回来签到的机会。<br><b>座位物理状态</b>：监督中<br><b>后台可操作</b>：强制释放、恢复使用、详情</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-done"><i></i></span><span class="legal-name">5. 已完成（done）</span></div>'
++     '<div class="legal-card-body">读者正常使用完座位，在结束前主动扫码签退。这是预约最圆满的归宿。<br><b>座位物理状态</b>：已释放<br><b>后台可操作</b>：仅详情（只读，不可变更）</div></div>'
++ '</div>'
++ '<div class="legal-cat"><div class="legal-cat-title">二、终结性的状态（1 种）</div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-cancelled"><i></i></span><span class="legal-name">6. 已取消（cancelled）</span></div>'
++     '<div class="legal-card-body">这条预约已经结束，且不是正常用完结束的。包含多种子情况：<br>·读者自己主动取消（还没签到就取消）<br>· 管理员取消（读者电话通知不来）<br>· 强制释放（被监督后确认无人）<br>· 消除违约（违约记录被管理员撤销后，记录归为已取消）<br><b>座位物理状态</b>：已释放<br><b>后台可操作</b>：重新启用、详情</div></div>'
++ '</div>'
++ '<div class="legal-cat"><div class="legal-cat-title">三、违约类状态（4 种）</div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-noshow"><i></i></span><span class="legal-name">7. 未签到（noshow）</span></div>'
++     '<div class="legal-card-body">预约生效后，读者在规定时间内没有签到。<br><b>和「暂离超时」的区别</b>：未签到是从头到尾没来；暂离超时是来了、用了一会儿、离开后没按时回。<br><b>后台可操作</b>：消除违约、详情</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-overtime"><i></i></span><span class="legal-name">8. 暂离超时（overtime）</span></div>'
++     '<div class="legal-card-body">读者点了「暂离」后，超过规定时间没返回。<br><b>后台可操作</b>：消除违约、详情</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-nocheckout"><i></i></span><span class="legal-name">9. 未签离（nocheckout）</span></div>'
++     '<div class="legal-card-body">读者用完座位直接走了，没有点「签退」，导致座位被空占，系统超时后强制释放。<br><b>座位物理状态</b>：<b>已强制释放</b><br><b>后台可操作</b>：消除违约、详情<br><b>补充</b>：这是最常见的违约类型——很多人用完就走，忘了签退。</div></div>'
++   '<div class="legal-card"><div class="legal-card-head"><span class="status s-supervised-return"><i></i></span><span class="legal-name">10. 被监督未返回（supervised-return）</span></div>'
++     '<div class="legal-card-body">被监督后，读者没有在限时内返回签到自证，座位被释放。<br><b>和「暂离超时」的区别</b>：暂离超时是读者主动点了暂离；被监督未返回是读者没点暂离，被别人举报无人。<br><b>后台可操作</b>：消除违约、详情</div></div>'
++ '</div>'
++ '<div class="legal-cat"><div class="legal-cat-title">四、汇总对照表</div>'
++   '<table class="legal-summary"><thead><tr><th>状态</th><th>含义</th><th>座位物理</th><th>后台操作</th></tr></thead><tbody>'
++     '<tr><td>待履约</td><td>约了还没签到</td><td>已预约</td><td>强制签到 / 取消预约 / 详情</td></tr>'
++     '<tr><td>使用中</td><td>签到后正常在用</td><td>在用</td><td>强制签退 / 发起监督 / 详情</td></tr>'
++     '<tr><td>暂离中</td><td>临时离开，座位保留</td><td>暂离保留</td><td>强制签退 / 恢复使用 / 发起监督 / 详情</td></tr>'
++     '<tr><td>被监督中</td><td>被举报无人，限时自证</td><td>监督中</td><td>强制释放 / 恢复使用 / 详情</td></tr>'
++     '<tr><td>已完成</td><td>正常签退闭环</td><td>已释放</td><td>详情（只读）</td></tr>'
++     '<tr><td>已取消</td><td>预约终止，归档</td><td>已释放</td><td>重新启用 / 详情</td></tr>'
++     '<tr><td>未签到</td><td>从头到尾没来</td><td>已释放</td><td>消除违约 / 详情</td></tr>'
++     '<tr><td>暂离超时</td><td>暂离后超时未回</td><td>已释放</td><td>消除违约 / 详情</td></tr>'
++     '<tr><td>未签离</td><td>用完没签退直接走</td><td>已强制释放</td><td>消除违约 / 详情</td></tr>'
++     '<tr><td>被监督未返回</td><td>被监督后限时内没回</td><td>已释放</td><td>消除违约 / 详情</td></tr>'
++   '</tbody></table>'
++ '</div>'
++ '<div class="legal-cat"><div class="legal-cat-title">五、状态流转关系</div>'
++   '<div class="legal-flow">'
++     '<b>待履约</b> → 签到 → <b>使用中</b><br>'
++     '<b>待履约</b> → 取消 → <b>已取消</b><br>'
++     '<b>待履约</b> → 超时未签到 → <b>未签到</b>（违约）<br><br>'
++     '<b>使用中</b> → 暂离 → <b>暂离中</b><br>'
++     '<b>使用中</b> → 签退 → <b>已完成</b>  ⭐ 正常闭环<br>'
++     '<b>使用中</b> → 被举报无人 → <b>被监督中</b><br>'
++     '<b>使用中</b> → 超时未签退 → <b>未签离</b>（违约）<br><br>'
++     '<b>暂离中</b> → 超时未回 → <b>暂离超时</b>（违约）<br>'
++     '<b>暂离中</b> → 恢复 → <b>使用中</b><br><br>'
++     '<b>被监督中</b> → 限时未回 → <b>被监督未返回</b>（违约）<br>'
++     '<b>被监督中</b> → 恢复 → <b>使用中</b><br><br>'
++     '任意违约 → 管理员「消除违约」 → <b>已取消</b>（归档）'
++   '</div></div>';
+  $('legalMask').classList.add('show');
+}
+
+/* ============================================================
+   座位使用及预约状态（当天使用情况 + 未来预约视图）
+   ============================================================ */
+const USAGE_STATUS = {
+  pending:            { label:'待履约',     bg:'#fef3c7', tx:'#9b6f00' },
+  inuse:              { label:'使用中',     bg:'#dcfce7', tx:'#136b3e' },
+  temp:               { label:'暂离中',     bg:'#dbeafe', tx:'#1e4a8b' },
+  supervised:         { label:'被监督中',   bg:'#ffedd5', tx:'#b45309' },
+  done:               { label:'已完成',     bg:'#e0f2fe', tx:'#075985' },
+  cancelled:          { label:'已取消',     bg:'#f1f5f9', tx:'#94a3b8' },
+  noshow:             { label:'未签到',     bg:'#fee2e2', tx:'#b91c1c' },
+  overtime:           { label:'暂离超时',   bg:'#fee2e2', tx:'#c2410c' },
+  nocheckout:         { label:'未签离',     bg:'#fee2e2', tx:'#991b1b' },
+  'supervised-return':{ label:'被监督未返回', bg:'#fee2e2', tx:'#a11212' }
+};
+const USAGE_RELEASED = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'];
+
+/* 图例定义（点击可筛选） */
+const LEGEND_ITEMS = [
+  { key:'free',       label:'空闲',         bg:'#fcfdfe', bd:'#e2e8f0', match:null },
+  { key:'pending',    label:'待履约',       bg:'#fef3c7', bd:'#fde68a', match:['pending'] },
+  { key:'inuse',      label:'使用中',       bg:'#dcfce7', bd:'#bbf7d0', match:['inuse'] },
+  { key:'temp',       label:'暂离中',       bg:'#dbeafe', bd:'#bfdbfe', match:['temp'] },
+  { key:'supervised', label:'被监督中',     bg:'#ffedd5', bd:'#fed7aa', match:['supervised'] },
+  { key:'done',       label:'已完成',       bg:'#e0f2fe', bd:'#bae6fd', match:['done'] },
+  { key:'released',   label:'已取消 / 违约', bg:'#f1f5f9', bd:'#e2e8f0', match:['cancelled','noshow','overtime','nocheckout','supervised-return'] }
+];
+
+const uState = { inited:false, venueId:'v-main', floorId:'f-main-2', areaId:'a1', dateKey:TODAY, showAll:false, page:1, pageSize:15, filterStatus:'' };
+
+function weekdayCn(dk){ return '周' + '日一二三四五六'.charAt(new Date(dk+'T00:00:00').getDay()); }
+function isUsageReleased(sk){ return USAGE_RELEASED.indexOf(sk) >= 0; }
+function usageDates(){ const a=[]; for(let i=0;i<7;i++) a.push(addDays(TODAY,i)); return a; }
+function usageDateLabel(i, dk){
+  if(i===0) return '今日';
+  if(i===1) return '明日';
+  if(i===2) return '后天';
+  return weekdayCn(dk);
+}
+function getAreaSeatList(areaId){
+  const area = AREAS.find(function(a){ return a.id===areaId; });
+  if(!area) return [];
+  const set = new Set();
+  const total = area.cols * area.rows;
+  for(let i=1;i<=total;i++) set.add(area.prefix + '-' + String(i).padStart(3,'0'));
+  data.forEach(function(r){ if(r.areaId===areaId) set.add(r.seatNo); });
+  return Array.from(set).sort(function(a,b){ return a.localeCompare(b,'zh',{numeric:true}); });
+}
+
+function openUsage(){
+  if(!uState.inited){
+    uState.inited = true;
+    let areaId = state.area || 'a1';
+    let area = AREAS.find(function(a){ return a.id===areaId; }) || AREAS[0];
+    let floor = FLOORS.find(function(f){ return f.id===area.floorId; }) || FLOORS[0];
+    uState.venueId = floor.venueId;
+    uState.floorId = floor.id;
+    uState.areaId  = area.id;
+  }
+  uState.page = 1;
+  renderUsage();
+  $('usageMask').classList.add('show');
+}
+function onUsageVenue(){ uState.venueId = $('uVenue').value; uState.floorId=''; uState.areaId=''; uState.page=1; uState.filterStatus=''; renderUsage(); }
+function onUsageFloor(){ uState.floorId = $('uFloor').value; uState.areaId=''; uState.page=1; uState.filterStatus=''; renderUsage(); }
+function onUsageArea(){ uState.areaId = $('uArea').value; uState.page=1; uState.filterStatus=''; renderUsage(); }
+function onUsageShowAll(v){ uState.showAll = !!v; uState.page=1; renderUsage(); }
+function uSetDate(dk){ uState.dateKey = dk; uState.page=1; renderUsage(); }
+function uGoPage(p){ uState.page = p; renderUsage(); }
+function uToggleLegend(key){
+  if(!key){ uState.filterStatus = ''; }
+  else { uState.filterStatus = (uState.filterStatus === key) ? '' : key; }
+  uState.page = 1;
+  renderUsage();
+}
+
+function uStatCard(v, l, cls){
+  return '<div class="usage-stat"><div class="us-v '+(cls||'')+'">'+v+'</div><div class="us-l">'+l+'</div></div>';
+}
+
+function renderUsage(){
+  const floors = FLOORS.filter(function(f){ return f.venueId===uState.venueId; });
+  if(!floors.some(function(f){ return f.id===uState.floorId; })) uState.floorId = floors.length ? floors[0].id : '';
+  const areas = AREAS.filter(function(a){ return a.floorId===uState.floorId; });
+  if(!areas.some(function(a){ return a.id===uState.areaId; })) uState.areaId = areas.length ? areas[0].id : '';
+
+  const dateKey = uState.dateKey;
+  const recs = data.filter(function(r){ return r.areaId===uState.areaId && r.dateKey===dateKey; });
+  const activeRecs = recs.filter(function(r){ return !isUsageReleased(r.sk); });
+
+  const cellMap = {};
+  recs.forEach(function(r){
+    const s0 = parseInt(r.slotStart,10), d = parseInt(r.duration,10);
+    for(let k=0;k<d;k++){
+      const key = r.seatNo + '|' + (s0+k);
+      if(!cellMap[key]) cellMap[key] = r;
+    }
+  });
+
+  const allSeats = getAreaSeatList(uState.areaId);
+  let seatList;
+  /* 图例筛选优先 */
+  if(uState.filterStatus){
+    const item = LEGEND_ITEMS.find(function(x){ return x.key === uState.filterStatus; });
+    if(item){
+      if(item.key === 'free'){
+        seatList = allSeats.filter(function(sn){ return !recs.some(function(r){ return r.seatNo === sn; }); });
+      } else {
+        seatList = allSeats.filter(function(sn){
+          return recs.some(function(r){ return r.seatNo === sn && item.match.indexOf(r.sk) >= 0; });
+        });
+      }
+    } else {
+      seatList = allSeats;
+    }
+  } else if(uState.showAll){
+    seatList = allSeats;
+  } else {
+    const set = new Set();
+    recs.forEach(function(r){ set.add(r.seatNo); });
+    seatList = Array.from(set).sort(function(a,b){ return a.localeCompare(b,'zh',{numeric:true}); });
+  }
+
+  const totalSeats = allSeats.length;
+  const orderCount = activeRecs.length;
+  const usedSeats  = new Set(activeRecs.map(function(r){ return r.seatNo; })).size;
+  let slotCells = 0;
+  activeRecs.forEach(function(r){ slotCells += parseInt(r.duration,10); });
+  const rate = totalSeats ? Math.round(slotCells / (totalSeats*7) * 100) : 0;
+  const idleSeats = Math.max(0, totalSeats - usedSeats);
+
+  /* 分页 */
+  const totalPages = Math.max(1, Math.ceil(seatList.length / uState.pageSize));
+  if(uState.page > totalPages) uState.page = totalPages;
+  if(uState.page < 1) uState.page = 1;
+  const pagedSeats = seatList.slice((uState.page-1)*uState.pageSize, uState.page*uState.pageSize);
+
+  let h = '';
+  /* 位置选择 */
+  h += '<div class="usage-toolbar">';
+  h += '<span class="ut-label"><i class="fas fa-map-marker-alt" style="color:#2a5c9a"></i>位置</span>';
+  h += '<select class="filter" id="uVenue" onchange="onUsageVenue()">' + VENUES.map(function(v){
+        return '<option value="'+v.id+'"'+(v.id===uState.venueId?' selected':'')+'>'+esc(v.name)+'</option>'; }).join('') + '</select>';
+  h += '<select class="filter" id="uFloor" onchange="onUsageFloor()">' + floors.map(function(f){
+        return '<option value="'+f.id+'"'+(f.id===uState.floorId?' selected':'')+'>'+esc(f.name)+'</option>'; }).join('') + '</select>';
+  h += '<select class="filter" id="uArea" onchange="onUsageArea()">' + areas.map(function(a){
+        return '<option value="'+a.id+'"'+(a.id===uState.areaId?' selected':'')+'>'+esc(a.name)+'</option>'; }).join('') + '</select>';
+  h += '<label class="chk-inline"><input type="checkbox" '+(uState.showAll?'checked':'')+' onchange="onUsageShowAll(this.checked)">显示全部座位</label>';
+  h += '</div>';
+
+  /* 日期切换 */
+  h += '<div class="usage-dates">';
+  usageDates().forEach(function(dk, i){
+    h += '<button type="button" class="date-tab'+(dk===dateKey?' active':'')+'" onclick="uSetDate(\''+dk+'\')">'
+       + usageDateLabel(i, dk)
+       + '<span class="dt-d">' + dk.substr(5) + ' ' + weekdayCn(dk) + '</span></button>';
+  });
+  h += '</div>';
+
+  /* 统计 */
+  h += '<div class="usage-stats">'
+     + uStatCard(totalSeats, '区域座位总数', '')
+     + uStatCard(orderCount, '当日预约单数', orderCount>0?'ok':'')
+     + uStatCard(usedSeats, '涉及座位数', '')
+     + uStatCard(rate+'%', '时段占用率', rate>=50?'warn':'')
+     + uStatCard(idleSeats, '全天空闲座位', '')
+     + '</div>';
+
+  /* 图例（可点击筛选） */
+  h += '<div class="usage-legend"><span class="lg-title">图例（点击筛选）：</span>';
+  LEGEND_ITEMS.forEach(function(it){
+    const active = uState.filterStatus === it.key;
+    h += '<span class="lg'+(active?' active':'')+'" onclick="uToggleLegend(\''+it.key+'\')" title="点击筛选「'+it.label+'」">'
+       + '<i style="background:'+it.bg+';border-color:'+it.bd+'"></i>'+it.label+'</span>';
+  });
+  if(uState.filterStatus){
+    h += '<span class="lg-clear" onclick="uToggleLegend(\'\')" title="清除筛选">✕ 清除筛选</span>';
+  }
+  h += '</div>';
+
+  /* 矩阵 */
+  h += '<div class="u-matrix-wrap">';
+  if(!pagedSeats.length){
+    h += '<div class="empty-mini">'+(uState.filterStatus
+        ? '当前筛选条件下没有符合条件的座位，点击「✕ 清除筛选」可恢复'
+        : '该区域在 '+dateKey+' 暂无预约记录，勾选「显示全部座位」可查看全部座位')+'</div>';
+  } else {
+    h += '<table class="u-matrix"><thead><tr><th class="seat-col">座位号</th>';
+    SLOT_NAMES.forEach(function(n, i){
+      h += '<th>'+n+'<span class="slot-t">'+SLOT_RANGES[i]+'</span></th>';
+    });
+    h += '</tr></thead><tbody>';
+    pagedSeats.forEach(function(seatNo){
+      h += '<tr><th class="seat-col">'+esc(seatNo)+'</th>';
+      let s = 0;
+      while(s < 7){
+        const rec = cellMap[seatNo+'|'+s];
+        if(!rec){
+          let span = 1;
+          while(s+span < 7 && !cellMap[seatNo+'|'+(s+span)]) span++;
+          h += '<td colspan="'+span+'"><div class="u-cell free">空闲</div></td>';
+          s += span;
+        } else {
+          let span = 1;
+          while(s+span < 7 && cellMap[seatNo+'|'+(s+span)] && cellMap[seatNo+'|'+(s+span)].id === rec.id) span++;
+          const st = USAGE_STATUS[rec.sk] || USAGE_STATUS.pending;
+          const reader = READERS[rec.readerIdx];
+          const released = isUsageReleased(rec.sk);
+          const tip = reader.name + ' · ' + st.label + ' · ' + rec.time + (released ? '（已释放）' : '');
+          h += '<td colspan="'+span+'"><div class="u-cell filled" style="background:'+st.bg+';color:'+st.tx+(released?';opacity:.6':'')
+             + '" title="'+esc(tip)+'" onclick="openDetail(\''+rec.id+'\')">'+esc(reader.name)+'</div></td>';
+          s += span;
+        }
+      }
+      h += '</tr>';
+    });
+    h += '</tbody></table>';
+  }
+  h += '</div>';
+
+  /* 分页控件 */
+  h += '<div class="u-pager">'
+     + '<span>共 '+seatList.length+' 个座位'+(uState.filterStatus?'（已筛选）':'')+'，第 '+uState.page+' / '+totalPages+' 页</span>'
+     + '<div class="up-ctrl">'
+     + '<button class="up-btn" '+(uState.page===1?'disabled':'')+' onclick="uGoPage('+(uState.page-1)+')">‹</button>';
+  const showPages = [];
+  if(totalPages <= 7){ for(let i=1;i<=totalPages;i++) showPages.push(i); }
+  else {
+    showPages.push(1);
+    if(uState.page > 3) showPages.push('...');
+    for(let i=Math.max(2,uState.page-1); i<=Math.min(totalPages-1,uState.page+1); i++) showPages.push(i);
+    if(uState.page < totalPages-2) showPages.push('...');
+    showPages.push(totalPages);
+  }
+  showPages.forEach(function(p){
+    if(p === '...') h += '<span style="color:#9ca3af;padding:0 4px">···</span>';
+    else h += '<button class="up-btn '+(p===uState.page?'active':'')+'" onclick="uGoPage('+p+')">'+p+'</button>';
+  });
+  h += '<button class="up-btn" '+(uState.page===totalPages?'disabled':'')+' onclick="uGoPage('+(uState.page+1)+')">›</button>';
+  h += '</div></div>';
+
+  h += '<div class="u-legend-note">说明：矩阵「行 = 座位、列 = 时段」，单元格显示该时段的占用读者，点击可查看该预约的完整详情；灰色半透明表示该预约已终结（已取消 / 违约释放 / 已完成）。点击上方「图例」可按状态筛选座位，再次点击同一图例取消筛选。</div>';
+
+  $('usageBody').innerHTML = h;
+}
+
+/* ============================================================
+   点击座位号：查看该座位今日使用及预约情况 + 未来预约
+   ============================================================ */
+function openSeatDetail(seatNo, areaId){
+  const area = AREAS.find(function(a){ return a.id===areaId; });
+  const floor = area ? FLOORS.find(function(f){ return f.id===area.floorId; }) : null;
+  const venue = floor ? VENUES.find(function(v){ return v.id===floor.venueId; }) : null;
+  const locStr = (venue?venue.name:'—') + ' / ' + (floor?floor.name:'—') + ' / ' + (area?area.name:'—');
+
+  const all = data.filter(function(r){ return r.seatNo===seatNo && r.areaId===areaId; });
+  const todayList = all.filter(function(r){ return r.dateKey===TODAY; })
+                      .sort(function(a,b){ return parseInt(a.slotStart,10)-parseInt(b.slotStart,10); });
+  const futureList = all.filter(function(r){ return r.dateKey>TODAY; })
+                       .sort(function(a,b){ return a.dateKey.localeCompare(b.dateKey) || parseInt(a.slotStart,10)-parseInt(b.slotStart,10); });
+
+  function cardHtml(r){
+    const reader = READERS[r.readerIdx];
+    const released = isUsageReleased(r.sk);
+    return '<div class="sd-card">'
+      + '<div class="sd-time">'+r.time+'</div>'
+      + '<div class="sd-reader">'+esc(reader.name)+'</div>'
+      + '<div class="sd-status"><span class="status '+r.sc+'"><i></i>'+r.st+'</span></div>'
+      + '<div class="sd-meta">'+esc(r.dateKey)+(released?' · 已释放':'')+'</div>'
+      + '<div style="margin-left:6px"><span class="link" onclick="closeModal(\'seatDetailMask\');openDetail(\''+r.id+'\')">详情</span></div>'
+      + '</div>';
+  }
+
+  let h = '';
+  h += '<div class="sd-section"><h4>座位信息</h4>'
+     + '<div class="info-grid">'
+     + '<div class="info-item"><div class="label">座位号</div><div class="value"><span class="seat-number">'+esc(seatNo)+'</span></div></div>'
+     + '<div class="info-item"><div class="label">位置</div><div class="value">'+esc(locStr)+'</div></div>'
+     + '</div></div>';
+
+  h += '<div class="sd-section"><h4>今日使用及预约情况（'+TODAY+'）</h4>';
+  if(!todayList.length){
+    h += '<div class="sd-empty">该座位今日暂无预约记录</div>';
+  } else {
+    h += '<div class="sd-list">' + todayList.map(cardHtml).join('') + '</div>';
+  }
+  h += '</div>';
+
+  h += '<div class="sd-section"><h4>未来预约情况</h4>';
+  if(!futureList.length){
+    h += '<div class="sd-empty">该座位未来暂无预约</div>';
+  } else {
+    const grouped = {};
+    futureList.forEach(function(r){ (grouped[r.dateKey] = grouped[r.dateKey] || []).push(r); });
+    Object.keys(grouped).sort().forEach(function(dk){
+      h += '<div style="margin-bottom:12px">'
+         + '<div style="font-size:12px;color:#6b7280;font-weight:600;margin-bottom:6px">'+dk+' '+weekdayCn(dk)+'</div>'
+         + '<div class="sd-list">' + grouped[dk].map(cardHtml).join('') + '</div>'
+         + '</div>';
+    });
+  }
+  h += '</div>';
+
+  $('seatDetailTitle').textContent = '座位 ' + seatNo + ' · 使用及预约情况';
+  $('seatDetailBody').innerHTML = h;
+  $('seatDetailMask').classList.add('show');
+}
+
+function openAddModal(){
+  state.addReader = null;
+  $('addReaderSearch').value = '';
+  $('readerPickList').classList.remove('show');
+  $('addVenue').value = '';
+  $('addFloor').innerHTML = '<option value="">请先选择馆藏地</option>';
+  $('addFloor').disabled = true;
+  $('addArea').innerHTML = '<option value="">请先选择楼层</option>';
+  $('addArea').disabled = true;
+  $('addDate').value = TODAY;
+  $('addDate').min = TODAY;
+  $('addDate').max = addDays(TODAY, 7);
+  $('addSlot').value = '5';
+  $('addDuration').value = '2';
+  $('addRemark').value = '';
+ $('pickedSeat').value = '';
+  $('pickedSeatText').textContent = '未选择';
+  $('addSubmitBtn').disabled = true;
+  $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+  $('addMask').classList.add('show');
+  setTimeout(function(){ $('addReaderSearch').focus(); }, 100);
+}
+function onVenueChange(){
+  const venueId = $('addVenue').value;
+  const floorSel = $('addFloor');
+  const areaSel = $('addArea');
+  if(!venueId){
+    floorSel.innerHTML = '<option value="">请先选择馆藏地</option>';
+    floorSel.disabled = true;
+    areaSel.innerHTML = '<option value="">请先选择楼层</option>';
+    areaSel.disabled = true;
+  } else {
+    const floors = FLOORS.filter(function(f){ return f.venueId===venueId; });
+    floorSel.innerHTML = '<option value="">请选择楼层</option>' + floors.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
+    floorSel.disabled = false;
+    floorSel.value = '';
+  }
+  $('pickedSeat').value = '';
+  $('pickedSeatText').textContent = '未选择';
+  $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+  updateAddSubmit();
+}
+function onFloorChange(){
+  const floorId = $('addFloor').value;
+  const areaSel = $('addArea');
+  if(!floorId){
+    areaSel.innerHTML = '<option value="">请先选择楼层</option>';
+    areaSel.disabled = true;
+  } else {
+    const areas = AREAS.filter(function(a){ return a.floorId===floorId; });
+    areaSel.innerHTML = '<option value="">请选择区域</option>' + areas.map(function(a){ return '<option value="'+a.id+'">'+a.name+'</option>'; }).join('');
+    areaSel.disabled = false;
+    areaSel.value = '';
+  }
+  $('pickedSeat').value = '';
+  $('pickedSeatText').textContent = '未选择';
+  $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+  updateAddSubmit();
+}
+function onAreaChange(){
+  const areaId = $('addArea').value;
+  if(!areaId){
+    $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+    $('pickedSeat').value = '';
+    $('pickedSeatText').textContent = '未选择';
+    updateAddSubmit();
+    return;
+  }
+  renderSeatsForArea(areaId);
+}
+function renderSeatsForArea(areaId){
+  const area = AREAS.find(function(a){ return a.id===areaId; });
+  if(!area){ $('seatContainer').innerHTML = '<div class="empty-mini">未找到该区域</div>'; return; }
+  const dateKey = $('addDate').value || TODAY;
+  const slotStart = parseInt($('addSlot').value,10);
+  const duration = parseInt($('addDuration').value, 10);
+  const cols = area.cols;
+  const rows = area.rows;
+  let facilitiesRow = ''
+    + '<div class="sgp-cell facility" style="grid-column:1;grid-row:1">🚪入口</div>'
+    + '<div class="sgp-cell facility" style="grid-column:'+Math.floor(cols/2)+';grid-row:1">📋服务台</div>'
+    + '<div class="sgp-cell facility" style="grid-column:'+cols+';grid-row:1">🪟窗</div>';
+  let seatCells = '';
+  for(let rr=2; rr<=rows+1; rr++){
+    for(let c=1; c<=cols; c++){
+      const seatIdx = (rr-2)*cols + (c-1);
+      const num = seatIdx + 1;
+      const seatNo = area.prefix + String(num).padStart(3,'0');
+      let occupied = false;
+      for(let k=0;k<duration;k++){
+        const key = areaId+'|'+dateKey+'|'+(slotStart+k);
+        if(occupancy[key] && occupancy[key].has(seatNo)){ occupied = true; break; }
+      }
+      const cls = occupied ? 'occupied' : 'free';
+      seatCells += '<div class="sgp-cell '+cls+'" style="grid-column:'+c+';grid-row:'+rr+'" data-seat="'+seatNo+'">'+num+'</div>';
+    }
+  }
+  $('seatContainer').innerHTML = '<div class="sgp-canvas" style="grid-template-columns:repeat('+cols+',38px)">'+facilitiesRow+seatCells+'</div>';
+  $('pickedSeat').value = '';
+  $('pickedSeatText').textContent = '未选择';
+  $('seatContainer').querySelectorAll('.sgp-cell.free').forEach(function(el){
+    el.addEventListener('click', function(){
+      const sn = el.dataset.seat;
+      $('pickedSeat').value = sn;
+      $('pickedSeatText').textContent = sn + '（' + area.name + '）';
+      $('seatContainer').querySelectorAll('.sgp-cell').forEach(function(x){ x.classList.toggle('selected', x === el); });
+      updateAddSubmit();
+    });
+  });
+  updateAddSubmit();
+}
+['addDate','addSlot','addDuration'].forEach(function(id){
+  $(id).addEventListener('change', function(){
+    if($('addArea').value) renderSeatsForArea($('addArea').value);
+  });
+});
+$('addReaderSearch').addEventListener('input', function(e){ renderReaderPick(e.target.value); });
+$('addReaderSearch').addEventListener('focus', function(e){ renderReaderPick(e.target.value); });
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.reader-pick')) $('readerPickList').classList.remove('show');
+});
+function renderReaderPick(kw){
+  const list = $('readerPickList');
+  const filtered = READERS.filter(function(r){
+    if(r.status !== '正常') return false;
+    if(!kw) return true;
+    const k = kw.toLowerCase();
+    return r.name.toLowerCase().indexOf(k) >= 0 || r.certNo.toLowerCase().indexOf(k) >= 0;
+  }).slice(0, 8);
+  if(!filtered.length){
+    list.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-3);font-size:12.5px">未找到符合条件的读者（仅显示「正常」状态）</div>';
+    list.classList.add('show'); return;
+  }
+  let html = '';
+  filtered.forEach(function(r){
+    const idx = READERS.indexOf(r);
+    html += '<div class="reader-pick-item" data-idx="'+idx+'">'
+      + '<div class="avatar-sm '+(r.gender==='女'?'f':'')+'">'+esc(r.name[0])+'</div>'
+      + '<div class="ri-info"><div class="ri-name">'+esc(r.name)+' <span style="font-weight:400;font-size:11.5px;color:var(--text-3)">'+esc(r.type)+'</span></div>'
+      + '<div class="ri-meta">'+esc(r.certNo)+' · '+esc(r.dept)+'</div></div></div>';
+  });
+  list.innerHTML = html;
+  list.classList.add('show');
+  list.querySelectorAll('.reader-pick-item').forEach(function(el){
+    el.addEventListener('click', function(){
+      const idx = parseInt(el.dataset.idx, 10);
+      state.addReader = READERS[idx];
+      $('addReaderSearch').value = state.addReader.name + '（' + state.addReader.certNo + '）';
+      list.classList.remove('show');
+      updateAddSubmit();
+    });
+  });
+}
+function updateAddSubmit(){
+ const ok = state.addReader && $('pickedSeat').value && $('addVenue').value && $('addFloor').value && $('addArea').value && $('addDate').value;
+  $('addSubmitBtn').disabled = !ok;
+}
+function submitAdd(){
+  if(!state.addReader){ toast('请选择读者','error'); return; }
+  if(state.addReader.status!=='正常'){ toast('该读者状态异常，无法预约','error'); return; }
+  if(!$('addVenue').value || !$('addFloor').value || !$('addArea').value){ toast('请完成馆藏地/楼层/区域三级选择','error'); return; }
+  if(!$('pickedSeat').value){ toast('请选择座位','error'); return; }
+  const venueId = $('addVenue').value;
+  const floorId = $('addFloor').value;
+  const areaId = $('addArea').value;
+  const dateKey = $('addDate').value;
+  const slotStart = parseInt($('addSlot').value, 10);
+  const duration = parseInt($('addDuration').value, 10);
+  const seatNo = $('pickedSeat').value;
+  const readerIdx = READERS.indexOf(state.addReader);
+  const releaseStates = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'];
+  const todayCount = data.filter(function(r){ return r.readerIdx===readerIdx && r.dateKey===dateKey && releaseStates.indexOf(r.sk)===-1; }).length;
+  if(todayCount >= 2){ toast('该读者当日已有 '+todayCount+' 条有效预约，最多2 条','error'); return; }
+  const slotEnd = slotStart + duration;
+  const time = SLOT_RANGES[slotStart].split(' - ')[0] + ' - ' + SLOT_RANGES[Math.min(slotEnd-1,6)].split(' - ')[1];
+  const id = 'R' + dateKey.substr(2).replace(/-/g,'') + String(Math.floor(Math.random()*900)+100);
+  const newRec = {
+    id: id, readerIdx: readerIdx, seatNo: seatNo, venueId: venueId, floorId: floorId, areaId: areaId,
+    dateKey: dateKey, slotStart: String(slotStart), duration: String(duration), time: time,
+    sk:'pending', st:'待履约', sc:'s-pending', sp:'已预约',
+    bg:'#fff8e5', tx:'#9b6f00',
+    la: dateKey===TODAY ? '签到剩余 15 分钟' : '预约成功 · '+dateKey+' 生效',
+    lat:'normal',
+    remark: $('addRemark').value.trim(),
+    createdAt: fmtNow()
+  };
+  data.unshift(newRec);
+  rebuildOccupancy();
+  closeModal('addMask');
+  if(dateKey===TODAY) state.date='today';
+  else if(dateKey===addDays(TODAY,-1)) state.date='yesterday';
+  else if(dateKey>TODAY) state.date='all';
+  else state.date='all';
+  $('fDate').value = state.date;
+  renderTable();
+  toast('预约创建成功！记录号 '+id, 'success');
+}
+let confirmCb = null;
+function confirmDialog(opts){
+  $('confirmTitle').textContent = opts.title;
+  $('confirmQuestion').textContent = opts.question;
+  $('confirmText').innerHTML = opts.text || '';
+  const cd = $('confirmDetail');
+  if(opts.detail){ cd.style.display='block'; cd.innerHTML=opts.detail; } else { cd.style.display='none'; }
+  const iconMap = {success:'check-circle', warning:'exclamation-triangle', danger:'trash-alt', info:'info-circle'};
+  const icon = $('confirmIcon');
+  icon.className = 'confirm-icon ' + (opts.icon || '');
+  icon.innerHTML = '<i class="fas fa-'+(iconMap[opts.icon||'info']||'info-circle')+'"></i>';
+  const btn = $('confirmOkBtn');
+  btn.className = opts.okClass || 'btn btn-primary';
+  btn.textContent = opts.okText || '确定';
+  confirmCb = opts.onOk;
+  $('confirmMask').classList.add('show');
+}
+$('confirmOkBtn').addEventListener('click', function(){
+  const h = confirmCb;
+  closeModal('confirmMask');
+  if(typeof h==='function') h();
+});
+function doSearch(){ state.keyword = $('kw').value; state.page=1; renderTable(); }
+function onFilter(){
+  state.status = $('fStatus').value;
+  state.type = $('fType').value;
+  state.date = $('fDate').value;
+  state.page =1; renderTable();
+}
+function resetFilter(){
+  $('kw').value=''; $('fStatus').value=''; $('fType').value=''; $('fDate').value='today';
+  $('fVenue').value=''; $('fFloor').innerHTML='<option value="">请先选择馆藏地</option>'; $('fFloor').disabled=true; $('fFloor').value='';
+  $('fArea').innerHTML='<option value="">请先选择楼层</option>'; $('fArea').disabled=true; $('fArea').value='';
+  state.keyword=''; state.status=''; state.type=''; state.date='today';
+  state.venue=''; state.floor=''; state.area=''; state.page=1;
+  renderTable();
+}
+function exportList(){ toast('已按当前筛选条件导出 '+getFiltered().length+' 条预约记录'); }
+function changePageSize(v){ state.pageSize = parseInt(v); state.page=1; renderTable(); }
+function toggleAll(el){
+  const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+  rows.forEach(function(r){ el.checked ? state.selected.add(r.id) : state.selected.delete(r.id); });
+  renderTable();
+}
+$('tbody').addEventListener('click', function(e){
+  const cb = e.target.closest('.row-checkbox');
+  if(cb){
+    const id = cb.dataset.id;
+    if(cb.checked) state.selected.add(id); else state.selected.delete(id);
+    updateBatchBar();
+    const rows = getFiltered().slice((state.page-1)*state.pageSize, state.page*state.pageSize);
+    $('checkAll').checked = rows.length>0 && rows.every(function(r){ return state.selected.has(r.id); });
+    return;
+  }
+  const link = e.target.closest('[data-act]');
+  if(link){ act(link.dataset.act, link.dataset.id); }
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    if($('seatDetailMask').classList.contains('show')){ closeModal('seatDetailMask'); return; }
+    if($('detailMask').classList.contains('show')){ closeModal('detailMask'); return; }
+    if($('confirmMask').classList.contains('show')){ closeModal('confirmMask'); return; }
+    closeModal('addMask'); closeModal('usageMask'); closeModal('legalMask');
+  }
+});
+(function init(){
+  $('fDate').value = 'today';
+  state.date = 'today';
+  renderTable();
+})();
+  </script>
+</body>
+</html>
+

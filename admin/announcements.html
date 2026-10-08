@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>公告管理 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@wangeditor/editor@5.1.23/dist/css/style.css">
+  <style>
+    /* 参考设计 - 公告管理 */
+    body {
+      --primary:#1677ff; --primary-dark:#0e63e6;
+      --border:#eaeef4; --text:#1f2329; --text-2:#5a6474; --text-3:#8b95a5;
+      --bg:#f0f2f5; --radius:8px; --success:#52c41a; --warning:#faad14; --danger:#ff4d4f;
+    }
+    .content { padding: 20px 24px 32px; flex: 1; }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, .06);
+  }
+
+  /* ---- 筛选 ---- */
+  .filter-card { padding: 18px 20px 6px; margin-bottom: 16px; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 16px 20px; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 7px; padding-bottom: 12px; }
+  .field > label { font-size: 12.5px; color: var(--text-2); }
+  .filter-actions { display: flex; gap: 10px; padding-bottom: 12px; margin-left: auto; }
+
+  .input, .select {
+    height: 34px;
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--text-1);
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+    width: 100%;
+  }
+  .input::placeholder { color: #aab3c0; }
+  .input:focus, .select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22,119,255,.12);
+  }
+  .select { appearance: none; cursor: pointer; padding-right: 28px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  .date-range { display: flex; align-items: center; gap: 8px; }
+  .date-range span { color: var(--text-3); font-size: 12px; }
+  .date-range .input { width: 148px; }
+
+  /* ---- 按钮 ---- */
+  .btn {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-default { background: #fff; border-color: #d8dee8; color: var(--text-1); }
+  .btn-default:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+  .btn-danger { background: #fff; border-color: #ffc4c6; color: #e5484d; }
+  .btn-danger:hover:not(:disabled) { background: #fff5f5; border-color: #e5484d; }
+
+  /* ---- 表格卡片 ---- */
+  .table-card { overflow: hidden; }
+
+  .table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .toolbar-actions { display: flex; gap: 10px; align-items: center; }
+  .selected-tip {
+    font-size: 12.5px;
+    color: var(--primary);
+    background: #eef5ff;
+    border-radius: 6px;
+    padding: 5px 10px;
+    display: none;
+  }
+  .selected-tip.show { display: inline-block; }
+
+  .table-wrap { overflow-x: auto; }
+  .table { width: 100%; min-width: 1080px; border-collapse: collapse; font-size: 13px; }
+  .table th {
+    background: #f7f9fc;
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 12.5px;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #f2f5f9;
+    vertical-align: middle;
+  }
+  .table tbody tr { transition: background .12s; }
+  .table tbody tr:hover { background: #f8faff; }
+  .table tbody tr:last-child td { border-bottom: none; }
+
+  .col-check { width: 46px; }
+  input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
+
+  .cell-title { display: flex; align-items: center; gap: 6px; line-height: 1.4; }
+  .cell-title .link {
+    color: var(--text-1);
+    font-weight: 500;
+    cursor: pointer;
+    transition: color .15s;
+  }
+  .cell-title .link:hover { color: var(--primary); }
+  .cell-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-3);
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .muted { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  .pin-badge {
+    display: inline-block;
+    font-size: 11px;
+    line-height: 16px;
+    padding: 0 5px;
+    border-radius: 3px;
+    background: #fff1f0;
+    border: 1px solid #ffd6d6;
+    color: #e5484d;
+    flex-shrink: 0;
+  }
+
+  /* 状态 */
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; white-space: nowrap; }
+  .status i { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .status.ok { color: #15803d; }
+  .status.ok i { background: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.14); }
+  .status.draft { color: #64748b; }
+  .status.draft i { background: #94a3b8; }
+  .status.off { color: #b45309; }
+  .status.off i { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.14); }
+
+  /* 类型标签 */
+  .tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  .tag-blue   { background: #e8f1ff; color: #1d6ee0; }
+  .tag-purple { background: #f2ebff; color: #7c3aed; }
+  .tag-cyan   { background: #e0f7f6; color: #0d8f8a; }
+  .tag-orange { background: #fff2e3; color: #c26a05; }
+  .tag-indigo { background: #eceefb; color: #4f56c9; }
+  .tag-green  { background: #e6f7ee; color: #15803d; }
+
+  /* 操作列 */
+  .ops { display: flex; align-items: center; gap: 2px; }
+  .op {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--primary);
+    padding: 3px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background .12s;
+    white-space: nowrap;
+  }
+  .op:hover { background: #eef5ff; }
+  .op.danger { color: #e5484d; }
+  .op.danger:hover { background: #fff1f1; }
+
+  .empty {
+    padding: 56px 0;
+    text-align: center;
+    color: var(--text-3);
+    font-size: 13px;
+  }
+  .empty svg { display: block; margin: 0 auto 12px; opacity: .35; }
+
+  /* ---- 分页 ---- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .page-info { font-size: 12.5px; color: var(--text-3); }
+  .pager { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #e3e8ef;
+    background: #fff;
+    color: #41474f;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+  .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; cursor: default; }
+  .page-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ============ 弹窗 ============ */
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    padding: 20px;
+  }
+  .modal-mask.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: #fff;
+    border-radius: 10px;
+    width: 860px;
+    max-width: 100%;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(14px) scale(.985);
+    transition: transform .22s cubic-bezier(.3,.9,.4,1);
+    box-shadow: 0 20px 50px rgba(15,23,42,.25);
+  }
+  .modal-mask.show .modal { transform: none; }
+  .modal-sm { width: 420px; }
+
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .modal-head h3 { font-size: 16px; font-weight: 600; }
+  .modal-close {
+    width: 30px; height: 30px;
+    border: none; background: transparent;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--text-3);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: .15s;
+  }
+  .modal-close:hover { background: #f2f5fa; color: var(--text-1); }
+
+  .modal-body { padding: 22px; overflow-y: auto; }
+  .modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  /* 表单 */
+  .form-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .form-item:last-child { margin-bottom: 0; }
+  .form-item > label { font-size: 13px; color: #41474f; }
+  .form-item > label.req::before { content: '*'; color: #e5484d; margin-right: 4px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  .textarea {
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 10px 14px;
+    resize: vertical;
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    font-family: inherit;
+    color: var(--text-1);
+    width: 100%;
+  }
+  .textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22,119,255,.12);
+  }
+
+  .radio-group { display: flex; gap: 20px; height: 34px; align-items: center; }
+  .radio-group label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #41474f; cursor: pointer;
+  }
+  input[type="radio"] { accent-color: var(--primary); cursor: pointer; }
+  .switch-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #41474f; cursor: pointer; }
+
+  /* 类型提示 */
+  .type-hint {
+    font-size: 12px;
+    color: var(--text-3);
+    line-height: 1.5;
+    margin-top: -4px;
+  }
+
+  /* ---- wangEditor 容器 ---- */
+  .editor-wrapper {
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .editor-wrapper:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22,119,255,.12);
+  }
+  #editor-toolbar {
+    border-bottom: 1px solid #e8edf3;
+    background: #fafbfd;
+  }
+  #editor-content {
+    height: 340px !important;
+    overflow-y: auto !important;
+  }
+  .w-e-full-screen-container { z-index: 3000 !important; }
+
+  /* 详情 */
+  .view-title { font-size: 18px; font-weight: 600; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+  .view-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin: 14px 0 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 12.5px;
+    color: var(--text-3);
+  }
+  .view-content {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #41474f;
+  }
+  .view-content img { max-width: 100%; height: auto; border-radius: 4px; }
+  .view-content video { max-width: 100%; border-radius: 4px; }
+  .view-content p { margin-bottom: 10px; }
+  .view-content ul, .view-content ol { padding-left: 22px; margin-bottom: 10px; }
+  .view-content table { border-collapse: collapse; width: 100%; margin-bottom: 10px; }
+  .view-content th, .view-content td { border: 1px solid #e8edf3; padding: 8px 12px; }
+  .view-content blockquote {
+    border-left: 3px solid var(--primary);
+    background: #f7faff;
+    padding: 8px 14px;
+    color: var(--text-2);
+    margin-bottom: 10px;
+  }
+
+  #confirmText { font-size: 13.5px; color: #41474f; line-height: 1.7; }
+  #confirmText b { color: #e5484d; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 26px;
+    left: 50%;
+    transform: translate(-50%, -18px);
+    background: #1f2937;
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15,23,42,.28);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .25s;
+    z-index: 9999;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">公告管理</span>
+</nav>
+
+<!-- 筛选 -->
+      <section class="card filter-card">
+        <div class="filter-row">
+          <div class="field">
+            <label>公告标题</label>
+            <input class="input" id="kwInput" placeholder="输入标题关键词" style="width:220px" />
+          </div>
+          <div class="field">
+            <label>公告类型</label>
+            <select class="select" id="typeSelect" style="width:150px">
+              <option value="">全部类型</option>
+              <option>馆务通知</option>
+              <option>活动公告</option>
+              <option>资源更新</option>
+              <option>维护通知</option>
+              <option>规则制度</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>发布状态</label>
+            <select class="select" id="statusSelect" style="width:130px">
+              <option value="">全部状态</option>
+              <option>已发布</option>
+              <option>草稿</option>
+              <option>已下架</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>发布时间</label>
+            <div class="date-range">
+              <input type="date" class="input" id="dateStart" />
+              <span>至</span>
+              <input type="date" class="input" id="dateEnd" />
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-primary" id="searchBtn">查询</button>
+            <button class="btn btn-default" id="resetBtn">重置</button>
+            <button class="btn btn-default" id="exportBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+              导出
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 列表 -->
+      <section class="card table-card">
+        <div class="table-toolbar">
+          <div class="toolbar-actions">
+            <button class="btn btn-primary" id="addBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+              新增公告
+            </button>
+            <button class="btn btn-danger" id="batchDeleteBtn" disabled>批量删除</button>
+            <button class="btn btn-default" id="refreshBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg>
+              刷新
+            </button>
+          </div>
+          <span class="selected-tip" id="selectedTip">已选 0 项</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" id="checkAll" /></th>
+                <th style="min-width:320px">公告标题</th>
+                <th style="width:110px">类型</th>
+                <th style="width:100px">状态</th>
+                <th style="width:100px">发布人</th>
+                <th style="width:150px">发布时间</th>
+                <th style="width:90px">阅读量</th>
+                <th style="width:250px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <div class="page-info" id="pageInfo"></div>
+          <div class="pager" id="pager"></div>
+        </div>
+      </section>
+</main>
+
+<!-- ==================== 新增/编辑弹窗 ==================== -->
+<div class="modal-mask" id="formMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="formTitle">新增公告</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-item">
+        <label class="req">公告标题</label>
+        <input class="input" id="fTitle" maxlength="60" placeholder="请输入公告标题，不超过 60 个字" />
+      </div>
+      <div class="form-row">
+        <div class="form-item">
+          <label class="req">公告类型</label>
+          <select class="select" id="fType">
+            <option>馆务通知</option>
+            <option>活动公告</option>
+            <option>资源更新</option>
+            <option>维护通知</option>
+            <option>规则制度</option>
+          </select>
+          <div class="type-hint" id="typeHint">图书馆日常事务、服务调整、节假日安排等</div>
+        </div>
+        <div class="form-item">
+          <label>发布状态</label>
+          <div class="radio-group">
+            <label><input type="radio" name="fstatus" value="已发布" checked /> 立即发布</label>
+            <label><input type="radio" name="fstatus" value="草稿" /> 存为草稿</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-item">
+        <label>公告摘要</label>
+        <textarea class="textarea" id="fSummary" rows="2" maxlength="120" placeholder="一句话概括公告内容，将展示在读者端公告栏列表"></textarea>
+      </div>
+      <div class="form-item">
+        <label>正文内容</label>
+        <!-- wangEditor 容器 -->
+        <div class="editor-wrapper">
+          <div id="editor-toolbar"></div>
+          <div id="editor-content"></div>
+        </div>
+      </div>
+      <div class="form-item">
+        <label class="switch-label">
+          <input type="checkbox" id="fTop" />
+          置顶展示（在读者端公告栏顶部固定展示）
+        </label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>取消</button>
+      <button class="btn btn-primary" id="saveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 详情弹窗 ==================== -->
+<div class="modal-mask" id="viewMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>公告详情</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body" id="viewBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 确认弹窗 ==================== -->
+<div class="modal-mask" id="confirmMask">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <h3>操作确认</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmText"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>取消</button>
+      <button class="btn btn-primary" id="confirmOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+  <!-- wangEditor 5 核心脚本 -->
+  <script src="https://unpkg.com/@wangeditor/editor@5.1.23/dist/index.js"></script>
+  <script>
+/* =========================================================
+ *  数据
+ * ========================================================= */
+const TYPE_CLASS = {
+  '馆务通知': 'tag-blue',
+  '活动公告': 'tag-purple',
+  '资源更新': 'tag-cyan',
+  '维护通知': 'tag-orange',
+  '规则制度': 'tag-indigo'
+};
+
+/* 类型说明，用于表单提示 */
+const TYPE_HINT = {
+  '馆务通知': '图书馆日常事务、服务调整、节假日安排等',
+  '活动公告': '讲座、读书月、比赛、志愿者招募等各类活动',
+  '资源更新': '新购数据库、电子期刊、试用资源等上线通知',
+  '维护通知': '系统升级、数据库故障、临时暂停服务等',
+  '规则制度': '借阅规则、管理办法、违规处理等制度性文件'
+};
+
+const state = {
+  list: [
+    { id: 1, title: '关于2025年国庆节期间图书馆开放时间调整的通知', type: '馆务通知', status: '已发布', publisher: '张明远', publishTime: '2025-09-25 10:30', views: 2841, top: true,
+      summary: '10月1日至10月7日闭馆，10月8日起恢复正常开放，自助还书机24小时可用。',
+      content: '<p>各位读者：</p><p><br></p><p>根据学校国庆节放假安排，图书馆开放时间调整如下：</p><p><br></p><p>一、10月1日—10月7日：全馆闭馆（数字图书馆线上服务正常）。</p><p>二、10月8日起恢复日常开放时间 08:00—22:00。</p><p>三、闭馆期间，北门自助还书机 24 小时开放，逾期图书不计入违约。</p><p><br></p><p>请广大读者相互转告。</p><p><br></p><p>图书馆</p><p>2025年9月25日</p>' },
+    { id: 2, title: '数字图书馆移动端 APP v3.2 版本更新公告', type: '馆务通知', status: '已发布', publisher: '李晓雯', publishTime: '2025-09-18 14:20', views: 5120, top: false,
+      summary: '本次更新新增文献笔记同步、扫码荐购功能，并优化了检索响应速度。',
+      content: '<p>本次 v3.2 版本主要更新内容：</p><p><br></p><ol><li>新增文献笔记云端同步，支持多设备无缝衔接；</li><li>新增扫码荐购，读者可直接扫描图书条码提交荐购申请；</li><li>检索响应速度提升约 40%，优化大数据量列表加载性能；</li><li>修复若干已知问题。</li></ol><p><br></p><p>更新方式：应用商店搜索"数字图书馆"升级。</p>' },
+    { id: 3, title: '“书香校园·秋季读书月”系列活动报名开启', type: '活动公告', status: '已发布', publisher: '王雅静', publishTime: '2025-09-15 09:00', views: 3672, top: true,
+      summary: '读书分享会、经典诵读大赛、名师导读讲座等 6 项活动即日起接受报名。',
+      content: '<p>为进一步营造校园阅读氛围，图书馆联合校团委举办"书香校园·秋季读书月"系列活动，具体安排如下：</p><p><br></p><p>一、活动时间：2025年10月8日—11月8日</p><p>二、活动内容：读书分享会、经典诵读大赛、名师导读讲座、书评征文、图书漂流、馆藏寻宝</p><p>三、报名方式：登录图书馆主页"活动报名"栏目在线报名</p><p><br></p><p>欢迎广大师生踊跃参与！</p>' },
+    { id: 4, title: '中国知网（CNKI）数据库访问异常说明', type: '维护通知', status: '已发布', publisher: '技术支持组', publishTime: '2025-09-12 16:45', views: 1893, top: false,
+      summary: '因供应商机房网络波动，CNKI 部分时段访问缓慢，预计 24 小时内恢复。',
+      content: '<p>各位读者：</p><p><br></p><p>因 CNKI 供应商机房网络出现波动，9月12日 15:00 起部分读者反映数据库访问缓慢或无法打开。</p><p><br></p><p>我方已第一时间联系供应商处理，预计 24 小时内恢复正常。受影响期间，读者可通过"万方数据"或"维普期刊"获取同类文献资源。</p><p><br></p><p>给您带来不便，敬请谅解。</p>' },
+    { id: 5, title: '关于新增《人工智能前沿》等 326 种电子期刊的通知', type: '资源更新', status: '已发布', publisher: '陈立群', publishTime: '2025-09-08 11:15', views: 742, top: false,
+      summary: '本次新购 326 种中外文电子期刊，覆盖人工智能、材料科学等 12 个学科。',
+      content: '<p>为更好地支撑学校学科建设，图书馆新购一批电子期刊资源，现已全部开通访问。</p><p><br></p><p>新增期刊：326 种</p><p>覆盖学科：人工智能、材料科学、生物医学、经济管理、法学等 12 个学科</p><p>访问路径：图书馆主页 → 资源导航 → 电子期刊</p><p><br></p><p>欢迎广大师生使用。</p>' },
+    { id: 6, title: '图书馆电子资源校外访问指南（2025版）', type: '规则制度', status: '已发布', publisher: '李晓雯', publishTime: '2025-09-01 08:30', views: 6215, top: false,
+      summary: '校外访问支持 WebVPN 与 CARSI 两种方式，附常见问题排查指引。',
+      content: '<p>一、WebVPN 方式</p><p>访问学校 WebVPN 门户，使用统一身份认证登录后，即可访问图书馆全部电子资源。</p><p><br></p><p>二、CARSI 方式</p><p>在数据库页面选择"机构登录"，搜索学校名称并通过统一身份认证登录。</p><p><br></p><p>三、常见问题</p><p>1. 提示"无权限"：请确认账号状态正常；</p><p>2. 页面空白：建议更换 Chrome / Edge 浏览器；</p><p>3. 仍有疑问请致电 0731-8888XXXX 咨询。</p>' },
+    { id: 7, title: '关于暂停超星移动图书馆借阅服务的紧急通知', type: '维护通知', status: '已下架', publisher: '技术支持组', publishTime: '2025-08-28 20:10', views: 4120, top: false,
+      summary: '因系统安全加固，超星移动图书馆借阅功能暂停约 3 小时，现已恢复。',
+      content: '<p>因系统安全加固需要，超星移动图书馆借阅功能于 8月28日 20:00—23:00 暂停服务，目前已完成升级并恢复正常。</p>' },
+    { id: 8, title: '2025年秋季学期图书馆志愿者招募启事', type: '活动公告', status: '草稿', publisher: '王雅静', publishTime: '', views: 0, top: false,
+      summary: '招募图书整理、读者引导、活动执行志愿者共 30 名，服务时长可计入第二课堂。',
+      content: '<p>（草稿，待补充招募人数与报名截止时间）</p>' },
+    { id: 9, title: '数字资源使用违规行为处理办法（修订版）', type: '规则制度', status: '已发布', publisher: '张明远', publishTime: '2025-08-20 15:00', views: 986, top: false,
+      summary: '明确批量下载、账号外借等违规行为的认定标准与处理措施。',
+      content: '<p>第一条 为规范数字资源使用秩序，保障全校师生合法权益，制定本办法。</p><p><br></p><p>第二条 下列行为属于违规使用：</p><p>（一）使用自动下载工具批量抓取文献；</p><p>（二）将个人账号出借、出租给他人使用；</p><p>（三）将获取的文献用于商业用途。</p><p><br></p><p>第三条 违规行为一经查实，视情节给予暂停账号 7—30 日、全校通报等处理。</p>' },
+    { id: 10, title: '“知网研学”平台试用开通通知', type: '资源更新', status: '已发布', publisher: '陈立群', publishTime: '2025-08-12 10:05', views: 1547, top: false,
+      summary: '即日起至 2025年12月31日开通试用，支持文献管理、笔记与写作辅助。',
+      content: '<p>知网研学平台现面向全校师生开通试用。</p><p><br></p><p>试用期限：即日起至 2025年12月31日</p><p>访问方式：图书馆主页 → 试用资源 → 知网研学</p><p>功能简介：文献管理、在线笔记、思维导图、写作辅助</p><p><br></p><p>试用期间如有问题请联系资源建设部。</p>' },
+    { id: 11, title: '图书馆自助借还机系统升级维护通知', type: '维护通知', status: '已发布', publisher: '技术支持组', publishTime: '2025-08-05 17:30', views: 2130, top: false,
+      summary: '8月7日 07:00—09:00 自助借还机暂停使用，期间请到人工服务台办理。',
+      content: '<p>为提升自助借还设备稳定性，图书馆将于 8月7日 07:00—09:00 对全馆自助借还机进行系统升级。</p><p><br></p><p>升级期间设备暂停使用，请读者移步一楼人工服务台办理借还手续。</p>' },
+    { id: 12, title: '关于开展2025级新生入馆教育的通知', type: '活动公告', status: '已发布', publisher: '王雅静', publishTime: '2025-07-28 09:45', views: 4380, top: false,
+      summary: '新生需在 9月30日前完成线上入馆教育课程并通过测试。',
+      content: '<p>各学院、各位新同学：</p><p><br></p><p>图书馆入馆教育采用线上方式进行，请于 9月30日前完成课程学习并通过在线测试（80 分及以上为合格）。</p><p><br></p><p>学习路径：图书馆主页 → 新生专栏 → 入馆教育</p><p>合格后系统自动开通图书借阅权限。</p>' },
+    { id: 13, title: '电子阅览室座位预约系统使用说明', type: '规则制度', status: '已下架', publisher: '李晓雯', publishTime: '2025-07-15 13:20', views: 2765, top: false,
+      summary: '座位预约规则已更新，旧版说明停止使用。',
+      content: '<p>（该版本说明已停止使用，请查阅最新发布的《电子阅览室座位预约规则（2025修订）》。）</p>' },
+    { id: 14, title: '暑期数字图书馆服务安排公告', type: '馆务通知', status: '已发布', publisher: '张明远', publishTime: '2025-07-01 08:00', views: 3921, top: false,
+      summary: '暑期线上服务 7×24 小时不间断，线下阅览室每周二、四开放。',
+      content: '<p>暑假期间数字图书馆线上服务 7×24 小时不间断。</p><p>线下阅览室开放时间：每周二、周四 09:00—16:00。</p><p>借还书业务请至一楼总服务台办理。</p>' }
+  ],
+  page: 1,
+  pageSize: 10,
+  filters: { kw: '', type: '', status: '', dateStart: '', dateEnd: '' },
+  selected: new Set(),
+  editingId: null,
+  confirmAction: null
+};
+
+/* =========================================================
+ *  工具函数
+ * ========================================================= */
+const $ = id => document.getElementById(id);
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function nowStr() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function statusHtml(s) {
+  const cls = { '已发布': 'ok', '草稿': 'draft', '已下架': 'off' }[s] || 'draft';
+  return `<span class="status ${cls}"><i></i>${s}</span>`;
+}
+
+/* =========================================================
+ *  过滤 + 渲染
+ * ========================================================= */
+function getFiltered() {
+  const f = state.filters;
+  return state.list.filter(a => {
+    if (f.kw) {
+      const hit = a.title.includes(f.kw) || (a.summary || '').includes(f.kw);
+      if (!hit) return false;
+    }
+    if (f.type && a.type !== f.type) return false;
+    if (f.status && a.status !== f.status) return false;
+    if (f.dateStart || f.dateEnd) {
+      if (!a.publishTime) return false;
+      const d = a.publishTime.slice(0, 10);
+      if (f.dateStart && d < f.dateStart) return false;
+      if (f.dateEnd && d > f.dateEnd) return false;
+    }
+    return true;
+  });
+}
+
+function rowHtml(a) {
+  const ops = [
+    `<button class="op" data-action="view" data-id="${a.id}">查看</button>`,
+    `<button class="op" data-action="edit" data-id="${a.id}">编辑</button>`,
+    `<button class="op" data-action="toggleTop" data-id="${a.id}">${a.top ? '取消置顶' : '置顶'}</button>`,
+    a.status === '已发布'
+      ? `<button class="op" data-action="offline" data-id="${a.id}">下架</button>`
+      : `<button class="op" data-action="publish" data-id="${a.id}">发布</button>`,
+    `<button class="op danger" data-action="delete" data-id="${a.id}">删除</button>`
+  ].join('');
+
+  return `
+    <tr>
+      <td class="col-check">
+        <input type="checkbox" class="row-check" data-id="${a.id}" ${state.selected.has(a.id) ? 'checked' : ''} />
+      </td>
+      <td>
+        <div class="cell-title">
+          ${a.top ? '<span class="pin-badge">置顶</span>' : ''}
+          <span class="link" data-action="view" data-id="${a.id}">${esc(a.title)}</span>
+        </div>
+        ${a.summary ? `<div class="cell-sub">${esc(a.summary)}</div>` : ''}
+      </td>
+      <td><span class="tag ${TYPE_CLASS[a.type] || 'tag-blue'}">${a.type}</span></td>
+      <td>${statusHtml(a.status)}</td>
+      <td>${esc(a.publisher)}</td>
+      <td class="muted">${a.publishTime || '—'}</td>
+      <td class="muted">${a.views.toLocaleString()}</td>
+      <td><div class="ops">${ops}</div></td>
+    </tr>`;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const maxPage = Math.max(1, Math.ceil(total / state.pageSize));
+  if (state.page > maxPage) state.page = maxPage;
+
+  const start = (state.page - 1) * state.pageSize;
+  const rows = filtered.slice(start, start + state.pageSize);
+
+  const tbody = $('tableBody');
+  if (!rows.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="8">
+        <div class="empty">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/>
+          </svg>
+          没有找到符合条件的公告
+        </div>
+      </td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(rowHtml).join('');
+  }
+
+  const pageIds = rows.map(r => r.id);
+  const allChecked = pageIds.length > 0 && pageIds.every(id => state.selected.has(id));
+  const head = $('checkAll');
+  head.checked = allChecked;
+  head.indeterminate = !allChecked && pageIds.some(id => state.selected.has(id));
+
+  const n = state.selected.size;
+  $('batchDeleteBtn').disabled = n === 0;
+  const tip = $('selectedTip');
+  tip.textContent = `已选 ${n} 项`;
+  tip.classList.toggle('show', n > 0);
+
+  renderPager(maxPage, total);
+}
+
+function renderPager(maxPage, total) {
+  const pager = $('pager');
+  let html = `<button class="page-btn" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>上一页</button>`;
+  for (let i = 1; i <= maxPage; i++) {
+    html += `<button class="page-btn ${i === state.page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  html += `<button class="page-btn" data-page="${state.page + 1}" ${state.page === maxPage ? 'disabled' : ''}>下一页</button>`;
+  pager.innerHTML = html;
+
+  $('pageInfo').textContent = total
+    ? `共 ${total} 条记录，第 ${state.page} / ${maxPage} 页`
+    : '暂无记录';
+}
+
+/* =========================================================
+ *  弹窗控制
+ * ========================================================= */
+function openMask(id) { $(id).classList.add('show'); }
+function closeMask(id) { $(id).classList.remove('show'); }
+
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.target.closest('.modal-mask').classList.remove('show');
+  });
+});
+
+document.querySelectorAll('.modal-mask').forEach(mask => {
+  mask.addEventListener('click', e => {
+    if (e.target === mask) mask.classList.remove('show');
+  });
+});
+
+function askConfirm(html, onOk) {
+  $('confirmText').innerHTML = html;
+  state.confirmAction = onOk;
+  openMask('confirmMask');
+}
+
+$('confirmOk').addEventListener('click', () => {
+  if (typeof state.confirmAction === 'function') state.confirmAction();
+  state.confirmAction = null;
+  closeMask('confirmMask');
+});
+
+/* =========================================================
+ *  wangEditor 初始化（懒加载）
+ * ========================================================= */
+let editor = null;
+let toolbar = null;
+let editorReady = false;
+
+function ensureEditor() {
+  if (editorReady) return;
+  if (!window.wangEditor) {
+    console.error('wangEditor 未加载，请检查网络或 CDN');
+    toast('富文本编辑器加载失败');
+    return;
+  }
+
+  const { createEditor, createToolbar, Boot } = window.wangEditor;
+
+  /* ---------- 自定义菜单：上传文件 ---------- */
+  class UploadFileMenu {
+    constructor() {
+      this.title = '上传文件';
+      this.tag = 'button';
+      this.iconSvg = '<svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M878.4 384H816V224a96 96 0 0 0-96-96H304a96 96 0 0 0-96 96v160h-62.4A48 48 0 0 0 100 432v400a48 48 0 0 0 48 48h728a48 48 0 0 0 48-48V432a48 48 0 0 0-45.6-48zM288 224a16 16 0 0 1 16-16h416a16 16 0 0 1 16 16v160H288V224z m576 560H160V480h192v48a48 48 0 0 0 96 0v-48h224v48a48 48 0 0 0 96 0v-48h96v304z" fill="currentColor"/></svg>';
+    }
+    getValue() { return ''; }
+    isActive() { return false; }
+    isDisabled() { return false; }
+    exec(ed) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '*/*';
+      input.style.display = 'none';
+      document.body.appendChild(input);
+      input.onchange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        document.body.removeChild(input);
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+          alert('文件大小不能超过 5MB（演示限制）');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const sizeKB = (file.size / 1024).toFixed(1);
+          ed.dangerouslyInsertHtml(
+            `<p>📎 <a href="${reader.result}" download="${file.name}" target="_blank" style="color:#1677ff;">${file.name}</a> <span style="color:#8b95a5;font-size:12px;">(${sizeKB} KB)</span></p>`
+          );
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+  }
+
+  /* ---------- 自定义菜单：一键排版 ---------- */
+  class AutoFormatMenu {
+    constructor() {
+      this.title = '一键排版';
+      this.tag = 'button';
+      this.iconSvg = '<svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M128 192h768v64H128zM128 384h768v64H128zM128 576h512v64H128zM128 768h640v64H128z" fill="currentColor"/></svg>';
+    }
+    getValue() { return ''; }
+    isActive() { return false; }
+    isDisabled() { return false; }
+    exec(ed) {
+      const html = ed.getHtml();
+      const formatted = html
+        .replace(/<p(?:\s[^>]*)?>/g, '<p style="text-indent:2em;line-height:1.8;margin-bottom:10px;">')
+        .replace(/<h1(?:\s[^>]*)?>/g, '<h1 style="line-height:1.4;margin:20px 0 12px;">')
+        .replace(/<h2(?:\s[^>]*)?>/g, '<h2 style="line-height:1.4;margin:18px 0 10px;">')
+        .replace(/<h3(?:\s[^>]*)?>/g, '<h3 style="line-height:1.4;margin:16px 0 8px;">')
+        .replace(/<h4(?:\s[^>]*)?>/g, '<h4 style="line-height:1.4;margin:14px 0 8px;">')
+        .replace(/<h5(?:\s[^>]*)?>/g, '<h5 style="line-height:1.4;margin:12px 0 6px;">');
+      ed.setHtml(formatted);
+      ed.focus();
+    }
+  }
+
+  Boot.registerMenu({ key: 'uploadFile', factory: () => new UploadFileMenu() });
+  Boot.registerMenu({ key: 'autoFormat', factory: () => new AutoFormatMenu() });
+
+  const editorConfig = {
+    placeholder: '请输入公告正文内容，支持图片、视频、文件上传及富文本排版…',
+    MENU_CONF: {}
+  };
+
+  editorConfig.MENU_CONF['uploadImage'] = {
+    base64LimitSize: 5 * 1024 * 1024,
+    customUpload(file, insertFn) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('图片大小不能超过 5MB（演示限制）');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => insertFn(reader.result, file.name, '');
+      reader.readAsDataURL(file);
+    }
+  };
+
+  editorConfig.MENU_CONF['uploadVideo'] = {
+    customUpload(file, insertFn) {
+      if (file.size > 20 * 1024 * 1024) {
+        alert('视频大小不能超过 20MB（演示限制）');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => insertFn(reader.result, '');
+      reader.readAsDataURL(file);
+    }
+  };
+
+  editor = createEditor({
+    selector: '#editor-content',
+    html: '<p><br></p>',
+    config: editorConfig,
+    mode: 'default'
+  });
+
+  const toolbarConfig = {
+    toolbarKeys: [
+      'headerSelect', 'blockquote', '|',
+      'bold', 'underline', 'italic', 'through', 'code', 'clearStyle', '|',
+      'color', 'bgColor', '|',
+      'fontSize', 'fontFamily', 'lineHeight', '|',
+      'bulletedList', 'numberedList', 'todo', '|',
+      'justifyLeft', 'justifyCenter', 'justifyRight', '|',
+      'indent', 'delIndent', '|',
+      'link', 'group-image', 'group-video', '|',
+      'insertTable', 'codeBlock', 'divider', '|',
+      'uploadFile', 'autoFormat', '|',
+      'undo', 'redo', '|',
+      'fullScreen'
+    ]
+  };
+
+  toolbar = createToolbar({
+    editor,
+    selector: '#editor-toolbar',
+    config: toolbarConfig,
+    mode: 'default'
+  });
+
+  editorReady = true;
+}
+
+/* =========================================================
+ *  表单（新增 / 编辑）
+ * ========================================================= */
+function openForm(item) {
+  state.editingId = item ? item.id : null;
+  $('formTitle').textContent = item ? '编辑公告' : '新增公告';
+  $('fTitle').value = item ? item.title : '';
+  $('fType').value = item ? item.type : '馆务通知';
+  $('fSummary').value = item ? (item.summary || '') : '';
+  $('fTop').checked = item ? !!item.top : false;
+
+  // 同步类型提示
+  $('typeHint').textContent = TYPE_HINT[$('fType').value] || '';
+
+  const st = item && item.status === '草稿' ? '草稿' : '已发布';
+  document.querySelectorAll('input[name="fstatus"]').forEach(r => {
+    r.checked = r.value === st;
+  });
+
+  openMask('formMask');
+
+  setTimeout(() => {
+    ensureEditor();
+    if (editor) {
+      editor.setHtml(item ? (item.content || '<p><br></p>') : '<p><br></p>');
+    }
+  }, 60);
+}
+
+// 类型切换时更新提示
+$('fType').addEventListener('change', () => {
+  $('typeHint').textContent = TYPE_HINT[$('fType').value] || '';
+});
+
+$('saveBtn').addEventListener('click', () => {
+  const title = $('fTitle').value.trim();
+  if (!title) { toast('请输入公告标题'); $('fTitle').focus(); return; }
+
+  const type = $('fType').value;
+  const summary = $('fSummary').value.trim();
+  let content = editor ? editor.getHtml() : '';
+  if (content === '<p><br></p>' || content === '<p></p>' || content === '') content = '';
+  const top = $('fTop').checked;
+  const status = document.querySelector('input[name="fstatus"]:checked').value;
+
+  if (state.editingId) {
+    const item = state.list.find(a => a.id === state.editingId);
+    Object.assign(item, { title, type, summary, content, top, status });
+    if (status === '已发布' && !item.publishTime) item.publishTime = nowStr();
+    if (status === '草稿') item.publishTime = '';
+    toast('公告已保存');
+  } else {
+    const newId = state.list.length ? Math.max(...state.list.map(a => a.id)) + 1 : 1;
+    state.list.unshift({
+      id: newId,
+      title, type, summary, content, top, status,
+      publisher: '张明远',
+      publishTime: status === '已发布' ? nowStr() : '',
+      views: 0
+    });
+    state.page = 1;
+    toast(status === '草稿' ? '已保存为草稿' : '公告发布成功');
+  }
+
+  closeMask('formMask');
+  render();
+});
+
+/* =========================================================
+ *  表格事件（委托）
+ * ========================================================= */
+$('tableBody').addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+
+  const id = Number(el.dataset.id);
+  const action = el.dataset.action;
+  const item = state.list.find(a => a.id === id);
+  if (!item) return;
+
+  switch (action) {
+    case 'view':
+      openView(item);
+      break;
+
+    case 'edit':
+      openForm(item);
+      break;
+
+    case 'toggleTop':
+      item.top = !item.top;
+      toast(item.top ? '已置顶该公告' : '已取消置顶');
+      render();
+      break;
+
+    case 'offline':
+      askConfirm(`确定要下架公告「<b>${esc(item.title)}</b>」吗？<br>下架后读者端将不再展示该公告。`, () => {
+        item.status = '已下架';
+        toast('公告已下架');
+        render();
+      });
+      break;
+
+    case 'publish':
+      item.status = '已发布';
+      if (!item.publishTime) item.publishTime = nowStr();
+      toast('公告已发布');
+      render();
+      break;
+
+    case 'delete':
+      askConfirm(`确定要删除公告「<b>${esc(item.title)}</b>」吗？<br>删除后不可恢复。`, () => {
+        state.list = state.list.filter(a => a.id !== id);
+        state.selected.delete(id);
+        toast('删除成功');
+        render();
+      });
+      break;
+  }
+});
+
+// 单行勾选
+$('tableBody').addEventListener('change', e => {
+  if (!e.target.classList.contains('row-check')) return;
+  const id = Number(e.target.dataset.id);
+  if (e.target.checked) state.selected.add(id);
+  else state.selected.delete(id);
+  render();
+});
+
+// 全选（当前页）
+$('checkAll').addEventListener('change', e => {
+  const filtered = getFiltered();
+  const start = (state.page - 1) * state.pageSize;
+  const pageIds = filtered.slice(start, start + state.pageSize).map(a => a.id);
+  pageIds.forEach(id => e.target.checked ? state.selected.add(id) : state.selected.delete(id));
+  render();
+});
+
+// 分页
+$('pager').addEventListener('click', e => {
+  const btn = e.target.closest('.page-btn');
+  if (!btn || btn.disabled || btn.classList.contains('active')) return;
+  const p = Number(btn.dataset.page);
+  if (p < 1) return;
+  state.page = p;
+  render();
+});
+
+/* =========================================================
+ *  详情弹窗
+ * ========================================================= */
+function openView(a) {
+  const contentHtml = a.content || (a.summary ? `<p>${esc(a.summary)}</p>` : '<p>暂无正文内容</p>');
+  $('viewBody').innerHTML = `
+    <h2 class="view-title">
+      ${a.top ? '<span class="pin-badge">置顶</span>' : ''}
+      <span>${esc(a.title)}</span>
+    </h2>
+    <div class="view-meta">
+      <span class="tag ${TYPE_CLASS[a.type] || 'tag-blue'}">${a.type}</span>
+      ${statusHtml(a.status)}
+      <span>发布人：${esc(a.publisher)}</span>
+      <span>发布时间：${a.publishTime || '—'}</span>
+      <span>阅读量：${a.views.toLocaleString()}</span>
+    </div>
+    <div class="view-content">${contentHtml}</div>
+  `;
+  openMask('viewMask');
+}
+
+/* =========================================================
+ *  筛选 / 工具栏
+ * ========================================================= */
+$('searchBtn').addEventListener('click', () => {
+  state.filters = {
+    kw: $('kwInput').value.trim(),
+    type: $('typeSelect').value,
+    status: $('statusSelect').value,
+    dateStart: $('dateStart').value,
+    dateEnd: $('dateEnd').value
+  };
+  state.page = 1;
+  render();
+});
+
+$('resetBtn').addEventListener('click', () => {
+  $('kwInput').value = '';
+  $('typeSelect').value = '';
+  $('statusSelect').value = '';
+  $('dateStart').value = '';
+  $('dateEnd').value = '';
+  state.filters = { kw: '', type: '', status: '', dateStart: '', dateEnd: '' };
+  state.page = 1;
+  render();
+  toast('筛选条件已重置');
+});
+
+$('kwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') $('searchBtn').click();
+});
+
+$('addBtn').addEventListener('click', () => openForm(null));
+
+$('refreshBtn').addEventListener('click', () => {
+  render();
+  toast('列表已刷新');
+});
+
+$('exportBtn').addEventListener('click', () => {
+  toast(`正在导出 ${getFiltered().length} 条公告记录…`);
+});
+
+$('batchDeleteBtn').addEventListener('click', () => {
+  const n = state.selected.size;
+  if (!n) return;
+  askConfirm(`确定要删除选中的 <b>${n}</b> 条公告吗？<br>删除后不可恢复。`, () => {
+    state.list = state.list.filter(a => !state.selected.has(a.id));
+    state.selected.clear();
+    toast(`已删除 ${n} 条公告`);
+    render();
+  });
+});
+
+/* =========================================================
+ *  初始化
+ * ========================================================= */
+render();
+  </script>
+</body>
+</html>
+

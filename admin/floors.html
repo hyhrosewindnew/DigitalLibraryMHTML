@@ -1,0 +1,1362 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>楼层管理 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+<style id="floor-example-scoped">
+.floor-example {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --text: #1e293b;
+  --text-2: #64748b;
+  --text-3: #94a3b8;
+  --border: #e2e8f0;
+  --bg: #f1f5f9;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --radius: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.floor-example * { box-sizing: border-box; margin: 0; padding: 0; }
+.floor-example button { font-family: inherit; }
+.floor-example input, .floor-example select, .floor-example textarea { font-family: inherit; }
+
+.floor-example .card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(15,23,42,.04);
+  overflow: hidden;
+}
+.floor-example .card + .card { margin-top: 16px; }
+
+.floor-example .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 16px;
+  padding: 18px 20px;
+  align-items: flex-end;
+}
+.floor-example .filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 168px;
+  flex: 1 1 168px;
+}
+.floor-example .filter-item label {
+  font-size: 12.5px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.floor-example .filter-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.floor-example .toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.floor-example .toolbar-left { display: flex; gap: 10px; flex-wrap: wrap; }
+.floor-example .stat { font-size: 13px; color: var(--text-2); }
+.floor-example .stat b { color: var(--text); font-weight: 600; }
+
+.floor-example input[type=text], .floor-example input[type=number], .floor-example select, .floor-example textarea {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.floor-example textarea { height: auto; min-height: 74px; padding: 8px 12px; resize: vertical; line-height: 1.6; }
+.floor-example input::placeholder, .floor-example textarea::placeholder { color: var(--text-3); }
+.floor-example input:focus, .floor-example select:focus, .floor-example textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+.floor-example select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.floor-example .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: .15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.floor-example .btn:hover { border-color: #cbd5e1; background: #f8fafc; }
+.floor-example .btn:active { transform: translateY(1px); }
+.floor-example .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.floor-example .btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.floor-example .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+.floor-example .btn-danger { color: var(--danger); border-color: #fecaca; }
+.floor-example .btn-danger:hover { background: #fef2f2; border-color: #fca5a5; }
+.floor-example .btn-danger-solid { background: var(--danger); border-color: var(--danger); color: #fff; }
+.floor-example .btn-danger-solid:hover { background: #dc2626; border-color: #dc2626; }
+
+.floor-example .table-wrap { overflow-x: auto; }
+.floor-example table { width: 100%; min-width: 1100px; border-collapse: collapse; }
+.floor-example thead th {
+  background: #f8fafc;
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 12.5px;
+  text-align: left;
+  padding: 12px 16px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: .3px;
+}
+.floor-example tbody td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  font-size: 13.5px;
+}
+.floor-example tbody tr:last-child td { border-bottom: none; }
+.floor-example tbody tr:hover { background: #f8fafc; }
+.floor-example .col-check { width: 44px; padding-right: 0 !important; }
+.floor-example input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  vertical-align: middle;
+}
+.floor-example .cell-main { font-size: 13.5px; color: var(--text); }
+.floor-example .cell-main.strong { font-weight: 600; }
+.floor-example .cell-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.floor-example .code-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.floor-example .ops { white-space: nowrap; }
+.floor-example .link-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 3px 7px;
+  border-radius: 6px;
+  transition: .15s;
+}
+.floor-example .link-btn:hover { background: var(--primary-light); }
+.floor-example .link-btn.danger { color: var(--danger); }
+.floor-example .link-btn.danger:hover { background: #fef2f2; }
+
+.floor-example .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 19px;
+  white-space: nowrap;
+}
+.floor-example .badge-blue { background: #eff6ff; color: #2563eb; }
+.floor-example .badge-green { background: #ecfdf5; color: #059669; }
+.floor-example .badge-orange { background: #fffbeb; color: #d97706; }
+.floor-example .badge-gray { background: #f1f5f9; color: #64748b; }
+
+.floor-example .switch { position: relative; display: inline-block; width: 40px; height: 22px; vertical-align: middle; }
+.floor-example .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.floor-example .slider {
+  position: absolute;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: 22px;
+  transition: .2s;
+  cursor: pointer;
+}
+.floor-example .slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 2px;
+  top: 2px;
+  background: #fff;
+  border-radius: 50%;
+  transition: .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.18);
+}
+.floor-example .switch input:checked + .slider { background: var(--success); }
+.floor-example .switch input:checked + .slider::before { transform: translateX(18px); }
+
+.floor-example .empty { padding: 70px 20px; text-align: center; color: var(--text-3); }
+.floor-example .empty-icon { font-size: 38px; margin-bottom: 10px; opacity: .5; }
+.floor-example .empty-text { font-size: 13.5px; }
+
+.floor-example .pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  font-size: 13px;
+  color: var(--text-2);
+  flex-wrap: wrap;
+}
+.floor-example .pager-btns { display: flex; gap: 6px; align-items: center; }
+.floor-example .pager-btn {
+  min-width: 33px;
+  height: 33px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+  transition: .15s;
+}
+.floor-example .pager-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+.floor-example .pager-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 500; }
+.floor-example .pager-btn:disabled { opacity: .45; cursor: not-allowed; }
+.floor-example .pager-dots { padding: 0 4px; color: var(--text-3); }
+
+.floor-example .modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.5);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+.floor-example .modal.show { display: flex; }
+.floor-example .modal-box {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(15,23,42,.25);
+  animation: pop .18s cubic-bezier(.34,1.3,.64,1);
+}
+.floor-example .modal-box.small { max-width: 430px; }
+@keyframes pop { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.floor-example .modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.floor-example .icon-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: none;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--text-3);
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .15s;
+}
+.floor-example .icon-btn:hover { background: #f1f5f9; color: var(--text); }
+.floor-example .modal-body { padding: 22px 24px; overflow-y: auto; flex: 1; }
+.floor-example .modal-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.floor-example .confirm-text { font-size: 14px; color: var(--text-2); line-height: 1.7; }
+
+.floor-example .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+.floor-example .form-item { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.floor-example .form-item.full { grid-column: 1 / -1; }
+.floor-example .form-item > label { font-size: 13px; color: var(--text-2); font-weight: 500; }
+.floor-example .req { font-style: normal; color: var(--danger); margin-right: 2px; }
+.floor-example .error-tip { font-size: 12px; color: var(--danger); display: none; }
+.floor-example .form-item.has-error input, .floor-example .form-item.has-error select { border-color: var(--danger); }
+.floor-example .form-item.has-error input:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+.floor-example .form-item.has-error .error-tip { display: block; }
+.floor-example .radio-group { display: flex; gap: 20px; align-items: center; height: 36px; }
+.floor-example .radio { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: var(--text); }
+.floor-example .radio input { width: 16px; height: 16px; margin: 0; accent-color: var(--primary); cursor: pointer; }
+
+.floor-example .toast {
+  position: fixed;
+  top: 26px;
+  left: 50%;
+  z-index: 999;
+  transform: translateX(-50%) translateY(-16px);
+  background: #1e293b;
+  color: #fff;
+  padding: 11px 22px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  box-shadow: 0 8px 24px rgba(15,23,42,.28);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 80vw;
+}
+.floor-example .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.floor-example .toast.error { background: #dc2626; }
+
+@media (max-width: 768px) {
+  .floor-example .form-grid { grid-template-columns: 1fr; }
+  .floor-example .filter-item { min-width: 100%; }
+  .floor-example .filter-actions { width: 100%; margin-left: 0; }
+  .floor-example .filter-actions .btn { flex: 1; }
+}
+</style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<nav class="text-caption mb-4" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a><span class="mx-2">/</span><span>楼层管理</span>
+</nav>
+
+<div class="floor-example">
+  <!-- 筛选区域 -->
+  <div class="card">
+    <div class="filter-bar">
+      <div class="filter-item">
+        <label>所属馆藏地</label>
+        <select id="fLibrary">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>关键字</label>
+        <input type="text" id="fKeyword" placeholder="楼层名称 / 代码">
+      </div>
+      <div class="filter-item">
+        <label>状态</label>
+        <select id="fStatus">
+          <option value="">全部</option>
+          <option value="1">启用</option>
+          <option value="0">停用</option>
+        </select>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary" id="btnSearch">搜索</button>
+        <button class="btn" id="btnReset">重置</button>
+        <button class="btn" id="btnExport">导出</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 列表区域 -->
+  <div class="card">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <button class="btn btn-primary" id="btnAdd">＋ 新增楼层</button>
+        <button class="btn btn-danger" id="btnBatchDel" disabled>批量删除</button>
+      </div>
+      <div class="toolbar-right">
+        <span class="stat">共 <b id="statTotal">0</b> 个楼层 · 启用 <b id="statOn">0</b> 个</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox" id="checkAll"></th>
+            <th>所属馆藏地</th>
+            <th>楼层名称</th>
+            <th>楼层代码</th>
+            <th>楼层用途</th>
+            <th>面积(㎡)</th>
+            <th>负责人</th>
+            <th>联系电话</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="pager">
+      <div class="pager-info" id="pagerInfo"></div>
+      <div class="pager-btns" id="pagerBtns"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<div class="floor-example">
+  <!-- 新增/编辑弹窗 -->
+  <div class="modal" id="formModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span id="formTitle">新增楼层</span>
+        <button class="icon-btn" id="btnCloseForm">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-item">
+            <label><i class="req">*</i>所属馆藏地</label>
+            <select id="fLibraryId"></select>
+            <span class="error-tip"></span>
+          </div>
+          <div class="form-item">
+            <label><i class="req">*</i>楼层名称</label>
+            <input type="text" id="fName" maxlength="30" placeholder="如：一层 / 二层">
+            <span class="error-tip"></span>
+          </div>
+          <div class="form-item">
+            <label><i class="req">*</i>楼层代码</label>
+            <input type="text" id="fCode" maxlength="30" placeholder="如：ZG-1F">
+            <span class="error-tip"></span>
+          </div>
+          <div class="form-item">
+            <label>楼层用途</label>
+            <input type="text" id="fUsage" maxlength="40" placeholder="如：中文图书借阅区">
+          </div>
+          <div class="form-item">
+            <label>面积(㎡)</label>
+            <input type="number" id="fArea" min="0" max="99999" placeholder="如：2000">
+          </div>
+          <div class="form-item">
+            <label>负责人</label>
+            <input type="text" id="fManager" maxlength="20" placeholder="如：张丽">
+          </div>
+          <div class="form-item">
+            <label>联系电话</label>
+            <input type="text" id="fPhone" maxlength="20" placeholder="如：010-88880001">
+            <span class="error-tip"></span>
+          </div>
+          <div class="form-item">
+            <label>排序值</label>
+            <input type="number" id="fSort" min="0" max="9999" placeholder="数字越小越靠前">
+          </div>
+          <div class="form-item">
+            <label>状态</label>
+            <div class="radio-group">
+              <label class="radio"><input type="radio" name="fStatus" value="1" checked><span>启用</span></label>
+              <label class="radio"><input type="radio" name="fStatus" value="0"><span>停用</span></label>
+            </div>
+          </div>
+          <div class="form-item full">
+            <label>备注说明</label>
+            <textarea id="fRemark" maxlength="200" placeholder="选填，可填写该楼层的特殊说明"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="btnCancelForm">取消</button>
+        <button class="btn btn-primary" id="btnSubmitForm">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认弹窗 -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-box small">
+      <div class="modal-header">
+        <span id="confirmTitle">确认删除</span>
+        <button class="icon-btn" id="btnCloseConfirm">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text" id="confirmText"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="btnCancelConfirm">取消</button>
+        <button class="btn btn-danger-solid" id="btnOkConfirm">确定删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+</div>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+
+    .lib-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+    .lib-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .lib-toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lib-radius-full);
+      background-color: var(--lib-surface-3);
+      transition: background-color 0.2s;
+    }
+    .lib-toggle-slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--lib-surface);
+      box-shadow: var(--lib-shadow-1);
+      transition: transform 0.2s;
+    }
+    .lib-toggle input:checked + .lib-toggle-slider {
+      background-color: var(--lib-state-success);
+    }
+    .lib-toggle input:checked + .lib-toggle-slider::before {
+      transform: translateX(18px);
+    }
+    .lib-toggle input:focus-visible + .lib-toggle-slider {
+      outline: 2px solid var(--lib-ring);
+      outline-offset: 2px;
+    }
+
+  </style>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
+  { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+));
+
+let toastTimer = null;
+function toast(msg, type){
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type === 'error' ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.classList.remove('show'); }, 2200);
+}
+
+/* =========================================================
+ *  馆藏地列表（固定）
+ * =======================================================*/
+const LIBRARIES = [
+  { id:1, name:'总馆' },
+  { id:2, name:'南区分馆' },
+  { id:3, name:'东校区分馆' },
+  { id:4, name:'医学分馆' }
+];
+
+/* =========================================================
+ *  楼层数据（平铺）
+ * =======================================================*/
+let floors = [
+  // 总馆
+  { id:1,  libraryId:1, name:'一层',     code:'ZG-1F', usage:'中文图书借阅区', area:2000, manager:'张丽', phone:'010-88880001', sort:1, status:1, remark:'' },
+  { id:2,  libraryId:1, name:'二层',     code:'ZG-2F', usage:'外文书库',       area:1800, manager:'王强', phone:'010-88880002', sort:2, status:1, remark:'' },
+  { id:3,  libraryId:1, name:'三层',     code:'ZG-3F', usage:'期刊阅览区',     area:1500, manager:'李敏', phone:'010-88880003', sort:3, status:1, remark:'仅限馆内阅览' },
+  { id:4,  libraryId:1, name:'四层',     code:'ZG-4F', usage:'古籍特藏室',     area:800,  manager:'陈静', phone:'010-88880004', sort:4, status:1, remark:'需提前预约' },
+
+  // 南区分馆
+  { id:6,  libraryId:2, name:'一层',     code:'NQ-1F', usage:'综合借阅区',     area:1600, manager:'刘洋', phone:'020-66660001', sort:1, status:0, remark:'' },
+  { id:7,  libraryId:2, name:'二层',     code:'NQ-2F', usage:'报刊阅览室',     area:1000, manager:'周婷', phone:'020-66660002', sort:2, status:0, remark:'' },
+
+  // 东校区分馆
+  { id:8,  libraryId:3, name:'一层',     code:'DQ-1F', usage:'借阅区',         area:1400, manager:'吴迪', phone:'020-77770001', sort:1, status:0, remark:'' },
+  { id:9,  libraryId:3, name:'二层',     code:'DQ-2F', usage:'自习区',         area:900,  manager:'郑爽', phone:'020-77770002', sort:2, status:0, remark:'' },
+
+  // 医学分馆
+  { id:10, libraryId:4, name:'一层',     code:'YX-1F', usage:'医学书库',       area:1200, manager:'何静', phone:'020-88880001', sort:1, status:0, remark:'' },
+  { id:11, libraryId:4, name:'二层',     code:'YX-2F', usage:'医学阅览室',     area:800,  manager:'杨帆', phone:'020-88880002', sort:2, status:0, remark:'整理中' }
+];
+
+let filters = { libraryId:'', keyword:'', status:'' };
+let page = 1;
+const PAGE_SIZE = 10;
+let selected = new Set();
+let editingId = null;
+let nextId = 100;
+let confirmCallback = null;
+
+/* =========================================================
+ *  工具
+ * =======================================================*/
+function getLibraryName(id){
+  const lib = LIBRARIES.find(l => l.id === id);
+  return lib ? lib.name : '—';
+}
+
+function calcSummary(){
+  return {
+    total: floors.length,
+    on: floors.filter(f => f.status === 1).length
+  };
+}
+
+/* =========================================================
+ *  查询过滤
+ * =======================================================*/
+function getFiltered(){
+  const kw = filters.keyword.toLowerCase();
+  return floors
+    .filter(it => {
+      if (filters.libraryId && String(it.libraryId) !== filters.libraryId) return false;
+      if (kw){
+        const hit = it.name.toLowerCase().includes(kw) || it.code.toLowerCase().includes(kw);
+        if (!hit) return false;
+      }
+      if (filters.status !== '' && String(it.status) !== filters.status) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (a.libraryId !== b.libraryId) return a.libraryId - b.libraryId;
+      return a.sort - b.sort || a.id - b.id;
+    });
+}
+
+function getPageIds(){
+  const list = getFiltered();
+  const start = (page - 1) * PAGE_SIZE;
+  return list.slice(start, start + PAGE_SIZE).map(i => i.id);
+}
+
+/* =========================================================
+ *  导出
+ * =======================================================*/
+function exportCSV(){
+  const list = getFiltered();
+  if (!list.length) return toast('没有可导出的数据', 'error');
+
+  const headers = ['所属馆藏地', '楼层名称', '楼层代码', '楼层用途', '面积(㎡)', '负责人', '联系电话', '排序', '状态', '备注'];
+  const rows = list.map(it => [
+    getLibraryName(it.libraryId),
+    it.name,
+    it.code,
+    it.usage || '',
+    it.area || '',
+    it.manager || '',
+    it.phone || '',
+    it.sort,
+    it.status ? '启用' : '停用',
+    it.remark || ''
+  ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n'); // 加 BOM 防止中文乱码
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `楼层管理_${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  toast('导出成功');
+}
+
+/* =========================================================
+ *  渲染
+ * =======================================================*/
+function render(){
+  const list = getFiltered();
+  const total = list.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (page > totalPages) page = totalPages;
+  if (page < 1) page = 1;
+
+  const start = (page - 1) * PAGE_SIZE;
+  const rows = list.slice(start, start + PAGE_SIZE);
+  const tbody = $('tbody');
+
+  if (!rows.length){
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10">
+          <div class="empty">
+            <div class="empty-icon">🏢</div>
+            <div class="empty-text">暂无符合条件的楼层</div>
+          </div>
+        </td>
+      </tr>`;
+  } else {
+    tbody.innerHTML = rows.map(it => `
+      <tr>
+        <td class="col-check">
+          <input type="checkbox" class="row-check" data-id="${it.id}" ${selected.has(it.id) ? 'checked' : ''}>
+        </td>
+        <td><span class="badge badge-blue">${esc(getLibraryName(it.libraryId))}</span></td>
+        <td><div class="cell-main strong">${esc(it.name)}</div></td>
+        <td><span class="code-text">${esc(it.code)}</span></td>
+        <td>${esc(it.usage) || '<span style="color:#94a3b8;">—</span>'}</td>
+        <td>${it.area ? it.area + ' ㎡' : '<span style="color:#94a3b8;">—</span>'}</td>
+        <td>${esc(it.manager) || '<span style="color:#94a3b8;">—</span>'}</td>
+        <td>${esc(it.phone) || '<span style="color:#94a3b8;">—</span>'}</td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" data-action="toggle" data-id="${it.id}" ${it.status ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        </td>
+        <td class="ops">
+          <button class="link-btn" data-action="edit" data-id="${it.id}">编辑</button>
+          <button class="link-btn danger" data-action="del" data-id="${it.id}">删除</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  const sum = calcSummary();
+  $('statTotal').textContent = sum.total;
+  $('statOn').textContent = sum.on;
+
+  renderPager(total, totalPages, start, rows.length);
+  updateSelectionUI();
+}
+
+function renderPager(total, totalPages, start, count){
+  $('pagerInfo').innerHTML = total
+    ? `共 <b>${total}</b> 条记录，当前第 ${start + 1}-${start + count} 条，第 ${page}/${totalPages} 页`
+    : `共 0 条记录`;
+
+  let pages = [];
+  if (totalPages <= 7){
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else if (page <= 4){
+    pages = [1, 2, 3, 4, 5, '...', totalPages];
+  } else if (page >= totalPages - 3){
+    pages = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  } else {
+    pages = [1, '...', page - 1, page, page + 1, '...', totalPages];
+  }
+
+  const btns = [];
+  btns.push(`<button class="pager-btn" data-page="${page - 1}" ${page <= 1 ? 'disabled' : ''}>上一页</button>`);
+  pages.forEach(p => {
+    if (p === '...') btns.push(`<span class="pager-dots">···</span>`);
+    else btns.push(`<button class="pager-btn ${p === page ? 'active' : ''}" data-page="${p}">${p}</button>`);
+  });
+  btns.push(`<button class="pager-btn" data-page="${page + 1}" ${page >= totalPages ? 'disabled' : ''}>下一页</button>`);
+
+  const wrap = $('pagerBtns');
+  wrap.innerHTML = btns.join('');
+
+  wrap.querySelectorAll('button[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = Number(btn.dataset.page);
+      if (p < 1 || p > totalPages || p === page) return;
+      page = p;
+      render();
+      document.querySelector('.table-wrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    });
+  });
+}
+
+function updateSelectionUI(){
+  const pageIds = getPageIds();
+  const allChecked = pageIds.length > 0 && pageIds.every(id => selected.has(id));
+  const someChecked = pageIds.some(id => selected.has(id));
+  const checkAll = $('checkAll');
+  checkAll.checked = allChecked;
+  checkAll.indeterminate = !allChecked && someChecked;
+
+  const n = selected.size;
+  const btn = $('btnBatchDel');
+  btn.textContent = n ? `批量删除（${n}）` : '批量删除';
+  btn.disabled = n === 0;
+}
+
+/* =========================================================
+ *  事件
+ * =======================================================*/
+function bindEvents(){
+  // 初始化筛选下拉
+  const fLib = $('fLibrary');
+  fLib.innerHTML = '<option value="">全部</option>'
+    + LIBRARIES.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('');
+
+  // 初始化表单中的馆藏地下拉
+  const fLibId = $('fLibraryId');
+  fLibId.innerHTML = LIBRARIES.map(l => `<option value="${l.id}">${esc(l.name)}</option>`).join('');
+
+  // 搜索
+  $('btnSearch').addEventListener('click', () => {
+    filters.libraryId = $('fLibrary').value;
+    filters.keyword = $('fKeyword').value.trim();
+    filters.status = $('fStatus').value;
+    page = 1;
+    render();
+  });
+
+  // 重置
+  $('btnReset').addEventListener('click', () => {
+    $('fLibrary').value = '';
+    $('fKeyword').value = '';
+    $('fStatus').value = '';
+    filters = { libraryId:'', keyword:'', status:'' };
+    page = 1;
+    selected.clear();
+    render();
+  });
+
+  // 导出
+  $('btnExport').addEventListener('click', exportCSV);
+
+  // 回车搜索
+  $('fKeyword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('btnSearch').click();
+  });
+
+  // 新增
+  $('btnAdd').addEventListener('click', () => openForm());
+
+  // 批量删除
+  $('btnBatchDel').addEventListener('click', () => {
+    if (!selected.size) return;
+    askConfirm('批量删除', `确定要删除选中的 ${selected.size} 个楼层吗？删除后不可恢复。`, () => {
+      floors = floors.filter(i => !selected.has(i.id));
+      selected.clear();
+      toast('批量删除成功');
+      render();
+    });
+  });
+
+  // 全选
+  $('checkAll').addEventListener('change', e => {
+    const pageIds = getPageIds();
+    pageIds.forEach(id => e.target.checked ? selected.add(id) : selected.delete(id));
+    render();
+  });
+
+  // 表格事件委托
+  const tbody = $('tbody');
+  tbody.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn || btn.tagName === 'INPUT') return;
+    const action = btn.dataset.action;
+    const id = Number(btn.dataset.id);
+    if (action === 'edit') openForm(id);
+    if (action === 'del') {
+      const item = floors.find(i => i.id === id);
+      askConfirm('删除楼层', `确定要删除「${getLibraryName(item.libraryId)} - ${item.name}」吗？删除后不可恢复。`, () => {
+        floors = floors.filter(i => i.id !== id);
+        selected.delete(id);
+        toast('删除成功');
+        render();
+      });
+    }
+  });
+
+  tbody.addEventListener('change', e => {
+    const el = e.target;
+    if (el.dataset.action === 'toggle') {
+      const id = Number(el.dataset.id);
+      const item = floors.find(i => i.id === id);
+      if (!item) return;
+      item.status = el.checked ? 1 : 0;
+      toast(el.checked ? `「${item.name}」已启用` : `「${item.name}」已停用`);
+      render();
+      return;
+    }
+    if (el.classList.contains('row-check')) {
+      const id = Number(el.dataset.id);
+      el.checked ? selected.add(id) : selected.delete(id);
+      updateSelectionUI();
+    }
+  });
+
+  // 表单弹窗
+  $('btnCloseForm').addEventListener('click', closeForm);
+  $('btnCancelForm').addEventListener('click', closeForm);
+  $('btnSubmitForm').addEventListener('click', submitForm);
+  $('formModal').addEventListener('click', e => {
+    if (e.target === $('formModal')) closeForm();
+  });
+
+  // 确认弹窗
+  $('btnCloseConfirm').addEventListener('click', closeConfirm);
+  $('btnCancelConfirm').addEventListener('click', closeConfirm);
+  $('btnOkConfirm').addEventListener('click', () => {
+    const cb = confirmCallback;
+    closeConfirm();
+    if (cb) cb();
+  });
+  $('confirmModal').addEventListener('click', e => {
+    if (e.target === $('confirmModal')) closeConfirm();
+  });
+
+  // ESC
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('confirmModal').classList.contains('show')) closeConfirm();
+    else if ($('formModal').classList.contains('show')) closeForm();
+  });
+}
+
+/* =========================================================
+ *  表单
+ * =======================================================*/
+function clearFormErrors(){
+  document.querySelectorAll('#formModal .form-item').forEach(el => el.classList.remove('has-error'));
+  document.querySelectorAll('#formModal .error-tip').forEach(el => el.textContent = '');
+}
+
+function setFormError(id, msg){
+  const el = $(id);
+  const item = el.closest('.form-item');
+  if (!item) return;
+  item.classList.add('has-error');
+  const tip = item.querySelector('.error-tip');
+  if (tip) tip.textContent = msg;
+}
+
+function openForm(id){
+  editingId = id ?? null;
+  clearFormErrors();
+
+  $('fLibraryId').selectedIndex = 0;
+  $('fName').value = '';
+  $('fCode').value = '';
+  $('fUsage').value = '';
+  $('fArea').value = '';
+  $('fManager').value = '';
+  $('fPhone').value = '';
+  $('fRemark').value = '';
+  document.querySelector('input[name="fStatus"][value="1"]').checked = true;
+
+  if (id){
+    const it = floors.find(f => f.id === id);
+    if (!it) return;
+    $('formTitle').textContent = '编辑楼层';
+    $('fLibraryId').value = String(it.libraryId);
+    $('fName').value = it.name;
+    $('fCode').value = it.code;
+    $('fUsage').value = it.usage || '';
+    $('fArea').value = it.area || '';
+    $('fManager').value = it.manager || '';
+    $('fPhone').value = it.phone || '';
+    $('fSort').value = it.sort;
+    $('fRemark').value = it.remark || '';
+    document.querySelector(`input[name="fStatus"][value="${it.status}"]`).checked = true;
+  } else {
+    $('formTitle').textContent = '新增楼层';
+    const maxSort = floors.reduce((m, f) => Math.max(m, f.sort), 0);
+    $('fSort').value = maxSort + 1;
+  }
+
+  $('formModal').classList.add('show');
+  setTimeout(() => $('fLibraryId').focus(), 60);
+}
+
+function closeForm(){
+  $('formModal').classList.remove('show');
+  editingId = null;
+}
+
+function isCodeExists(code, excludeId){
+  return floors.some(f => f.code.toLowerCase() === code.toLowerCase() && f.id !== excludeId);
+}
+
+function submitForm(){
+  clearFormErrors();
+
+  const libraryId = Number($('fLibraryId').value);
+  const name      = $('fName').value.trim();
+  const code      = $('fCode').value.trim();
+  const usage     = $('fUsage').value.trim();
+  const area      = Number($('fArea').value) || 0;
+  const manager   = $('fManager').value.trim();
+  const phone     = $('fPhone').value.trim();
+  const sort      = Number($('fSort').value) || 0;
+  const status    = Number(document.querySelector('input[name="fStatus"]:checked').value);
+  const remark    = $('fRemark').value.trim();
+
+  let ok = true;
+
+  if (!name){ setFormError('fName', '请输入楼层名称'); ok = false; }
+  if (!code){
+    setFormError('fCode', '请输入楼层代码'); ok = false;
+  } else if (!/^[A-Za-z0-9\-_]{1,30}$/.test(code)){
+    setFormError('fCode', '代码仅支持字母、数字、- 和 _，长度 1-30'); ok = false;
+  } else if (isCodeExists(code, editingId)){
+    setFormError('fCode', '该楼层代码已存在'); ok = false;
+  }
+
+  if (!ok) return;
+
+  if (editingId){
+    const it = floors.find(f => f.id === editingId);
+    if (it) Object.assign(it, { libraryId, name, code, usage, area, manager, phone, sort, status, remark });
+    toast('保存成功');
+  } else {
+    floors.push({
+      id: nextId++, libraryId, name, code, usage, area, manager, phone, sort, status, remark
+    });
+    toast('新增成功');
+  }
+
+  closeForm();
+  render();
+}
+
+/* =========================================================
+ *  确认弹窗
+ * =======================================================*/
+function askConfirm(title, text, cb){
+  $('confirmTitle').textContent = title;
+  $('confirmText').textContent = text;
+  confirmCallback = cb;
+  $('confirmModal').classList.add('show');
+}
+
+function closeConfirm(){
+  $('confirmModal').classList.remove('show');
+  confirmCallback = null;
+}
+
+/* =========================================================
+ *  初始化
+ * =======================================================*/
+function init(){
+  bindEvents();
+  render();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
+

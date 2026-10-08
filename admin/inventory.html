@@ -1,0 +1,850 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>馆藏盘点 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+<style>
+  .inventory-page {
+    --primary: var(--lib-primary);
+    --primary-dark: var(--lib-primary-700);
+    --text: var(--lib-ink);
+    --text-2: var(--lib-ink-2);
+    --text-3: var(--lib-ink-3);
+    --line: var(--lib-line);
+    --line-soft: var(--lib-line);
+    --bg: var(--lib-bg);
+    --green: var(--lib-state-success);
+    --green-bg: var(--lib-success-50);
+    --red: var(--lib-state-error);
+    --red-bg: var(--lib-error-50);
+    --blue: var(--lib-primary);
+    color: var(--text);
+    font-size: 14px;
+  }
+  .inventory-page input,
+  .inventory-page button,
+  .inventory-page textarea,
+  .inventory-page select { font-family: inherit; }
+  .inventory-page .wrap { max-width: 1120px; margin: 0 auto; padding: 12px 20px 60px; }
+  .inventory-page .panel { background: var(--lib-surface); border: 1px solid var(--line); border-radius: 12px; }
+  .inventory-page .panel + .panel { margin-top: 16px; }
+  .inventory-page .filter { padding: 16px 20px; display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; }
+  .inventory-page .filter-fields { display: flex; gap: 18px; flex-wrap: wrap; flex: 1; }
+  .inventory-page .field { display: flex; flex-direction: column; gap: 7px; min-width: 150px; }
+  .inventory-page .field label { font-size: 12.5px; color: var(--text-3); }
+  .inventory-page .field input,
+  .inventory-page .field select { height: 36px; border: 1px solid var(--lib-border); border-radius: 8px; padding: 0 12px; font-size: 13.5px; color: var(--text); outline: none; transition: .15s; background: var(--lib-surface); }
+  .inventory-page .field select { padding-right: 30px; cursor: pointer; appearance: none; background: var(--lib-surface) url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b90a4' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center; }
+  .inventory-page .field input:focus,
+  .inventory-page .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgb(from var(--lib-primary) r g b / 0.1); }
+  .inventory-page .filter-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .inventory-page .btn { height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--lib-border); background: var(--lib-surface); color: var(--lib-ink-2); font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: .15s; white-space: nowrap; }
+  .inventory-page .btn:hover { border-color: var(--lib-border); background: var(--lib-surface-2); }
+  .inventory-page .btn-primary { background: var(--primary); border-color: var(--primary); color: var(--lib-primary-foreground); box-shadow: 0 2px 8px rgb(from var(--lib-primary) r g b / 0.25); }
+  .inventory-page .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+  .inventory-page .btn-danger { background: var(--red); border-color: var(--red); color: var(--lib-primary-foreground); box-shadow: 0 2px 8px rgb(from var(--lib-state-error) r g b / 0.22); }
+  .inventory-page .btn-danger:hover { filter: brightness(0.92); }
+  .inventory-page .list-head { display: flex; align-items: center; justify-content: flex-start; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+  .inventory-page .table-wrap { overflow-x: auto; }
+  .inventory-page table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 960px; }
+  .inventory-page thead th { text-align: left; font-weight: 500; color: var(--text-3); font-size: 12.5px; padding: 12px 16px; background: var(--lib-surface-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .inventory-page tbody td { padding: 14px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  .inventory-page tbody tr:last-child td { border-bottom: none; }
+  .inventory-page tbody tr:hover { background: var(--lib-surface-2); }
+  .inventory-page .num { font-variant-numeric: tabular-nums; }
+  .inventory-page .mono { font-variant-numeric: tabular-nums; color: var(--text-2); white-space: nowrap; }
+  .inventory-page .note { color: var(--text-3); font-size: 13px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .inventory-page .diff { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .inventory-page .diff.zero { color: var(--lib-ink-4); font-weight: 400; }
+  .inventory-page .diff.neg { color: var(--red); }
+  .inventory-page .diff.pos { color: var(--blue); }
+  .inventory-page .ops { white-space: nowrap; }
+  .inventory-page .op { color: var(--primary); font-size: 13px; cursor: pointer; user-select: none; }
+  .inventory-page .op:hover { text-decoration: underline; }
+  .inventory-page .op + .op { margin-left: 14px; }
+  .inventory-page .op.danger { color: var(--red); }
+  .inventory-page .empty { text-align: center; color: var(--lib-ink-4); font-size: 13px; padding: 60px 0; }
+  .inventory-page .pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--line-soft); flex-wrap: wrap; gap: 10px; }
+  .inventory-page .pagination .info { font-size: 13px; color: var(--text-3); }
+  .inventory-page .pagination .info b { color: var(--text-2); font-weight: 500; }
+  .inventory-page .pages { display: flex; gap: 6px; align-items: center; }
+  .inventory-page .pages button { min-width: 32px; height: 32px; padding: 0 8px; border-radius: 7px; border: 1px solid var(--lib-border); background: var(--lib-surface); color: var(--text-2); font-size: 13px; cursor: pointer; transition: .15s; display: inline-flex; align-items: center; justify-content: center; }
+  .inventory-page .pages button:hover:not(:disabled) { border-color: var(--lib-border); background: var(--lib-surface-2); }
+  .inventory-page .pages button.on { background: var(--primary); border-color: var(--primary); color: var(--lib-primary-foreground); font-weight: 500; }
+  .inventory-page .pages button:disabled { opacity: .45; cursor: not-allowed; }
+  .inventory-page .mask { position: fixed; inset: 0; background: rgb(from var(--lib-ink) r g b / 0.42); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: .2s; }
+  .inventory-page .mask.show { opacity: 1; visibility: visible; }
+  .inventory-page .modal { width: 460px; max-width: 100%; background: var(--lib-surface); border-radius: 14px; box-shadow: 0 20px 50px rgb(from var(--lib-ink) r g b / 0.2); transform: translateY(12px); transition: .22s; }
+  .inventory-page .modal-sm { width: 400px; }
+  .inventory-page .mask.show .modal { transform: none; }
+  .inventory-page .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line-soft); }
+  .inventory-page .modal-head b { font-size: 15.5px; font-weight: 600; }
+  .inventory-page .close { width: 28px; height: 28px; border: none; background: none; cursor: pointer; color: var(--text-3); border-radius: 6px; display: grid; place-items: center; font-size: 18px; line-height: 1; }
+  .inventory-page .close:hover { background: var(--lib-surface-2); color: var(--text); }
+  .inventory-page .modal-foot { padding: 16px 22px; border-top: 1px solid var(--line-soft); display: flex; justify-content: flex-end; gap: 10px; }
+  .inventory-page .modal-body { padding: 20px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .inventory-page .field.full { grid-column: 1/-1; }
+  .inventory-page .modal-body .field input,
+  .inventory-page .modal-body .field textarea { width: 100%; border: 1px solid var(--lib-border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; color: var(--text); outline: none; transition: .15s; background: var(--lib-surface); }
+  .inventory-page .modal-body .field textarea { resize: vertical; min-height: 66px; }
+  .inventory-page .modal-body .field input:focus,
+  .inventory-page .modal-body .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgb(from var(--lib-primary) r g b / 0.1); }
+  .inventory-page .modal-body .field label i { color: var(--red); font-style: normal; margin-left: 2px; }
+  .inventory-page .detail-body { padding: 6px 22px 14px; }
+  .inventory-page .detail-row { display: flex; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; align-items: flex-start; }
+  .inventory-page .detail-row:last-child { border-bottom: none; }
+  .inventory-page .detail-row .k { width: 74px; flex-shrink: 0; color: var(--text-3); }
+  .inventory-page .detail-row .v { flex: 1; color: var(--text); word-break: break-all; }
+  .inventory-page .detail-row .v.big { font-size: 15px; font-weight: 600; }
+  .inventory-page .del-body { padding: 24px 24px 4px; text-align: center; }
+  .inventory-page .del-icon { width: 46px; height: 46px; border-radius: 50%; background: var(--red-bg); color: var(--red); display: grid; place-items: center; font-size: 22px; font-weight: 700; margin: 0 auto 14px; }
+  .inventory-page .del-body > p { font-size: 14.5px; color: var(--text); font-weight: 500; }
+  .inventory-page .del-info { background: var(--lib-surface-2); border: 1px solid var(--line); border-radius: 9px; padding: 12px 14px; font-size: 13px; color: var(--text-2); text-align: left; margin: 14px 0 10px; line-height: 1.6; }
+  .inventory-page .del-info b { display: block; color: var(--text); font-weight: 600; margin-bottom: 3px; }
+  .inventory-page .del-tip { font-size: 12.5px; color: var(--text-3); margin-bottom: 14px; }
+  .inventory-page table tbody tr,
+  .inventory-page table thead { border-bottom: none !important; }
+  .inventory-page table td,
+  .inventory-page table th { word-break: normal !important; overflow-wrap: normal !important; }
+</style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<div id="app-shell" style="background-color: var(--lib-bg);">
+<!-- 顶部导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-2">
+<span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+<span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden items-center sm:flex">
+<i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+<input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+</div>
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="pr-6 pb-6 pt-3" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 pl-5 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">馆藏盘点</span>
+</nav>
+<div class="inventory-page">
+  <div class="wrap">
+
+    <!-- ========== 筛选区域 ========== -->
+    <div class="panel filter">
+      <div class="filter-fields">
+        <div class="field">
+          <label>盘点日期</label>
+          <select id="fRange">
+            <option value="">全部时间</option>
+            <option value="7">近 7 天</option>
+            <option value="30">近 30 天</option>
+            <option value="90">近 90 天</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>盘点人</label>
+          <input type="text" id="fOperator" placeholder="输入盘点人">
+        </div>
+        <div class="field" style="min-width:200px">
+          <label>盘点范围</label>
+          <input type="text" id="fArea" placeholder="输入范围关键词">
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary" id="searchBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          搜索
+        </button>
+        <button class="btn" id="resetBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8 8 0 1 0 18.5 15.5"/><path d="M20 4v7h-7"/></svg>
+          重置
+        </button>
+        <button class="btn" id="exportBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></svg>
+          导出
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== 列表区域 ========== -->
+    <div class="panel">
+      <div class="list-head">
+        <button class="btn btn-primary" id="addBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          新增盘点记录
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:120px">盘点日期</th>
+              <th style="min-width:200px">盘点范围</th>
+              <th style="width:110px">盘点人</th>
+              <th style="width:100px">应盘(册)</th>
+              <th style="width:100px">实盘(册)</th>
+              <th style="width:90px">差异</th>
+              <th style="min-width:170px">备注</th>
+              <th style="width:150px">操作</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<div class="inventory-page">
+
+<!-- ========== 新增 / 编辑 弹窗 ========== -->
+<div class="mask" id="formMask">
+  <form class="modal" id="form">
+    <div class="modal-head">
+      <b id="formTitle">新增盘点记录</b>
+      <button type="button" class="close" data-close="formMask">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>盘点日期<i>*</i></label>
+        <input type="date" id="mDate" required>
+      </div>
+      <div class="field">
+        <label>盘点人<i>*</i></label>
+        <input type="text" id="mOperator" placeholder="如：李静" required>
+      </div>
+      <div class="field full">
+        <label>盘点范围<i>*</i></label>
+        <input type="text" id="mArea" placeholder="如：文学阅览室 A区 1–24 架" required>
+      </div>
+      <div class="field">
+        <label>应盘册数<i>*</i></label>
+        <input type="number" id="mExpect" min="0" placeholder="0" required>
+      </div>
+      <div class="field">
+        <label>实盘册数<i>*</i></label>
+        <input type="number" id="mActual" min="0" placeholder="0" required>
+      </div>
+      <div class="field full">
+        <label>备注</label>
+        <textarea id="mNote" placeholder="选填，如：3 架发现错架图书 12 册"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" data-close="formMask">取消</button>
+      <button type="submit" class="btn btn-primary">保存记录</button>
+    </div>
+  </form>
+</div>
+
+<!-- ========== 详情弹窗 ========== -->
+<div class="mask" id="viewMask">
+  <div class="modal">
+    <div class="modal-head">
+      <b>盘点记录详情</b>
+      <button type="button" class="close" data-close="viewMask">×</button>
+    </div>
+    <div class="detail-body" id="viewBody"></div>
+    <div class="modal-foot">
+      <button type="button" class="btn" data-close="viewMask">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 删除确认弹窗 ========== -->
+<div class="mask" id="delMask">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <b>删除确认</b>
+      <button type="button" class="close" data-close="delMask">×</button>
+    </div>
+    <div class="del-body">
+      <div class="del-icon">!</div>
+      <p>确定要删除这条盘点记录吗？</p>
+      <div class="del-info" id="delInfo"></div>
+      <div class="del-tip">删除后不可恢复，请谨慎操作。</div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" data-close="delMask">取消</button>
+      <button type="button" class="btn btn-danger" id="confirmDel">确认删除</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>lucide.createIcons();</script>
+<script>
+/* ---------- 数据（共 10 条） ---------- */
+let records = [
+  {id:3,  date:'2026-09-18', area:'文学阅览室 A区 1–24 架',   operator:'李静', expect:1200, actual:1188, note:'3 架发现错架图书 12 册'},
+  {id:10, date:'2026-09-05', area:'自然科学阅览室 C区 1–15 架', operator:'张伟', expect:880,  actual:875,  note:'缺 5 册待进一步查证'},
+  {id:2,  date:'2026-08-12', area:'期刊阅览室 现刊区',         operator:'王磊', expect:420,  actual:420,  note:''},
+  {id:5,  date:'2026-07-08', area:'文学阅览室 A区 25–40 架',   operator:'李静', expect:760,  actual:752,  note:'2 架图书顺序错乱已调整'},
+  {id:7,  date:'2026-06-20', area:'社科阅览室 B区 1–18 架',    operator:'王磊', expect:960,  actual:960,  note:''},
+  {id:9,  date:'2026-05-22', area:'古籍阅览室 善本库',         operator:'陈芳', expect:320,  actual:318,  note:'2 册封面轻微磨损'},
+  {id:4,  date:'2026-04-18', area:'社科阅览室 B区 19–30 架',   operator:'张伟', expect:680,  actual:685,  note:'多出 5 册待核实来源'},
+  {id:1,  date:'2026-03-15', area:'密集书库 全库',             operator:'李静', expect:5400, actual:5366, note:'34 册待进一步核实'},
+  {id:8,  date:'2026-02-25', area:'电子阅览室 配套光盘',       operator:'王磊', expect:240,  actual:236,  note:'4 张光盘盒破损'},
+  {id:6,  date:'2026-01-10', area:'密集书库 二区',             operator:'陈芳', expect:3600, actual:3591, note:'9 册条码模糊需重贴'}
+];
+let nextId = 11;
+
+/* 当前生效的筛选条件 */
+let filter = { range:'', operator:'', area:'' };
+
+/* 分页状态：每页 10 条，所有记录都在第 1 页 */
+let currentPage = 1;
+const pageSize = 10;
+
+/* 弹窗状态 */
+let editingId  = null;
+let deletingId = null;
+
+/* ---------- 工具 ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const todayISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+const diffText = n => n === 0 ? '0' : (n > 0 ? '+' : '') + n;
+const diffCls  = n => n === 0 ? 'zero' : n < 0 ? 'neg' : 'pos';
+
+/* ---------- 筛选逻辑 ---------- */
+function getFiltered(){
+  const now = new Date();
+  return records.filter(r => {
+    if(filter.range){
+      const days = Number(filter.range);
+      const diffDays = (now - new Date(r.date + 'T00:00:00')) / 86400000;
+      if(diffDays > days) return false;
+    }
+    if(filter.operator && !r.operator.toLowerCase().includes(filter.operator.toLowerCase())) return false;
+    if(filter.area && !r.area.toLowerCase().includes(filter.area.toLowerCase())) return false;
+    return true;
+  }).sort((a,b) => b.date.localeCompare(a.date));
+}
+
+/* ---------- 渲染列表 + 分页 ---------- */
+function render(){
+  const tbody = $('#tbody');
+  const pagination = $('#pagination');
+  const allList = getFiltered();
+  const total = allList.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  if(currentPage > totalPages) currentPage = totalPages;
+  if(currentPage < 1) currentPage = 1;
+
+  const start = (currentPage - 1) * pageSize;
+  const list = allList.slice(start, start + pageSize);
+
+  /* 表格 */
+  if(!list.length){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty">没有符合条件的盘点记录</div></td></tr>';
+  } else {
+    tbody.innerHTML = list.map(r => {
+      const diff = r.actual - r.expect;
+      return `<tr>
+        <td class="mono">${esc(r.date)}</td>
+        <td>${esc(r.area)}</td>
+        <td>${esc(r.operator)}</td>
+        <td class="num">${r.expect}</td>
+        <td class="num">${r.actual}</td>
+        <td><span class="diff ${diffCls(diff)}">${diffText(diff)}</span></td>
+        <td class="note" title="${esc(r.note)}">${r.note ? esc(r.note) : '—'}</td>
+        <td class="ops">
+          <span class="op" data-act="view" data-id="${r.id}">详情</span>
+          <span class="op" data-act="edit" data-id="${r.id}">编辑</span>
+          <span class="op danger" data-act="del" data-id="${r.id}">删除</span>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  /* 分页：只有 1 页时也显示分页栏，按钮为禁用状态 */
+  if(total === 0){
+    pagination.style.display = 'none';
+    return;
+  }
+  pagination.style.display = 'flex';
+
+  const pageBtns = [];
+  pageBtns.push(`<button ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">上一页</button>`);
+
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, startPage + 4);
+  if(endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+  for(let i = startPage; i <= endPage; i++){
+    pageBtns.push(`<button class="${i === currentPage ? 'on' : ''}" data-page="${i}">${i}</button>`);
+  }
+
+  pageBtns.push(`<button ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">下一页</button>`);
+
+  pagination.innerHTML = `
+    <div class="info">共 <b>${total}</b> 条记录，第 <b>${currentPage}</b> / ${totalPages} 页</div>
+    <div class="pages">${pageBtns.join('')}</div>
+  `;
+
+  pagination.querySelectorAll('.pages button[data-page]').forEach(btn => {
+    btn.addEventListener('click', function(){
+      const page = Number(this.dataset.page);
+      if(page >= 1 && page <= totalPages){
+        currentPage = page;
+        render();
+      }
+    });
+  });
+}
+
+/* ---------- 弹窗开关 ---------- */
+function showMask(id){ $('#' + id).classList.add('show'); }
+function hideMask(id){ $('#' + id).classList.remove('show'); }
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-close]');
+  if(btn) hideMask(btn.dataset.close);
+});
+document.querySelectorAll('.mask').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('show'); });
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') document.querySelectorAll('.mask.show').forEach(m => m.classList.remove('show'));
+});
+
+/* ---------- 新增 / 编辑表单 ---------- */
+function openForm(rec){
+  editingId = rec ? rec.id : null;
+  $('#formTitle').textContent = rec ? '编辑盘点记录' : '新增盘点记录';
+  $('#mDate').value     = rec ? rec.date : todayISO();
+  $('#mOperator').value = rec ? rec.operator : '';
+  $('#mArea').value     = rec ? rec.area : '';
+  $('#mExpect').value   = rec ? rec.expect : '';
+  $('#mActual').value   = rec ? rec.actual : '';
+  $('#mNote').value     = rec ? rec.note : '';
+  showMask('formMask');
+  setTimeout(() => $('#mDate').focus(), 200);
+}
+$('#addBtn').addEventListener('click', () => openForm(null));
+
+$('#form').addEventListener('submit', e => {
+  e.preventDefault();
+  const data = {
+    date:     $('#mDate').value,
+    operator: $('#mOperator').value.trim(),
+    area:     $('#mArea').value.trim(),
+    expect:   Number($('#mExpect').value),
+    actual:   Number($('#mActual').value),
+    note:     $('#mNote').value.trim()
+  };
+
+  if(editingId){
+    const rec = records.find(r => r.id === editingId);
+    if(rec) Object.assign(rec, data);
+  } else {
+    records.push({ id: nextId++, ...data });
+  }
+
+  editingId = null;
+  currentPage = 1;
+  render();
+  hideMask('formMask');
+});
+
+/* ---------- 详情弹窗 ---------- */
+function openView(rec){
+  const diff = rec.actual - rec.expect;
+  $('#viewBody').innerHTML = `
+    <div class="detail-row"><span class="k">盘点日期</span><span class="v">${esc(rec.date)}</span></div>
+    <div class="detail-row"><span class="k">盘点范围</span><span class="v">${esc(rec.area)}</span></div>
+    <div class="detail-row"><span class="k">盘点人</span><span class="v">${esc(rec.operator)}</span></div>
+    <div class="detail-row"><span class="k">应盘册数</span><span class="v">${rec.expect} 册</span></div>
+    <div class="detail-row"><span class="k">实盘册数</span><span class="v">${rec.actual} 册</span></div>
+    <div class="detail-row">
+      <span class="k">差异</span>
+      <span class="v big"><span class="diff ${diffCls(diff)}">${diffText(diff)}</span> 册</span>
+    </div>
+    <div class="detail-row"><span class="k">备注</span><span class="v">${rec.note ? esc(rec.note) : '—'}</span></div>
+  `;
+  showMask('viewMask');
+}
+
+/* ---------- 删除确认弹窗 ---------- */
+function openDel(rec){
+  deletingId = rec.id;
+  const diff = rec.actual - rec.expect;
+  $('#delInfo').innerHTML =
+    `<b>${esc(rec.area)}</b>` +
+    `${esc(rec.date)} · ${esc(rec.operator)} · 应盘 ${rec.expect} / 实盘 ${rec.actual}（差异 ${diffText(diff)}）`;
+  showMask('delMask');
+}
+
+$('#confirmDel').addEventListener('click', () => {
+  if(deletingId !== null){
+    records = records.filter(r => r.id !== deletingId);
+    deletingId = null;
+    const filtered = getFiltered();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+    if(currentPage > totalPages) currentPage = totalPages;
+    render();
+  }
+  hideMask('delMask');
+});
+
+/* ---------- 表格操作事件 ---------- */
+$('#tbody').addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const rec = records.find(r => r.id === Number(el.dataset.id));
+  if(!rec) return;
+
+  const act = el.dataset.act;
+  if(act === 'view')      openView(rec);
+  else if(act === 'edit') openForm(rec);
+  else if(act === 'del')  openDel(rec);
+});
+
+/* ---------- 筛选按钮 ---------- */
+$('#searchBtn').addEventListener('click', () => {
+  filter.range    = $('#fRange').value;
+  filter.operator = $('#fOperator').value.trim();
+  filter.area     = $('#fArea').value.trim();
+  currentPage = 1;
+  render();
+});
+
+$('#resetBtn').addEventListener('click', () => {
+  $('#fRange').value = '';
+  $('#fOperator').value = '';
+  $('#fArea').value = '';
+  filter = { range:'', operator:'', area:'' };
+  currentPage = 1;
+  render();
+});
+
+/* ---------- 导出为 CSV ---------- */
+$('#exportBtn').addEventListener('click', () => {
+  const list = getFiltered();
+  if(!list.length){ alert('当前没有可导出的记录'); return; }
+
+  const header = ['盘点日期','盘点范围','盘点人','应盘(册)','实盘(册)','差异(册)','备注'];
+  const rows = list.map(r => [
+    r.date, r.area, r.operator, r.expect, r.actual, r.actual - r.expect, r.note || ''
+  ]);
+  const csv = [header, ...rows]
+    .map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `馆藏盘点记录_${todayISO()}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* ---------- 初始化 ---------- */
+render();
+</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group summary::marker {
+    display: none;
+  }
+  .nav-group .nav-chevron {
+    transition: transform 0.2s ease;
+    transform: rotate(-90deg);
+  }
+  .nav-group[open] > summary .nav-chevron {
+    transform: rotate(0deg);
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-surface-2);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  </style>
+</div>
+</body>
+</html>
+

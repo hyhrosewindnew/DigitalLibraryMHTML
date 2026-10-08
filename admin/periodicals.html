@@ -1,0 +1,2487 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>期刊管理 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+  --lib-text: var(--lib-ink);
+  --lib-text-secondary: var(--lib-ink-2);
+  --lib-text-tertiary: var(--lib-ink-3);
+  --lib-hover: var(--lib-surface-2);
+  --lib-primary-soft: var(--lib-primary-50);
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+      /* Periodicals page specific styles using design tokens */
+      .per-input, .per-select {
+        height: 34px; padding: 0 12px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        background-color: var(--lib-surface); color: var(--lib-text);
+        font-size: 14px; outline: none; transition: .2s;
+      }
+      .per-input:focus, .per-select:focus, .per-textarea:focus {
+        border-color: var(--lib-primary);
+        box-shadow: 0 0 0 2px var(--lib-primary-100);
+      }
+      .per-input.invalid, .per-select.invalid, .per-textarea.invalid { border-color: var(--lib-state-error); }
+      .per-input::placeholder, .per-textarea::placeholder { color: var(--lib-text-secondary); }
+      .per-input[readonly] { background: var(--lib-surface-2); color: var(--lib-text-secondary); cursor: default; }
+      .per-select {
+        appearance: none; -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 10px center;
+        padding-right: 28px; cursor: pointer;
+      }
+      .per-textarea {
+        width: 100%; min-height: 76px; padding: 8px 12px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        background-color: var(--lib-surface); color: var(--lib-text);
+        resize: vertical; font-size: 14px; outline: none;
+      }
+      .per-btn {
+        height: 34px; padding: 0 16px; border-radius: var(--lib-radius-md);
+        border: 1px solid var(--lib-border); background: var(--lib-surface); color: var(--lib-text);
+        cursor: pointer; font-size: 14px;
+        display: inline-flex; align-items: center; justify-content: center;
+        gap: 6px; white-space: nowrap; transition: .2s;
+      }
+      .per-btn:hover { border-color: var(--lib-primary); color: var(--lib-primary); }
+      .per-btn-primary { background: var(--lib-primary); border-color: var(--lib-primary); color: #fff; }
+      .per-btn-primary:hover { background: var(--lib-primary-700); border-color: var(--lib-primary-700); color: #fff; }
+      .per-btn-danger { border-color: var(--lib-state-error); color: var(--lib-state-error); }
+      .per-btn-danger:hover { background: var(--lib-error-50); border-color: var(--lib-state-error); color: var(--lib-state-error); }
+      .per-btn:disabled { opacity: .5; cursor: not-allowed; }
+      .per-btn:disabled:hover { border-color: var(--lib-border); color: var(--lib-text); }
+      .per-btn-primary:disabled:hover { border-color: var(--lib-primary); color: #fff; }
+      .per-btn-sm { height: 28px; padding: 0 10px; font-size: 12px; }
+      .per-link-btn {
+        background: none; border: none; color: var(--lib-primary);
+        cursor: pointer; font-size: 13px; padding: 4px 8px; border-radius: 4px;
+        transition: .2s; white-space: nowrap;
+      }
+      .per-link-btn:hover { background: var(--lib-primary-50); }
+      .per-link-btn.danger { color: var(--lib-state-error); }
+      .per-link-btn.danger:hover { background: var(--lib-error-50); }
+      .per-link-btn.warning { color: var(--lib-state-warning); }
+      .per-link-btn.warning:hover { background: var(--lib-warning-50); }
+      .per-link-btn.success { color: var(--lib-state-success); }
+      .per-link-btn.success:hover { background: var(--lib-success-50); }
+      .per-link-btn.muted { color: var(--lib-text-secondary); }
+      .per-link-btn.muted:hover { background: var(--lib-surface-2); }
+      .per-link-btn:disabled { opacity: .5; cursor: not-allowed; }
+      .per-link-btn:disabled:hover { background: none; color: var(--lib-primary); }
+      .per-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        height: 22px; padding: 0 9px; border-radius: 11px;
+        font-size: 12px; white-space: nowrap;
+      }
+      .per-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+      .per-badge-on { color: var(--lib-state-success); background: var(--lib-success-50); }
+      .per-badge-paused { color: var(--lib-state-warning); background: var(--lib-warning-50); }
+      .per-badge-off { color: var(--lib-text-secondary); background: var(--lib-surface-2); }
+      .per-badge-info { color: var(--lib-primary); background: var(--lib-primary-50); }
+      .per-badge-info::before { display: none; }
+      .per-modal-mask {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.45);
+        display: none; align-items: flex-start; justify-content: center;
+        z-index: 100; padding: 40px 16px; overflow-y: auto;
+      }
+      .per-modal-mask.show { display: flex; }
+      .per-modal {
+        background: var(--lib-surface); border-radius: 10px;
+        width: 100%; max-width: 760px;
+        box-shadow: var(--lib-shadow-3);
+        animation: per-pop .18s ease; margin: auto 0;
+      }
+      @keyframes per-pop {
+        from { opacity: 0; transform: translateY(-12px) scale(.98); }
+        to { opacity: 1; transform: none; }
+      }
+      .per-modal-header {
+        padding: 16px 20px; border-bottom: 1px solid var(--lib-line);
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .per-modal-title { font-size: 16px; font-weight: 600; color: var(--lib-text); }
+      .per-modal-close {
+        border: none; background: none; font-size: 22px; line-height: 1;
+        color: var(--lib-text-secondary); cursor: pointer;
+        padding: 2px 8px; border-radius: 4px; transition: .2s;
+      }
+      .per-modal-close:hover { background: var(--lib-surface-2); color: var(--lib-text); }
+      .per-modal-body { padding: 20px; }
+      .per-modal-footer {
+        padding: 14px 20px; border-top: 1px solid var(--lib-line);
+        display: flex; justify-content: flex-end; gap: 10px;
+      }
+      .per-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .per-form-item { display: flex; flex-direction: column; gap: 6px; }
+      .per-form-item.full { grid-column: 1 / -1; }
+      .per-form-item label { font-size: 13px; color: var(--lib-text-secondary); }
+      .per-form-item label .req { color: var(--lib-state-error); margin-left: 2px; }
+      .per-form-item label .opt { color: var(--lib-text-secondary); margin-left: 4px; font-size: 12px; }
+      .per-form-item .per-input, .per-form-item .per-select { height: 36px; width: 100%; }
+      .per-form-section-title {
+        grid-column: 1 / -1;
+        display: flex; align-items: center; gap: 8px;
+        font-size: 13px; font-weight: 600; color: var(--lib-text-secondary);
+        padding-bottom: 8px; border-bottom: 1px dashed var(--lib-line);
+        margin-top: 6px;
+      }
+      .per-form-section-title:first-child { margin-top: 0; }
+      .per-form-section-title::before {
+        content: ""; width: 3px; height: 12px;
+        background: var(--lib-primary); border-radius: 2px;
+      }
+      .per-form-section-title .hint { margin-left: auto; font-weight: 400; font-size: 12px; color: var(--lib-text-secondary); }
+      .per-form-section-title .per-link-btn { font-weight: 400; }
+      .per-form-errors {
+        display: none; grid-column: 1 / -1;
+        background: var(--lib-error-50);
+        border: 1px solid var(--lib-state-error); color: var(--lib-state-error);
+        border-radius: var(--lib-radius-md); padding: 10px 14px;
+        margin-bottom: 16px; font-size: 13px;
+      }
+      .per-form-errors.show { display: block; }
+      .per-form-errors ul { margin: 4px 0 0 18px; }
+      .per-copy-list-wrap {
+        grid-column: 1 / -1;
+        border: 1px solid var(--lib-line); border-radius: var(--lib-radius-md);
+        background: var(--lib-surface-2); overflow: hidden;
+      }
+      .per-copy-list { max-height: 300px; overflow-y: auto; }
+      .per-copy-list table { min-width: 0; width: 100%; border-collapse: collapse; }
+      .per-copy-list th {
+        background: var(--lib-surface-2); font-size: 12px;
+        padding: 8px 10px; border-bottom: 1px solid var(--lib-line);
+        text-align: left; font-weight: 500; color: var(--lib-text-secondary);
+      }
+      .per-copy-list td {
+        padding: 8px 10px; font-size: 13px;
+        background: var(--lib-surface); border-bottom: 1px solid var(--lib-line);
+      }
+      .per-copy-list tr:last-child td { border-bottom: none; }
+      .per-copy-list-empty {
+        padding: 24px; text-align: center;
+        font-size: 13px; color: var(--lib-text-secondary);
+      }
+      .per-copy-list .copy-input {
+        height: 30px; padding: 0 8px; font-size: 13px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        background: var(--lib-surface); color: var(--lib-text); width: 100%;
+        outline: none; transition: .2s;
+      }
+      .per-copy-list .copy-input:focus { border-color: var(--lib-primary); box-shadow: 0 0 0 2px var(--lib-primary-100); }
+      .per-copy-list .copy-select {
+        height: 30px; padding: 0 6px; padding-right: 22px; font-size: 12px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        background: var(--lib-surface); color: var(--lib-text); width: 100%;
+        appearance: none; -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 6px center;
+        outline: none; transition: .2s;
+      }
+      .per-copy-list .copy-select:focus { border-color: var(--lib-primary); box-shadow: 0 0 0 2px var(--lib-primary-100); }
+      .per-copy-list .loc-picker {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 8px; height: 30px; font-size: 13px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        background: var(--lib-surface); cursor: pointer; transition: .15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .per-copy-list .loc-picker:hover { border-color: var(--lib-primary); }
+      .per-copy-list .loc-picker .placeholder { color: var(--lib-text-tertiary); }
+      .per-detail-section { margin-bottom: 18px; }
+      .per-detail-section:last-child { margin-bottom: 0; }
+      .per-detail-section-title {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 13px; font-weight: 600; color: var(--lib-text-secondary);
+        padding-bottom: 8px; margin-bottom: 10px;
+        border-bottom: 1px dashed var(--lib-line);
+      }
+      .per-detail-section-title::before {
+        content: ""; width: 3px; height: 12px;
+        background: var(--lib-primary); border-radius: 2px;
+      }
+      .per-detail-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr);
+        gap: 10px 24px;
+      }
+      .per-detail-item {
+        display: flex; align-items: baseline; gap: 8px;
+        font-size: 13px; padding: 4px 0;
+      }
+      .per-detail-item .label { color: var(--lib-text-secondary); flex-shrink: 0; min-width: 70px; }
+      .per-detail-item .value { color: var(--lib-text); word-break: break-all; }
+      .per-detail-item.full { grid-column: 1 / -1; }
+      .per-unbind-toolbar {
+        display: flex; align-items: center; gap: 8px;
+        margin-bottom: 10px;
+      }
+      .per-unbind-toolbar .count { margin-left: auto; font-size: 12px; color: var(--lib-text-secondary); }
+      .per-copy-check-list {
+        display: flex; flex-direction: column; gap: 6px;
+        max-height: 340px; overflow-y: auto;
+        border: 1px solid var(--lib-line); border-radius: var(--lib-radius-md);
+        padding: 8px; background: var(--lib-surface-2);
+      }
+      .per-copy-check-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 12px; border-radius: var(--lib-radius-md);
+        background: var(--lib-surface); border: 1px solid var(--lib-border);
+        transition: .2s; cursor: pointer;
+      }
+      .per-copy-check-item:hover { border-color: var(--lib-primary); }
+      .per-copy-check-item.disabled {
+        opacity: .55; cursor: not-allowed;
+        background: var(--lib-surface-2);
+      }
+      .per-copy-check-item.disabled:hover { border-color: var(--lib-border); }
+      .per-copy-check-item input[type="checkbox"] {
+        width: 16px; height: 16px; cursor: pointer;
+        accent-color: var(--lib-primary); flex-shrink: 0;
+      }
+      .per-copy-check-item.disabled input { cursor: not-allowed; }
+      .per-copy-check-item .barcode {
+        font-family: var(--lib-font-mono); font-size: 13px; min-width: 130px;
+      }
+      .per-copy-check-item .loc {
+        font-size: 12px; color: var(--lib-text-secondary); flex: 1;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      /* 级联位置选择器 */
+      .loc-picker-step { margin-bottom: 14px; }
+      .loc-picker-step:last-child { margin-bottom: 0; }
+      .loc-picker-step label { display: block; font-size: 13px; font-weight: 600; color: var(--lib-text-secondary); margin-bottom: 6px; }
+      .loc-picker-step label .opt { color: var(--lib-text-tertiary); font-weight: 400; font-size: 12px; margin-left: 4px; }
+      .loc-picker-step label .required { color: var(--lib-state-error); margin-left: 2px; }
+      .loc-picker-step select {
+        width: 100%; padding: 0 12px; height: 36px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        font-size: 14px; outline: none; background: var(--lib-surface); color: var(--lib-text);
+        font-family: inherit; cursor: pointer; transition: .15s;
+        appearance: none; -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 12px center;
+        padding-right: 34px;
+      }
+      .loc-picker-step select:focus { border-color: var(--lib-primary); box-shadow: 0 0 0 2px var(--lib-primary-100); }
+      .loc-picker-step select:disabled { background: var(--lib-surface-2); cursor: not-allowed; color: var(--lib-text-tertiary); }
+      .loc-preview-box {
+        margin-top: 8px; padding: 12px 14px;
+        background: var(--lib-primary-50); border: 1px dashed var(--lib-primary-200);
+        border-radius: var(--lib-radius-lg);
+      }
+      .loc-preview-box .lp-label { font-size: 12px; color: var(--lib-text-tertiary); margin-bottom: 4px; letter-spacing: .4px; font-weight: 600; text-transform: uppercase; }
+      .loc-preview-box .lp-value { font-family: var(--lib-font-mono); color: var(--lib-text); font-weight: 500; font-size: 14px; }
+      .loc-trigger {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 12px; height: 36px; font-size: 14px;
+        border: 1px solid var(--lib-border); border-radius: var(--lib-radius-md);
+        background: var(--lib-surface); cursor: pointer; transition: .15s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .loc-trigger:hover { border-color: var(--lib-primary); }
+      .loc-trigger .placeholder { color: var(--lib-text-tertiary); }
+      .per-cat-add { display: flex; gap: 8px; margin-bottom: 16px; }
+      .per-cat-add .per-input { flex: 1; }
+      .per-cat-list {
+        list-style: none; display: flex; flex-direction: column;
+        gap: 6px; max-height: 360px; overflow-y: auto;
+      }
+      .per-cat-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 12px; border: 1px solid var(--lib-line);
+        border-radius: var(--lib-radius-md); transition: .2s; min-height: 46px;
+      }
+      .per-cat-item:hover { border-color: var(--lib-primary); background: var(--lib-primary-50); }
+      .per-cat-item .cat-name { flex: 1; color: var(--lib-text); }
+      .per-cat-item .cat-count {
+        font-size: 12px; color: var(--lib-text-secondary);
+        background: var(--lib-surface-2); padding: 2px 8px;
+        border-radius: 10px; white-space: nowrap;
+      }
+      .per-cat-item .cat-actions { display: flex; gap: 2px; }
+      .per-cat-item.editing { border-color: var(--lib-primary); background: var(--lib-primary-50); }
+      .per-cat-item.editing .cat-edit-input { flex: 1; height: 30px; }
+      .per-toast-wrap {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%); z-index: 999;
+        display: flex; flex-direction: column; gap: 8px;
+        align-items: center; pointer-events: none;
+      }
+      .per-toast {
+        background: var(--lib-surface); box-shadow: var(--lib-shadow-3);
+        border-radius: var(--lib-radius-lg); padding: 10px 18px; font-size: 14px;
+        border-left: 3px solid var(--lib-state-success);
+        animation: per-slideDown .2s ease; white-space: nowrap;
+        color: var(--lib-text);
+      }
+      .per-toast.error { border-left-color: var(--lib-state-error); }
+      .per-toast.info { border-left-color: var(--lib-primary); }
+      .per-toast.warning { border-left-color: var(--lib-state-warning); }
+      @keyframes per-slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: none; }
+      }
+      .per-empty { padding: 64px 0; text-align: center; color: var(--lib-text-secondary); }
+      .per-empty .icon { font-size: 42px; margin-bottom: 8px; line-height: 1; }
+      .per-empty.small { padding: 24px 0; font-size: 13px; }
+      .per-page-btn {
+        min-width: 28px; height: 28px; padding: 0 6px;
+        border: 1px solid var(--lib-border); background: var(--lib-surface);
+        border-radius: var(--lib-radius-md); cursor: pointer; font-size: 12px;
+        color: var(--lib-text); transition: .2s;
+      }
+      .per-page-btn:hover:not(:disabled):not(.active) { border-color: var(--lib-primary); color: var(--lib-primary); }
+      .per-page-btn.active { background: var(--lib-primary); border-color: var(--lib-primary); color: #fff; }
+      .per-page-btn:disabled { opacity: .45; cursor: not-allowed; }
+      .per-ellipsis { color: var(--lib-text-secondary); padding: 0 2px; }
+      .per-barcode { font-family: var(--lib-font-mono); font-size: 13px; color: var(--lib-text-secondary); letter-spacing: .3px; }
+      .per-title-cell { display: flex; flex-direction: column; gap: 2px; min-width: 160px; }
+      .per-title-cell .name { font-weight: 500; color: var(--lib-text); }
+      .per-title-cell .sub { font-size: 12px; color: var(--lib-text-secondary); }
+      .per-issue-cell { display: flex; flex-direction: column; gap: 2px; min-width: 120px; }
+      .per-issue-cell .main { font-weight: 500; color: var(--lib-text); }
+      @media (max-width: 900px) {
+        .per-form-grid { grid-template-columns: 1fr; }
+        .per-detail-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<style>
+  :root {
+    --lib-text: var(--lib-ink);
+    --lib-text-secondary: var(--lib-ink-2);
+    --lib-text-tertiary: var(--lib-ink-3);
+    --lib-hover: var(--lib-surface-2);
+    --lib-primary-soft: var(--lib-primary-50);
+  }
+  #app-shell { min-height: 100vh; }
+  #app-sidebar { width: 248px; }
+  #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+  .nav-item { color: var(--lib-text-secondary); }
+  .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+  .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+  .nav-group summary { list-style: none; }
+  .nav-group summary::-webkit-details-marker { display: none; }
+  .nav-group summary::marker { display: none; }
+  .nav-group .nav-chevron { transition: transform 0.2s ease; transform: rotate(-90deg); }
+  .nav-group[open] > summary .nav-chevron { transform: rotate(0deg); }
+  .nav-group summary:hover { background-color: var(--lib-surface-2); color: var(--lib-ink); }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+</style>
+<div id="app-shell" style="background-color: var(--lib-bg);">
+  <!-- 顶部导航栏 -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+    <div class="flex items-center gap-3">
+      <button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+        <i class="h-5 w-5" data-lucide="menu"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+        <span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative hidden items-center sm:flex">
+        <i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+        <input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+      </div>
+      <button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+        <i class="h-5 w-5" data-lucide="bell"></i>
+        <span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+      </button>
+      <div class="flex items-center gap-2">
+        <div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+        <span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+      </div>
+      <button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+        <i class="h-5 w-5" data-lucide="log-out"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="p-6 min-w-0" id="main-content" style="background-color: var(--lib-bg);">
+    <!-- 面包屑 -->
+    <nav class="mb-4 flex items-center gap-2 text-sm" style="color: var(--lib-text-secondary);">
+      <a class="hover:text-primary transition-colors" href="dashboard.html">首页</a>
+      <i class="h-4 w-4" data-lucide="chevron-right"></i>
+      <span style="color: var(--lib-text);">期刊管理</span>
+    </nav>
+    <!-- 主内容 -->
+    <section class="space-y-4">
+      <!-- 筛选区 -->
+      <div class="rounded-lg border p-4" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+        <div class="flex flex-wrap items-end gap-3">
+          <div class="relative flex-1 min-w-[280px]">
+            <i class="absolute left-2.5 top-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+            <input class="per-input w-full" id="keyword" placeholder="搜索刊名 / ISSN / 主办单位 / 条码" style="padding-left: 36px;" type="text"/>
+          </div>
+          <div class="w-44">
+            <label class="mb-1 block text-xs" style="color: var(--lib-text-secondary);">分类</label>
+            <select class="per-select w-full" id="filterCategory">
+              <option value="">全部分类</option>
+            </select>
+          </div>
+          <div class="w-36">
+            <label class="mb-1 block text-xs" style="color: var(--lib-text-secondary);">状态</label>
+            <select class="per-select w-full" id="filterStatus">
+              <option value="">全部状态</option>
+              <option value="available">可借阅</option>
+              <option value="borrowed">已借完</option>
+              <option value="off">已下架</option>
+            </select>
+          </div>
+          <div class="ml-auto flex items-center gap-2">
+            <button class="per-btn per-btn-primary" id="btnSearch" type="button">
+              <i class="h-4 w-4" data-lucide="search"></i> 搜索
+            </button>
+            <button class="per-btn" id="btnReset" type="button">
+              <i class="h-4 w-4" data-lucide="rotate-ccw"></i> 重置
+            </button>
+            <button class="per-btn" id="btnExport" type="button">
+              <i class="h-4 w-4" data-lucide="download"></i> 导出
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 列表区 -->
+      <div class="overflow-hidden rounded-lg border" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+        <div class="flex items-center justify-between border-b px-4 py-3" style="border-color: var(--lib-line);">
+          <div class="flex items-center gap-3">
+            <button class="per-btn per-btn-primary" id="btnAdd" type="button">
+              <i class="h-4 w-4" data-lucide="plus"></i> 新增期刊卷期
+            </button>
+            <button class="per-btn" id="btnManageCategory" type="button">
+              <i class="h-4 w-4" data-lucide="settings-2"></i> 管理分类
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[980px] text-left text-sm">
+            <thead style="background-color: var(--lib-surface-2);">
+              <tr>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); min-width: 200px;">期刊品种（刊名 / ISSN）</th>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); width: 90px;">分类</th>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); width: 170px;">年 / 卷 / 期</th>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); width: 88px;">复本数</th>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); min-width: 200px;">馆藏分布</th>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); width: 100px;">状态</th>
+                <th class="px-4 py-3 font-medium whitespace-nowrap" style="color: var(--lib-text-secondary); width: 240px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody" style="border-color: var(--lib-line);"></tbody>
+          </table>
+        </div>
+        <div class="flex items-center justify-between border-t px-4 py-3" id="pagination" style="border-color: var(--lib-line);"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- 弹窗：详情 -->
+<div class="per-modal-mask" id="detailModal">
+  <div class="per-modal">
+    <div class="per-modal-header">
+      <div class="per-modal-title" id="detailTitle">期刊详情</div>
+      <button class="per-modal-close" type="button" id="btnCloseDetail">&times;</button>
+    </div>
+    <div class="per-modal-body" id="detailBody"></div>
+    <div class="per-modal-footer">
+      <button class="per-btn" type="button" id="btnCloseDetail2">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：新增 / 编辑 卷期 -->
+<div class="per-modal-mask" id="formModal">
+  <div class="per-modal">
+    <div class="per-modal-header">
+      <div class="per-modal-title" id="modalTitle">新增期刊卷期</div>
+      <button class="per-modal-close" type="button" id="btnCloseForm">&times;</button>
+    </div>
+    <div class="per-modal-body">
+      <div class="per-form-errors" id="formErrors"></div>
+      <form id="journalForm" class="per-form-grid" novalidate autocomplete="off">
+        <div class="per-form-section-title">品种信息</div>
+        <div class="per-form-item">
+          <label>刊名 <span class="req">*</span></label>
+          <input class="per-input" name="title" placeholder="如：读者" type="text"/>
+        </div>
+        <div class="per-form-item">
+          <label>ISSN <span class="req">*</span></label>
+          <input class="per-input" name="issn" placeholder="如 1005-1805" type="text"/>
+        </div>
+        <div class="per-form-item">
+          <label>CN 号</label>
+          <input class="per-input" name="cn" placeholder="如 62-1118/Z" type="text"/>
+        </div>
+        <div class="per-form-item">
+          <label>分类 <span class="req">*</span></label>
+          <select class="per-select" name="category"><option value="">请选择分类</option></select>
+        </div>
+        <div class="per-form-item">
+          <label>出版周期 <span class="req">*</span></label>
+          <select class="per-select" name="period"><option value="">请选择周期</option></select>
+        </div>
+        <div class="per-form-item">
+          <label>语种</label>
+          <select class="per-select" name="language">
+            <option value="中文">中文</option>
+            <option value="英文">英文</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div class="per-form-item full">
+          <label>主办单位 <span class="req">*</span></label>
+          <input class="per-input" name="publisher" placeholder="如：读者出版传媒股份有限公司" type="text"/>
+        </div>
+
+        <div class="per-form-section-title">卷期信息</div>
+        <div class="per-form-item">
+          <label>年份 <span class="req">*</span></label>
+          <input class="per-input" name="year" type="number" min="1900" max="2100" placeholder="如 2024"/>
+        </div>
+        <div class="per-form-item">
+          <label>卷号 <span class="opt">选填</span></label>
+          <input class="per-input" name="volume" placeholder="如 625" type="text"/>
+        </div>
+        <div class="per-form-item">
+          <label>期号 <span class="req">*</span></label>
+          <input class="per-input" name="issue" placeholder="如 1 或 第1期" type="text"/>
+        </div>
+        <div class="per-form-item full">
+          <label>备注</label>
+          <textarea class="per-textarea" name="remark" placeholder="选填，如缺刊说明、装订情况等"></textarea>
+        </div>
+
+        <div class="per-form-section-title">
+          复本列表
+          <span class="hint" id="formCopyCount"></span>
+          <button class="per-link-btn success" type="button" id="btnAddFormCopy">+ 增加复本</button>
+        </div>
+        <div class="per-copy-list-wrap">
+          <div class="per-copy-list" id="formCopyList"></div>
+        </div>
+      </form>
+    </div>
+    <div class="per-modal-footer">
+      <button class="per-btn" type="button" id="btnCancelForm">取消</button>
+      <button class="per-btn per-btn-primary" type="button" id="btnSaveForm">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：下架复本选择 -->
+<div class="per-modal-mask" id="unbindModal">
+  <div class="per-modal" style="max-width:560px">
+    <div class="per-modal-header">
+      <div class="per-modal-title">下架复本</div>
+      <button class="per-modal-close" type="button" id="btnCloseUnbind">&times;</button>
+    </div>
+    <div class="per-modal-body">
+      <div id="unbindInfo" style="margin-bottom:12px;color:var(--lib-text-secondary);font-size:13px"></div>
+      <div class="per-unbind-toolbar">
+        <button class="per-btn per-btn-sm" type="button" id="btnUnbindAll">全选在架</button>
+        <button class="per-btn per-btn-sm" type="button" id="btnUnbindNone">取消全选</button>
+        <span class="count" id="unbindCount"></span>
+      </div>
+      <div class="per-copy-check-list" id="unbindList"></div>
+    </div>
+    <div class="per-modal-footer">
+      <button class="per-btn" type="button" id="btnCancelUnbind">取消</button>
+      <button class="per-btn per-btn-primary" type="button" id="btnConfirmUnbind" disabled>确认下架</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：分类管理 -->
+<div class="per-modal-mask" id="categoryModal">
+  <div class="per-modal" style="max-width:480px">
+    <div class="per-modal-header">
+      <div class="per-modal-title">分类管理</div>
+      <button class="per-modal-close" type="button" id="btnCloseCategory">&times;</button>
+    </div>
+    <div class="per-modal-body">
+      <div class="per-cat-add">
+        <input class="per-input" id="newCategoryName" type="text" placeholder="输入新分类名称，按回车快速添加" maxlength="20"/>
+        <button class="per-btn per-btn-primary" type="button" id="btnAddCategory">添加</button>
+      </div>
+      <ul class="per-cat-list" id="catList"></ul>
+    </div>
+    <div class="per-modal-footer">
+      <button class="per-btn" type="button" id="btnCancelCategory">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：位置选择器（级联） -->
+<div class="per-modal-mask" id="locationPickerModal" style="z-index:200">
+  <div class="per-modal" style="max-width:460px">
+    <div class="per-modal-header">
+      <div class="per-modal-title">选择馆藏位置</div>
+      <button class="per-modal-close" type="button" id="locationPickerCloseBtn">&times;</button>
+    </div>
+    <div class="per-modal-body">
+      <div class="loc-picker-step">
+        <label>区域 <span class="required">*</span></label>
+        <select id="locAreaSelect" class="per-select"></select>
+      </div>
+      <div class="loc-picker-step">
+        <label>排 <span class="required">*</span></label>
+        <select id="locRowSelect" class="per-select" disabled><option value="">请先选择区域</option></select>
+      </div>
+      <div class="loc-picker-step">
+        <label>书架 <span class="required">*</span></label>
+        <select id="locShelfSelect" class="per-select" disabled><option value="">请先选择排</option></select>
+      </div>
+      <div class="loc-picker-step" id="locLayerStep" style="display:none;">
+        <label>架层 <span class="opt">（可选）</span></label>
+        <select id="locLayerSelect" class="per-select"></select>
+      </div>
+      <div class="loc-picker-step" id="locSlotStep" style="display:none;">
+        <label>架位 <span class="opt">（可选）</span></label>
+        <select id="locSlotSelect" class="per-select"></select>
+      </div>
+      <div class="loc-preview-box">
+        <div class="lp-label">位置预览</div>
+        <div class="lp-value" id="locPreviewText" style="color:var(--lib-text-tertiary);">请选择区域</div>
+      </div>
+    </div>
+    <div class="per-modal-footer">
+      <button class="per-btn" type="button" id="locationPickerCancelBtn">取消</button>
+      <button class="per-btn per-btn-primary" type="button" id="locationPickerConfirmBtn">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：确认 -->
+<div class="per-modal-mask" id="confirmModal">
+  <div class="per-modal" style="max-width:440px">
+    <div class="per-modal-header">
+      <div class="per-modal-title">操作确认</div>
+      <button class="per-modal-close" type="button" data-close>&times;</button>
+    </div>
+    <div class="per-modal-body" id="confirmText">确定要删除吗？</div>
+    <div class="per-modal-footer">
+      <button class="per-btn" type="button" data-close>取消</button>
+      <button class="per-btn per-btn-danger" type="button" id="btnConfirmDelete">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="per-toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ============================================================
+ *  常量
+ * ============================================================ */
+const PERIODS = ['周刊', '旬刊', '半月刊', '月刊', '双月刊', '季刊', '半年刊'];
+
+// 卷期状态（主行）
+const STATUS_MAP = {
+  available: { label: '可借阅', cls: 'per-badge-on' },
+  borrowed:  { label: '已借完', cls: 'per-badge-paused' },
+  off:       { label: '已下架', cls: 'per-badge-off' }
+};
+
+// 复本状态
+const COPY_STATUS_MAP = {
+  on:       { label: '在架',   cls: 'per-badge-on' },
+  borrowed: { label: '已借出', cls: 'per-badge-paused' },
+  off:      { label: '已下架', cls: 'per-badge-off' }
+};
+
+const STORAGE_KEY_JOURNALS = 'lib-admin-periodicals';
+const STORAGE_KEY_CATEGORIES = 'lib-admin-periodical-categories';
+
+/* ============================================================
+ *  位置基础数据（与图书资源页面一致）
+ * ============================================================ */
+const LOCATION_AREAS = [
+  { id:'A', code:'A', name:'中文图书借阅区' },
+  { id:'B', code:'B', name:'外文图书借阅区' },
+  { id:'H', code:'H', name:'英语学习区' },
+  { id:'I', code:'I', name:'文学区' },
+  { id:'O', code:'O', name:'物理学区' }
+];
+
+const LOCATION_ROWS = [
+  { id:'A-1', areaId:'A', code:'1', name:'第1排' },
+  { id:'A-2', areaId:'A', code:'2', name:'第2排' },
+  { id:'A-3', areaId:'A', code:'3', name:'第3排' },
+  { id:'B-1', areaId:'B', code:'1', name:'第1排' },
+  { id:'B-2', areaId:'B', code:'2', name:'第2排' },
+  { id:'H-1', areaId:'H', code:'1', name:'第1排' },
+  { id:'H-2', areaId:'H', code:'2', name:'第2排' },
+  { id:'I-1', areaId:'I', code:'1', name:'第1排' },
+  { id:'I-2', areaId:'I', code:'2', name:'第2排' },
+  { id:'I-3', areaId:'I', code:'3', name:'第3排' },
+  { id:'I-4', areaId:'I', code:'4', name:'第4排' },
+  { id:'O-1', areaId:'O', code:'1', name:'第1排' },
+  { id:'O-2', areaId:'O', code:'2', name:'第2排' }
+];
+
+const LOCATION_SHELVES = [
+  // A区
+  { id:'A-1-1', rowId:'A-1', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-1-2', rowId:'A-1', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-1-3', rowId:'A-1', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-1-4', rowId:'A-1', code:'4', name:'第4书架', layerCount:5, layerSlots:[18,18,18,18,15] },
+  { id:'A-2-1', rowId:'A-2', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-2-2', rowId:'A-2', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-2-3', rowId:'A-2', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-3-1', rowId:'A-3', code:'1', name:'第1书架', layerCount:5, layerSlots:[15,15,15,15,15] },
+  { id:'A-3-2', rowId:'A-3', code:'2', name:'第2书架', layerCount:5, layerSlots:[15,15,15,15,12] },
+  // B区
+  { id:'B-1-1', rowId:'B-1', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,18] },
+  { id:'B-1-2', rowId:'B-1', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'B-1-3', rowId:'B-1', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'B-2-1', rowId:'B-2', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'B-2-2', rowId:'B-2', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  // H区
+  { id:'H-1-1', rowId:'H-1', code:'1', name:'第1书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'H-1-2', rowId:'H-1', code:'2', name:'第2书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'H-2-1', rowId:'H-2', code:'1', name:'第1书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'H-2-2', rowId:'H-2', code:'2', name:'第2书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  // I区
+  { id:'I-1-1', rowId:'I-1', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-1-2', rowId:'I-1', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-2-1', rowId:'I-2', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-2-2', rowId:'I-2', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-1', rowId:'I-3', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-2', rowId:'I-3', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-3', rowId:'I-3', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-4', rowId:'I-3', code:'4', name:'第4书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-4-1', rowId:'I-4', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-4-2', rowId:'I-4', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  // O区
+  { id:'O-1-1', rowId:'O-1', code:'1', name:'第1书架', layerCount:5, layerSlots:[16,16,16,16,16] },
+  { id:'O-1-2', rowId:'O-1', code:'2', name:'第2书架', layerCount:5, layerSlots:[16,16,16,16,16] },
+  { id:'O-2-1', rowId:'O-2', code:'1', name:'第1书架', layerCount:5, layerSlots:[16,16,16,16,16] },
+  { id:'O-2-2', rowId:'O-2', code:'2', name:'第2书架', layerCount:5, layerSlots:[16,16,16,16,16] }
+];
+
+/* ============================================================
+ *  分类数据
+ * ============================================================ */
+const DEFAULT_CATEGORIES = [
+  { id: 1,  name: '文学' }, { id: 2,  name: '科技' },
+  { id: 3,  name: '教育' }, { id: 4,  name: '医学' },
+  { id: 5,  name: '经济' }, { id: 6,  name: '艺术' },
+  { id: 7,  name: '综合' }, { id: 8,  name: '法律' },
+  { id: 9,  name: '农业' }, { id: 10, name: '体育' }
+];
+
+let categories = [];
+
+/* ============================================================
+ *  期刊数据（卷期 + 复本数组）
+ *  卷期状态由 syncJournalStatus 自动聚合
+ *  馆藏位置：使用 I区3排1架 格式（与图书资源页面一致）
+ * ============================================================ */
+const DEFAULT_JOURNALS = [
+  {
+    id: 1, title: '读者', issn: '1005-1805', cn: '62-1118/Z',
+    category: '文学', period: '半月刊',
+    publisher: '读者出版传媒股份有限公司', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '', createdAt: '2024-01-05',
+    copies: [
+      { id: 101, barcode: 'BK2024-0001', location: 'I区3排2架', status: 'on', remark: '' },
+      { id: 102, barcode: 'BK2024-0002', location: 'O区1排1架', status: 'on', remark: '备用' }
+    ]
+  },
+  {
+    id: 2, title: '读者', issn: '1005-1805', cn: '62-1118/Z',
+    category: '文学', period: '半月刊',
+    publisher: '读者出版传媒股份有限公司', language: '中文',
+    year: 2024, volume: '', issue: '第2期',
+    remark: '', createdAt: '2024-01-20',
+    copies: [
+      { id: 103, barcode: 'BK2024-0003', location: 'I区3排2架', status: 'on', remark: '' }
+    ]
+  },
+  {
+    id: 3, title: '中国国家地理', issn: '1009-6337', cn: '11-4542/P',
+    category: '科技', period: '月刊',
+    publisher: '中国科学院地理科学与资源研究所', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '', createdAt: '2024-01-08',
+    copies: [
+      { id: 104, barcode: 'BK2024-0010', location: 'I区1排1架', status: 'on', remark: '' },
+      { id: 105, barcode: 'BK2024-0011', location: 'O区1排1架', status: 'on', remark: '' },
+      { id: 106, barcode: 'BK2024-0012', location: 'O区2排2架', status: 'off', remark: '已归档' }
+    ]
+  },
+  {
+    id: 4, title: '三联生活周刊', issn: '1005-3603', cn: '11-3221/C',
+    category: '综合', period: '周刊',
+    publisher: '生活·读书·新知三联书店', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '', createdAt: '2024-01-10',
+    copies: [
+      { id: 107, barcode: 'BK2024-0020', location: 'I区1排2架', status: 'borrowed', remark: '读者借出中' }
+    ]
+  },
+  {
+    id: 5, title: '三联生活周刊', issn: '1005-3603', cn: '11-3221/C',
+    category: '综合', period: '周刊',
+    publisher: '生活·读书·新知三联书店', language: '中文',
+    year: 2024, volume: '', issue: '第2期',
+    remark: '', createdAt: '2024-01-17',
+    copies: [
+      { id: 108, barcode: 'BK2024-0021', location: 'I区1排2架', status: 'on', remark: '' }
+    ]
+  },
+  {
+    id: 6, title: '计算机学报', issn: '0254-4164', cn: '11-1826/TP',
+    category: '科技', period: '月刊',
+    publisher: '中国计算机学会', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '核心期刊', createdAt: '2024-01-12',
+    copies: [
+      { id: 109, barcode: 'BK2024-0030', location: 'O区2排1架', status: 'on', remark: '' }
+    ]
+  },
+  {
+    id: 7, title: '中华医学杂志', issn: '0376-2491', cn: '11-2137/R',
+    category: '医学', period: '周刊',
+    publisher: '中华医学会', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '', createdAt: '2024-01-15',
+    copies: [
+      { id: 110, barcode: 'BK2024-0040', location: 'O区1排1架', status: 'borrowed', remark: '' },
+      { id: 114, barcode: 'BK2024-0041', location: 'O区1排1架', status: 'borrowed', remark: '' }
+    ]
+  },
+  {
+    id: 8, title: '经济研究', issn: '0577-9154', cn: '11-1081/F',
+    category: '经济', period: '月刊',
+    publisher: '中国社会科学院经济研究所', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '', createdAt: '2024-01-16',
+    copies: [
+      { id: 111, barcode: 'BK2024-0050', location: 'O区1排2架', status: 'on', remark: '' }
+    ]
+  },
+  {
+    id: 9, title: '收获', issn: '0583-1288', cn: '31-1552/I',
+    category: '文学', period: '双月刊',
+    publisher: '上海市作家协会', language: '中文',
+    year: 2024, volume: '', issue: '第1期',
+    remark: '已停止订购，保留馆藏', createdAt: '2024-01-18',
+    copies: [
+      { id: 112, barcode: 'BK2024-0060', location: 'I区3排3架', status: 'off', remark: '过刊' }
+    ]
+  },
+  {
+    id: 10, title: 'Nature', issn: '0028-0836', cn: '',
+    category: '科技', period: '周刊',
+    publisher: 'Springer Nature', language: '英文',
+    year: 2024, volume: '625', issue: '7998',
+    remark: '外文原版', createdAt: '2024-03-05',
+    copies: [
+      { id: 113, barcode: 'BK2024-0070', location: 'O区2排1架', status: 'on', remark: '' }
+    ]
+  }
+];
+
+let journals = [];
+
+/* ============================================================
+ *  全局状态
+ * ============================================================ */
+const state = {
+  page: 1,
+  pageSize: 20,
+  keyword: '',
+  category: '',
+  status: '',
+  editingId: null,
+  formCopies: [],
+  editingCopyIndex: null,
+  unbindJournalId: null,
+  unbindSelected: new Set(),
+  confirmHandler: null,
+  // 位置选择器状态
+  locationPickerTarget: null,   // { type:'copy', index } 或 { type:'batch' }
+  pickerSelection: { areaId:'', rowId:'', shelfId:'', layer:null, slot:null },
+  batchLocationText: ''
+};
+
+let editingCategoryId = null;
+
+/* ============================================================
+ *  localStorage 持久化
+ * ============================================================ */
+function saveJournals() {
+  try { localStorage.setItem(STORAGE_KEY_JOURNALS, JSON.stringify(journals)); } catch (e) {}
+}
+
+function saveCategories() {
+  try { localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(categories)); } catch (e) {}
+}
+
+function loadData() {
+  try {
+    const j = localStorage.getItem(STORAGE_KEY_JOURNALS);
+    const c = localStorage.getItem(STORAGE_KEY_CATEGORIES);
+    journals = j ? JSON.parse(j) : JSON.parse(JSON.stringify(DEFAULT_JOURNALS));
+    categories = c ? JSON.parse(c) : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+  } catch (e) {
+    journals = JSON.parse(JSON.stringify(DEFAULT_JOURNALS));
+    categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+  }
+  journals.forEach(j => syncJournalStatus(j));
+}
+
+/* ============================================================
+ *  工具函数
+ * ============================================================ */
+function esc(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function nextJournalId() {
+  return journals.length ? Math.max(...journals.map(j => j.id)) + 1 : 1;
+}
+
+function nextCopyId() {
+  let max = 0;
+  journals.forEach(j => (j.copies || []).forEach(c => { if (c.id > max) max = c.id; }));
+  state.formCopies.forEach(c => { if (c.id > max) max = c.id; });
+  return max + 1;
+}
+
+function nextCategoryId() {
+  return categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1;
+}
+
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function toast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'per-toast' + (type === 'error' ? ' error' : type === 'info' ? ' info' : type === 'warning' ? ' warning' : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = '.25s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-8px)';
+    setTimeout(() => el.remove(), 250);
+  }, 2200);
+}
+
+function formatIssue(j) {
+  const parts = [];
+  if (j.year) parts.push(j.year + '年');
+  if (j.volume) parts.push('Vol.' + j.volume);
+  if (j.issue) {
+    const s = String(j.issue).trim();
+    if (/^第.+期$/.test(s)) parts.push(s);
+    else if (/^\d+$/.test(s)) parts.push('第' + s + '期');
+    else parts.push(s);
+  }
+  return parts.length ? parts.join(' ') : '—';
+}
+
+function getLocations(copies) {
+  if (!copies || !copies.length) return '—';
+  const locs = [...new Set(copies.map(c => c.location).filter(Boolean))];
+  return locs.length ? locs.join('、') : '—';
+}
+
+/**
+ * 卷期状态自动聚合：
+ *  有在架复本 → 可借阅
+ *  无在架但有已借出 → 已借完
+ *  全部已下架 → 已下架
+ */
+function syncJournalStatus(j) {
+  const copies = j.copies || [];
+  if (!copies.length) { j.status = 'off'; return; }
+  const hasOn = copies.some(c => c.status === 'on');
+  const hasBorrowed = copies.some(c => c.status === 'borrowed');
+  if (hasOn) j.status = 'available';
+  else if (hasBorrowed) j.status = 'borrowed';
+  else j.status = 'off';
+}
+
+/* ============================================================
+ *  位置工具函数（与图书资源页面一致）
+ * ============================================================ */
+function getAreaById(id) { return LOCATION_AREAS.find(a => a.id === id) || null; }
+function getRowById(id) { return LOCATION_ROWS.find(r => r.id === id) || null; }
+function getShelfById(id) { return LOCATION_SHELVES.find(s => s.id === id) || null; }
+function getRowsByArea(areaId) { return LOCATION_ROWS.filter(r => r.areaId === areaId); }
+function getShelvesByRow(rowId) { return LOCATION_SHELVES.filter(s => s.rowId === rowId); }
+
+/* 解析位置字符串 "I区3排1架" 或 "I区3排1架 第2层第5格" */
+function parseLocationString(str) {
+  if (!str) return null;
+  const m = String(str).trim().match(/^([A-Z])区(\d+)排(\d+)架(?:\s+第(\d+)层(?:第(\d+)格)?)?$/);
+  if (!m) return null;
+  return {
+    areaCode: m[1],
+    rowCode: m[2],
+    shelfCode: m[3],
+    layer: m[4] ? parseInt(m[4], 10) : null,
+    slot: m[5] ? parseInt(m[5], 10) : null
+  };
+}
+
+/* 根据选择构造位置字符串 */
+function buildLocationString() {
+  const area = getAreaById(state.pickerSelection.areaId);
+  const row = getRowById(state.pickerSelection.rowId);
+  const shelf = getShelfById(state.pickerSelection.shelfId);
+  if (!area || !row || !shelf) return '';
+  let str = `${area.code}区${parseInt(row.code, 10)}排${parseInt(shelf.code, 10)}架`;
+  if (state.pickerSelection.layer) {
+    str += ` 第${state.pickerSelection.layer}层`;
+    if (state.pickerSelection.slot) str += `第${state.pickerSelection.slot}格`;
+  }
+  return str;
+}
+
+/* ============================================================
+ *  筛选 / 分页
+ * ============================================================ */
+function getFiltered() {
+  const kw = state.keyword.trim().toLowerCase();
+  return journals.filter(j => {
+    if (state.category && j.category !== state.category) return false;
+    if (state.status && j.status !== state.status) return false;
+    if (kw) {
+      const copyHay = (j.copies || []).map(c => c.barcode + ' ' + c.location).join(' ');
+      const hay = `${j.title} ${j.issn} ${j.cn} ${j.publisher} ${j.issue} ${j.year} ${j.volume} ${copyHay}`.toLowerCase();
+      if (!hay.includes(kw)) return false;
+    }
+    return true;
+  });
+}
+
+function getPageRows(data) {
+  const start = (state.page - 1) * state.pageSize;
+  return data.slice(start, start + state.pageSize);
+}
+
+/* ============================================================
+ *  渲染主表格
+ * ============================================================ */
+function render() {
+  const data = getFiltered();
+  const totalPages = Math.max(1, Math.ceil(data.length / state.pageSize));
+  if (state.page > totalPages) state.page = totalPages;
+
+  renderTable(getPageRows(data));
+  renderPagination(data.length);
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('tbody');
+
+  if (!rows.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7">
+          <div class="per-empty">
+            <div class="icon">📭</div>
+            <div>暂无符合条件的期刊数据</div>
+          </div>
+        </td>
+      </tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map((j) => {
+    const st = STATUS_MAP[j.status] || STATUS_MAP.available;
+    const copies = j.copies || [];
+    const total = copies.length;
+    const onCount = copies.filter(c => c.status === 'on').length;
+
+    return `
+      <tr data-id="${j.id}">
+        <td class="px-4 py-3" style="min-width:200px">
+          <div class="per-title-cell">
+            <span class="name">${esc(j.title)}</span>
+            <span class="sub">ISSN ${esc(j.issn)}${j.cn ? ' · CN ' + esc(j.cn) : ''}</span>
+          </div>
+        </td>
+        <td class="px-4 py-3" style="white-space:nowrap">${esc(j.category)}</td>
+        <td class="px-4 py-3" style="white-space:nowrap">
+          <div class="per-issue-cell">
+            <span class="main">${esc(formatIssue(j))}</span>
+          </div>
+        </td>
+        <td class="px-4 py-3" style="white-space:nowrap">
+          <span class="per-badge per-badge-info">${total} 本</span>
+        </td>
+        <td class="px-4 py-3" style="white-space:nowrap;min-width:200px">${esc(getLocations(copies))}</td>
+        <td class="px-4 py-3" style="white-space:nowrap"><span class="per-badge ${st.cls}">${st.label}</span></td>
+        <td class="px-4 py-3" style="white-space:nowrap">
+          <div style="display:flex;gap:8px;flex-wrap:nowrap;">
+            <button class="per-link-btn" data-act="detail" data-id="${j.id}">详情</button>
+            <button class="per-link-btn" data-act="edit" data-id="${j.id}">编辑</button>
+            <button class="per-link-btn warning" data-act="unbind" data-id="${j.id}"
+                    ${onCount === 0 ? 'disabled' : ''}>
+              下架
+            </button>
+            <button class="per-link-btn danger" data-act="del" data-id="${j.id}">删除</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderPagination(total) {
+  const el = document.getElementById('pagination');
+  const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+
+  let controls = `<select class="per-select" id="pageSize" style="width:auto;height:28px;padding:0 20px 0 8px;font-size:12px;">` +
+    [10, 20, 50, 100].map(n =>
+      `<option value="${n}" ${n === state.pageSize ? 'selected' : ''}>${n} 条/页</option>`
+    ).join('') + `</select>`;
+
+  controls += `<button class="per-page-btn" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>上一页</button>`;
+
+  pageNumbers(state.page, totalPages).forEach(p => {
+    controls += p === '...'
+      ? `<span class="per-ellipsis">···</span>`
+      : `<button class="per-page-btn ${p === state.page ? 'active' : ''}" data-page="${p}">${p}</button>`;
+  });
+
+  controls += `<button class="per-page-btn" data-page="${state.page + 1}" ${state.page === totalPages ? 'disabled' : ''}>下一页</button>`;
+
+  el.innerHTML = `
+    <div style="font-size:12px;color:var(--lib-text-secondary);">共 ${total} 条记录，第 ${state.page} / ${totalPages} 页</div>
+    <div style="display:flex;align-items:center;gap:6px;">${controls}</div>
+  `;
+}
+
+function pageNumbers(cur, total) {
+  const arr = [];
+  if (total <= 7) { for (let i = 1; i <= total; i++) arr.push(i); return arr; }
+  arr.push(1);
+  let start = Math.max(2, cur - 1);
+  let end = Math.min(total - 1, cur + 1);
+  if (cur <= 3) { start = 2; end = 4; }
+  if (cur >= total - 2) { start = total - 3; end = total - 1; }
+  if (start > 2) arr.push('...');
+  for (let i = start; i <= end; i++) arr.push(i);
+  if (end < total - 1) arr.push('...');
+  arr.push(total);
+  return arr;
+}
+
+/* ============================================================
+ *  详情弹窗
+ * ============================================================ */
+function openDetail(id) {
+  const j = journals.find(x => x.id === id);
+  if (!j) return;
+
+  document.getElementById('detailTitle').textContent = `《${j.title}》 ${formatIssue(j)} - 详情`;
+
+  const st = STATUS_MAP[j.status] || STATUS_MAP.available;
+  const copies = j.copies || [];
+
+  const copiesHtml = copies.length
+    ? `
+      <table style="min-width:0;width:100%;border-collapse:collapse;background:var(--lib-surface);border:1px solid var(--lib-line);border-radius:var(--lib-radius-lg);overflow:hidden;">
+        <thead>
+          <tr style="background:var(--lib-surface-2);">
+            <th style="width:56px;padding:8px 10px;font-size:12px;text-align:left;border-bottom:1px solid var(--lib-line);color:var(--lib-text-secondary);">序号</th>
+            <th style="width:200px;padding:8px 10px;font-size:12px;text-align:left;border-bottom:1px solid var(--lib-line);color:var(--lib-text-secondary);">册 / 条码</th>
+            <th style="padding:8px 10px;font-size:12px;text-align:left;border-bottom:1px solid var(--lib-line);color:var(--lib-text-secondary);">馆藏位置</th>
+            <th style="width:100px;padding:8px 10px;font-size:12px;text-align:left;border-bottom:1px solid var(--lib-line);color:var(--lib-text-secondary);">状态</th>
+            <th style="padding:8px 10px;font-size:12px;text-align:left;border-bottom:1px solid var(--lib-line);color:var(--lib-text-secondary);">备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${copies.map((c, i) => {
+            const cst = COPY_STATUS_MAP[c.status] || COPY_STATUS_MAP.on;
+            return `
+              <tr style="border-bottom:1px solid var(--lib-line);">
+                <td style="padding:10px;font-size:13px;color:var(--lib-text);">${i + 1}</td>
+                <td style="padding:10px;font-size:13px;"><span class="per-barcode">${esc(c.barcode || '—')}</span></td>
+                <td style="padding:10px;font-size:13px;color:var(--lib-text);">${esc(c.location || '—')}</td>
+                <td style="padding:10px;font-size:13px;"><span class="per-badge ${cst.cls}">${cst.label}</span></td>
+                <td style="padding:10px;font-size:13px;color:var(--lib-text);">${esc(c.remark || '—')}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `
+    : `<div class="per-empty small">该期暂无复本</div>`;
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="per-detail-section">
+      <div class="per-detail-section-title">品种信息</div>
+      <div class="per-detail-grid">
+        <div class="per-detail-item"><span class="label">刊名</span><span class="value">${esc(j.title)}</span></div>
+        <div class="per-detail-item"><span class="label">ISSN</span><span class="value">${esc(j.issn || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">CN 号</span><span class="value">${esc(j.cn || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">分类</span><span class="value">${esc(j.category || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">出版周期</span><span class="value">${esc(j.period || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">语种</span><span class="value">${esc(j.language || '—')}</span></div>
+        <div class="per-detail-item full"><span class="label">主办单位</span><span class="value">${esc(j.publisher || '—')}</span></div>
+      </div>
+    </div>
+
+    <div class="per-detail-section">
+      <div class="per-detail-section-title">卷期信息</div>
+      <div class="per-detail-grid">
+        <div class="per-detail-item"><span class="label">年份</span><span class="value">${esc(j.year || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">卷号</span><span class="value">${esc(j.volume || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">期号</span><span class="value">${esc(j.issue || '—')}</span></div>
+        <div class="per-detail-item"><span class="label">状态</span><span class="value"><span class="per-badge ${st.cls}">${st.label}</span></span></div>
+        <div class="per-detail-item full"><span class="label">备注</span><span class="value">${esc(j.remark || '—')}</span></div>
+      </div>
+    </div>
+
+    <div class="per-detail-section">
+      <div class="per-detail-section-title">复本列表（共 ${copies.length} 本）</div>
+      ${copiesHtml}
+    </div>
+  `;
+
+  document.getElementById('detailModal').classList.add('show');
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('show');
+}
+
+/* ============================================================
+ *  新增 / 编辑 卷期
+ * ============================================================ */
+function openForm(id) {
+  state.editingId = id;
+
+  const form = document.getElementById('journalForm');
+  form.reset();
+  clearFormErrors();
+  renderCategoryOptions();
+
+  document.getElementById('modalTitle').textContent = id ? '编辑期刊卷期' : '新增期刊卷期';
+
+  if (id) {
+    const j = journals.find(x => x.id === id);
+    if (!j) return;
+    ['title', 'issn', 'cn', 'category', 'period', 'publisher', 'language',
+     'year', 'volume', 'issue', 'remark'].forEach(k => {
+      const el = form.elements[k];
+      if (el) el.value = j[k] ?? '';
+    });
+    state.formCopies = JSON.parse(JSON.stringify(j.copies || []));
+  } else {
+    form.elements['language'].value = '中文';
+    form.elements['year'].value = new Date().getFullYear();
+    state.formCopies = [];
+  }
+
+  renderFormCopies();
+
+  document.getElementById('formModal').classList.add('show');
+  setTimeout(() => form.elements['title'].focus(), 60);
+}
+
+function closeForm() {
+  document.getElementById('formModal').classList.remove('show');
+  state.editingId = null;
+  state.formCopies = [];
+  state.editingCopyIndex = null;
+}
+
+function renderFormCopies() {
+  const list = document.getElementById('formCopyList');
+  const count = document.getElementById('formCopyCount');
+  const copies = state.formCopies;
+
+  count.textContent = `（共 ${copies.length} 本，在架 ${copies.filter(c => c.status === 'on').length} 本）`;
+
+  if (!copies.length) {
+    list.innerHTML = `<div class="per-copy-list-empty">暂无复本，点击右上角「＋ 增加复本」添加</div>`;
+    return;
+  }
+
+  list.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th style="width:56px">序号</th>
+          <th style="width:200px">册 / 条码</th>
+          <th>馆藏位置</th>
+          <th style="width:100px">状态</th>
+          <th>备注</th>
+          <th style="width:130px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${copies.map((c, i) => {
+          const cst = COPY_STATUS_MAP[c.status] || COPY_STATUS_MAP.on;
+          const isEditing = state.editingCopyIndex === i;
+          if (isEditing) {
+            return `
+              <tr data-index="${i}">
+                <td>${i + 1}</td>
+                <td><input class="copy-input" data-field="barcode" value="${esc(c.barcode || '')}" placeholder="条码"></td>
+                <td>
+                  <div class="loc-picker" data-index="${i}" style="cursor:pointer;">
+                    <span class="loc-text ${c.location ? '' : 'placeholder'}">${esc(c.location || '点击选择位置')}</span>
+                    <span style="color:var(--lib-text-tertiary);">▾</span>
+                  </div>
+                </td>
+                <td>
+                  <select class="copy-select" data-field="status">
+                    ${Object.entries(COPY_STATUS_MAP).map(([key, val]) =>
+                      `<option value="${key}" ${c.status === key ? 'selected' : ''}>${val.label}</option>`
+                    ).join('')}
+                  </select>
+                </td>
+                <td><input class="copy-input" data-field="remark" value="${esc(c.remark || '')}" placeholder="备注"></td>
+                <td>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="per-link-btn success" type="button" data-form-act="saveCopy" data-index="${i}">完成</button>
+                    <button class="per-link-btn muted" type="button" data-form-act="cancelEdit" data-index="${i}">取消</button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          } else {
+            return `
+              <tr data-index="${i}">
+                <td>${i + 1}</td>
+                <td><span class="per-barcode">${esc(c.barcode || '—')}</span></td>
+                <td>${esc(c.location || '—')}</td>
+                <td><span class="per-badge ${cst.cls}">${cst.label}</span></td>
+                <td>${esc(c.remark || '—')}</td>
+                <td>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="per-link-btn" type="button" data-form-act="editCopy" data-index="${i}">编辑</button>
+                    <button class="per-link-btn danger" type="button" data-form-act="removeCopy" data-index="${i}">删除</button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function clearFormErrors() {
+  const box = document.getElementById('formErrors');
+  box.classList.remove('show');
+  box.innerHTML = '';
+  document.querySelectorAll('#journalForm .invalid').forEach(el => el.classList.remove('invalid'));
+}
+
+function showFormErrors(errs) {
+  const box = document.getElementById('formErrors');
+  box.innerHTML = '<b>请修正以下问题：</b><ul>' +
+    errs.map(e => `<li>${esc(e.msg)}</li>`).join('') + '</ul>';
+  box.classList.add('show');
+
+  const form = document.getElementById('journalForm');
+  form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  errs.forEach(e => {
+    const el = form.querySelector(`[name="${e.field}"]`);
+    if (el) el.classList.add('invalid');
+  });
+}
+
+function validateJournalForm(data) {
+  const errs = [];
+  if (!data.title) errs.push({ field: 'title', msg: '刊名不能为空' });
+  if (!data.issn) errs.push({ field: 'issn', msg: 'ISSN 不能为空' });
+  else if (!/^\d{4}-\d{3}[\dXx]$/.test(data.issn)) errs.push({ field: 'issn', msg: 'ISSN 格式应为 0000-0000' });
+  if (!data.category) errs.push({ field: 'category', msg: '请选择期刊分类' });
+  if (!data.period) errs.push({ field: 'period', msg: '请选择出版周期' });
+  if (!data.publisher) errs.push({ field: 'publisher', msg: '主办单位不能为空' });
+
+  const y = Number(data.year);
+  if (!data.year) errs.push({ field: 'year', msg: '年份不能为空' });
+  else if (isNaN(y) || y < 1900 || y > 2100) errs.push({ field: 'year', msg: '年份应在 1900 ~ 2100 之间' });
+
+  if (!data.issue) errs.push({ field: 'issue', msg: '期号不能为空' });
+
+  const seen = new Set();
+  state.formCopies.forEach((c, i) => {
+    if (!c.barcode) errs.push({ field: '', msg: `复本 #${i + 1} 条码不能为空` });
+    else if (seen.has(c.barcode)) errs.push({ field: '', msg: `复本 #${i + 1} 条码 ${c.barcode} 重复` });
+    else seen.add(c.barcode);
+    if (!c.location) errs.push({ field: '', msg: `复本 #${i + 1} 馆藏位置不能为空` });
+    else if (!parseLocationString(c.location)) errs.push({ field: '', msg: `复本 #${i + 1} 馆藏位置格式错误，应为 I区3排1架` });
+  });
+
+  journals.forEach(j => {
+    if (j.id === state.editingId) return;
+    (j.copies || []).forEach(c => {
+      if (c.barcode && seen.has(c.barcode)) {
+        errs.push({ field: '', msg: `条码 ${c.barcode} 与其他卷期冲突` });
+      }
+    });
+  });
+
+  return errs;
+}
+
+function saveJournal() {
+  const form = document.getElementById('journalForm');
+  const raw = Object.fromEntries(new FormData(form).entries());
+  const data = {};
+  Object.keys(raw).forEach(k => { data[k] = typeof raw[k] === 'string' ? raw[k].trim() : raw[k]; });
+
+  const errs = validateJournalForm(data);
+  if (errs.length) { showFormErrors(errs); return; }
+
+  data.year = Number(data.year);
+
+  if (state.editingId) {
+    const idx = journals.findIndex(j => j.id === state.editingId);
+    const prev = journals[idx];
+    const next = {
+      ...prev,
+      title: data.title, issn: data.issn, cn: data.cn, category: data.category,
+      period: data.period, publisher: data.publisher, language: data.language,
+      year: data.year, volume: data.volume, issue: data.issue,
+      remark: data.remark || '',
+      copies: JSON.parse(JSON.stringify(state.formCopies))
+    };
+    syncJournalStatus(next);
+    journals[idx] = next;
+    saveJournals();
+    toast('期刊卷期已更新');
+  } else {
+    const newJournal = {
+      id: nextJournalId(),
+      title: data.title, issn: data.issn, cn: data.cn, category: data.category,
+      period: data.period, publisher: data.publisher, language: data.language,
+      year: data.year, volume: data.volume, issue: data.issue,
+      remark: data.remark || '',
+      createdAt: today(),
+      copies: JSON.parse(JSON.stringify(state.formCopies))
+    };
+    syncJournalStatus(newJournal);
+    journals.unshift(newJournal);
+    state.page = 1;
+    saveJournals();
+    toast('期刊卷期添加成功');
+  }
+
+  closeForm();
+  render();
+  if (document.getElementById('categoryModal').classList.contains('show')) renderCategoryList();
+}
+
+/* ============================================================
+ *  位置选择器（级联）
+ * ============================================================ */
+function openLocationPicker(target) {
+  state.locationPickerTarget = target;
+
+  let initialLocation = '';
+  if (target.type === 'copy') {
+    const c = state.formCopies[target.index];
+    initialLocation = c ? (c.location || '') : '';
+  } else if (target.type === 'batch') {
+    initialLocation = state.batchLocationText || '';
+  }
+
+  // 重置 picker 状态
+  state.pickerSelection = { areaId:'', rowId:'', shelfId:'', layer:null, slot:null };
+
+  // 尝试解析已有位置
+  const parsed = parseLocationString(initialLocation);
+  if (parsed) {
+    const area = LOCATION_AREAS.find(a => a.code === parsed.areaCode);
+    if (area) {
+      state.pickerSelection.areaId = area.id;
+      const row = LOCATION_ROWS.find(r => r.areaId === area.id && parseInt(r.code, 10) === parseInt(parsed.rowCode, 10));
+      if (row) {
+        state.pickerSelection.rowId = row.id;
+        const shelf = LOCATION_SHELVES.find(s => s.rowId === row.id && parseInt(s.code, 10) === parseInt(parsed.shelfCode, 10));
+        if (shelf) {
+          state.pickerSelection.shelfId = shelf.id;
+          if (parsed.layer && shelf.layerCount >= parsed.layer) {
+            state.pickerSelection.layer = parsed.layer;
+            const maxSlot = (shelf.layerSlots || [])[parsed.layer - 1] || 0;
+            if (parsed.slot && parsed.slot <= maxSlot) {
+              state.pickerSelection.slot = parsed.slot;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  refreshPickerAreaSelect();
+  refreshPickerRowSelect();
+  refreshPickerShelfSelect();
+  refreshPickerLayerSelect();
+  refreshPickerSlotSelect();
+  updateLocationPreview();
+
+  document.getElementById('locationPickerModal').classList.add('show');
+}
+
+function closeLocationPicker() {
+  document.getElementById('locationPickerModal').classList.remove('show');
+  state.locationPickerTarget = null;
+}
+
+function refreshPickerAreaSelect() {
+  const sel = document.getElementById('locAreaSelect');
+  sel.innerHTML = '<option value="">请选择区域</option>' +
+    LOCATION_AREAS.map(a => `<option value="${a.id}" ${state.pickerSelection.areaId === a.id ? 'selected' : ''}>${esc(a.code)} 区 · ${esc(a.name)}</option>`).join('');
+}
+
+function refreshPickerRowSelect() {
+  const sel = document.getElementById('locRowSelect');
+  if (!state.pickerSelection.areaId) {
+    sel.innerHTML = '<option value="">请先选择区域</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  const rows = getRowsByArea(state.pickerSelection.areaId);
+  sel.innerHTML = '<option value="">请选择排</option>' +
+    rows.map(r => `<option value="${r.id}" ${state.pickerSelection.rowId === r.id ? 'selected' : ''}>${esc(r.code)} 排 · ${esc(r.name)}</option>`).join('');
+}
+
+function refreshPickerShelfSelect() {
+  const sel = document.getElementById('locShelfSelect');
+  if (!state.pickerSelection.rowId) {
+    sel.innerHTML = '<option value="">请先选择排</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  const shelves = getShelvesByRow(state.pickerSelection.rowId);
+  sel.innerHTML = '<option value="">请选择书架</option>' +
+    shelves.map(s => `<option value="${s.id}" ${state.pickerSelection.shelfId === s.id ? 'selected' : ''}>${esc(s.code)} 架 · ${esc(s.name)}${s.layerCount > 0 ? '（' + s.layerCount + '层）' : ''}</option>`).join('');
+}
+
+function refreshPickerLayerSelect() {
+  const step = document.getElementById('locLayerStep');
+  const sel = document.getElementById('locLayerSelect');
+  const shelf = getShelfById(state.pickerSelection.shelfId);
+
+  if (!shelf || !shelf.layerCount || shelf.layerCount <= 0) {
+    step.style.display = 'none';
+    state.pickerSelection.layer = null;
+    return;
+  }
+  step.style.display = 'block';
+  let html = '<option value="">不指定（可选）</option>';
+  for (let i = 1; i <= shelf.layerCount; i++) {
+    const slots = (shelf.layerSlots || [])[i - 1] || 0;
+    html += `<option value="${i}" ${state.pickerSelection.layer === i ? 'selected' : ''}>第 ${i} 层（${slots} 格）</option>`;
+  }
+  sel.innerHTML = html;
+}
+
+function refreshPickerSlotSelect() {
+  const step = document.getElementById('locSlotStep');
+  const sel = document.getElementById('locSlotSelect');
+  const shelf = getShelfById(state.pickerSelection.shelfId);
+
+  if (!shelf || !state.pickerSelection.layer) {
+    step.style.display = 'none';
+    state.pickerSelection.slot = null;
+    return;
+  }
+  const maxSlots = (shelf.layerSlots || [])[state.pickerSelection.layer - 1] || 0;
+  if (maxSlots <= 0) {
+    step.style.display = 'none';
+    state.pickerSelection.slot = null;
+    return;
+  }
+  step.style.display = 'block';
+  let html = '<option value="">不指定（可选）</option>';
+  for (let i = 1; i <= maxSlots; i++) {
+    html += `<option value="${i}" ${state.pickerSelection.slot === i ? 'selected' : ''}>第 ${i} 格</option>`;
+  }
+  sel.innerHTML = html;
+}
+
+function updateLocationPreview() {
+  const el = document.getElementById('locPreviewText');
+  const area = getAreaById(state.pickerSelection.areaId);
+  const row = getRowById(state.pickerSelection.rowId);
+  const shelf = getShelfById(state.pickerSelection.shelfId);
+
+  if (!area) {
+    el.textContent = '请选择区域';
+    el.style.color = 'var(--lib-text-tertiary)';
+    return;
+  }
+  let str = `${area.code}区`;
+  if (!row) {
+    el.textContent = str + ' …';
+    el.style.color = 'var(--lib-primary)';
+    return;
+  }
+  str += `${parseInt(row.code, 10)}排`;
+  if (!shelf) {
+    el.textContent = str + ' …';
+    el.style.color = 'var(--lib-primary)';
+    return;
+  }
+  str += `${parseInt(shelf.code, 10)}架`;
+  if (state.pickerSelection.layer) {
+    str += ` 第${state.pickerSelection.layer}层`;
+    if (state.pickerSelection.slot) str += `第${state.pickerSelection.slot}格`;
+  }
+  el.textContent = str;
+  el.style.color = 'var(--lib-text)';
+}
+
+/* ============================================================
+ *  下架复本选择弹窗
+ * ============================================================ */
+function openUnbindModal(journalId) {
+  const j = journals.find(x => x.id === journalId);
+  if (!j) return;
+
+  const onCopies = (j.copies || []).filter(c => c.status === 'on');
+  if (!onCopies.length) {
+    toast('该期没有在架复本可下架', 'warning');
+    return;
+  }
+
+  state.unbindJournalId = journalId;
+  state.unbindSelected = new Set(onCopies.map(c => c.id));
+
+  document.getElementById('unbindInfo').innerHTML =
+    `《${esc(j.title)}》 ${esc(formatIssue(j))} 共 ${(j.copies || []).length} 本复本，`
+    + `其中 <b style="color:var(--lib-state-success)">${onCopies.length}</b> 本在架。请选择要下架的复本：`;
+
+  renderUnbindList();
+  document.getElementById('unbindModal').classList.add('show');
+}
+
+function closeUnbindModal() {
+  document.getElementById('unbindModal').classList.remove('show');
+  state.unbindJournalId = null;
+  state.unbindSelected = new Set();
+}
+
+function renderUnbindList() {
+  const j = journals.find(x => x.id === state.unbindJournalId);
+  if (!j) return;
+
+  const list = document.getElementById('unbindList');
+  const copies = j.copies || [];
+
+  list.innerHTML = copies.map(c => {
+    const cst = COPY_STATUS_MAP[c.status] || COPY_STATUS_MAP.on;
+    const disabled = c.status !== 'on';
+    const checked = state.unbindSelected.has(c.id);
+    return `
+      <label class="per-copy-check-item ${disabled ? 'disabled' : ''}" data-copy-id="${c.id}">
+        <input type="checkbox"
+               data-unbind-id="${c.id}"
+               ${disabled ? 'disabled' : ''}
+               ${checked ? 'checked' : ''}>
+        <span class="per-barcode">${esc(c.barcode || '—')}</span>
+        <span class="loc">${esc(c.location || '—')}</span>
+        <span class="per-badge ${cst.cls}">${cst.label}</span>
+      </label>
+    `;
+  }).join('');
+
+  updateUnbindCount();
+}
+
+function updateUnbindCount() {
+  const selected = state.unbindSelected.size;
+  document.getElementById('unbindCount').textContent =
+    selected > 0 ? `已选 ${selected} 本` : '未选择';
+  document.getElementById('btnConfirmUnbind').disabled = selected === 0;
+}
+
+function confirmUnbind() {
+  const j = journals.find(x => x.id === state.unbindJournalId);
+  if (!j) return;
+
+  const selected = state.unbindSelected;
+  if (!selected.size) return;
+
+  let count = 0;
+  (j.copies || []).forEach(c => {
+    if (selected.has(c.id) && c.status === 'on') {
+      c.status = 'off';
+      count++;
+    }
+  });
+
+  syncJournalStatus(j);
+  saveJournals();
+  render();
+  closeUnbindModal();
+  toast(`已下架 ${count} 本复本`);
+}
+
+/* ============================================================
+ *  分类管理
+ * ============================================================ */
+function openCategoryModal() {
+  editingCategoryId = null;
+  document.getElementById('newCategoryName').value = '';
+  renderCategoryList();
+  document.getElementById('categoryModal').classList.add('show');
+  setTimeout(() => document.getElementById('newCategoryName').focus(), 60);
+}
+
+function closeCategoryModal() {
+  document.getElementById('categoryModal').classList.remove('show');
+  editingCategoryId = null;
+}
+
+function renderCategoryList() {
+  const list = document.getElementById('catList');
+
+  if (!categories.length) {
+    list.innerHTML = `<li style="text-align:center;color:var(--lib-text-secondary);padding:24px 0">暂无分类</li>`;
+    return;
+  }
+
+  list.innerHTML = categories.map(c => {
+    const count = journals.filter(j => j.category === c.name).length;
+
+    if (editingCategoryId === c.id) {
+      return `
+        <li class="per-cat-item editing" data-id="${c.id}">
+          <input class="per-input cat-edit-input" value="${esc(c.name)}" data-id="${c.id}" maxlength="20">
+          <button class="per-link-btn" data-cat-act="save" data-id="${c.id}">保存</button>
+          <button class="per-link-btn" data-cat-act="cancel">取消</button>
+        </li>`;
+    }
+    return `
+      <li class="per-cat-item" data-id="${c.id}">
+        <span class="cat-name">${esc(c.name)}</span>
+        <span class="cat-count">${count} 期</span>
+        <div class="cat-actions">
+          <button class="per-link-btn" data-cat-act="edit" data-id="${c.id}">重命名</button>
+          <button class="per-link-btn danger" data-cat-act="del" data-id="${c.id}">删除</button>
+        </div>
+      </li>`;
+  }).join('');
+
+  if (editingCategoryId !== null) {
+    const inp = list.querySelector('.cat-edit-input');
+    if (inp) { inp.focus(); inp.select(); }
+  }
+}
+
+function addCategory() {
+  const input = document.getElementById('newCategoryName');
+  const name = input.value.trim();
+  if (!name) { toast('请输入分类名称', 'error'); input.focus(); return; }
+  if (categories.some(c => c.name === name)) { toast(`分类「${name}」已存在`, 'error'); input.focus(); return; }
+  categories.push({ id: nextCategoryId(), name });
+  input.value = '';
+  input.focus();
+  renderCategoryList();
+  renderCategoryOptions();
+  saveCategories();
+  toast(`分类「${name}」添加成功`);
+}
+
+function renameCategory(id, newName) {
+  newName = newName.trim();
+  if (!newName) { toast('分类名称不能为空', 'error'); return false; }
+  const cat = categories.find(c => c.id === id);
+  if (!cat) return false;
+  if (newName === cat.name) return true;
+  if (categories.some(c => c.id !== id && c.name === newName)) {
+    toast(`分类「${newName}」已存在`, 'error'); return false;
+  }
+  const oldName = cat.name;
+  cat.name = newName;
+  let affected = 0;
+  journals.forEach(j => { if (j.category === oldName) { j.category = newName; affected++; } });
+  if (state.category === oldName) state.category = newName;
+  renderCategoryOptions();
+  render();
+  saveCategories();
+  saveJournals();
+  toast(`分类已重命名${affected ? `，同步更新 ${affected} 期` : ''}`);
+  return true;
+}
+
+function deleteCategory(id) {
+  const cat = categories.find(c => c.id === id);
+  if (!cat) return;
+  if (categories.length <= 1) { toast('至少保留一个分类', 'error'); return; }
+  const count = journals.filter(j => j.category === cat.name).length;
+  if (count > 0) { toast(`该分类下有 ${count} 期期刊，无法删除`, 'error'); return; }
+
+  openConfirm(`确定要删除分类「${cat.name}」吗？`, () => {
+    categories = categories.filter(c => c.id !== id);
+    if (state.category === cat.name) state.category = '';
+    renderCategoryOptions();
+    renderCategoryList();
+    render();
+    saveCategories();
+    toast(`分类「${cat.name}」已删除`);
+  });
+}
+
+function renderCategoryOptions() {
+  const catFilter = document.getElementById('filterCategory');
+  catFilter.innerHTML = '<option value="">全部分类</option>' +
+    categories.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  if (categories.some(c => c.name === state.category)) catFilter.value = state.category;
+  else { state.category = ''; catFilter.value = ''; }
+
+  const catForm = document.querySelector('#journalForm [name="category"]');
+  const currentForm = catForm.value;
+  catForm.innerHTML = '<option value="">请选择分类</option>' +
+    categories.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  if (categories.some(c => c.name === currentForm)) catForm.value = currentForm;
+}
+
+/* ============================================================
+ *  筛选动作
+ * ============================================================ */
+function applyFilters() {
+  state.keyword  = document.getElementById('keyword').value.trim();
+  state.category = document.getElementById('filterCategory').value;
+  state.status   = document.getElementById('filterStatus').value;
+  state.page = 1;
+  render();
+}
+
+function resetFilters() {
+  document.getElementById('keyword').value = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterStatus').value = '';
+  state.keyword = ''; state.category = ''; state.status = ''; state.page = 1;
+  render();
+  toast('筛选条件已重置', 'info');
+}
+
+/* ============================================================
+ *  确认弹窗
+ * ============================================================ */
+function openConfirm(text, onConfirm) {
+  document.getElementById('confirmText').textContent = text;
+  state.confirmHandler = onConfirm;
+  document.getElementById('confirmModal').classList.add('show');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmModal').classList.remove('show');
+  state.confirmHandler = null;
+}
+
+/* ============================================================
+ *  导出 CSV
+ * ============================================================ */
+function exportCSV() {
+  const data = getFiltered();
+  if (!data.length) { toast('没有可导出的数据', 'error'); return; }
+
+  const headers = ['刊名', 'ISSN', 'CN号', '分类', '出版周期', '主办单位',
+                   '年份', '卷号', '期号', '卷期状态', '册/条码', '馆藏位置',
+                   '复本状态', '复本备注', '语种'];
+  const statusText = { on: '在架', borrowed: '已借出', off: '已下架' };
+  const jStatusText = { available: '可借阅', borrowed: '已借完', off: '已下架' };
+
+  const rows = [];
+  data.forEach(j => {
+    const copies = j.copies && j.copies.length ? j.copies : [null];
+    copies.forEach(c => {
+      rows.push([
+        j.title, j.issn, j.cn, j.category, j.period, j.publisher,
+        j.year, j.volume, j.issue, jStatusText[j.status] || '',
+        c ? c.barcode : '', c ? c.location : '',
+        c ? (statusText[c.status] || '') : '', c ? (c.remark || '') : '',
+        j.language
+      ]);
+    });
+  });
+
+  const csv = [headers, ...rows]
+    .map(r => r.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `期刊列表_${today()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  toast(`已导出 ${data.length} 期 / ${rows.length} 条复本记录`);
+}
+
+/* ============================================================
+ *  初始化
+ * ============================================================ */
+function initSelects() {
+  renderCategoryOptions();
+  const periodForm = document.querySelector('#journalForm [name="period"]');
+  PERIODS.forEach(p => {
+    periodForm.insertAdjacentHTML('beforeend', `<option value="${p}">${p}</option>`);
+  });
+}
+
+/* ============================================================
+ *  事件绑定
+ * ============================================================ */
+function bindEvents() {
+  document.getElementById('btnSearch').addEventListener('click', applyFilters);
+  document.getElementById('keyword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); applyFilters(); }
+  });
+  document.getElementById('btnReset').addEventListener('click', resetFilters);
+  document.getElementById('btnExport').addEventListener('click', exportCSV);
+
+  document.getElementById('btnAdd').addEventListener('click', () => openForm(null));
+
+  document.getElementById('btnManageCategory').addEventListener('click', openCategoryModal);
+  document.getElementById('btnCloseCategory').addEventListener('click', closeCategoryModal);
+  document.getElementById('btnCancelCategory').addEventListener('click', closeCategoryModal);
+  document.getElementById('categoryModal').addEventListener('click', e => {
+    if (e.target.id === 'categoryModal') closeCategoryModal();
+  });
+  document.getElementById('btnAddCategory').addEventListener('click', addCategory);
+  document.getElementById('newCategoryName').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addCategory(); }
+  });
+  document.getElementById('catList').addEventListener('click', e => {
+    const btn = e.target.closest('[data-cat-act]');
+    if (!btn) return;
+    const act = btn.dataset.catAct;
+    const id = Number(btn.dataset.id);
+    if (act === 'edit') { editingCategoryId = id; renderCategoryList(); }
+    else if (act === 'cancel') { editingCategoryId = null; renderCategoryList(); }
+    else if (act === 'save') {
+      const inp = btn.closest('.per-cat-item').querySelector('.cat-edit-input');
+      if (renameCategory(id, inp.value)) { editingCategoryId = null; renderCategoryList(); }
+    }
+    else if (act === 'del') deleteCategory(id);
+  });
+  document.getElementById('catList').addEventListener('keydown', e => {
+    if (!e.target.classList.contains('cat-edit-input')) return;
+    if (e.key === 'Enter') {
+      e.preventDefault(); e.stopPropagation();
+      const id = Number(e.target.dataset.id);
+      if (renameCategory(id, e.target.value)) { editingCategoryId = null; renderCategoryList(); }
+    } else if (e.key === 'Escape') {
+      e.stopPropagation();
+      editingCategoryId = null; renderCategoryList();
+    }
+  });
+
+  document.getElementById('tbody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+
+    const id = Number(btn.dataset.id);
+    const act = btn.dataset.act;
+    const j = journals.find(x => x.id === id);
+    if (!j) return;
+
+    if (act === 'detail') openDetail(id);
+    else if (act === 'edit') openForm(id);
+    else if (act === 'unbind') openUnbindModal(id);
+    else if (act === 'del') {
+      openConfirm(`确定要删除《${j.title}》${formatIssue(j)} 吗？该期下的 ${j.copies ? j.copies.length : 0} 个复本也会一并删除，且不可恢复。`, () => {
+        journals = journals.filter(x => x.id !== id);
+        saveJournals();
+        toast('删除成功');
+        render();
+        if (document.getElementById('categoryModal').classList.contains('show')) renderCategoryList();
+      });
+    }
+  });
+
+  const pagination = document.getElementById('pagination');
+  pagination.addEventListener('click', e => {
+    const btn = e.target.closest('[data-page]');
+    if (!btn || btn.disabled) return;
+    const p = Number(btn.dataset.page);
+    if (p >= 1) {
+      state.page = p;
+      render();
+      document.querySelector('section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  pagination.addEventListener('change', e => {
+    if (e.target.id === 'pageSize') {
+      state.pageSize = Number(e.target.value);
+      state.page = 1;
+      render();
+    }
+  });
+
+  document.getElementById('btnCloseDetail').addEventListener('click', closeDetail);
+  document.getElementById('btnCloseDetail2').addEventListener('click', closeDetail);
+  document.getElementById('detailModal').addEventListener('click', e => {
+    if (e.target.id === 'detailModal') closeDetail();
+  });
+
+  document.getElementById('btnCloseForm').addEventListener('click', closeForm);
+  document.getElementById('btnCancelForm').addEventListener('click', closeForm);
+  document.getElementById('btnSaveForm').addEventListener('click', saveJournal);
+  document.getElementById('formModal').addEventListener('click', e => {
+    if (e.target.id === 'formModal') closeForm();
+  });
+  document.getElementById('journalForm').addEventListener('input', e => {
+    if (e.target.classList.contains('invalid')) e.target.classList.remove('invalid');
+  });
+  document.getElementById('journalForm').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault(); saveJournal();
+    }
+  });
+
+  document.getElementById('btnAddFormCopy').addEventListener('click', () => {
+    const newCopy = {
+      id: nextCopyId(),
+      barcode: '',
+      location: '',
+      status: 'on',
+      remark: ''
+    };
+    state.formCopies.push(newCopy);
+    state.editingCopyIndex = state.formCopies.length - 1;
+    renderFormCopies();
+    setTimeout(() => {
+      const input = document.querySelector(`#formCopyList tr[data-index="${state.editingCopyIndex}"] .copy-input[data-field="barcode"]`);
+      if (input) input.focus();
+    }, 60);
+  });
+  document.getElementById('formCopyList').addEventListener('click', e => {
+    const locPicker = e.target.closest('.loc-picker');
+    if (locPicker) {
+      const index = parseInt(locPicker.dataset.index, 10);
+      if (!isNaN(index)) {
+        openLocationPicker({ type: 'copy', index });
+      }
+      return;
+    }
+
+    const btn = e.target.closest('[data-form-act]');
+    if (!btn) return;
+    const act = btn.dataset.formAct;
+    const index = parseInt(btn.dataset.index, 10);
+    if (isNaN(index)) return;
+
+    if (act === 'editCopy') {
+      state.editingCopyIndex = index;
+      renderFormCopies();
+      setTimeout(() => {
+        const input = document.querySelector(`#formCopyList tr[data-index="${index}"] .copy-input[data-field="barcode"]`);
+        if (input) input.focus();
+      }, 60);
+    } else if (act === 'saveCopy') {
+      const row = document.querySelector(`#formCopyList tr[data-index="${index}"]`);
+      if (!row) return;
+      const barcodeInput = row.querySelector('.copy-input[data-field="barcode"]');
+      const statusSelect = row.querySelector('.copy-select[data-field="status"]');
+      const remarkInput = row.querySelector('.copy-input[data-field="remark"]');
+      const c = state.formCopies[index];
+      if (!c) return;
+      c.barcode = barcodeInput ? barcodeInput.value.trim() : c.barcode;
+      c.status = statusSelect ? statusSelect.value : c.status;
+      c.remark = remarkInput ? remarkInput.value.trim() : c.remark;
+      state.editingCopyIndex = null;
+      renderFormCopies();
+      toast('复本已更新');
+    } else if (act === 'cancelEdit') {
+      state.editingCopyIndex = null;
+      renderFormCopies();
+    } else if (act === 'removeCopy') {
+      const c = state.formCopies[index];
+      if (!c) return;
+      state.formCopies.splice(index, 1);
+      if (state.editingCopyIndex === index) state.editingCopyIndex = null;
+      else if (state.editingCopyIndex > index) state.editingCopyIndex--;
+      renderFormCopies();
+      toast('已从列表移除，保存后生效');
+    }
+  });
+
+  // 位置选择器级联事件
+  document.getElementById('locAreaSelect').addEventListener('change', (e) => {
+    state.pickerSelection.areaId = e.target.value;
+    state.pickerSelection.rowId = '';
+    state.pickerSelection.shelfId = '';
+    state.pickerSelection.layer = null;
+    state.pickerSelection.slot = null;
+    refreshPickerRowSelect();
+    refreshPickerShelfSelect();
+    refreshPickerLayerSelect();
+    refreshPickerSlotSelect();
+    updateLocationPreview();
+  });
+  document.getElementById('locRowSelect').addEventListener('change', (e) => {
+    state.pickerSelection.rowId = e.target.value;
+    state.pickerSelection.shelfId = '';
+    state.pickerSelection.layer = null;
+    state.pickerSelection.slot = null;
+    refreshPickerShelfSelect();
+    refreshPickerLayerSelect();
+    refreshPickerSlotSelect();
+    updateLocationPreview();
+  });
+  document.getElementById('locShelfSelect').addEventListener('change', (e) => {
+    state.pickerSelection.shelfId = e.target.value;
+    state.pickerSelection.layer = null;
+    state.pickerSelection.slot = null;
+    refreshPickerLayerSelect();
+    refreshPickerSlotSelect();
+    updateLocationPreview();
+  });
+  document.getElementById('locLayerSelect').addEventListener('change', (e) => {
+    state.pickerSelection.layer = e.target.value ? parseInt(e.target.value, 10) : null;
+    state.pickerSelection.slot = null;
+    refreshPickerSlotSelect();
+    updateLocationPreview();
+  });
+  document.getElementById('locSlotSelect').addEventListener('change', (e) => {
+    state.pickerSelection.slot = e.target.value ? parseInt(e.target.value, 10) : null;
+    updateLocationPreview();
+  });
+  document.getElementById('locationPickerConfirmBtn').addEventListener('click', () => {
+    const area = getAreaById(state.pickerSelection.areaId);
+    const row = getRowById(state.pickerSelection.rowId);
+    const shelf = getShelfById(state.pickerSelection.shelfId);
+
+    if (!area) { toast('请选择区域', 'error'); return; }
+    if (!row) { toast('请选择排', 'error'); return; }
+    if (!shelf) { toast('请选择书架', 'error'); return; }
+
+    const locStr = buildLocationString();
+    const target = state.locationPickerTarget;
+    if (target && target.type === 'copy') {
+      const c = state.formCopies[target.index];
+      if (c) {
+        c.location = locStr;
+        renderFormCopies();
+      }
+    } else if (target && target.type === 'batch') {
+      state.batchLocationText = locStr;
+    }
+    closeLocationPicker();
+  });
+  document.getElementById('locationPickerCloseBtn').addEventListener('click', closeLocationPicker);
+  document.getElementById('locationPickerCancelBtn').addEventListener('click', closeLocationPicker);
+  document.getElementById('locationPickerModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('locationPickerModal')) closeLocationPicker();
+  });
+
+  document.getElementById('btnCloseUnbind').addEventListener('click', closeUnbindModal);
+  document.getElementById('btnCancelUnbind').addEventListener('click', closeUnbindModal);
+  document.getElementById('unbindModal').addEventListener('click', e => {
+    if (e.target.id === 'unbindModal') closeUnbindModal();
+  });
+  document.getElementById('btnConfirmUnbind').addEventListener('click', confirmUnbind);
+  document.getElementById('btnUnbindAll').addEventListener('click', () => {
+    const j = journals.find(x => x.id === state.unbindJournalId);
+    if (!j) return;
+    state.unbindSelected = new Set((j.copies || []).filter(c => c.status === 'on').map(c => c.id));
+    renderUnbindList();
+  });
+  document.getElementById('btnUnbindNone').addEventListener('click', () => {
+    state.unbindSelected = new Set();
+    renderUnbindList();
+  });
+  document.getElementById('unbindList').addEventListener('change', e => {
+    const cb = e.target.closest('input[type="checkbox"][data-unbind-id]');
+    if (!cb) return;
+    const id = Number(cb.dataset.unbindId);
+    if (cb.checked) state.unbindSelected.add(id);
+    else state.unbindSelected.delete(id);
+    updateUnbindCount();
+  });
+
+  document.getElementById('confirmModal').addEventListener('click', e => {
+    if (e.target.id === 'confirmModal' || e.target.hasAttribute('data-close')) closeConfirm();
+  });
+  document.getElementById('btnConfirmDelete').addEventListener('click', () => {
+    const handler = state.confirmHandler;
+    closeConfirm();
+    if (typeof handler === 'function') handler();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (document.getElementById('locationPickerModal').classList.contains('show')) {
+        closeLocationPicker();
+        return;
+      }
+      closeDetail();
+      closeForm();
+      closeUnbindModal();
+      closeCategoryModal();
+      closeConfirm();
+    }
+  });
+}
+
+(function init() {
+  loadData();
+  initSelects();
+  bindEvents();
+  render();
+})();
+</script>
+<script>lucide.createIcons();</script>
+

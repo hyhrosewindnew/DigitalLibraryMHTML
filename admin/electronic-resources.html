@@ -1,0 +1,1824 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>电子资源 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+<style id="er-page-styles">
+  /* 电子资源主内容区样式：复用参考文件结构，颜色映射到 --lib-* 变量 */
+  .er-page {
+    --primary: var(--lib-primary);
+    --primary-hover: var(--lib-primary-700);
+    --primary-light: var(--lib-primary-50);
+    --border: var(--lib-border);
+    --border-2: var(--lib-line);
+    --text: var(--lib-ink);
+    --text-2: var(--lib-ink-2);
+    --text-3: var(--lib-ink-3);
+    --bg: var(--lib-bg);
+    --radius: var(--lib-radius-lg);
+    --danger: var(--lib-state-error);
+    --success: var(--lib-state-success);
+    --warning: var(--lib-state-warning);
+  }
+  .er-page button { font-family: inherit; cursor: pointer; border: none; background: none; font-size: 14px; }
+  .er-page input, .er-page select, .er-page textarea { font-family: inherit; font-size: 14px; color: var(--text); outline: none; }
+  .er-page a { color: inherit; text-decoration: none; }
+
+  .er-page .card {
+    background: var(--lib-surface); border-radius: var(--radius); border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .er-page .card + .card { margin-top: 16px; }
+
+  .er-page .filter-bar { padding: 16px 18px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .er-page .field { display: flex; flex-direction: column; gap: 6px; }
+  .er-page .field label { font-size: 12.5px; color: var(--text-2); }
+  .er-page .input, .er-page .select {
+    height: 34px; padding: 0 10px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--lib-surface); min-width: 150px; transition: .15s;
+  }
+  .er-page .input:focus, .er-page .select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent); }
+  .er-page .input::placeholder { color: var(--text-3); }
+  .er-page .select {
+    cursor: pointer; padding-right: 26px; appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23607280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 6px center; background-size: 14px;
+  }
+  .er-page .filter-actions { display: flex; gap: 8px; margin-left: auto; }
+
+  .er-page .card-head {
+    height: 56px; padding: 0 18px; display: flex; align-items: center; justify-content: flex-start; gap: 10px;
+    border-bottom: 1px solid var(--border-2); background: var(--lib-surface-2);
+  }
+
+  .er-page .btn {
+    height: 34px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--lib-surface); color: var(--text); display: inline-flex; align-items: center; gap: 6px;
+    transition: .15s; white-space: nowrap; font-size: 13.5px;
+  }
+  .er-page .btn:hover { border-color: var(--lib-border); background: var(--lib-surface-2); }
+  .er-page .btn-primary { background: var(--primary); border-color: var(--primary); color: var(--lib-surface); }
+  .er-page .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  .er-page .btn-danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 25%, var(--lib-surface)); background: var(--lib-surface); }
+  .er-page .btn-danger:hover { background: var(--lib-error-50); border-color: color-mix(in srgb, var(--danger) 40%, var(--lib-surface)); }
+  .er-page .btn-link {
+    color: var(--primary);
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: .15s;
+  }
+  .er-page .btn-link:hover { background: var(--primary-light); }
+
+  .er-page .table-wrap { overflow-x: auto; }
+  .er-page table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+  .er-page table tbody tr,
+  .er-page table thead,
+  .er-page table tbody tr:last-child { border-bottom: none !important; }
+  .er-page thead th {
+    background: var(--lib-surface-2); text-align: left; font-size: 12.5px; font-weight: 500; color: var(--text-2);
+    padding: 11px 14px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .er-page tbody td {
+    padding: 13px 14px; border-bottom: 1px solid var(--border-2); vertical-align: middle;
+    font-size: 13.5px;
+  }
+  .er-page tbody tr:hover { background: var(--lib-surface-2); }
+  .er-page tbody tr:last-child td { border-bottom: none; }
+  .er-page .col-name { min-width: 220px; }
+  .er-page .res-name { font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .er-page .res-en { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  .er-page .badge {
+    display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px;
+    font-size: 12px; line-height: 18px; white-space: nowrap; font-weight: 500;
+  }
+  .er-page .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .er-page .badge-green { background: var(--lib-success-50); color: var(--lib-state-success); }
+  .er-page .badge-blue { background: var(--lib-primary-50); color: var(--lib-primary); }
+  .er-page .badge-orange { background: var(--lib-warning-50); color: var(--lib-state-warning); }
+  .er-page .badge-red { background: var(--lib-error-50); color: var(--lib-state-error); }
+  .er-page .badge-gray { background: var(--lib-muted); color: var(--lib-ink-3); }
+  .er-page .badge-purple { background: var(--lib-info-50); color: var(--lib-state-info); }
+
+  .er-page .tag {
+    display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--lib-muted);
+    color: var(--text-2); font-size: 12px; margin-right: 4px;
+  }
+
+  .er-page .period { font-size: 13px; }
+  .er-page .period-sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .er-page .period-warn { color: var(--danger); font-weight: 500; }
+  .er-page .period-soon { color: var(--warning); font-weight: 500; }
+
+  .er-page .row-actions { display: flex; gap: 2px; white-space: nowrap; }
+  .er-page .row-actions button {
+    color: var(--primary); font-size: 13px; padding: 3px 7px; border-radius: 4px; transition: .15s;
+  }
+  .er-page .row-actions button:hover { background: var(--primary-light); }
+  .er-page .row-actions button.danger { color: var(--danger); }
+  .er-page .row-actions button.danger:hover { background: var(--lib-error-50); }
+
+  .er-page .empty { padding: 70px 20px; text-align: center; color: var(--text-3); }
+  .er-page .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: .35; }
+  .er-page .empty p { font-size: 13.5px; }
+
+  /* 分页 */
+  .er-page .pagination {
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    padding: 14px 18px; border-top: 1px solid var(--border-2); flex-wrap: wrap;
+    background: var(--lib-surface-2);
+  }
+  .er-page .page-info { font-size: 13px; color: var(--text-2); margin-right: auto; }
+  .er-page .page-btn {
+    min-width: 32px; height: 32px; padding: 0 9px; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--lib-surface); color: var(--text-2); font-size: 13px; transition: .15s;
+  }
+  .er-page .page-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+  .er-page .page-btn.active { background: var(--primary); border-color: var(--primary); color: var(--lib-surface); font-weight: 500; }
+  .er-page .page-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .er-page .page-dots { color: var(--text-3); padding: 0 2px; }
+
+  /* 表单弹窗 */
+  .er-page .form-modal-mask {
+    position: fixed; inset: 0; background: rgba(17, 24, 39, .45); z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: .2s;
+  }
+  .er-page .form-modal-mask.show { opacity: 1; visibility: visible; }
+  .er-page .form-modal {
+    background: var(--lib-surface); border-radius: 10px;
+    width: 720px; max-width: 94vw;
+    max-height: 90vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+    transform: scale(.96); transition: .2s;
+  }
+  .er-page .form-modal-mask.show .form-modal { transform: scale(1); }
+  .er-page .form-modal-header {
+    height: 60px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .er-page .form-modal-header h3 { font-size: 16px; font-weight: 600; }
+  .er-page .form-modal-body {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+  }
+  .er-page .form-modal-footer {
+    padding: 14px 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0;
+    background: var(--lib-surface-2); border-radius: 0 0 10px 10px;
+  }
+  .er-page .close-btn {
+    width: 30px; height: 30px; border-radius: 6px; color: var(--text-2); font-size: 18px;
+    display: flex; align-items: center; justify-content: center; transition: .15s;
+  }
+  .er-page .close-btn:hover { background: var(--lib-muted); color: var(--text); }
+
+  .er-page .form-section { margin-bottom: 24px; }
+  .er-page .form-section:last-child { margin-bottom: 8px; }
+  .er-page .form-section-title {
+    font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px;
+    padding-left: 9px; border-left: 3px solid var(--primary); line-height: 1.2;
+  }
+  .er-page .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .er-page .form-item { display: flex; flex-direction: column; gap: 6px; }
+  .er-page .form-item.full { grid-column: 1/-1; }
+  .er-page .form-item > label { font-size: 13px; color: var(--text-2); }
+  .er-page .form-item .req { color: var(--danger); margin-left: 2px; }
+  .er-page .form-item .input, .er-page .form-item .select { width: 100%; min-width: 0; }
+  .er-page .form-item textarea {
+    width: 100%; min-height: 76px; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: 6px; resize: vertical; line-height: 1.6;
+  }
+  .er-page .form-item textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent); }
+  .er-page .form-item .input.error, .er-page .form-item .select.error { border-color: var(--danger); }
+  .er-page .err-msg { font-size: 12px; color: var(--danger); display: none; }
+  .er-page .form-item.invalid .err-msg { display: block; }
+
+  /* 账号/密码区域 */
+  .er-page .auth-box {
+    grid-column: 1/-1;
+    padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--lib-surface-2);
+  }
+  .er-page .auth-box-title {
+    font-size: 12.5px; font-weight: 600; color: var(--text-2);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+  }
+  .er-page .auth-box .form-grid { margin: 0; }
+  .er-page .auth-hint {
+    grid-column: 1/-1; font-size: 12px; color: var(--text-3);
+    display: flex; align-items: center; gap: 6px; margin-top: 10px;
+    padding-top: 10px; border-top: 1px dashed var(--border);
+  }
+  .er-page .pwd-wrap { position: relative; }
+  .er-page .pwd-wrap .input { width: 100%; padding-right: 56px; }
+  .er-page .pwd-toggle {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: var(--text-2); padding: 3px 8px; border-radius: 4px;
+    background: var(--lib-muted); transition: .15s;
+  }
+  .er-page .pwd-toggle:hover { background: var(--lib-surface-3); color: var(--text); }
+
+  .er-page .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px 16px; padding-top: 4px; }
+  .er-page .checkbox-group label {
+    display: flex; align-items: center; gap: 5px; font-size: 13.5px; color: var(--text);
+    cursor: pointer; font-weight: 400;
+  }
+  .er-page .switch-row { display: flex; align-items: center; gap: 10px; height: 34px; }
+  .er-page .switch {
+    position: relative; width: 40px; height: 22px; border-radius: 20px; background: var(--lib-ink-4);
+    cursor: pointer; transition: .2s; flex-shrink: 0;
+  }
+  .er-page .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--lib-surface); transition: .2s; box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+  }
+  .er-page .switch.on { background: var(--primary); }
+  .er-page .switch.on::after { transform: translateX(18px); }
+  .er-page .switch-text { font-size: 13px; color: var(--text-2); }
+
+  .er-page .cb { width: 15px; height: 15px; cursor: pointer; accent-color: var(--primary); vertical-align: middle; }
+
+  /* 分类管理弹窗 */
+  .er-page .category-list {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+  .er-page .category-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--lib-muted);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text);
+    transition: .15s;
+  }
+  .er-page .category-tag:hover {
+    background: var(--lib-surface-3);
+  }
+  .er-page .category-tag button {
+    color: var(--text-3);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 2px;
+    border-radius: 50%;
+    transition: .15s;
+  }
+  .er-page .category-tag button:hover {
+    color: var(--danger);
+    background: var(--lib-error-50);
+  }
+
+  /* IP 白名单弹窗 */
+  .er-page .ip-form {
+    display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;
+    margin: 16px 0; padding: 14px 16px; background: var(--lib-surface-2);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .er-page .ip-form .form-item { flex: 1; min-width: 130px; display: flex; flex-direction: column; gap: 5px; }
+  .er-page .ip-form .form-item label { font-size: 12.5px; color: var(--text-2); }
+  .er-page .ip-form .input { width: 100%; min-width: 0; height: 34px; }
+  .er-page .ip-form .btn { height: 34px; flex-shrink: 0; }
+
+  .er-page .ip-list-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px; font-size: 12.5px; color: var(--text-3);
+  }
+  .er-page .ip-list {
+    border: 1px solid var(--border); border-radius: 8px;
+    max-height: 280px; overflow-y: auto;
+  }
+  .er-page .ip-empty { padding: 40px 20px; text-align: center; color: var(--text-3); font-size: 13px; }
+  .er-page .ip-row {
+    display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+    border-bottom: 1px solid var(--border-2); font-size: 13.5px;
+  }
+  .er-page .ip-row:last-child { border-bottom: none; }
+  .er-page .ip-row:hover { background: var(--lib-surface-2); }
+  .er-page .ip-row .ip-range {
+    font-family: var(--lib-font-mono);
+    font-size: 13px; color: var(--text); flex: 0 0 auto; letter-spacing: -.2px;
+  }
+  .er-page .ip-row .ip-range .dash { color: var(--text-3); margin: 0 3px; }
+  .er-page .ip-row .ip-note { color: var(--text-3); font-size: 12.5px; flex: 1; text-align: right; }
+  .er-page .ip-row button {
+    color: var(--danger); font-size: 12.5px; padding: 3px 8px; border-radius: 4px;
+    transition: .15s; flex-shrink: 0;
+  }
+  .er-page .ip-row button:hover { background: var(--lib-error-50); }
+
+  .er-page .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 300;
+    display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none;
+  }
+  .er-page .toast {
+    background: var(--lib-ink); color: var(--lib-surface); padding: 10px 18px; border-radius: 8px; font-size: 13.5px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18); display: flex; align-items: center; gap: 8px;
+    animation: toastIn .25s ease; max-width: 420px;
+  }
+  .er-page .toast.success { background: var(--lib-state-success); }
+  .er-page .toast.error { background: var(--lib-state-error); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+  .er-page .toast.out { opacity: 0; transform: translateY(-12px); transition: .25s; }
+
+  .er-page .modal-mask {
+    position: fixed; inset: 0; background: rgba(17, 24, 39, .45); z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: .2s;
+  }
+  .er-page .modal-mask.show { opacity: 1; visibility: visible; }
+  .er-page .modal {
+    background: var(--lib-surface); border-radius: 10px; width: 400px; max-width: 92vw; padding: 22px;
+    transform: scale(.95); transition: .2s; box-shadow: 0 20px 50px rgba(0, 0, 0, .2);
+  }
+  .er-page .modal-mask.show .modal { transform: scale(1); }
+  .er-page .modal h4 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+  .er-page .modal p { font-size: 13.5px; color: var(--text-2); line-height: 1.7; }
+  .er-page .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+  @media (max-width: 900px) {
+    .er-page .form-grid { grid-template-columns: 1fr; }
+    .er-page .filter-actions { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<div id="app-shell" style="background-color: var(--lib-bg);">
+<!-- 顶部导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-2">
+<span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+<span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden items-center sm:flex">
+<i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+<input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+</div>
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6 er-page" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">电子资源</span>
+</nav>
+
+<div class="card">
+  <div class="filter-bar">
+    <div class="field">
+      <label>关键词</label>
+      <input class="input" id="fKeyword" placeholder="资源名称 / 供应商 / 合同号" style="min-width:230px">
+    </div>
+    <div class="field">
+      <label>资源类型</label>
+      <select class="select" id="fType">
+        <option value="">全部类型</option>
+        <option>数据库</option>
+        <option>电子期刊</option>
+        <option>电子图书</option>
+        <option>学位论文</option>
+        <option>多媒体</option>
+        <option>OA资源</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>资源状态</label>
+      <select class="select" id="fResStatus">
+        <option value="">全部状态</option>
+        <option value="trial">试用</option>
+        <option value="active">正式</option>
+        <option value="expired">已过期</option>
+        <option value="stopped">已停用</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>发布状态</label>
+      <select class="select" id="fPubStatus">
+        <option value="">全部状态</option>
+        <option value="published">已发布</option>
+        <option value="draft">草稿</option>
+        <option value="offline">已下架</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>认证方式</label>
+      <select class="select" id="fAuth">
+        <option value="">全部</option>
+        <option>IP认证</option>
+        <option>CARSI</option>
+        <option>VPN</option>
+        <option>账号密码</option>
+        <option>开放访问</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-primary" onclick="applyFilter()">🔍 搜索</button>
+      <button class="btn" onclick="resetFilter()">重置</button>
+      <button class="btn" onclick="exportCSV()">⬇ 导出</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <button class="btn btn-primary" onclick="openFormModal('create')">＋ 新增资源</button>
+    <button class="btn" onclick="openCategoryManager()">⚙️ 分类管理</button>
+    <button class="btn" onclick="openIpModal()">🛡️ 校园网 IP 白名单</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-name">资源名称</th>
+          <th>类型</th>
+          <th>供应商</th>
+          <th>认证方式</th>
+          <th>资源状态</th>
+          <th>发布状态</th>
+          <th>订购期</th>
+          <th style="width:70px">推荐</th>
+          <th style="width:60px">排序</th>
+          <th style="width:180px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div id="emptyState" class="empty" style="display:none">
+    <div class="empty-icon">📭</div>
+    <p>没有找到符合条件的电子资源</p>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- 表单弹窗 -->
+<div class="form-modal-mask" id="formModalMask">
+  <div class="form-modal">
+    <div class="form-modal-header">
+      <h3 id="formModalTitle">新增电子资源</h3>
+      <button class="close-btn" onclick="closeFormModal()">✕</button>
+    </div>
+    <div class="form-modal-body">
+      <div class="form-section">
+        <div class="form-section-title">基本信息</div>
+        <div class="form-grid">
+          <div class="form-item">
+            <label>中文名称<span class="req">*</span></label>
+            <input class="input" id="fmNameCn" placeholder="如：中国知网 CNKI">
+            <span class="err-msg">请输入中文名称</span>
+          </div>
+          <div class="form-item">
+            <label>英文名称</label>
+            <input class="input" id="fmNameEn" placeholder="如：CNKI">
+          </div>
+          <div class="form-item">
+            <label>资源类型<span class="req">*</span></label>
+            <select class="select" id="fmType">
+              <option value="">请选择</option>
+              <option>数据库</option>
+              <option>电子期刊</option>
+              <option>电子图书</option>
+              <option>学位论文</option>
+              <option>多媒体</option>
+              <option>OA资源</option>
+            </select>
+            <span class="err-msg">请选择资源类型</span>
+          </div>
+          <div class="form-item">
+            <label>供应商 / 代理商<span class="req">*</span></label>
+            <input class="input" id="fmVendor" placeholder="如：同方知网">
+            <span class="err-msg">请输入供应商</span>
+          </div>
+          <div class="form-item">
+            <label>语种</label>
+            <select class="select" id="fmLanguage">
+              <option>中文</option>
+              <option>外文</option>
+              <option>中英文</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label>负责馆员</label>
+            <input class="input" id="fmOwner" placeholder="如：张馆员">
+          </div>
+          <div class="form-item full">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label style="margin-bottom:0;">学科分类</label>
+              <button type="button" class="btn-link" onclick="openCategoryManager()">⚙️ 分类管理</button>
+            </div>
+            <div class="checkbox-group" id="fmSubjects">
+              <!-- 动态渲染 -->
+            </div>
+          </div>
+          <div class="form-item full">
+            <label>资源简介</label>
+            <textarea id="fmDesc" placeholder="面向读者展示的资源介绍，建议 50-200 字"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">访问配置</div>
+        <div class="form-grid">
+          <div class="form-item full">
+            <label>访问地址<span class="req">*</span></label>
+            <input class="input" id="fmUrl" placeholder="https://www.cnki.net">
+            <span class="err-msg">请输入合法的访问地址</span>
+          </div>
+          <div class="form-item full">
+            <label>代理地址（EZproxy）</label>
+            <input class="input" id="fmProxy" placeholder="https://login.libproxy.xxx.edu.cn/login?url=">
+          </div>
+          <div class="form-item">
+            <label>认证方式</label>
+            <select class="select" id="fmAuth">
+              <option>IP认证</option>
+              <option>CARSI</option>
+              <option>VPN</option>
+              <option>账号密码</option>
+              <option>开放访问</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label>使用指南地址</label>
+            <input class="input" id="fmGuide" placeholder="https://...">
+          </div>
+
+          <!-- 账号信息（始终显示） -->
+          <div class="auth-box">
+            <div class="auth-box-title">🔑 账号信息（馆员内部使用）</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label>访问账号</label>
+                <input class="input" id="fmAccount" placeholder="如：library_user" autocomplete="off">
+              </div>
+              <div class="form-item">
+                <label>访问密码</label>
+                <div class="pwd-wrap">
+                  <input class="input" type="password" id="fmPassword" placeholder="请输入访问密码" autocomplete="new-password">
+                  <button type="button" class="pwd-toggle" id="pwdToggle" onclick="togglePassword()">显示</button>
+                </div>
+              </div>
+            </div>
+            <div class="auth-hint">
+              <span>ℹ️</span>
+              <span>以上账号信息仅用于馆员内部查阅，不会在前台向读者展示。</span>
+            </div>
+          </div>
+          <!-- /账号信息 -->
+
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">采购与合同</div>
+        <div class="form-grid">
+          <div class="form-item">
+            <label>合同编号</label>
+            <input class="input" id="fmContract" placeholder="如：LIB-2025-018">
+          </div>
+          <div class="form-item">
+            <label>付款状态</label>
+            <select class="select" id="fmPay">
+              <option>未付款</option>
+              <option>部分付款</option>
+              <option>已付款</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label>订购开始日期</label>
+            <input class="input" type="date" id="fmStart">
+          </div>
+          <div class="form-item">
+            <label>订购结束日期</label>
+            <input class="input" type="date" id="fmEnd">
+          </div>
+          <div class="form-item">
+            <label>合同金额</label>
+            <input class="input" id="fmPrice" placeholder="如：380000">
+          </div>
+          <div class="form-item">
+            <label>币种</label>
+            <select class="select" id="fmCurrency">
+              <option>CNY 人民币</option>
+              <option>USD 美元</option>
+              <option>EUR 欧元</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">发布设置</div>
+        <div class="form-grid">
+          <div class="form-item">
+            <label>资源状态</label>
+            <select class="select" id="fmResStatus">
+              <option value="trial">试用</option>
+              <option value="active">正式</option>
+              <option value="expired">已过期</option>
+              <option value="stopped">已停用</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label>发布状态</label>
+            <select class="select" id="fmPubStatus">
+              <option value="draft">草稿</option>
+              <option value="published">已发布</option>
+              <option value="offline">已下架</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label>前台排序（数字越小越靠前）</label>
+            <input class="input" type="number" id="fmSort" value="100" min="0">
+          </div>
+          <div class="form-item">
+            <label>是否推荐</label>
+            <div class="switch-row">
+              <div class="switch" id="fmRecommend" onclick="this.classList.toggle('on')"></div>
+              <span class="switch-text" id="fmRecommendText">否</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-modal-footer">
+      <button class="btn" onclick="closeFormModal()">取消</button>
+      <button class="btn btn-primary" onclick="submitForm()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 分类管理弹窗 -->
+<div class="modal-mask" id="categoryModalMask">
+  <div class="modal" style="width:500px;">
+    <h4>分类管理</h4>
+    <div style="margin:16px 0; display:flex; gap:8px;">
+      <input class="input" id="newCategoryInput" placeholder="输入新分类名称，如：艺术学" style="flex:1;" onkeydown="if(event.key==='Enter') addCategory()">
+      <button class="btn btn-primary" onclick="addCategory()">添加</button>
+    </div>
+    <div class="category-list" id="categoryList">
+      <!-- 动态渲染分类标签 -->
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeCategoryManager()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 校园网 IP 白名单弹窗 -->
+<div class="modal-mask" id="ipModalMask">
+  <div class="modal" style="width:600px;">
+    <h4>🛡️ 校园网 IP 白名单</h4>
+    <p>以下 IP 段内的校园网用户可直接访问已授权资源，无需登录认证。列表对所有电子资源生效。</p>
+
+    <div class="ip-form">
+      <div class="form-item">
+        <label>起始 IP <span style="color:var(--danger)">*</span></label>
+        <input class="input" id="ipStart" placeholder="如：10.0.0.0">
+      </div>
+      <div class="form-item">
+        <label>结束 IP（可选）</label>
+        <input class="input" id="ipEnd" placeholder="如：10.0.0.255" onkeydown="if(event.key==='Enter') addIpRange()">
+      </div>
+      <div class="form-item">
+        <label>备注</label>
+        <input class="input" id="ipNote" placeholder="如：教学楼 A 区" onkeydown="if(event.key==='Enter') addIpRange()">
+      </div>
+      <button class="btn btn-primary" onclick="addIpRange()">添加</button>
+    </div>
+
+    <div class="ip-list-head">
+      <span>已配置 <b id="ipCount">0</b> 条 IP 段</span>
+      <span>支持单 IP 或网段（起止 IP）</span>
+    </div>
+
+    <div class="ip-list" id="ipList">
+      <!-- 动态渲染 -->
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn" onclick="closeIpModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 确认框 -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <h4 id="modalTitle">确认操作</h4>
+    <p id="modalText">确定要执行此操作吗？</p>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" id="modalOk">确定</button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+/* =========================================================
+   常量与工具
+========================================================= */
+const RES_STATUS = {
+  trial:   { text:'试用',   cls:'badge-orange' },
+  active:  { text:'正式',   cls:'badge-green'  },
+  expired: { text:'已过期', cls:'badge-red'    },
+  stopped: { text:'已停用', cls:'badge-gray'   }
+};
+const PUB_STATUS = {
+  published:{ text:'已发布', cls:'badge-green'  },
+  draft:    { text:'草稿',   cls:'badge-gray'   },
+  offline:  { text:'已下架', cls:'badge-purple' }
+};
+
+const $ = id => document.getElementById(id);
+
+function daysLeft(dateStr){
+  if(!dateStr) return null;
+  const d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d)) return null;
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((d - now) / 86400000);
+}
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function fmtDate(s){ return s ? s : '—'; }
+
+/* 简单 IP 校验（IPv4） */
+function isValidIp(str){
+  if(!str) return false;
+  const parts = str.split('.');
+  if(parts.length !== 4) return false;
+  return parts.every(p => /^\d+$/.test(p) && Number(p) >= 0 && Number(p) <= 255);
+}
+
+/* =========================================================
+   校园网 IP 白名单数据
+========================================================= */
+let ipWhitelist = [
+  { id:1, start:'10.10.0.0',    end:'10.10.255.255', note:'教学楼 A 区' },
+  { id:2, start:'192.168.20.0', end:'192.168.20.255', note:'图书馆无线网' },
+  { id:3, start:'172.16.50.10', end:'',               note:'数据中心专线' }
+];
+let nextIpId = 4;
+
+/* =========================================================
+   学科分类数据
+========================================================= */
+let subjectCategories = ['理学','工学','医学','文学','经济学','法学','管理学','教育学'];
+
+/* =========================================================
+   模拟数据
+========================================================= */
+let DATA = [
+  { id:1, nameCn:'知网电子期刊', nameEn:'CNKI Journal Full-text Database', type:'电子期刊',
+    vendor:'同方知网', auth:'IP认证', resStatus:'active', pubStatus:'published',
+    start:'2026-01-01', end:'2026-12-31', recommend:true, sort:10,
+    subjects:['理学','工学','医学','文学','管理学'], lang:'中文', owner:'张馆员',
+    url:'https://www.cnki.net/', proxy:'https://login.libproxy.edu.cn/login?url=',
+    guide:'https://lib.edu.cn/guide/cnki-journal', contract:'LIB-2026-001',
+    price:'420000', currency:'CNY 人民币', pay:'已付款',
+    account:'xyhkxy', password:'xyhkxy135',
+    desc:'仅购买了电子学术期刊数据库，校园内IP可以使用。收录中国知网出版的学术期刊全文，涵盖基础科学、工程科技、医药卫生、人文社科等各学科领域。' },
+
+  { id:2, nameCn:'超星汇雅电子书', nameEn:'Chaoxing Huiya e-Book', type:'电子图书',
+    vendor:'超星集团', auth:'开放访问', resStatus:'active', pubStatus:'published',
+    start:'2026-01-01', end:'2026-12-31', recommend:true, sort:20,
+    subjects:['文学','管理学','教育学','经济学'], lang:'中文', owner:'王馆员',
+    url:'https://www.sslibrary.com/page/239443/show', proxy:'', guide:'',
+    contract:'LIB-2026-002', price:'180000', currency:'CNY 人民币', pay:'已付款',
+    account:'', password:'',
+    desc:'共25万册，不需要输入账号和密码就可以直接看。超星汇雅电子图书平台，提供百万余种中文电子图书在线阅读与下载，支持移动端扫码借阅。' },
+
+  { id:3, nameCn:'维普中文期刊服务平台', nameEn:'VIP Chinese Journal Service Platform', type:'电子期刊',
+    vendor:'重庆维普', auth:'IP认证', resStatus:'expired', pubStatus:'published',
+    start:'2024-01-01', end:'2024-12-31', recommend:false, sort:30,
+    subjects:['理学','工学','医学','管理学'], lang:'中文', owner:'张馆员',
+    url:'http://qikan.cqvip.com', proxy:'', guide:'',
+    contract:'LIB-2024-015', price:'150000', currency:'CNY 人民币', pay:'已付款',
+    account:'', password:'',
+    desc:'维普中文期刊全文数据库，收录中文期刊 1.4 万余种，含核心期刊 1900 余种。' },
+
+  { id:4, nameCn:'读秀学术搜索', nameEn:'Duxiu Academic Search', type:'数据库',
+    vendor:'超星集团', auth:'IP认证', resStatus:'expired', pubStatus:'published',
+    start:'2024-01-01', end:'2024-12-31', recommend:false, sort:40,
+    subjects:['文学','管理学','教育学','法学'], lang:'中文', owner:'王馆员',
+    url:'https://www.duxiu.com', proxy:'', guide:'',
+    contract:'LIB-2024-018', price:'220000', currency:'CNY 人民币', pay:'已付款',
+    account:'', password:'',
+    desc:'图书、期刊、论文等学术资源的一站式检索与文献传递平台，可检索 430 余万种中文图书。' },
+
+  { id:5, nameCn:'Emerald 管理学期刊全文库', nameEn:'Emerald Management eJournals', type:'电子期刊',
+    vendor:'Emerald Publishing', auth:'CARSI', resStatus:'expired', pubStatus:'published',
+    start:'2024-03-01', end:'2025-02-28', recommend:false, sort:50,
+    subjects:['管理学','经济学'], lang:'外文', owner:'李馆员',
+    url:'https://www.emerald.com', proxy:'', guide:'',
+    contract:'LIB-2024-022', price:'96000', currency:'USD 美元', pay:'已付款',
+    account:'', password:'',
+    desc:'Emerald 出版的管理学、人力资源、市场营销、图书馆学等领域期刊全文库。' },
+
+  { id:6, nameCn:'新东方多媒体学习库', nameEn:'New Oriental Multimedia Learning Library', type:'多媒体',
+    vendor:'新东方教育', auth:'账号密码', resStatus:'expired', pubStatus:'offline',
+    start:'2024-01-01', end:'2024-12-31', recommend:false, sort:60,
+    subjects:['教育学','文学'], lang:'中文', owner:'王馆员',
+    url:'https://library.koolearn.com', proxy:'', guide:'',
+    contract:'LIB-2024-026', price:'88000', currency:'CNY 人民币', pay:'已付款',
+    account:'xjtu001', password:'ncce@2024',
+    desc:'新东方四六级、考研、托福、雅思、GRE 等考试培训多媒体课程资源库。' },
+
+  { id:7, nameCn:'中国经济社会大数据研究平台', nameEn:'China Economic & Social Big Data Platform', type:'数据库',
+    vendor:'同方知网', auth:'IP认证', resStatus:'expired', pubStatus:'published',
+    start:'2024-06-01', end:'2025-05-31', recommend:false, sort:70,
+    subjects:['经济学','管理学','法学'], lang:'中文', owner:'张馆员',
+    url:'https://data.cnki.net', proxy:'', guide:'',
+    contract:'LIB-2024-031', price:'130000', currency:'CNY 人民币', pay:'部分付款',
+    account:'', password:'',
+    desc:'基于中国经济社会统计年鉴数据构建的统计分析平台，支持数据检索、图表生成与对比分析。' },
+
+  { id:8, nameCn:'百度文库高校版', nameEn:'Baidu Wenku Campus Edition', type:'数据库',
+    vendor:'百度', auth:'账号密码', resStatus:'trial', pubStatus:'draft',
+    start:'2026-09-01', end:'2026-11-30', recommend:false, sort:80,
+    subjects:['理学','工学','文学','管理学'], lang:'中文', owner:'王馆员',
+    url:'https://eduai.baidu.com', proxy:'', guide:'',
+    contract:'TRIAL-2026-005', price:'0', currency:'CNY 人民币', pay:'未付款',
+    account:'trial_bd', password:'bd#2026',
+    desc:'百度文库高校版，提供教学资料、专业文档、考试题库等资源，目前处于试用评估阶段。' },
+
+  { id:9, nameCn:'华艺线上图书馆', nameEn:'Airiti Library', type:'电子期刊',
+    vendor:'华艺数位', auth:'CARSI', resStatus:'trial', pubStatus:'draft',
+    start:'2026-09-15', end:'2026-12-14', recommend:false, sort:90,
+    subjects:['理学','工学','医学','文学'], lang:'中文', owner:'李馆员',
+    url:'https://www.airitilibrary.com', proxy:'', guide:'',
+    contract:'TRIAL-2026-008', price:'0', currency:'CNY 人民币', pay:'未付款',
+    account:'', password:'',
+    desc:'收录台湾及全球华文学术期刊、学位论文与会议论文，涵盖人文社科与自然科学领域。' },
+
+  { id:10, nameCn:'方正 Apabi 电子书', nameEn:'Founder Apabi e-Book', type:'电子图书',
+    vendor:'方正电子', auth:'IP认证', resStatus:'trial', pubStatus:'draft',
+    start:'2026-10-01', end:'2027-01-31', recommend:false, sort:100,
+    subjects:['文学','教育学','管理学'], lang:'中文', owner:'王馆员',
+    url:'https://www.apabi.com', proxy:'', guide:'',
+    contract:'TRIAL-2026-011', price:'0', currency:'CNY 人民币', pay:'未付款',
+    account:'', password:'',
+    desc:'方正 Apabi 电子图书数据库，以教材、教参、学术专著为主，目前处于试用洽谈阶段。' }
+];
+
+let nextId = 11;
+
+/* =========================================================
+   状态
+========================================================= */
+const state = {
+  filters: { keyword:'', type:'', resStatus:'', pubStatus:'', auth:'' },
+  page: 1,
+  pageSize: 10,
+  editingId: null
+};
+
+/* =========================================================
+   密码显示 / 隐藏
+========================================================= */
+function resetPwdToggle(){
+  const pwd = $('fmPassword');
+  const btn = $('pwdToggle');
+  if(!pwd || !btn) return;
+  pwd.type = 'password';
+  btn.textContent = '显示';
+}
+
+function togglePassword(){
+  const pwd = $('fmPassword');
+  const btn = $('pwdToggle');
+  if(pwd.type === 'password'){
+    pwd.type = 'text';
+    btn.textContent = '隐藏';
+  }else{
+    pwd.type = 'password';
+    btn.textContent = '显示';
+  }
+}
+
+/* =========================================================
+   IP 白名单：打开 / 关闭 / 渲染 / 增删
+========================================================= */
+function openIpModal(){
+  $('ipStart').value = '';
+  $('ipEnd').value = '';
+  $('ipNote').value = '';
+  renderIpList();
+  $('ipModalMask').classList.add('show');
+  setTimeout(() => $('ipStart').focus(), 150);
+}
+
+function closeIpModal(){
+  $('ipModalMask').classList.remove('show');
+}
+
+function renderIpList(){
+  const box = $('ipList');
+  $('ipCount').textContent = ipWhitelist.length;
+
+  if(ipWhitelist.length === 0){
+    box.innerHTML = '<div class="ip-empty">暂无 IP 段，请在上方添加</div>';
+    return;
+  }
+
+  box.innerHTML = ipWhitelist.map(item => {
+    const range = item.end
+      ? `${esc(item.start)}<span class="dash">~</span>${esc(item.end)}`
+      : esc(item.start);
+    return `
+      <div class="ip-row">
+        <span class="ip-range">${range}</span>
+        <span class="ip-note">${item.note ? esc(item.note) : ''}</span>
+        <button onclick="removeIpRange(${item.id})">删除</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function addIpRange(){
+  const start = $('ipStart').value.trim();
+  const end   = $('ipEnd').value.trim();
+  const note  = $('ipNote').value.trim();
+
+  if(!start){
+    toast('请输入起始 IP', 'error');
+    $('ipStart').focus();
+    return;
+  }
+  if(!isValidIp(start)){
+    toast('起始 IP 格式不正确', 'error');
+    $('ipStart').focus();
+    return;
+  }
+  if(end && !isValidIp(end)){
+    toast('结束 IP 格式不正确', 'error');
+    $('ipEnd').focus();
+    return;
+  }
+
+  /* 结束 IP 必须不小于起始 IP */
+  if(end){
+    const toNum = ip => ip.split('.').reduce((acc, n) => acc * 256 + Number(n), 0);
+    if(toNum(end) < toNum(start)){
+      toast('结束 IP 不能小于起始 IP', 'error');
+      $('ipEnd').focus();
+      return;
+    }
+  }
+
+  /* 重复检测 */
+  const dup = ipWhitelist.some(item => item.start === start && (item.end || '') === end);
+  if(dup){
+    toast('该 IP 段已存在', 'error');
+    return;
+  }
+
+  ipWhitelist.push({ id: nextIpId++, start, end, note });
+  $('ipStart').value = '';
+  $('ipEnd').value = '';
+  $('ipNote').value = '';
+  renderIpList();
+  $('ipStart').focus();
+  toast('IP 段已添加', 'success');
+}
+
+function removeIpRange(id){
+  const item = ipWhitelist.find(x => x.id === id);
+  if(!item) return;
+  const label = item.end ? `${item.start} ~ ${item.end}` : item.start;
+  openModal('删除 IP 段', `确定要删除「${label}」吗？删除后该 IP 段将无法直接访问已授权资源。`, () => {
+    ipWhitelist = ipWhitelist.filter(x => x.id !== id);
+    closeModal();
+    renderIpList();
+    toast('IP 段已删除', 'success');
+  });
+}
+
+/* =========================================================
+   学科分类渲染与操作
+========================================================= */
+function renderSubjectCheckboxes() {
+  const box = $('fmSubjects');
+  const currentChecked = Array.from(document.querySelectorAll('#fmSubjects input:checked')).map(cb => cb.value);
+
+  box.innerHTML = subjectCategories.map(cat => `
+    <label><input type="checkbox" class="cb" value="${esc(cat)}" ${currentChecked.includes(cat) ? 'checked' : ''}>${esc(cat)}</label>
+  `).join('');
+}
+
+function openCategoryManager() {
+  renderCategoryList();
+  $('categoryModalMask').classList.add('show');
+}
+
+function closeCategoryManager() {
+  $('categoryModalMask').classList.remove('show');
+}
+
+function renderCategoryList() {
+  const box = $('categoryList');
+  box.innerHTML = subjectCategories.map(cat => `
+    <span class="category-tag">
+      ${esc(cat)}
+      <button onclick="removeCategory('${esc(cat)}')" title="删除">✕</button>
+    </span>
+  `).join('');
+}
+
+function addCategory() {
+  const val = $('newCategoryInput').value.trim();
+  if (!val) { toast('请输入分类名称', 'error'); return; }
+  if (subjectCategories.includes(val)) { toast('该分类已存在', 'error'); return; }
+  subjectCategories.push(val);
+  $('newCategoryInput').value = '';
+  renderCategoryList();
+  renderSubjectCheckboxes();
+  toast('分类已添加', 'success');
+}
+
+function removeCategory(cat) {
+  openModal('删除分类', `确定要删除分类「${cat}」吗？删除后已选择该分类的资源将失去此标签。`, () => {
+    subjectCategories = subjectCategories.filter(c => c !== cat);
+    renderCategoryList();
+    renderSubjectCheckboxes();
+    toast('分类已删除', 'success');
+    closeModal();
+  });
+}
+
+/* =========================================================
+   筛选
+========================================================= */
+function getFiltered(){
+  const f = state.filters;
+  const kw = f.keyword.trim().toLowerCase();
+  return DATA.filter(r => {
+    if(kw){
+      const hay = (r.nameCn + r.nameEn + r.vendor + (r.contract||'')).toLowerCase();
+      if(!hay.includes(kw)) return false;
+    }
+    if(f.type && r.type !== f.type) return false;
+    if(f.resStatus && r.resStatus !== f.resStatus) return false;
+    if(f.pubStatus && r.pubStatus !== f.pubStatus) return false;
+    if(f.auth && r.auth !== f.auth) return false;
+    return true;
+  });
+}
+
+function applyFilter(){
+  state.filters = {
+    keyword: $('fKeyword').value,
+    type: $('fType').value,
+    resStatus: $('fResStatus').value,
+    pubStatus: $('fPubStatus').value,
+    auth: $('fAuth').value
+  };
+  state.page = 1;
+  render();
+}
+
+function resetFilter(){
+  $('fKeyword').value = '';
+  $('fType').value = '';
+  $('fResStatus').value = '';
+  $('fPubStatus').value = '';
+  $('fAuth').value = '';
+  applyFilter();
+  toast('筛选条件已重置');
+}
+
+/* =========================================================
+   渲染
+========================================================= */
+function render(){
+  renderTable();
+  renderPagination();
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const maxPage = Math.max(1, Math.ceil(total / state.pageSize));
+  if(state.page > maxPage) state.page = maxPage;
+
+  const start = (state.page - 1) * state.pageSize;
+  const pageData = list.slice(start, start + state.pageSize);
+
+  const tbody = $('tableBody');
+
+  if(total === 0){
+    tbody.innerHTML = '';
+    $('emptyState').style.display = 'block';
+    return;
+  }
+  $('emptyState').style.display = 'none';
+
+  tbody.innerHTML = pageData.map(r => {
+    const rs = RES_STATUS[r.resStatus] || RES_STATUS.stopped;
+    const ps = PUB_STATUS[r.pubStatus] || PUB_STATUS.draft;
+
+    let periodSub = '';
+    const d = daysLeft(r.end);
+    if(d !== null){
+      if(d < 0){
+        periodSub = `<div class="period-sub period-warn">已过期 ${Math.abs(d)} 天</div>`;
+      }else if(d <= 30){
+        periodSub = `<div class="period-sub period-warn">仅剩 ${d} 天到期</div>`;
+      }else if(d <= 90){
+        periodSub = `<div class="period-sub period-soon">${d} 天后到期</div>`;
+      }else{
+        periodSub = `<div class="period-sub">剩余 ${d} 天</div>`;
+      }
+    }
+
+    const publishAction = r.pubStatus === 'published'
+      ? `<button class="danger" onclick="quickTogglePublish(${r.id})">下架</button>`
+      : `<button onclick="quickTogglePublish(${r.id})">发布</button>`;
+
+    return `
+      <tr>
+        <td>
+          <div class="res-name">
+            ${esc(r.nameCn)}
+            ${r.recommend ? '<span class="tag" style="background:var(--lib-primary-50);color:var(--lib-primary)">推荐</span>' : ''}
+          </div>
+          <div class="res-en">${esc(r.nameEn || '')}</div>
+        </td>
+        <td>${esc(r.type)}</td>
+        <td>${esc(r.vendor)}</td>
+        <td>${esc(r.auth)}</td>
+        <td><span class="badge ${rs.cls}">${rs.text}</span></td>
+        <td><span class="badge ${ps.cls}">${ps.text}</span></td>
+        <td>
+          <div class="period">${fmtDate(r.start)} ~ ${fmtDate(r.end)}</div>
+          ${periodSub}
+        </td>
+        <td>${r.recommend ? '✅' : '—'}</td>
+        <td>${r.sort}</td>
+        <td>
+          <div class="row-actions">
+            <button onclick="openFormModal('edit', ${r.id})">编辑</button>
+            ${publishAction}
+            <button class="danger" onclick="confirmDelete(${r.id})">删除</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderPagination(){
+  const list = getFiltered();
+  const total = list.length;
+  const maxPage = Math.max(1, Math.ceil(total / state.pageSize));
+  const box = $('pagination');
+
+  if(total === 0){ box.innerHTML = ''; return; }
+
+  let btns = '';
+  const pages = [];
+  for(let i = 1; i <= maxPage; i++){
+    if(i === 1 || i === maxPage || Math.abs(i - state.page) <= 1) pages.push(i);
+    else if(pages[pages.length - 1] !== '...') pages.push('...');
+  }
+  pages.forEach(p => {
+    if(p === '...'){
+      btns += `<span class="page-dots">···</span>`;
+    }else{
+      btns += `<button class="page-btn ${p === state.page ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+    }
+  });
+
+  box.innerHTML = `
+    <span class="page-info">共 ${total} 条，第 ${state.page}/${maxPage} 页</span>
+    <select class="select" style="min-width:96px;height:32px" onchange="changePageSize(this.value)">
+      ${[10,20,50].map(n => `<option value="${n}" ${n === state.pageSize ? 'selected' : ''}>${n} 条/页</option>`).join('')}
+    </select>
+    <button class="page-btn" ${state.page === 1 ? 'disabled' : ''} onclick="goPage(${state.page - 1})">‹</button>
+    ${btns}
+    <button class="page-btn" ${state.page === maxPage ? 'disabled' : ''} onclick="goPage(${state.page + 1})">›</button>
+  `;
+}
+
+function goPage(p){
+  const maxPage = Math.max(1, Math.ceil(getFiltered().length / state.pageSize));
+  if(p < 1 || p > maxPage) return;
+  state.page = p;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changePageSize(size){
+  state.pageSize = parseInt(size, 10);
+  state.page = 1;
+  render();
+}
+
+/* =========================================================
+   快捷操作
+========================================================= */
+function quickTogglePublish(id){
+  const r = DATA.find(x => x.id === id);
+  if(!r) return;
+  if(r.pubStatus === 'published'){
+    r.pubStatus = 'offline';
+    toast(`《${r.nameCn}》已下架`, 'success');
+  }else{
+    r.pubStatus = 'published';
+    toast(`《${r.nameCn}》已发布`, 'success');
+  }
+  render();
+}
+
+function confirmDelete(id){
+  const r = DATA.find(x => x.id === id);
+  if(!r) return;
+  openModal('删除确认', `确定要删除《${r.nameCn}》吗？删除后前台将不再展示，该操作不可撤销。`, () => {
+    DATA = DATA.filter(x => x.id !== id);
+    closeModal();
+    render();
+    toast('资源已删除', 'success');
+  });
+}
+
+/* =========================================================
+   表单弹窗
+========================================================= */
+function openFormModal(mode, id){
+  state.editingId = mode === 'edit' ? id : null;
+  $('formModalTitle').textContent = mode === 'edit' ? '编辑电子资源' : '新增电子资源';
+
+  clearFormErrors();
+
+  if(mode === 'edit'){
+    const r = DATA.find(x => x.id === id);
+    if(!r) return;
+    $('fmNameCn').value   = r.nameCn || '';
+    $('fmNameEn').value   = r.nameEn || '';
+    $('fmType').value     = r.type || '';
+    $('fmVendor').value   = r.vendor || '';
+    $('fmLanguage').value = r.lang || '中文';
+    $('fmOwner').value    = r.owner || '';
+    $('fmDesc').value     = r.desc || '';
+    $('fmUrl').value      = r.url || '';
+    $('fmProxy').value    = r.proxy || '';
+    $('fmAuth').value     = r.auth || 'IP认证';
+    $('fmGuide').value    = r.guide || '';
+    $('fmContract').value = r.contract || '';
+    $('fmPay').value      = r.pay || '未付款';
+    $('fmStart').value    = r.start || '';
+    $('fmEnd').value      = r.end || '';
+    $('fmPrice').value    = r.price || '';
+    $('fmCurrency').value = r.currency || 'CNY 人民币';
+    $('fmResStatus').value = r.resStatus || 'active';
+    $('fmPubStatus').value = r.pubStatus || 'draft';
+    $('fmSort').value      = r.sort != null ? r.sort : 100;
+
+    $('fmAccount').value  = r.account || '';
+    $('fmPassword').value = r.password || '';
+    resetPwdToggle();
+
+    const sw = $('fmRecommend');
+    sw.classList.toggle('on', !!r.recommend);
+    $('fmRecommendText').textContent = r.recommend ? '是' : '否';
+
+    renderSubjectCheckboxes();
+    document.querySelectorAll('#fmSubjects input').forEach(cb => {
+      cb.checked = (r.subjects || []).includes(cb.value);
+    });
+  }else{
+    clearForm();
+  }
+
+  $('formModalMask').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFormModal(){
+  $('formModalMask').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function clearForm(){
+  ['fmNameCn','fmNameEn','fmVendor','fmOwner','fmDesc','fmUrl','fmProxy',
+   'fmGuide','fmContract','fmStart','fmEnd','fmPrice','fmAccount','fmPassword'].forEach(id => $(id).value = '');
+  $('fmType').value = '';
+  $('fmLanguage').value = '中文';
+  $('fmAuth').value = 'IP认证';
+  $('fmPay').value = '未付款';
+  $('fmCurrency').value = 'CNY 人民币';
+  $('fmResStatus').value = 'active';
+  $('fmPubStatus').value = 'draft';
+  $('fmSort').value = 100;
+  $('fmRecommend').classList.remove('on');
+  $('fmRecommendText').textContent = '否';
+  resetPwdToggle();
+
+  renderSubjectCheckboxes();
+}
+
+function clearFormErrors(){
+  document.querySelectorAll('.form-item').forEach(el => el.classList.remove('invalid'));
+  document.querySelectorAll('.input.error,.select.error').forEach(el => el.classList.remove('error'));
+}
+
+function markError(id){
+  const el = $(id);
+  el.classList.add('error');
+  const item = el.closest('.form-item');
+  if(item) item.classList.add('invalid');
+}
+
+function submitForm(){
+  clearFormErrors();
+
+  const nameCn = $('fmNameCn').value.trim();
+  const type   = $('fmType').value;
+  const vendor = $('fmVendor').value.trim();
+  const url    = $('fmUrl').value.trim();
+
+  let hasError = false;
+  if(!nameCn){ markError('fmNameCn'); hasError = true; }
+  if(!type){ markError('fmType'); hasError = true; }
+  if(!vendor){ markError('fmVendor'); hasError = true; }
+  if(!url){ markError('fmUrl'); hasError = true; }
+  else if(!/^https?:\/\/.+/i.test(url)){ markError('fmUrl'); hasError = true; }
+
+  if(hasError){
+    toast('请检查必填项', 'error');
+    return;
+  }
+
+  const start = $('fmStart').value;
+  const end   = $('fmEnd').value;
+  if(start && end && start > end){
+    toast('订购结束日期不能早于开始日期', 'error');
+    return;
+  }
+
+  const subjects = Array.from(document.querySelectorAll('#fmSubjects input:checked')).map(cb => cb.value);
+
+  const payload = {
+    nameCn,
+    nameEn: $('fmNameEn').value.trim(),
+    type,
+    vendor,
+    auth: $('fmAuth').value,
+    resStatus: $('fmResStatus').value,
+    pubStatus: $('fmPubStatus').value,
+    start, end,
+    recommend: $('fmRecommend').classList.contains('on'),
+    sort: parseInt($('fmSort').value, 10) || 0,
+    subjects,
+    lang: $('fmLanguage').value,
+    owner: $('fmOwner').value.trim(),
+    url,
+    proxy: $('fmProxy').value.trim(),
+    guide: $('fmGuide').value.trim(),
+    contract: $('fmContract').value.trim(),
+    price: $('fmPrice').value.trim(),
+    currency: $('fmCurrency').value,
+    pay: $('fmPay').value,
+    account: $('fmAccount').value.trim(),
+    password: $('fmPassword').value,
+    desc: $('fmDesc').value.trim()
+  };
+
+  if(state.editingId){
+    const r = DATA.find(x => x.id === state.editingId);
+    Object.assign(r, payload);
+    toast('资源已更新', 'success');
+  }else{
+    DATA.unshift(Object.assign({ id: nextId++ }, payload));
+    state.page = 1;
+    toast('资源已创建', 'success');
+  }
+
+  closeFormModal();
+  render();
+}
+
+/* 推荐开关文字联动 */
+$('fmRecommend').addEventListener('click', function(){
+  $('fmRecommendText').textContent = this.classList.contains('on') ? '是' : '否';
+});
+
+/* =========================================================
+   导出 CSV
+========================================================= */
+function exportCSV(){
+  const list = getFiltered();
+  if(list.length === 0){ toast('没有可导出的数据', 'error'); return; }
+
+  const header = ['中文名称','英文名称','资源类型','供应商','认证方式','访问账号','资源状态','发布状态',
+                  '订购开始','订购结束','合同编号','合同金额','币种','付款状态','是否推荐','排序','访问地址','负责馆员'];
+  const resMap = { trial:'试用', active:'正式', expired:'已过期', stopped:'已停用' };
+  const pubMap = { published:'已发布', draft:'草稿', offline:'已下架' };
+
+  const rows = list.map(r => [
+    r.nameCn, r.nameEn, r.type, r.vendor, r.auth,
+    r.account || '',
+    resMap[r.resStatus] || '', pubMap[r.pubStatus] || '',
+    r.start, r.end, r.contract, r.price, r.currency, r.pay,
+    r.recommend ? '是' : '否', r.sort, r.url, r.owner
+  ]);
+
+  const csv = [header, ...rows]
+    .map(row => row.map(cell => `"${String(cell == null ? '' : cell).replace(/"/g,'""')}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type:'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `电子资源_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(`已导出 ${list.length} 条资源`, 'success');
+}
+
+/* =========================================================
+   确认框
+========================================================= */
+let modalCallback = null;
+function openModal(title, text, onOk){
+  $('modalTitle').textContent = title;
+  $('modalText').textContent = text;
+  modalCallback = onOk;
+  $('modalMask').classList.add('show');
+}
+function closeModal(){
+  $('modalMask').classList.remove('show');
+  modalCallback = null;
+}
+$('modalOk').addEventListener('click', () => {
+  if(typeof modalCallback === 'function') modalCallback();
+});
+$('modalMask').addEventListener('click', e => {
+  if(e.target === $('modalMask')) closeModal();
+});
+
+/* =========================================================
+   Toast
+========================================================= */
+function toast(msg, type){
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  const icon = type === 'success' ? '✓ ' : type === 'error' ? '! ' : '';
+  el.textContent = icon + msg;
+  $('toastWrap').appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 260);
+  }, 2200);
+}
+
+/* =========================================================
+   事件绑定
+========================================================= */
+$('fKeyword').addEventListener('keydown', e => {
+  if(e.key === 'Enter') applyFilter();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if($('modalMask').classList.contains('show')) closeModal();
+    else if($('formModalMask').classList.contains('show')) closeFormModal();
+    else if($('categoryModalMask').classList.contains('show')) closeCategoryManager();
+    else if($('ipModalMask').classList.contains('show')) closeIpModal();
+  }
+});
+
+$('formModalMask').addEventListener('click', e => {
+  if(e.target === $('formModalMask')) closeFormModal();
+});
+
+$('categoryModalMask').addEventListener('click', e => {
+  if(e.target === $('categoryModalMask')) closeCategoryManager();
+});
+
+$('ipModalMask').addEventListener('click', e => {
+  if(e.target === $('ipModalMask')) closeIpModal();
+});
+
+/* 初始化 */
+render();
+</script>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group summary::marker {
+    display: none;
+  }
+  .nav-group summary {
+    color: var(--lib-ink-2);
+  }
+  .nav-group .nav-chevron {
+    transition: transform 0.2s ease;
+    transform: rotate(-90deg);
+  }
+  .nav-group[open] > summary .nav-chevron {
+    transform: rotate(0deg);
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-surface-2);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  </style>
+</body>
+</html>

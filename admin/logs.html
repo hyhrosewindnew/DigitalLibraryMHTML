@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>操作日志 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约</span></a>
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink);">操作日志</span>
+</nav>
+
+<style>
+:root {
+  --log-primary:#2563eb; --log-primary-hover:#1d4ed8; --log-primary-light:#eff6ff;
+  --log-text:#1e293b; --log-text-2:#64748b; --log-text-3:#94a3b8;
+  --log-border:#e2e8f0; --log-bg:#f8fafc;
+  --log-success:#10b981; --log-danger:#ef4444; --log-warning:#f59e0b;
+  --log-radius:10px;
+}
+.logs-content { padding: 0; }
+.logs-card { background: #fff; border: 1px solid var(--log-border); border-radius: var(--log-radius); box-shadow: 0 1px 2px rgba(15,23,42,.04); overflow: hidden; }
+.logs-card + .logs-card { margin-top: 14px; }
+.logs-filter-bar { display: flex; flex-wrap: wrap; gap: 14px 16px; padding: 16px 20px; align-items: flex-end; }
+.logs-filter-item { display: flex; flex-direction: column; gap: 6px; min-width: 130px; flex: 1 1 130px; }
+.logs-filter-item label { font-size: 12.5px; color: var(--log-text-2); font-weight: 500; }
+.logs-filter-item.search { flex: 1 1 280px; min-width: 240px; }
+.logs-filter-item.dates { flex: 0 1 auto; min-width: auto; }
+.logs-filter-actions { display: flex; gap: 10px; margin-left: auto; flex-shrink: 0; padding-bottom: 0; }
+.logs-filter-item input[type=text],
+.logs-filter-item input[type=date],
+.logs-filter-item select { width: 100%; height: 36px; border: 1px solid var(--log-border); border-radius: 8px; padding: 0 12px; font-size: 13px; color: var(--log-text); background: #fff; outline: none; transition: border-color .15s, box-shadow .15s; }
+.logs-filter-item input::placeholder { color: var(--log-text-3); }
+.logs-filter-item input:focus,
+.logs-filter-item select:focus { border-color: var(--log-primary); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.logs-filter-item select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.logs-date-range { display: flex; align-items: center; gap: 6px; }
+.logs-date-range input { width: 140px; }
+.logs-date-sep { color: var(--log-text-3); font-size: 12px; }
+.logs-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 15px; border-radius: 8px; border: 1px solid var(--log-border); background: #fff; color: var(--log-text); font-size: 13px; cursor: pointer; transition: .15s; white-space: nowrap; user-select: none; font-family: inherit; }
+.logs-btn:hover { border-color: #c3cfdf; background: #f8fafc; }
+.logs-btn-primary { background: var(--log-primary); border-color: var(--log-primary); color: #fff; }
+.logs-btn-primary:hover { background: var(--log-primary-hover); border-color: var(--log-primary-hover); }
+.logs-btn-ghost { background: #fff; color: var(--log-primary); border-color: #bfdbfe; }
+.logs-btn-ghost:hover { background: var(--log-primary-light); border-color: #93c5fd; }
+.logs-quick-row { padding: 0 20px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.logs-quick-label { font-size: 12px; color: var(--log-text-3); margin-right: 2px; }
+.logs-chip { padding: 5px 12px; border: 1px solid var(--log-border); border-radius: 15px; font-size: 12.5px; color: #4b5563; cursor: pointer; background: #fff; transition: .15s; user-select: none; display: inline-flex; align-items: center; gap: 6px; line-height: 20px; }
+.logs-chip:hover { border-color: #bfdbfe; color: var(--log-primary); }
+.logs-chip.active { background: var(--log-primary); border-color: var(--log-primary); color: #fff; font-weight: 500; }
+.logs-chip .cnt { font-size: 11px; color: var(--log-text-3); font-weight: 400; }
+.logs-chip.active .cnt { color: rgba(255,255,255,.85); }
+.logs-chip.danger.active { background: var(--log-danger); border-color: var(--log-danger); }
+.logs-chip.warn.active { background: var(--log-warning); border-color: var(--log-warning); }
+.logs-chip.green.active { background: var(--log-success); border-color: var(--log-success); }
+.logs-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--log-border); flex-wrap: wrap; }
+.logs-toolbar-left { display: flex; gap: 10px; flex-wrap: wrap; }
+.logs-toolbar-right { font-size: 13px; color: var(--log-text-2); }
+.logs-toolbar-right b { color: var(--log-text); font-weight: 600; }
+.logs-table-wrap { overflow-x: auto; }
+.logs-table { width: 100%; min-width: 1280px; border-collapse: collapse; font-size: 13px; }
+.logs-table thead th { background: #f8fafc; color: var(--log-text-2); font-weight: 600; font-size: 12.5px; text-align: left; padding: 12px 14px; white-space: nowrap; border-bottom: 1px solid var(--log-border); letter-spacing: .3px; }
+.logs-table tbody td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-size: 13px; }
+.logs-table tbody tr:last-child td { border-bottom: none; }
+.logs-table tbody tr:hover { background: #f8fafc; }
+.logs-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; letter-spacing: -.2px; }
+.logs-user-cell { display: flex; align-items: center; gap: 9px; }
+.logs-avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 12.5px; font-weight: 600; color: #fff; flex-shrink: 0; background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+.logs-avatar.f { background: linear-gradient(135deg, #f472b6, #ec4899); }
+.logs-avatar.m { background: linear-gradient(135deg, #34d399, #10b981); }
+.logs-avatar.a { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.logs-user-name { font-weight: 500; color: #111827; line-height: 1.35; }
+.logs-user-sub { font-size: 11.5px; color: var(--log-text-3); line-height: 1.35; margin-top: 2px; }
+.logs-op-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.logs-op-create { background: #ecfdf5; color: #059669; }
+.logs-op-update { background: #eff6ff; color: #2563eb; }
+.logs-op-delete { background: #fef2f2; color: #dc2626; }
+.logs-op-login { background: #ecfeff; color: #0891b2; }
+.logs-op-export { background: #fffbeb; color: #b45309; }
+.logs-op-approve { background: #f0fdf4; color: #16a34a; }
+.logs-op-config { background: #f5f3ff; color: #7c3aed; }
+.logs-module-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11.5px; line-height: 18px; font-weight: 500; white-space: nowrap; }
+.logs-mt-book { background: #eff6ff; color: #2563eb; }
+.logs-mt-e-resource { background: #ecfeff; color: #0e7490; }
+.logs-mt-reader { background: #f5f3ff; color: #7c3aed; }
+.logs-mt-borrow { background: #ecfeff; color: #0891b2; }
+.logs-mt-fine { background: #fff7ed; color: #ea580c; }
+.logs-mt-reserve { background: #fef3c7; color: #b45309; }
+.logs-mt-room { background: #f0fdf4; color: #16a34a; }
+.logs-mt-purchase { background: #fce7f3; color: #be185d; }
+.logs-mt-notice { background: #f0f9ff; color: #0284c7; }
+.logs-mt-journal { background: #ecfdf5; color: #047857; }
+.logs-mt-floor { background: #f1f5f9; color: #475569; }
+.logs-mt-system { background: #fef2f2; color: #b91c1c; }
+.logs-ip-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; background: #f1f5f9; padding: 2px 7px; border-radius: 6px; color: #475569; white-space: nowrap; }
+.logs-result-success { color: #16a34a; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.logs-result-fail { color: #dc2626; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.logs-desc-cell { max-width: 340px; word-wrap: break-word; color: #374151; line-height: 1.5; }
+.logs-pager { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; font-size: 13px; color: var(--log-text-2); border-top: 1px solid var(--log-border); }
+.logs-pager-info { display: flex; align-items: center; gap: 10px; flex-shrink: 0; white-space: nowrap; }
+.logs-pager-info b { color: var(--log-text); font-weight: 600; }
+.logs-pager-btns { display: flex; gap: 6px; align-items: center; }
+.logs-pager-btn { min-width: 33px; height: 33px; padding: 0 9px; border: 1px solid var(--log-border); background: #fff; border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--log-text); transition: .15s; font-family: inherit; }
+.logs-pager-btn:hover:not(:disabled):not(.active) { border-color: var(--log-primary); color: var(--log-primary); }
+.logs-pager-btn.active { background: var(--log-primary); border-color: var(--log-primary); color: #fff; font-weight: 500; }
+.logs-pager-btn:disabled { opacity: .45; cursor: not-allowed; }
+.logs-pager-dots { padding: 0 4px; color: var(--log-text-3); }
+.logs-page-size-select { height: 33px; padding: 0 8px; border: 1px solid var(--log-border); border-radius: 7px; background: #fff; font-size: 13px; color: var(--log-text); cursor: pointer; outline: none; margin-left: 6px; }
+.logs-empty { padding: 60px 20px; text-align: center; color: var(--log-text-3); font-size: 13px; }
+.logs-empty .big { font-size: 34px; display: block; margin-bottom: 10px; opacity: .5; }
+.logs-modal { position: fixed; inset: 0; background: rgba(15,23,42,.5); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(2px); }
+.logs-modal.show { display: flex; }
+.logs-modal-box { background: #fff; border-radius: 12px; width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(15,23,42,.25); animation: logs-pop .18s cubic-bezier(.34,1.3,.64,1); }
+@keyframes logs-pop { from{ transform: scale(.95); opacity: 0; } to{ transform: scale(1); opacity: 1; } }
+.logs-modal-header { padding: 16px 22px; border-bottom: 1px solid var(--log-border); display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+.logs-icon-btn { width: 30px; height: 30px; border: none; background: none; border-radius: 7px; cursor: pointer; color: var(--log-text-3); font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: .15s; }
+.logs-icon-btn:hover { background: #f1f5f9; color: var(--log-text); }
+.logs-modal-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+.logs-modal-footer { padding: 14px 22px; border-top: 1px solid var(--log-border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+.logs-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.logs-field:last-child { margin-bottom: 0; }
+.logs-field label { font-size: 13px; color: #374151; font-weight: 500; }
+.logs-field label .req { color: #ef4444; margin-left: 2px; }
+.logs-field .hint { font-size: 11.5px; color: var(--log-text-3); margin-top: 2px; }
+.logs-radio-group { display: flex; gap: 20px; align-items: center; height: 36px; flex-wrap: wrap; }
+.logs-radio { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: var(--log-text); }
+.logs-radio input { width: 16px; height: 16px; accent-color: var(--log-primary); cursor: pointer; }
+.logs-tip-box { padding: 11px 14px; border-radius: 7px; font-size: 12.5px; line-height: 1.7; border: 1px solid #e5e9f0; background: #f8fafc; color: #4b5563; margin-bottom: 16px; }
+.logs-tip-box.warn { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+.logs-tip-box.ok { border-color: #a7f3d0; background: #f0fdf4; color: #047857; }
+#logs-toastWrap { position: fixed; top: 26px; left: 50%; z-index: 999; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+.logs-toast { background: #1e293b; color: #fff; padding: 11px 22px; border-radius: 9px; font-size: 13.5px; box-shadow: 0 8px 24px rgba(15,23,42,.28); animation: logs-pop .2s ease; transition: .3s; max-width: 520px; line-height: 1.5; opacity: 1; }
+.logs-toast.out { opacity: 0; transform: translateY(-8px); }
+.logs-toast.error { background: var(--log-danger); }
+.logs-toast.warn { background: var(--log-warning); }
+.logs-toast.ok { background: var(--log-success); }
+.logs-avatar.t { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+.logs-op-reject { background: #fef2f2; color: #b91c1c; }
+.logs-op-system { background: #f1f5f9; color: #475569; }
+</style>
+
+<div class="logs-content">
+  <div class="logs-card">
+    <div class="logs-filter-bar">
+      <div class="logs-filter-item search">
+        <label>关键字</label>
+        <input type="text" id="logs-kw" placeholder="操作人 / 操作描述 / IP / 单号">
+      </div>
+      <div class="logs-filter-item">
+        <label>业务模块</label>
+        <select id="logs-fModule">
+          <option value="">全部模块</option>
+          <option>图书资源</option>
+          <option>电子资源</option>
+          <option>期刊管理</option>
+          <option>采购荐购</option>
+          <option>馆藏层级</option>
+          <option>排管理</option>
+          <option>书架管理</option>
+          <option>读者用户</option>
+          <option>借还管理</option>
+          <option>预约管理</option>
+          <option>研修室管理</option>
+          <option>罚款缴费</option>
+          <option>公告管理</option>
+          <option>系统设置</option>
+        </select>
+      </div>
+      <div class="logs-filter-item">
+        <label>操作类型</label>
+        <select id="logs-fType">
+          <option value="">全部类型</option>
+          <option>新增</option>
+          <option>修改</option>
+          <option>删除</option>
+          <option>审批</option>
+          <option>导出</option>
+          <option>配置</option>
+        </select>
+      </div>
+      <div class="logs-filter-item">
+        <label>操作人</label>
+        <select id="logs-fOperator">
+          <option value="">全部人员</option>
+          <option>王管理员</option>
+          <option>李管理员</option>
+          <option>张明远</option>
+          <option>张馆员</option>
+          <option>陈雅</option>
+          <option>刘慧</option>
+          <option>王采编员</option>
+          <option>赵文博</option>
+          <option>许诗涵</option>
+          <option>周编目员</option>
+          <option>系统</option>
+        </select>
+      </div>
+      <div class="logs-filter-item dates">
+        <label>操作时间范围</label>
+        <div class="logs-date-range">
+          <input type="date" id="logs-fDateFrom" title="起始日期">
+          <span class="logs-date-sep">至</span>
+          <input type="date" id="logs-fDateTo" title="结束日期">
+        </div>
+      </div>
+      <div class="logs-filter-actions">
+        <button class="logs-btn logs-btn-primary" type="button">搜索</button>
+        <button class="logs-btn" type="button">重置</button>
+        <button class="logs-btn logs-btn-ghost" type="button">导出</button>
+      </div>
+    </div>
+    <div class="logs-quick-row">
+      <span class="logs-quick-label">快捷筛选：</span>
+      <span class="logs-chip active">全部 <span class="cnt" id="c-all">0</span></span>
+      <span class="logs-chip">今日 <span class="cnt" id="c-today">0</span></span>
+      <span class="logs-chip danger">删除操作 <span class="cnt" id="c-delete">0</span></span>
+      <span class="logs-chip warn">配置变更 <span class="cnt" id="c-config">0</span></span>
+      <span class="logs-chip green">审批操作 <span class="cnt" id="c-approve">0</span></span>
+    </div>
+  </div>
+
+  <div class="logs-card">
+    <div class="logs-toolbar">
+      <div class="logs-toolbar-left">
+        <button class="logs-btn logs-btn-primary" type="button">生成审计报表</button>
+        <button class="logs-btn" type="button">日志归档</button>
+      </div>
+      <div class="logs-toolbar-right">
+        共 <b id="totalNum">0</b> 条操作记录
+      </div>
+    </div>
+    <div class="logs-table-wrap">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th style="width:150px">操作时间</th>
+            <th style="width:180px">操作人</th>
+            <th style="width:100px">业务模块</th>
+            <th style="width:90px">操作类型</th>
+            <th>操作描述 / 详情</th>
+            <th style="width:130px">IP 地址</th>
+            <th style="width:90px">结果</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="logs-mono">2024-09-18 14:30:00</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar">王</div><div><div class="logs-user-name">王管理员</div><div class="logs-user-sub">admin@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-system">系统设置</span></td>
+            <td><span class="logs-op-badge logs-op-login">登录</span></td>
+            <td class="logs-desc-cell">管理员登录系统，IP 192.168.1.12</td>
+            <td><span class="logs-ip-mono">192.168.1.12</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-18 13:48:36</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar f">陈</div><div><div class="logs-user-name">陈雅</div><div class="logs-user-sub">chenya@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-notice">公告管理</span></td>
+            <td><span class="logs-op-badge logs-op-update">修改</span></td>
+            <td class="logs-desc-cell">编辑消息通知模板 NT-20240917007，修改了提醒时间和接收范围设置</td>
+            <td><span class="logs-ip-mono">192.168.1.12</span></td>
+            <td><span class="logs-result-fail">失败</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-18 11:05:17</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar m">赵</div><div><div class="logs-user-name">赵文博</div><div class="logs-user-sub">zhaowb@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-reader">读者用户</span></td>
+            <td><span class="logs-op-badge logs-op-create">新增</span></td>
+            <td class="logs-desc-cell">新增设备借用记录 E2024089，设备类型：笔记本电脑，借用人：张明远</td>
+            <td><span class="logs-ip-mono">192.168.1.12</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-18 10:22:08</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar a">刘</div><div><div class="logs-user-name">刘慧</div><div class="logs-user-sub">liuhui@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-fine">罚款缴费</span></td>
+            <td><span class="logs-op-badge logs-op-export">导出</span></td>
+            <td class="logs-desc-cell">导出罚款缴费记录 Excel，筛选条件：2024年9月，已缴费</td>
+            <td><span class="logs-ip-mono">192.168.1.12</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-18 09:48:30</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar">张</div><div><div class="logs-user-name">张馆员</div><div class="logs-user-sub">zhangliban@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-floor">楼层管理</span></td>
+            <td><span class="logs-op-badge logs-op-update">修改</span></td>
+            <td class="logs-desc-cell">编辑座位 S2024045，修改座位状态为"维护中"，备注：座椅维修</td>
+            <td><span class="logs-ip-mono">192.168.1.12</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-18 09:05:11</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar">王</div><div><div class="logs-user-name">王管理员</div><div class="logs-user-sub">admin@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-system">系统设置</span></td>
+            <td><span class="logs-op-badge logs-op-login">登录</span></td>
+            <td class="logs-desc-cell">管理员登录系统，IP 192.168.1.12</td>
+            <td><span class="logs-ip-mono">192.168.1.12</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-17 17:10:55</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar f">许</div><div><div class="logs-user-name">许诗涵</div><div class="logs-user-sub">xushihan@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-reader">读者用户</span></td>
+            <td><span class="logs-op-badge logs-op-delete">删除</span></td>
+            <td class="logs-desc-cell">删除读者证 C2023156，原因：读者毕业离校</td>
+            <td><span class="logs-ip-mono">192.168.1.10</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-17 16:42:09</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar">李</div><div><div class="logs-user-name">李管理员</div><div class="logs-user-sub">admin2@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-notice">公告管理</span></td>
+            <td><span class="logs-op-badge logs-op-create">新增</span></td>
+            <td class="logs-desc-cell">发布新公告 N20240918"中秋国庆开馆时间通知"，类型：重要通知</td>
+            <td><span class="logs-ip-mono">192.168.1.10</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-17 16:05:44</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar a">王</div><div><div class="logs-user-name">王采编员</div><div class="logs-user-sub">wangcb@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-system">系统设置</span></td>
+            <td><span class="logs-op-badge logs-op-config">配置</span></td>
+            <td class="logs-desc-cell">修改开放时间配置 OH2024007，周一至周五闭馆时间由 21:00 调整为 22:00</td>
+            <td><span class="logs-ip-mono">192.168.1.10</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+          <tr>
+            <td class="logs-mono">2024-09-17 15:30:12</td>
+            <td><div class="logs-user-cell"><div class="logs-avatar m">周</div><div><div class="logs-user-name">周编目员</div><div class="logs-user-sub">zhoubm@lib.cn</div></div></div></td>
+            <td><span class="logs-module-tag logs-mt-purchase">采购荐购</span></td>
+            <td><span class="logs-op-badge logs-op-approve">审批</span></td>
+            <td class="logs-desc-cell">审批采购申请 A2024102"人工智能导论（第3版）"，审批结果：通过</td>
+            <td><span class="logs-ip-mono">192.168.1.10</span></td>
+            <td><span class="logs-result-success">成功</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="logs-pager">
+      <div class="logs-pager-info">
+        共 <b id="totalNum2">0</b> 条记录
+        <select class="logs-page-size-select">
+          <option value="10">10 条/页</option>
+          <option value="20">20 条/页</option>
+          <option value="50">50 条/页</option>
+        </select>
+      </div>
+      <div class="logs-pager-btns" id="pagerCtrl">
+        <button class="logs-pager-btn" disabled>上一页</button>
+        <button class="logs-pager-btn active">1</button>
+        <button class="logs-pager-btn">2</button>
+        <button class="logs-pager-btn">3</button>
+        <button class="logs-pager-btn">4</button>
+        <span class="logs-pager-dots">...</span>
+        <button class="logs-pager-btn">13</button>
+        <button class="logs-pager-btn">下一页</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 审计报表弹窗 -->
+<div class="logs-modal" id="auditModal">
+  <div class="logs-modal-box">
+    <div class="logs-modal-header">
+      <span>生成审计报表</span>
+      <button class="logs-icon-btn" onclick="logsCloseModal('auditModal')">✕</button>
+    </div>
+    <div class="logs-modal-body">
+      <div class="logs-field">
+        <label>报表标题</label>
+        <input type="text" id="auditTitle" value="数字图书馆 · 操作日志审计报表">
+      </div>
+      <div class="logs-field">
+        <label>报表周期</label>
+        <input type="text" id="auditPeriod">
+      </div>
+      <div class="logs-field">
+        <label>制表人</label>
+        <input type="text" id="auditMaker" value="王管理员">
+      </div>
+      <div class="logs-field">
+        <label>数据范围 <span class="req">*</span></label>
+        <div class="logs-radio-group">
+          <label class="logs-radio"><input type="radio" name="auditScope" value="filtered" checked> 当前筛选结果（<b id="auditCount">0</b> 条）</label>
+          <label class="logs-radio"><input type="radio" name="auditScope" value="all"> 全部日志（<b id="auditCountAll">0</b> 条）</label>
+        </div>
+      </div>
+      <div class="logs-tip-box ok">
+        💡 生成的报表为 HTML 格式，可用浏览器打开后直接打印为 PDF。报表包含：总体统计、按模块/类型/操作人分布统计、完整日志明细。
+      </div>
+    </div>
+    <div class="logs-modal-footer">
+      <button class="logs-btn" onclick="logsCloseModal('auditModal')">取消</button>
+      <button class="logs-btn logs-btn-primary" onclick="logsConfirmAuditReport()">✓ 生成并下载</button>
+    </div>
+  </div>
+</div>
+
+<!-- 日志归档弹窗 -->
+<div class="logs-modal" id="archiveModal">
+  <div class="logs-modal-box">
+    <div class="logs-modal-header">
+      <span>日志归档</span>
+      <button class="logs-icon-btn" onclick="logsCloseModal('archiveModal')">✕</button>
+    </div>
+    <div class="logs-modal-body">
+      <div class="logs-field">
+        <label>归档范围 <span class="req">*</span></label>
+        <div class="logs-radio-group">
+          <label class="logs-radio"><input type="radio" name="archiveRange" value="180" checked> 6 个月前</label>
+          <label class="logs-radio"><input type="radio" name="archiveRange" value="365"> 1 年前</label>
+          <label class="logs-radio"><input type="radio" name="archiveRange" value="custom"> 自定义</label>
+        </div>
+      </div>
+      <div class="logs-field" id="archiveCustomBox" style="display:none;">
+        <label>自定义日期范围</label>
+        <div class="logs-date-range">
+          <input type="date" id="archiveStart" title="起始日期">
+          <span class="logs-date-sep">至</span>
+          <input type="date" id="archiveEnd" title="结束日期">
+        </div>
+      </div>
+      <div class="logs-field">
+        <label>归档方式 <span class="req">*</span></label>
+        <div class="logs-radio-group">
+          <label class="logs-radio"><input type="radio" name="archiveMode" value="download" checked> 打包下载归档文件</label>
+          <label class="logs-radio"><input type="radio" name="archiveMode" value="move"> 从列表中移出（模拟归档）</label>
+        </div>
+      </div>
+      <div class="logs-tip-box ok" id="archivePreview">
+        📦 预计归档：<b>0</b> 条日志，归档后列表剩余 <b>0</b> 条。
+      </div>
+    </div>
+    <div class="logs-modal-footer">
+      <button class="logs-btn" onclick="logsCloseModal('archiveModal')">取消</button>
+      <button class="logs-btn logs-btn-primary" onclick="logsConfirmArchive()">✓ 确认归档</button>
+    </div>
+  </div>
+</div>
+
+<div id="logs-toastWrap"></div>
+</main>
+</div>
+<script>lucide.createIcons();</script>
+<script>
+(function(){
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ===== 数据 ===== */
+const RAW_LOGS = [
+  /* ===== 图书资源 ===== */
+  { time:'2025-04-10 09:12:33', operator:'王管理员', module:'图书资源', type:'新增', desc:'新增图书《深度学习》李航著，ISBN 978-7-111-59850-7，索书号 TP181/L-3，定价 88.00 元，复本 3 本', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:25:18', operator:'王管理员', module:'图书资源', type:'修改', desc:'编辑图书《活着》信息：索书号 I247.5/Y-12 → I247.5/Y-13，定价 45.00 → 48.00 元', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:41:07', operator:'李管理员', module:'图书资源', type:'修改', desc:'下架《解忧杂货店》全部 4 本复本（条码 0001-0004），状态变更为「已下架」', ip:'192.168.10.26' },
+  { time:'2025-04-10 10:02:55', operator:'李管理员', module:'图书资源', type:'删除', desc:'删除图书《三体》及全部 5 本复本，删除后不可恢复', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:30:22', operator:'张明远', module:'图书资源', type:'导出', desc:'导出图书资源 CSV（筛选条件：分类=文学，状态=可借阅），共 128 条', ip:'192.168.10.22' },
+  { time:'2025-04-09 15:12:48', operator:'王管理员', module:'图书资源', type:'新增', desc:'新增图书《百年孤独》复本 6 本，馆藏位置 I区3排2架，条码 BK2024-0101 至 0106', ip:'192.168.10.24' },
+
+  /* ===== 电子资源 ===== */
+  { time:'2025-04-10 10:15:33', operator:'张馆员', module:'电子资源', type:'新增', desc:'新增电子资源《中国知网 CNKI》，类型=数据库，供应商=同方知网，认证方式=IP认证，合同号 LIB-2026-001，合同金额 420000 元', ip:'192.168.10.30' },
+  { time:'2025-04-10 10:32:18', operator:'张馆员', module:'电子资源', type:'修改', desc:'编辑《超星汇雅电子书》：认证方式 账号密码 → 开放访问，访问地址已更新，合同金额 180000 元', ip:'192.168.10.30' },
+  { time:'2025-04-10 10:48:55', operator:'张馆员', module:'电子资源', type:'修改', desc:'发布《百度文库高校版》（草稿 → 已发布），前台排序 80，试用期至 2026-11-30', ip:'192.168.10.30' },
+  { time:'2025-04-10 11:05:42', operator:'李管理员', module:'电子资源', type:'修改', desc:'下架《新东方多媒体学习库》（已发布 → 已下架），原因：合同到期', ip:'192.168.10.26' },
+  { time:'2025-04-10 11:22:11', operator:'张馆员', module:'电子资源', type:'修改', desc:'修改《知网电子期刊》访问账号：xyhkxy → xyhkxy2026，密码已同步更新', ip:'192.168.10.30' },
+  { time:'2025-04-10 11:40:33', operator:'张馆员', module:'电子资源', type:'删除', desc:'删除《读秀学术搜索》及关联合同 LIB-2024-018，删除后前台不再展示', ip:'192.168.10.30' },
+  { time:'2025-04-10 14:05:18', operator:'张馆员', module:'电子资源', type:'配置', desc:'学科分类新增「艺术学」，删除「教育学」（原教育学下资源已同步调整）', ip:'192.168.10.30' },
+  { time:'2025-04-10 14:22:47', operator:'李管理员', module:'电子资源', type:'配置', desc:'IP 白名单添加：10.10.0.0 ~ 10.10.255.255，备注=教学楼 A 区；删除 172.16.50.10（数据中心专线）', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:50:22', operator:'张馆员', module:'电子资源', type:'导出', desc:'导出电子资源 CSV（筛选条件：资源状态=正式），共 8 条', ip:'192.168.10.30' },
+
+  /* ===== 期刊管理 ===== */
+  { time:'2025-04-10 08:45:30', operator:'陈雅', module:'期刊管理', type:'新增', desc:'新增期刊卷期《读者》2025年第1期，ISSN 1005-1805，复本 2 本，馆藏位置 I区3排1架', ip:'192.168.10.56' },
+  { time:'2025-04-10 09:05:12', operator:'陈雅', module:'期刊管理', type:'修改', desc:'编辑《中国国家地理》2025年第1期复本：条码 BK2024-0012 状态「已下架」→「在架」，备注「已归档」→「重新上架」', ip:'192.168.10.56' },
+  { time:'2025-04-10 10:20:44', operator:'李管理员', module:'期刊管理', type:'删除', desc:'删除期刊《收获》2024年第1期及复本 BK2024-0060，删除后不可恢复', ip:'192.168.10.26' },
+  { time:'2025-04-09 14:33:18', operator:'陈雅', module:'期刊管理', type:'修改', desc:'下架《Nature》2024 Vol.625 No.7998 复本 1 本，条码 BK2024-0070', ip:'192.168.10.56' },
+
+  /* ===== 采购荐购 ===== */
+  { time:'2025-04-10 09:15:42', operator:'王采编员', module:'采购荐购', type:'新增', desc:'新增荐购 PO20250409001《围城》钱钟书著，来源=馆员推荐，复本 1 本，预估定价 18.00 元，保存为草稿', ip:'192.168.10.30' },
+  { time:'2025-04-10 09:28:15', operator:'王采编员', module:'采购荐购', type:'新增', desc:'提交荐购 PO20250409002《计算机网络：自顶向下方法（第8版）》，来源=读者推荐，推荐人陈思远，复本 2 本', ip:'192.168.10.30' },
+  { time:'2025-04-10 09:50:33', operator:'李管理员', module:'采购荐购', type:'审批', desc:'批准荐购 PO20250409004《百年孤独》5 册，审核意见：馆藏 3 册长期高预约排队（42 人候补），同意增订', ip:'192.168.10.22' },
+  { time:'2025-04-10 10:05:11', operator:'李管理员', module:'采购荐购', type:'审批', desc:'驳回荐购 PO20250409009《活着》2 册，审核意见：本年度采购经费已使用 78%，现有复本 4 册可基本满足需求，建议延至下季度评估', ip:'192.168.10.22' },
+  { time:'2025-04-10 10:22:47', operator:'赵文博', module:'采购荐购', type:'修改', desc:'下单采购 PO20250409005《深入理解计算机系统》4 册，订单已发至供应商，预计 5 个工作日到货', ip:'192.168.10.18' },
+  { time:'2025-04-09 16:15:09', operator:'许诗涵', module:'采购荐购', type:'修改', desc:'标记到馆 PO20250409006《Python 编程：从入门到实践（第3版）》4 册，供应商送货签收', ip:'192.168.10.60' },
+  { time:'2025-04-09 15:48:36', operator:'周编目员', module:'采购荐购', type:'修改', desc:'送编目 PO20250409007《三体》6 套，分配索书号 I247.55/L-3，条形码已生成', ip:'192.168.10.66' },
+  { time:'2025-04-09 14:30:22', operator:'流通部', module:'采购荐购', type:'修改', desc:'标记上架 PO20250409008《乡土中国》3 册，总馆三层中文图书借阅区已上架流通', ip:'192.168.10.80' },
+
+  /* ===== 馆藏层级 ===== */
+  { time:'2025-04-10 08:30:15', operator:'王管理员', module:'馆藏层级', type:'新增', desc:'新增楼层「南区分馆-三层」，楼层代码 NQ-3F，用途=综合借阅区，面积 1200㎡，负责人刘洋，电话 020-66660003', ip:'192.168.10.24' },
+  { time:'2025-04-10 08:52:40', operator:'王管理员', module:'馆藏层级', type:'修改', desc:'编辑楼层「总馆-三层」代码 ZG-3F → ZG-3F-A，用途=期刊阅览区，备注「仅限馆内阅览」', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:05:22', operator:'王管理员', module:'馆藏层级', type:'修改', desc:'编辑楼层「南区分馆-一层」负责人 刘洋 → 王强，联系电话 020-66660001 → 020-66660009', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:18:27', operator:'李管理员', module:'馆藏层级', type:'修改', desc:'编辑楼层「医学分馆-一层」面积 1200㎡ → 1350㎡', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:32:44', operator:'李管理员', module:'馆藏层级', type:'修改', desc:'调整楼层「东校区分馆-二层」排序值 2 → 10（置后展示）', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:48:11', operator:'李管理员', module:'馆藏层级', type:'修改', desc:'启用楼层「东校区分馆-一层」（原状态：停用），楼层代码 DQ-1F', ip:'192.168.10.26' },
+  { time:'2025-04-10 10:05:33', operator:'李管理员', module:'馆藏层级', type:'删除', desc:'删除楼层「南区分馆-二层」，删除前已确认该楼层无在架图书及关联区域', ip:'192.168.10.26' },
+  { time:'2025-04-09 17:05:33', operator:'李管理员', module:'馆藏层级', type:'删除', desc:'批量删除楼层「医学分馆-二层」及关联区域，删除后不可恢复', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:22:18', operator:'王管理员', module:'馆藏层级', type:'导出', desc:'导出馆藏层级 CSV（筛选条件：馆藏地=总馆，状态=启用），共 4 条', ip:'192.168.10.24' },
+
+  /* ===== 排管理 ===== */
+  { time:'2025-04-10 09:35:12', operator:'王管理员', module:'排管理', type:'新增', desc:'新增排「总馆-2F-多媒体区-第 6 排」，排代码 06，书架数量 12 个', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:48:55', operator:'王管理员', module:'排管理', type:'修改', desc:'编辑排「总馆-2F-研讨区-第 3 排」书架数量：10 → 12，备注=新增两个书架', ip:'192.168.10.24' },
+  { time:'2025-04-09 16:42:18', operator:'李管理员', module:'排管理', type:'修改', desc:'停用排「总馆-2F-电子阅览区-A 排机位」，原因：设备检修中', ip:'192.168.10.26' },
+
+  /* ===== 书架管理 ===== */
+  { time:'2025-04-10 10:10:22', operator:'王管理员', module:'书架管理', type:'新增', desc:'新增书架「总馆-2F-多媒体区-第 1 排-第 5 书架」，书架代码 05，6 层 × 20 格，馆藏位置编码 ZG-2F-A-01-05', ip:'192.168.10.24' },
+  { time:'2025-04-10 10:32:47', operator:'王管理员', module:'书架管理', type:'修改', desc:'编辑书架「总馆-2F-多媒体区-第 1 排-第 4 书架」架位配置：5 层 → 6 层，每层 18 格，总架位数 108 个', ip:'192.168.10.24' },
+  { time:'2025-04-09 15:28:33', operator:'李管理员', module:'书架管理', type:'修改', desc:'停用书架「总馆-2F-研讨区-第 2 排-第 3 书架」，原因：待整理', ip:'192.168.10.26' },
+  { time:'2025-04-09 14:15:09', operator:'李管理员', module:'书架管理', type:'删除', desc:'删除书架「总馆-3F-自习区-第 1 排-第 1 书架」及关联架位，删除后不可恢复', ip:'192.168.10.26' },
+
+  /* ===== 读者用户 ===== */
+  { time:'2025-04-10 09:05:18', operator:'王管理员', module:'读者用户', type:'新增', desc:'新增读者「刘子涵」，学生，校园饭卡 2025010111，计算机科学与技术学院，可借 10 册，有效期至 2029-07-01', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:22:41', operator:'王管理员', module:'读者用户', type:'修改', desc:'编辑读者「陈思远」联系方式：13801234567 → 13801234999，邮箱 chensy@stu.edu.cn', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:40:55', operator:'李管理员', module:'读者用户', type:'修改', desc:'冻结读者「吴建国」（教师，T20120389）全馆借阅权限，原因：存在未处理违约或欠款', ip:'192.168.10.26' },
+  { time:'2025-04-10 10:05:33', operator:'李管理员', module:'读者用户', type:'修改', desc:'从卡中心同步读者数据，新增 1 人，更新 28 人信息/卡状态，保留冻结状态 3 人', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:22:07', operator:'王管理员', module:'读者用户', type:'新增', desc:'批量导入读者 5 人（刘子涵、杨梦琪、邱志豪、范晓萱、彭大为），跳过异常 1 条', ip:'192.168.10.24' },
+  { time:'2025-04-09 15:48:12', operator:'李管理员', module:'读者用户', type:'修改', desc:'解除读者「韩明辉」（学生，2021070145）挂失状态，状态变更为「正常」', ip:'192.168.10.26' },
+  { time:'2025-04-09 14:30:44', operator:'王管理员', module:'读者用户', type:'删除', desc:'删除读者「徐若曦」（学生，2023041577）档案，删除前已确认无未归还图书', ip:'192.168.10.24' },
+
+  /* ===== 借还管理 ===== */
+  { time:'2025-04-10 08:55:22', operator:'王管理员', module:'借还管理', type:'新增', desc:'办理借阅：读者陈思远（2022010301）借出《数据结构与算法分析》等 3 册，应还日期 2025-05-10', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:18:36', operator:'王管理员', module:'借还管理', type:'修改', desc:'办理归还：《人类简史》条码 B2023002，读者李婉清（2023051208），在借期内归还无滞纳金', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:42:15', operator:'刘慧', module:'借还管理', type:'修改', desc:'续借操作：读者周雨桐（2023070822）《围城》续借 1 次，应还日期延长至 2025-05-25', ip:'192.168.10.77' },
+  { time:'2025-04-10 10:15:48', operator:'刘慧', module:'借还管理', type:'新增', desc:'登记图书遗失：《算法导论》条码 B2023004，读者冯子轩（2022091133），应赔金额 133.00 元（定价 128 + 加工费 5）', ip:'192.168.10.77' },
+  { time:'2025-04-10 10:38:22', operator:'刘慧', module:'借还管理', type:'新增', desc:'登记图书损坏：《万历十五年》条码 B2023007，读者赵敏（T20190456），损坏比例 20%，应赔 7.00 元', ip:'192.168.10.77' },
+  { time:'2025-04-09 16:05:33', operator:'刘慧', module:'借还管理', type:'导出', desc:'批量催还：向 12 条逾期未还记录发送短信 + 邮件催还通知，涉及 8 位读者', ip:'192.168.10.77' },
+  { time:'2025-04-09 15:22:18', operator:'王管理员', module:'借还管理', type:'修改', desc:'批量归还：3 册图书（《平凡的世界》《百年孤独》《围城》），读者许诗涵（2023090245）', ip:'192.168.10.24' },
+
+  /* ===== 预约管理 ===== */
+  { time:'2025-04-10 09:10:25', operator:'王管理员', module:'预约管理', type:'新增', desc:'办理预约：读者陈思远（2022010301）预约《数据库系统概论》，排队号 #3，保留至 2025-04-13', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:35:47', operator:'王管理员', module:'预约管理', type:'修改', desc:'取书确认：读者李婉清（2023051208）取《活着》，预约单号 YY202504100003，已自动办理借出', ip:'192.168.10.24' },
+  { time:'2025-04-10 10:02:11', operator:'刘慧', module:'预约管理', type:'修改', desc:'取消预约：读者周雨桐（2023070822）取消《围城》预约，原因：读者不再需要此书', ip:'192.168.10.77' },
+  { time:'2025-04-09 16:18:33', operator:'刘慧', module:'预约管理', type:'导出', desc:'批量到书提醒：向 6 条「已到书」预约记录发送短信 + 邮件到书提醒', ip:'192.168.10.77' },
+  { time:'2025-04-09 15:42:09', operator:'王管理员', module:'预约管理', type:'导出', desc:'导出预约管理报表 CSV（全部记录），共 32 条预约明细', ip:'192.168.10.24' },
+
+  /* ===== 研修室管理 ===== */
+  { time:'2025-04-10 08:40:15', operator:'李管理员', module:'研修室管理', type:'新增', desc:'新建研修室「多媒体研讨间 G」，编号 YJS-2F-212，总馆 2F 多媒体区，容纳 8 人，最低 3 人起，配置投影/白板/视频会议', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:02:38', operator:'李管理员', module:'研修室管理', type:'修改', desc:'启用研修室「研讨间 4」（原状态：已停用），编号 YJS-2F-104', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:25:52', operator:'李管理员', module:'研修室管理', type:'修改', desc:'停用研修室「多媒体培训室」，原因：今日有 0 场预约且非使用中，符合停用条件', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:48:17', operator:'李管理员', module:'研修室管理', type:'新增', desc:'新增设备「智能黑板」至设备管理列表，可被研修室配置', ip:'192.168.10.26' },
+  { time:'2025-04-10 10:12:44', operator:'李管理员', module:'研修室管理', type:'删除', desc:'删除设备「旧投影仪」，删除前确认无研修室配置该设备', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:35:28', operator:'李管理员', module:'研修室管理', type:'删除', desc:'删除研修室「多媒体研讨间 H」及关联预约配置，删除后不可恢复', ip:'192.168.10.26' },
+
+  /* ===== 罚款缴费 ===== */
+  { time:'2025-04-10 09:08:33', operator:'王管理员', module:'罚款缴费', type:'新增', desc:'登记缴费：读者陈思远（2022010301）缴纳《人类简史》逾期滞纳金 12.00 元，支付方式=微信，交易流水号 WX202504100001', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:30:15', operator:'王管理员', module:'罚款缴费', type:'修改', desc:'减免罚单 FJ20250409003：读者何静怡（2023012245）《经济学原理》逾期 8 天，减免金额 8.00 元（全额减免），理由：首次违约减半', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:52:47', operator:'李管理员', module:'罚款缴费', type:'修改', desc:'办理退费：读者何静怡（2023012245）《国富论》遗失赔偿 62.00 元，退款方式=微信，原因：图书已找回', ip:'192.168.10.26' },
+  { time:'2025-04-10 10:18:22', operator:'李管理员', module:'罚款缴费', type:'修改', desc:'撤销罚单 FJ20250409031：读者何静怡（2023012245）《资本论》逾期 3 天，原因：系统重复计费，予以撤销', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:08:55', operator:'王管理员', module:'罚款缴费', type:'新增', desc:'新增罚单：读者高文博（2022031966）损坏键盘 1 个，应缴 380.00 元（设备采购价 350 + 维修费 30），截止日期 2025-04-23', ip:'192.168.10.24' },
+  { time:'2025-04-09 15:35:42', operator:'王管理员', module:'罚款缴费', type:'导出', desc:'导出罚款缴费记录 CSV（筛选条件：状态=待缴费），共 18 条，含应收/实收/已减/已退/欠款', ip:'192.168.10.24' },
+
+  /* ===== 公告管理 ===== */
+  { time:'2025-04-10 08:25:33', operator:'张明远', module:'公告管理', type:'新增', desc:'新增公告《关于2025年劳动节期间图书馆开放时间调整的通知》，类型=馆务通知，状态=已发布，置顶展示', ip:'192.168.10.22' },
+  { time:'2025-04-10 09:15:18', operator:'张明远', module:'公告管理', type:'修改', desc:'编辑公告《数字图书馆移动端 APP v3.2 版本更新公告》，修改摘要内容，状态保持已发布', ip:'192.168.10.22' },
+  { time:'2025-04-10 09:40:47', operator:'张明远', module:'公告管理', type:'修改', desc:'下架公告《关于暂停超星移动图书馆借阅服务的紧急通知》，原因：服务已恢复', ip:'192.168.10.22' },
+  { time:'2025-04-09 16:52:22', operator:'张明远', module:'公告管理', type:'修改', desc:'置顶公告《"书香校园·秋季读书月"系列活动报名开启》，在读者端公告栏顶部固定展示', ip:'192.168.10.22' },
+  { time:'2025-04-09 15:18:09', operator:'张明远', module:'公告管理', type:'删除', desc:'批量删除公告 2 条：《暑期数字图书馆服务安排公告》《电子阅览室座位预约系统使用说明》', ip:'192.168.10.22' },
+
+  /* ===== 系统设置 ===== */
+  { time:'2025-04-10 08:18:44', operator:'王管理员', module:'系统设置', type:'配置', desc:'修改借阅规则：默认借阅期限 30 天 → 35 天，单次最大借阅量 5 册 → 6 册', ip:'192.168.10.24' },
+  { time:'2025-04-10 08:42:15', operator:'王管理员', module:'系统设置', type:'配置', desc:'新增读者类型「访问学者」：可借 10 册，借阅期限 60 天，续借 2 次，预约上限 3 册', ip:'192.168.10.24' },
+  { time:'2025-04-10 09:05:33', operator:'李管理员', module:'系统设置', type:'配置', desc:'IP 白名单添加：192.168.30.0 ~ 192.168.30.255，备注=教学楼 B 区', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:28:47', operator:'李管理员', module:'系统设置', type:'配置', desc:'IP 白名单删除：172.16.50.10（数据中心专线），原因：专线已迁移', ip:'192.168.10.26' },
+  { time:'2025-04-10 09:52:11', operator:'李管理员', module:'系统设置', type:'配置', desc:'修改密码策略：最小密码长度 8 位 → 10 位，增加「特殊字符」复杂度要求', ip:'192.168.10.26' },
+  { time:'2025-04-09 16:40:22', operator:'王管理员', module:'系统设置', type:'配置', desc:'修改预约规则：图书预约保留时长 3 天 → 5 天，最大预约册数 3 册 → 5 册', ip:'192.168.10.24' },
+  { time:'2025-04-09 15:22:38', operator:'王管理员', module:'系统设置', type:'配置', desc:'修改通知设置：开启「系统公告推送」邮件通知', ip:'192.168.10.24' },
+  { time:'2025-04-09 14:05:55', operator:'系统', module:'系统设置', type:'配置', desc:'自动备份任务执行成功：backup_20250409_023000.sql，大小 248.6 MB，存储位置 /data/backup', ip:'127.0.0.1' }
+];
+
+let logs = RAW_LOGS.map((r, i) => {
+  const isFail = (r.type === '删除' && i % 7 === 3) || (r.type === '配置' && i % 11 === 5);
+  return {
+    id: 'LOG' + String(i + 1).padStart(5, '0'),
+    time: r.time, operator: r.operator, module: r.module,
+    type: r.type, desc: r.desc, ip: r.ip,
+    result: isFail ? '失败' : '成功'
+  };
+}).sort((a, b) => b.time.localeCompare(a.time));
+
+let archivedLogs = [];
+let state = { page: 1, pageSize: 10, keyword: '', module: '', type: '', operator: '', dateFrom: '', dateTo: '', quick: '' };
+
+/* ===== 工具 ===== */
+function toast(msg, type){
+  const el = document.createElement('div');
+  el.className = 'logs-toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  $('logs-toastWrap').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, 2600);
+}
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function nowStr(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+function downloadFile(filename, content, mime){
+  const blob = new Blob([content], { type: mime || 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function opBadge(type){
+  const map = { '新增':'logs-op-create', '修改':'logs-op-update', '删除':'logs-op-delete', '审批':'logs-op-approve', '导出':'logs-op-export', '配置':'logs-op-config', '登录':'logs-op-login', '驳回':'logs-op-reject' };
+  const ico = { '新增':'＋', '修改':'✎', '删除':'✕', '审批':'✔', '导出':'⬇', '配置':'⚙', '登录':'→', '驳回':'✖' };
+  return `<span class="logs-op-badge ${map[type] || 'logs-op-system'}">${ico[type] || ''} ${esc(type)}</span>`;
+}
+function moduleTag(mod){
+  const map = { '图书资源':'logs-mt-book', '电子资源':'logs-mt-e-resource', '期刊管理':'logs-mt-journal', '采购荐购':'logs-mt-purchase', '馆藏层级':'logs-mt-floor', '排管理':'logs-mt-floor', '书架管理':'logs-mt-floor', '读者用户':'logs-mt-reader', '借还管理':'logs-mt-borrow', '预约管理':'logs-mt-reserve', '研修室管理':'logs-mt-room', '罚款缴费':'logs-mt-fine', '公告管理':'logs-mt-notice', '系统设置':'logs-mt-system' };
+  return `<span class="logs-module-tag ${map[mod] || 'logs-mt-system'}">${esc(mod)}</span>`;
+}
+function avatarClass(name){
+  if(name === '系统') return 't';
+  if(name.indexOf('采编') >= 0 || name.indexOf('编目') >= 0 || name.indexOf('文博') >= 0) return 'm';
+  if(name.indexOf('李') >= 0) return 'f';
+  if(name.indexOf('张') >= 0) return 'a';
+  return '';
+}
+
+/* ===== 过滤 ===== */
+function getFiltered(){
+  const k = state.keyword.trim().toLowerCase();
+  const today = todayStr();
+  return logs.filter(r => {
+    if(state.quick === 'today' && r.time.substr(0, 10) !== today) return false;
+    if(state.quick === 'delete' && r.type !== '删除') return false;
+    if(state.quick === 'config' && r.type !== '配置') return false;
+    if(state.quick === 'approve' && r.type !== '审批') return false;
+    if(state.module && r.module !== state.module) return false;
+    if(state.type && r.type !== state.type) return false;
+    if(state.operator && r.operator !== state.operator) return false;
+    if(state.dateFrom && r.time.substr(0, 10) < state.dateFrom) return false;
+    if(state.dateTo && r.time.substr(0, 10) > state.dateTo) return false;
+    if(k){
+      const hay = (r.operator + ' ' + r.desc + ' ' + r.ip + ' ' + r.module + ' ' + r.type).toLowerCase();
+      if(hay.indexOf(k) === -1) return false;
+    }
+    return true;
+  });
+}
+
+/* ===== 渲染 ===== */
+function renderTable(){
+  const list = getFiltered();
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / state.pageSize));
+  if(state.page > pages) state.page = pages;
+  const start = (state.page - 1) * state.pageSize;
+  const rows = list.slice(start, start + state.pageSize);
+  const tbody = document.querySelector('.logs-table tbody');
+
+  if(!rows.length){
+    tbody.innerHTML = `<tr><td colspan="7"><div class="logs-empty"><span class="big">📭</span>没有找到符合条件的操作日志</div></td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(r => {
+      const resultHtml = r.result === '成功'
+        ? '<span class="logs-result-success">✓ 成功</span>'
+        : '<span class="logs-result-fail">✕ 失败</span>';
+      return `
+      <tr>
+        <td><div class="logs-mono">${esc(r.time)}</div></td>
+        <td>
+          <div class="logs-user-cell">
+            <div class="logs-avatar ${avatarClass(r.operator)}">${esc(r.operator[0])}</div>
+            <div>
+              <div class="logs-user-name">${esc(r.operator)}</div>
+              <div class="logs-user-sub">${esc(r.ip)}</div>
+            </div>
+          </div>
+        </td>
+        <td>${moduleTag(r.module)}</td>
+        <td>${opBadge(r.type)}</td>
+        <td class="logs-desc-cell">${esc(r.desc)}</td>
+        <td><span class="logs-ip-mono">${esc(r.ip)}</span></td>
+        <td>${resultHtml}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  $('totalNum').textContent = total;
+  $('totalNum2').textContent = total;
+  renderPager(total, pages);
+  updateChips();
+}
+
+function renderPager(total, pages){
+  let html = `<button class="logs-pager-btn" ${state.page === 1 ? 'disabled' : ''} onclick="logsGotoPage(${state.page - 1})">‹</button>`;
+  const show = [];
+  if(pages <= 7){ for(let i = 1; i <= pages; i++) show.push(i); }
+  else {
+    show.push(1);
+    if(state.page > 3) show.push('...');
+    for(let i = Math.max(2, state.page - 1); i <= Math.min(pages - 1, state.page + 1); i++) show.push(i);
+    if(state.page < pages - 2) show.push('...');
+    show.push(pages);
+  }
+  show.forEach(p => {
+    if(p === '...') html += `<span class="logs-pager-dots">···</span>`;
+    else html += `<button class="logs-pager-btn ${p === state.page ? 'active' : ''}" onclick="logsGotoPage(${p})">${p}</button>`;
+  });
+  html += `<button class="logs-pager-btn" ${state.page === pages ? 'disabled' : ''} onclick="logsGotoPage(${state.page + 1})">›</button>`;
+  $('pagerCtrl').innerHTML = html;
+}
+
+function updateChips(){
+  const today = todayStr();
+  $('c-all').textContent = logs.length;
+  $('c-today').textContent = logs.filter(r => r.time.substr(0, 10) === today).length;
+  $('c-delete').textContent = logs.filter(r => r.type === '删除').length;
+  $('c-config').textContent = logs.filter(r => r.type === '配置').length;
+  $('c-approve').textContent = logs.filter(r => r.type === '审批').length;
+}
+
+/* ===== 全局函数（供 onclick 调用） ===== */
+window.logsGotoPage = function(p){ state.page = p; renderTable(); document.querySelector('.logs-table-wrap').scrollTop = 0; };
+window.logsChangePageSize = function(v){ state.pageSize = parseInt(v); state.page = 1; renderTable(); };
+window.logsDoSearch = function(){ state.keyword = $('logs-kw').value; state.page = 1; renderTable(); };
+window.logsOnFilter = function(){
+  state.module = $('logs-fModule').value;
+  state.type = $('logs-fType').value;
+  state.operator = $('logs-fOperator').value;
+  state.dateFrom = $('logs-fDateFrom').value;
+  state.dateTo = $('logs-fDateTo').value;
+  state.page = 1;
+  renderTable();
+};
+window.logsResetFilter = function(){
+  $('logs-kw').value = '';
+  $('logs-fModule').value = '';
+  $('logs-fType').value = '';
+  $('logs-fOperator').value = '';
+  $('logs-fDateFrom').value = '';
+  $('logs-fDateTo').value = '';
+  document.querySelectorAll('.logs-chip').forEach(c => c.classList.remove('active'));
+  document.querySelector('.logs-chip[data-id=""]').classList.add('active');
+  state = { page: 1, pageSize: state.pageSize, keyword: '', module: '', type: '', operator: '', dateFrom: '', dateTo: '', quick: '' };
+  renderTable();
+  toast('筛选条件已重置');
+};
+window.logsSetQuick = function(el, q){
+  document.querySelectorAll('.logs-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state.quick = q;
+  state.page = 1;
+  renderTable();
+};
+window.logsExportList = function(){
+  const list = getFiltered();
+  if(!list.length){ toast('当前筛选条件下没有数据，无法导出', 'warn'); return; }
+  const today = todayStr();
+  let csv = '\ufeff操作日志审计报表,生成时间,' + nowStr() + '\n';
+  csv += '筛选条件,';
+  if(state.keyword) csv += '关键字:' + state.keyword + ' ';
+  if(state.module) csv += '模块:' + state.module + ' ';
+  if(state.type) csv += '类型:' + state.type + ' ';
+  if(state.operator) csv += '操作人:' + state.operator + ' ';
+  if(state.dateFrom || state.dateTo) csv += '时间:' + (state.dateFrom||'不限') + '~' + (state.dateTo||'不限') + ' ';
+  if(!state.keyword && !state.module && !state.type && !state.operator && !state.dateFrom && !state.dateTo) csv += '全部记录';
+  csv += '\n导出条数,' + list.length + '\n\n';
+  csv += '操作时间,操作人,业务模块,操作类型,操作描述,IP地址,结果\n';
+  list.forEach(r => {
+    csv += [r.time, r.operator, r.module, r.type, '"' + r.desc.replace(/"/g, '""') + '"', r.ip, r.result].join(',') + '\n';
+  });
+  downloadFile('操作日志审计报表_' + today + '.csv', csv, 'text/csv;charset=utf-8');
+  toast('已导出 ' + list.length + ' 条操作日志', 'ok');
+};
+
+/* ===== 审计报表 ===== */
+window.logsOpenAuditReport = function(){
+  const filtered = getFiltered();
+  $('auditCount').textContent = filtered.length;
+  $('auditCountAll').textContent = logs.length;
+  let period = '';
+  if(state.dateFrom || state.dateTo){
+    period = (state.dateFrom || '最早') + ' 至 ' + (state.dateTo || '最新');
+  } else {
+    const times = logs.map(r => r.time).sort();
+    if(times.length){ period = times[0].substr(0,10) + ' 至 ' + times[times.length-1].substr(0,10); }
+  }
+  $('auditPeriod').value = period;
+  $('auditModal').classList.add('show');
+};
+window.logsCloseModal = function(id){ $(id).classList.remove('show'); };
+
+window.logsConfirmAuditReport = function(){
+  const scope = document.querySelector('input[name="auditScope"]:checked').value;
+  const list = scope === 'all' ? logs : getFiltered();
+  if(!list.length){ toast('没有可生成报表的日志', 'warn'); return; }
+
+  const title = $('auditTitle').value.trim() || '数字图书馆 · 操作日志审计报表';
+  const period = $('auditPeriod').value.trim();
+  const maker = $('auditMaker').value.trim() || '王管理员';
+  const now = nowStr();
+
+  const moduleCount = {}, typeCount = {}, operatorCount = {};
+  let successCount = 0, failCount = 0;
+  list.forEach(r => {
+    moduleCount[r.module] = (moduleCount[r.module] || 0) + 1;
+    typeCount[r.type] = (typeCount[r.type] || 0) + 1;
+    operatorCount[r.operator] = (operatorCount[r.operator] || 0) + 1;
+    if(r.result === '成功') successCount++; else failCount++;
+  });
+  const moduleRows = Object.entries(moduleCount).sort((a,b) => b[1]-a[1])
+    .map(([k,v]) => `<tr><td>${esc(k)}</td><td style="text-align:right">${v}</td><td style="text-align:right">${(v/list.length*100).toFixed(1)}%</td></tr>`).join('');
+  const typeRows = Object.entries(typeCount).sort((a,b) => b[1]-a[1])
+    .map(([k,v]) => `<tr><td>${esc(k)}</td><td style="text-align:right">${v}</td><td style="text-align:right">${(v/list.length*100).toFixed(1)}%</td></tr>`).join('');
+  const operatorRows = Object.entries(operatorCount).sort((a,b) => b[1]-a[1])
+    .map(([k,v]) => `<tr><td>${esc(k)}</td><td style="text-align:right">${v}</td><td style="text-align:right">${(v/list.length*100).toFixed(1)}%</td></tr>`).join('');
+  const detailRows = list.map((r, i) => `
+    <tr>
+      <td style="text-align:center">${i+1}</td>
+      <td>${esc(r.time)}</td>
+      <td>${esc(r.operator)}</td>
+      <td>${esc(r.module)}</td>
+      <td>${esc(r.type)}</td>
+      <td>${esc(r.desc)}</td>
+      <td>${esc(r.ip)}</td>
+      <td style="text-align:center;color:${r.result==='成功'?'#16a34a':'#dc2626'};font-weight:600">${esc(r.result)}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>${esc(title)}</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#fff;color:#1f2937;padding:40px 50px;font-size:13px;line-height:1.6}
+  h1{font-size:22px;text-align:center;margin-bottom:8px;color:#0f172a}
+  .subtitle{text-align:center;color:#6b7280;font-size:13px;margin-bottom:8px}
+  .meta{text-align:center;color:#9ca3af;font-size:12px;margin-bottom:32px}
+  .section{margin-bottom:28px}
+  .section h2{font-size:15px;color:#0f172a;border-left:4px solid #2563eb;padding-left:10px;margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f8fafc;color:#374151;font-weight:600}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .stat-card{border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px;background:#fafbfc}
+  .stat-card .l{font-size:12px;color:#6b7280;margin-bottom:4px}
+  .stat-card .v{font-size:22px;font-weight:700;color:#1f2937}
+  .stat-card .v.green{color:#16a34a}
+  .stat-card .v.red{color:#dc2626}
+  .sign{margin-top:40px;display:flex;justify-content:space-between;font-size:13px;color:#374151}
+  .sign .item{display:flex;flex-direction:column;gap:24px}
+  .sign .line{border-bottom:1px solid #9ca3af;width:160px}
+  .footer{margin-top:40px;padding-top:16px;border-top:1px dashed #e2e8f0;text-align:center;color:#9ca3af;font-size:11.5px}
+</style>
+</head>
+<body>
+  <h1>${esc(title)}</h1>
+  <div class="subtitle">数据来源：数字图书馆后台管理系统 · 操作日志审计模块</div>
+  <div class="meta">报表周期：${esc(period || '—')} ｜ 制表人：${esc(maker)} ｜ 生成时间：${esc(now)}</div>
+  <div class="section">
+    <h2>一、总体统计</h2>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="l">日志总数</div><div class="v">${list.length}</div></div>
+      <div class="stat-card"><div class="l">操作成功</div><div class="v green">${successCount}</div></div>
+      <div class="stat-card"><div class="l">操作失败</div><div class="v red">${failCount}</div></div>
+      <div class="stat-card"><div class="l">涉及模块</div><div class="v">${Object.keys(moduleCount).length}</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <h2>二、按业务模块统计</h2>
+    <table><thead><tr><th>业务模块</th><th style="text-align:right;width:100px">操作次数</th><th style="text-align:right;width:100px">占比</th></tr></thead><tbody>${moduleRows}</tbody></table>
+  </div>
+  <div class="section">
+    <h2>三、按操作类型统计</h2>
+    <table><thead><tr><th>操作类型</th><th style="text-align:right;width:100px">操作次数</th><th style="text-align:right;width:100px">占比</th></tr></thead><tbody>${typeRows}</tbody></table>
+  </div>
+  <div class="section">
+    <h2>四、按操作人统计</h2>
+    <table><thead><tr><th>操作人</th><th style="text-align:right;width:100px">操作次数</th><th style="text-align:right;width:100px">占比</th></tr></thead><tbody>${operatorRows}</tbody></table>
+  </div>
+  <div class="section">
+    <h2>五、操作日志明细（共 ${list.length} 条）</h2>
+    <table><thead>
+      <tr><th style="width:44px;text-align:center">#</th><th style="width:140px">操作时间</th><th style="width:80px">操作人</th><th style="width:80px">业务模块</th><th style="width:70px">操作类型</th><th>操作描述</th><th style="width:110px">IP 地址</th><th style="width:60px;text-align:center">结果</th></tr>
+    </thead><tbody>${detailRows}</tbody></table>
+  </div>
+  <div class="sign">
+    <div class="item"><span>制表人：</span><div class="line"></div></div>
+    <div class="item"><span>审核人：</span><div class="line"></div></div>
+    <div class="item"><span>单位（盖章）：</span><div class="line"></div></div>
+  </div>
+  <div class="footer">本报表由数字图书馆后台管理系统自动生成 · ${esc(now)} · 共 ${list.length} 条记录</div>
+</body>
+</html>`;
+
+  const filename = '操作日志审计报表_' + todayStr() + '.html';
+  downloadFile(filename, html, 'text/html;charset=utf-8');
+  logsCloseModal('auditModal');
+  toast('已生成审计报表并开始下载：' + filename + '（可用浏览器打开后打印为 PDF）', 'ok');
+};
+
+/* ===== 日志归档 ===== */
+window.logsOpenArchiveModal = function(){
+  document.querySelector('input[name="archiveRange"][value="180"]').checked = true;
+  $('archiveCustomBox').style.display = 'none';
+  $('archiveStart').value = '';
+  $('archiveEnd').value = '';
+  updateArchivePreview();
+  $('archiveModal').classList.add('show');
+};
+
+function getArchiveTargets(){
+  const range = document.querySelector('input[name="archiveRange"]:checked').value;
+  const today = new Date(todayStr() + 'T00:00:00');
+  let cutoffStart = null, cutoffEnd = null;
+  if(range === '180'){
+    cutoffEnd = new Date(today); cutoffEnd.setDate(cutoffEnd.getDate() - 180);
+  } else if(range === '365'){
+    cutoffEnd = new Date(today); cutoffEnd.setDate(cutoffEnd.getDate() - 365);
+  } else {
+    cutoffStart = $('archiveStart').value;
+    cutoffEnd = $('archiveEnd').value;
+  }
+  return logs.filter(r => {
+    const d = r.time.substr(0, 10);
+    if(range === 'custom'){
+      if(cutoffStart && d < cutoffStart) return false;
+      if(cutoffEnd && d > cutoffEnd) return false;
+      return true;
+    }
+    const cutoffStr = cutoffEnd.toISOString().substr(0, 10);
+    return d < cutoffStr;
+  });
+}
+
+function updateArchivePreview(){
+  const targets = getArchiveTargets();
+  const remain = logs.length - targets.length;
+  $('archivePreview').innerHTML =
+    `📦 预计归档：<b>${targets.length}</b> 条日志，归档后列表剩余 <b>${remain}</b> 条。`;
+}
+
+window.logsConfirmArchive = function(){
+  const targets = getArchiveTargets();
+  if(!targets.length){ toast('当前归档范围内没有日志', 'warn'); return; }
+  const mode = document.querySelector('input[name="archiveMode"]:checked').value;
+
+  const archiveData = {
+    exportedAt: nowStr(),
+    count: targets.length,
+    range: (() => {
+      const rangeVal = document.querySelector('input[name="archiveRange"]:checked').value;
+      if(rangeVal === '180') return '6 个月前';
+      if(rangeVal === '365') return '1 年前';
+      return ($('archiveStart').value || '最早') + ' 至 ' + ($('archiveEnd').value || '最新');
+    })(),
+    logs: targets
+  };
+  const jsonStr = JSON.stringify(archiveData, null, 2);
+
+  let txt = '数字图书馆操作日志归档包\n';
+  txt += '='.repeat(60) + '\n';
+  txt += '归档时间：' + nowStr() + '\n';
+  txt += '归档范围：' + archiveData.range + '\n';
+  txt += '归档条数：' + targets.length + '\n';
+  txt += '='.repeat(60) + '\n\n';
+  targets.forEach((r, i) => {
+    txt += `[${i+1}] ${r.time}\n`;
+    txt += `    操作人：${r.operator}  |  模块：${r.module}  |  类型：${r.type}\n`;
+    txt += `    描述：${r.desc}\n`;
+    txt += `    IP：${r.ip}  |  结果：${r.result}\n\n`;
+  });
+
+  const ts = nowStr().replace(/[-: ]/g, '').substr(0, 14);
+  const baseName = '操作日志归档_' + ts;
+
+  downloadFile(baseName + '.json', jsonStr, 'application/json;charset=utf-8');
+  setTimeout(() => {
+    downloadFile(baseName + '.txt', txt, 'text/plain;charset=utf-8');
+  }, 300);
+
+  const ids = new Set(targets.map(r => r.id));
+  archivedLogs = archivedLogs.concat(targets);
+  for(let i = logs.length - 1; i >= 0; i--){
+    if(ids.has(logs[i].id)) logs.splice(i, 1);
+  }
+  state.page = 1;
+  renderTable();
+
+  logsCloseModal('archiveModal');
+  toast(`已归档 ${targets.length} 条日志，归档文件已开始下载（JSON + TXT），列表已刷新`, 'ok');
+};
+
+/* ===== 绑定事件 ===== */
+document.addEventListener('DOMContentLoaded', function(){
+  /* 搜索回车 */
+  $('logs-kw').addEventListener('keydown', function(e){ if(e.key === 'Enter') logsDoSearch(); });
+  /* 筛选下拉 change */
+  ['logs-fModule','logs-fType','logs-fOperator','logs-fDateFrom','logs-fDateTo'].forEach(id => {
+    $(id).addEventListener('change', logsOnFilter);
+  });
+  /* 搜索/重置/导出按钮 */
+  document.querySelectorAll('.logs-filter-actions .logs-btn')[0].addEventListener('click', logsDoSearch);
+  document.querySelectorAll('.logs-filter-actions .logs-btn')[1].addEventListener('click', logsResetFilter);
+  document.querySelectorAll('.logs-filter-actions .logs-btn')[2].addEventListener('click', logsExportList);
+  /* 快捷筛选 chip */
+  document.querySelectorAll('.logs-chip').forEach((chip, idx) => {
+    const keys = ['', 'today', 'delete', 'config', 'approve'];
+    chip.setAttribute('data-id', keys[idx] || '');
+    chip.addEventListener('click', function(){ logsSetQuick(this, keys[idx] || ''); });
+  });
+  /* 工具栏按钮 */
+  document.querySelectorAll('.logs-toolbar-left .logs-btn')[0].addEventListener('click', logsOpenAuditReport);
+  document.querySelectorAll('.logs-toolbar-left .logs-btn')[1].addEventListener('click', logsOpenArchiveModal);
+  /* 分页大小 */
+  document.querySelector('.logs-page-size-select').addEventListener('change', function(e){ logsChangePageSize(e.target.value); });
+  /* 归档弹窗 radio */
+  document.querySelectorAll('input[name="archiveRange"]').forEach(el => {
+    el.addEventListener('change', () => {
+      const val = document.querySelector('input[name="archiveRange"]:checked').value;
+      $('archiveCustomBox').style.display = val === 'custom' ? 'block' : 'none';
+      updateArchivePreview();
+    });
+  });
+  ['archiveStart','archiveEnd'].forEach(id => {
+    $(id).addEventListener('change', updateArchivePreview);
+  });
+
+  renderTable();
+});
+})();
+</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group[open] .nav-chevron {
+    transform: rotate(180deg);
+  }
+  .nav-chevron {
+    transition: transform 0.2s ease;
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  </style>
+</body>
+</html>
+

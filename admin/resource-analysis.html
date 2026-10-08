@@ -1,0 +1,704 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>馆藏资源分析 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0/dist/echarts-wordcloud.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+</style>
+<style id="semantic-token-fallback">
+  .bg-background { background-color: var(--lib-background); }
+  .text-background { color: var(--lib-background); }
+  .border-background { border-color: var(--lib-background); }
+  .ring-background { --tw-ring-color: var(--lib-background); }
+  .bg-foreground { background-color: var(--lib-foreground); }
+  .text-foreground { color: var(--lib-foreground); }
+  .border-foreground { border-color: var(--lib-foreground); }
+  .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+  .bg-card { background-color: var(--lib-card); }
+  .text-card { color: var(--lib-card); }
+  .border-card { border-color: var(--lib-card); }
+  .ring-card { --tw-ring-color: var(--lib-card); }
+  .bg-card-foreground { background-color: var(--lib-card-foreground); }
+  .text-card-foreground { color: var(--lib-card-foreground); }
+  .border-card-foreground { border-color: var(--lib-card-foreground); }
+  .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+  .bg-popover { background-color: var(--lib-popover); }
+  .text-popover { color: var(--lib-popover); }
+  .border-popover { border-color: var(--lib-popover); }
+  .ring-popover { --tw-ring-color: var(--lib-popover); }
+  .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+  .text-popover-foreground { color: var(--lib-popover-foreground); }
+  .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+  .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+  .bg-primary { background-color: var(--lib-primary); }
+  .text-primary { color: var(--lib-primary); }
+  .border-primary { border-color: var(--lib-primary); }
+  .ring-primary { --tw-ring-color: var(--lib-primary); }
+  .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+  .text-primary-foreground { color: var(--lib-primary-foreground); }
+  .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+  .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+  .bg-muted { background-color: var(--lib-muted); }
+  .text-muted { color: var(--lib-muted); }
+  .border-muted { border-color: var(--lib-muted); }
+  .ring-muted { --tw-ring-color: var(--lib-muted); }
+  .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+  .text-muted-foreground { color: var(--lib-muted-foreground); }
+  .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+  .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+  .bg-destructive { background-color: var(--lib-destructive); }
+  .text-destructive { color: var(--lib-destructive); }
+  .border-destructive { border-color: var(--lib-destructive); }
+  .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+  .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+  .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+  .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+  .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+  .bg-border { background-color: var(--lib-border); }
+  .text-border { color: var(--lib-border); }
+  .border-border { border-color: var(--lib-border); }
+  .ring-border { --tw-ring-color: var(--lib-border); }
+  .bg-input { background-color: var(--lib-input); }
+  .text-input { color: var(--lib-input); }
+  .border-input { border-color: var(--lib-input); }
+  .ring-input { --tw-ring-color: var(--lib-input); }
+  .bg-ring { background-color: var(--lib-ring); }
+  .text-ring { color: var(--lib-ring); }
+  .border-ring { border-color: var(--lib-ring); }
+  .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  [data-icon] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    background-color: currentColor;
+  }
+</style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<style>
+  table { border-collapse: separate; border-spacing: 0; }
+  thead th { background-color: var(--lib-surface-2); color: var(--lib-ink); font-weight: 600; border-bottom: 1px solid var(--lib-line); }
+  tbody tr:hover td { background-color: var(--lib-surface-2); }
+  .btn-primary { background-color: var(--lib-primary); color: var(--lib-primary-foreground); border: 1px solid var(--lib-primary); }
+  .btn-primary:hover { background-color: var(--lib-primary-700); border-color: var(--lib-primary-700); }
+  .btn-default { background-color: var(--lib-surface); color: var(--lib-ink-2); border: 1px solid var(--lib-border); }
+  .btn-default:hover { color: var(--lib-primary); border-color: var(--lib-primary-200); background-color: var(--lib-primary-50); }
+  .nav-item { color: var(--lib-ink-2); }
+  .nav-item:hover { background-color: var(--lib-surface-2); color: var(--lib-primary); }
+  .nav-item.nav-active { background-color: var(--lib-primary-50); color: var(--lib-primary); border-right: 3px solid var(--lib-primary); }
+  .nav-group summary { color: var(--lib-ink); font-weight: 600; }
+  input, select, textarea { border-radius: var(--lib-radius-md); border-color: var(--lib-border); }
+  input:focus, select:focus, textarea:focus { border-color: var(--lib-primary); outline: none; box-shadow: 0 0 0 2px var(--lib-primary-100); }
+
+  #app-shell { min-height: 100vh; }
+  #app-sidebar { width: 248px; }
+  #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+  .nav-item { color: var(--lib-text-secondary); }
+  .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+  .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+  .nav-group summary { list-style: none; }
+  .nav-group summary::-webkit-details-marker { display: none; }
+  .nav-group summary::marker { display: none; }
+  .nav-group .nav-chevron { transition: transform 0.2s ease; transform: rotate(-90deg); }
+  .nav-group[open] > summary .nav-chevron { transform: rotate(0deg); }
+  .nav-group summary:hover { background-color: var(--lib-surface-2); color: var(--lib-ink); }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+  .chart-container { width: 100%; height: 320px; }
+  .chart-container-lg { width: 100%; height: 400px; }
+</style>
+<div id="app-shell" style="background-color: var(--lib-bg);">
+<!-- 顶部导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-2">
+<span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+<span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden items-center sm:flex">
+<i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+<input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+</div>
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 -->
+<nav class="mb-4 flex items-center gap-2 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:text-[var(--lib-primary)] transition-colors" href="dashboard.html">工作台</a>
+<i class="h-4 w-4" data-lucide="chevron-right"></i>
+<span style="color: var(--lib-ink);">馆藏分析</span>
+</nav>
+
+<!-- 核心指标卡 -->
+<div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+<div class="rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm" style="color: var(--lib-ink-3);">馆藏总量</p>
+<p class="mt-2 text-2xl font-semibold tabular" style="color: var(--lib-ink);">1,247,680</p>
+<p class="mt-1 text-xs" style="color: var(--lib-state-success);">↑ 3.2% 较上年</p>
+</div>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">
+<i class="h-6 w-6" data-lucide="library"></i>
+</div>
+</div>
+</div>
+<div class="rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm" style="color: var(--lib-ink-3);">图书资源</p>
+<p class="mt-2 text-2xl font-semibold tabular" style="color: var(--lib-ink);">986,420</p>
+<p class="mt-1 text-xs" style="color: var(--lib-ink-3);">占比 79.1%</p>
+</div>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg" style="background-color: var(--lib-success-50); color: var(--lib-state-success);">
+<i class="h-6 w-6" data-lucide="book-open"></i>
+</div>
+</div>
+</div>
+<div class="rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm" style="color: var(--lib-ink-3);">本年新增</p>
+<p class="mt-2 text-2xl font-semibold tabular" style="color: var(--lib-ink);">18,320</p>
+<p class="mt-1 text-xs" style="color: var(--lib-state-success);">↑ 12.5% 较前年</p>
+</div>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg" style="background-color: var(--lib-warning-50); color: var(--lib-state-warning);">
+<i class="h-6 w-6" data-lucide="trending-up"></i>
+</div>
+</div>
+</div>
+<div class="rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm" style="color: var(--lib-ink-3);">平均利用率</p>
+<p class="mt-2 text-2xl font-semibold tabular" style="color: var(--lib-ink);">68.4%</p>
+<p class="mt-1 text-xs" style="color: var(--lib-state-error);">↓ 1.2% 较上年</p>
+</div>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg" style="background-color: var(--lib-info-50); color: var(--lib-state-info);">
+<i class="h-6 w-6" data-lucide="percent"></i>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 一、馆藏结构分布 -->
+<section class="mb-6 rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="mb-5 flex items-center gap-2">
+<div class="h-6 w-1 rounded-full" style="background-color: var(--lib-primary);"></div>
+<h2 class="text-h2" style="color: var(--lib-ink);">馆藏结构分布</h2>
+</div>
+<div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">文献类型占比</h3>
+<div class="chart-container" id="chart-doc-type"></div>
+</div>
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">学科分布</h3>
+<div class="chart-container" id="chart-subject"></div>
+</div>
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">中图法分类分布</h3>
+<div class="chart-container" id="chart-clc"></div>
+</div>
+</div>
+<div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">馆藏高频主题</h3>
+<div class="chart-container" id="chart-wordcloud"></div>
+</div>
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">馆藏高频主题 TOP10</h3>
+<div class="chart-container" id="chart-word-top10"></div>
+</div>
+</div>
+</section>
+
+<!-- 二、馆藏增长与剔除 -->
+<section class="mb-6 rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="mb-5 flex items-center gap-2">
+<div class="h-6 w-1 rounded-full" style="background-color: var(--lib-state-success);"></div>
+<h2 class="text-h2" style="color: var(--lib-ink);">馆藏增长与剔除</h2>
+</div>
+<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">年度新增与剔除</h3>
+<div class="chart-container-lg" id="chart-growth-bar"></div>
+</div>
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">累积馆藏量趋势</h3>
+<div class="chart-container-lg" id="chart-growth-area"></div>
+</div>
+</div>
+</section>
+
+<!-- 三、馆藏利用率 -->
+<section class="mb-6 rounded-xl border p-5" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="mb-5 flex items-center gap-2">
+<div class="h-6 w-1 rounded-full" style="background-color: var(--lib-state-warning);"></div>
+<h2 class="text-h2" style="color: var(--lib-ink);">馆藏利用率</h2>
+</div>
+<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">入藏年份 × 借阅次数</h3>
+<div class="chart-container-lg" id="chart-usage-scatter"></div>
+</div>
+<div class="rounded-lg border p-4" style="border-color: var(--lib-line);">
+<h3 class="mb-3 text-sm font-medium" style="color: var(--lib-ink-2);">分类 × 楼层借阅热度</h3>
+<div class="chart-container-lg" id="chart-usage-heatmap"></div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<script>
+lucide.createIcons();
+
+const colors = {
+  primary: '#409eff',
+  success: '#67c23a',
+  warning: '#e6a23c',
+  error: '#f56c6c',
+  info: '#909399',
+  palette: ['#409eff', '#67c23a', '#e6a23c', '#f56c6c', '#909399', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6366f1']
+};
+
+// 1. 文献类型占比 - 饼图
+const chartDocType = echarts.init(document.getElementById('chart-doc-type'));
+chartDocType.setOption({
+  tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+  legend: { bottom: 0, itemWidth: 10, itemHeight: 10, textStyle: { fontSize: 12, color: '#606266' } },
+  color: colors.palette,
+  series: [{
+    type: 'pie',
+    radius: ['40%', '65%'],
+    center: ['50%', '45%'],
+    avoidLabelOverlap: false,
+    itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
+    label: { show: false },
+    emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' } },
+    data: [
+      { value: 986420, name: '图书' },
+      { value: 12580, name: '期刊' },
+      { value: 248680, name: '电子资源' }
+    ]
+  }]
+});
+
+// 2. 学科分布 - 环形图
+const chartSubject = echarts.init(document.getElementById('chart-subject'));
+chartSubject.setOption({
+  tooltip: { trigger: 'item' },
+  legend: { type: 'scroll', orient: 'vertical', right: 0, top: 'middle', textStyle: { fontSize: 11, color: '#606266' } },
+  color: colors.palette,
+  series: [{
+    type: 'pie',
+    radius: ['35%', '60%'],
+    center: ['35%', '50%'],
+    itemStyle: { borderRadius: 3, borderColor: '#fff', borderWidth: 1 },
+    label: { show: false },
+    data: [
+      { value: 186500, name: '工程技术' },
+      { value: 152300, name: '自然科学' },
+      { value: 128400, name: '社会科学' },
+      { value: 96500, name: '文学' },
+      { value: 72300, name: '经济管理' },
+      { value: 68400, name: '艺术' },
+      { value: 54200, name: '历史地理' },
+      { value: 41800, name: '哲学宗教' }
+    ]
+  }]
+});
+
+// 3. 中图法分类分布 - 矩形树图
+const chartClc = echarts.init(document.getElementById('chart-clc'));
+chartClc.setOption({
+  tooltip: { formatter: '{b}: {c}' },
+  color: colors.palette,
+  series: [{
+    type: 'treemap',
+    width: '95%',
+    height: '90%',
+    roam: false,
+    nodeClick: false,
+    breadcrumb: { show: false },
+    label: { show: true, formatter: '{b}\n{c}', fontSize: 11 },
+    itemStyle: { borderColor: '#fff', borderWidth: 1, gapWidth: 1 },
+    data: [
+      { name: 'T 工业技术', value: 186500 },
+      { name: 'O 数理科学', value: 152300 },
+      { name: 'H 语言', value: 96500 },
+      { name: 'I 文学', value: 128400 },
+      { name: 'F 经济', value: 72300 },
+      { name: 'G 文化科教', value: 68400 },
+      { name: 'K 历史地理', value: 54200 },
+      { name: 'B 哲学', value: 41800 },
+      { name: 'C 社科总论', value: 35200 },
+      { name: 'D 政治法律', value: 28900 },
+      { name: 'J 艺术', value: 24600 },
+      { name: '其他', value: 38400 }
+    ]
+  }]
+});
+
+// 4. 馆藏主题分布 - 词云
+const chartWordcloud = echarts.init(document.getElementById('chart-wordcloud'));
+chartWordcloud.setOption({
+  tooltip: { show: true, formatter: function(p) { return p.name + '<br/>馆藏 ' + p.value.toLocaleString() + ' 种'; } },
+  series: [{
+    type: 'wordCloud',
+    shape: 'circle',
+    left: 'center',
+    top: 'center',
+    width: '95%',
+    height: '95%',
+    right: null,
+    bottom: null,
+    sizeRange: [14, 48],
+    rotationRange: [-45, 45],
+    rotationStep: 45,
+    gridSize: 8,
+    drawOutOfBound: false,
+    textStyle: { fontFamily: 'sans-serif', fontWeight: 'bold', color: function() { return colors.palette[Math.floor(Math.random() * colors.palette.length)]; } },
+    emphasis: { focus: 'self', textStyle: { textShadowBlur: 10, textShadowColor: '#333' } },
+    data: [
+      { name: '人工智能', value: 8450 },
+      { name: '大数据', value: 7200 },
+      { name: '机器学习', value: 6800 },
+      { name: 'Python', value: 6450 },
+      { name: '数据库', value: 5900 },
+      { name: '图书馆学', value: 5650 },
+      { name: '信息检索', value: 5120 },
+      { name: '统计学', value: 4850 },
+      { name: '经济学', value: 4620 },
+      { name: '管理学', value: 4380 },
+      { name: '文学', value: 4200 },
+      { name: '历史', value: 3850 },
+      { name: '心理学', value: 3600 },
+      { name: '云计算', value: 3420 },
+      { name: '物联网', value: 3200 },
+      { name: '区块链', value: 2980 },
+      { name: '网络安全', value: 2760 },
+      { name: '算法', value: 2580 },
+      { name: '操作系统', value: 2400 },
+      { name: '计算机组成', value: 2200 },
+      { name: '微积分', value: 1980 },
+      { name: '线性代数', value: 1820 },
+      { name: '概率论', value: 1650 }
+    ]
+  }]
+});
+
+// 4b. 馆藏主题 TOP10 - 横向条形图
+const chartWordTop10 = echarts.init(document.getElementById('chart-word-top10'));
+chartWordTop10.setOption({
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: '{b}: 馆藏 {c} 种' },
+  grid: { left: '3%', right: '8%', bottom: '3%', top: '3%', containLabel: true },
+  xAxis: { type: 'value', axisLine: { show: false }, splitLine: { lineStyle: { color: '#e4e7ed' } }, axisLabel: { color: '#606266' } },
+  yAxis: {
+    type: 'category',
+    data: ['图书馆学', '管理学', '经济学', '统计学', '信息检索', '数据库', 'Python', '机器学习', '大数据', '人工智能'],
+    axisLine: { lineStyle: { color: '#dcdfe6' } },
+    axisLabel: { color: '#606266' },
+    axisTick: { show: false }
+  },
+  color: [colors.primary],
+  series: [{
+    type: 'bar',
+    barWidth: '55%',
+    itemStyle: { borderRadius: [0, 4, 4, 0] },
+    data: [5650, 4380, 4620, 4850, 5120, 5900, 6450, 6800, 7200, 8450]
+  }]
+});
+
+// 5. 年度新增与剔除 - 堆叠柱状图
+const years = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'];
+const chartGrowthBar = echarts.init(document.getElementById('chart-growth-bar'));
+chartGrowthBar.setOption({
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+  legend: { bottom: 0, textStyle: { color: '#606266' } },
+  grid: { left: '3%', right: '4%', bottom: '12%', top: '10%', containLabel: true },
+  xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: '#dcdfe6' } }, axisLabel: { color: '#606266' } },
+  yAxis: { type: 'value', axisLine: { show: false }, splitLine: { lineStyle: { color: '#e4e7ed' } }, axisLabel: { color: '#606266' } },
+  color: [colors.success, colors.error],
+  series: [
+    { name: '新增', type: 'bar', stack: 'total', barWidth: '50%', data: [8200, 9100, 10500, 11200, 12800, 13500, 14200, 15100, 16800, 18320] },
+    { name: '剔除', type: 'bar', stack: 'total', data: [1200, 1350, 1500, 1800, 2100, 2300, 2200, 2400, 2600, 1250] }
+  ]
+});
+
+// 6. 累积馆藏量趋势 - 面积图
+const chartGrowthArea = echarts.init(document.getElementById('chart-growth-area'));
+chartGrowthArea.setOption({
+  tooltip: { trigger: 'axis' },
+  grid: { left: '3%', right: '4%', bottom: '8%', top: '10%', containLabel: true },
+  xAxis: { type: 'category', boundaryGap: false, data: years, axisLine: { lineStyle: { color: '#dcdfe6' } }, axisLabel: { color: '#606266' } },
+  yAxis: { type: 'value', axisLine: { show: false }, splitLine: { lineStyle: { color: '#e4e7ed' } }, axisLabel: { color: '#606266' } },
+  color: [colors.primary],
+  series: [{
+    name: '累积馆藏量',
+    type: 'line',
+    smooth: true,
+    lineStyle: { width: 3 },
+    areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(64,158,255,0.3)' }, { offset: 1, color: 'rgba(64,158,255,0.05)' }]) },
+    data: [980000, 987750, 996750, 1006150, 1016850, 1028050, 1039650, 1053350, 1070550, 1247680]
+  }]
+});
+
+// 7. 入藏年份 × 借阅次数 - 散点图
+const chartUsageScatter = echarts.init(document.getElementById('chart-usage-scatter'));
+chartUsageScatter.setOption({
+  tooltip: { trigger: 'item', formatter: function(p) { return '入藏年份：' + p.data[0] + '<br>借阅次数：' + p.data[1]; } },
+  grid: { left: '3%', right: '8%', bottom: '10%', top: '10%', containLabel: true },
+  xAxis: { type: 'value', name: '入藏年份', min: 2010, max: 2024, splitLine: { lineStyle: { color: '#e4e7ed' } }, axisLabel: { color: '#606266' }, nameTextStyle: { color: '#606266' } },
+  yAxis: { type: 'value', name: '借阅次数', splitLine: { lineStyle: { color: '#e4e7ed' } }, axisLabel: { color: '#606266' }, nameTextStyle: { color: '#606266' } },
+  visualMap: {
+    min: 0, max: 80, dimension: 1,
+    inRange: { color: [colors.info, colors.primary, colors.warning, colors.error] },
+    textStyle: { color: '#606266' },
+    right: 0, top: 'center', itemHeight: 80
+  },
+  series: [{
+    type: 'scatter',
+    symbolSize: function(data) { return Math.sqrt(data[1]) * 2.5; },
+    data: [
+      [2010, 12], [2011, 18], [2012, 25], [2013, 32], [2014, 28],
+      [2015, 45], [2016, 52], [2017, 68], [2018, 74], [2019, 81],
+      [2020, 38], [2021, 55], [2022, 62], [2023, 48], [2024, 22]
+    ]
+  }]
+});
+
+// 8. 分类 × 楼层借阅热度 - 热力图
+const floors = ['1F', '2F', '3F', '4F', '5F'];
+const categories = ['T工业技术', 'O数理科学', 'H语言', 'I文学', 'F经济', 'G文教', 'K历史', 'B哲学'];
+const heatData = [
+  [0, 0, 92], [0, 1, 85], [0, 2, 78], [0, 3, 65], [0, 4, 70],
+  [1, 0, 88], [1, 1, 95], [1, 2, 72], [1, 3, 60], [1, 4, 55],
+  [2, 0, 75], [2, 1, 80], [2, 2, 90], [2, 3, 82], [2, 4, 68],
+  [3, 0, 62], [3, 1, 58], [3, 2, 85], [3, 3, 88], [3, 4, 74],
+  [4, 0, 78], [4, 1, 72], [4, 2, 68], [4, 3, 70], [4, 4, 82],
+  [5, 0, 55], [5, 1, 60], [5, 2, 75], [5, 3, 80], [5, 4, 65],
+  [6, 0, 48], [6, 1, 52], [6, 2, 70], [6, 3, 76], [6, 4, 60],
+  [7, 0, 42], [7, 1, 45], [7, 2, 58], [7, 3, 62], [7, 4, 55]
+];
+const chartUsageHeatmap = echarts.init(document.getElementById('chart-usage-heatmap'));
+chartUsageHeatmap.setOption({
+  tooltip: { position: 'top', formatter: function(p) { return categories[p.data[1]] + ' · ' + floors[p.data[0]] + '<br>借阅热度：' + p.data[2]; } },
+  grid: { left: '12%', right: '8%', bottom: '12%', top: '5%' },
+  xAxis: { type: 'category', data: floors, splitArea: { show: true }, axisLabel: { color: '#606266' } },
+  yAxis: { type: 'category', data: categories, splitArea: { show: true }, axisLabel: { color: '#606266' } },
+  visualMap: {
+    min: 40, max: 100, calculable: true,
+    inRange: { color: [colors.info, colors.primary, colors.warning, colors.error] },
+    textStyle: { color: '#606266' },
+    right: 0, bottom: '5%', itemHeight: 80
+  },
+  series: [{
+    type: 'heatmap',
+    data: heatData,
+    label: { show: true, color: '#fff', fontSize: 11 },
+    itemStyle: { borderColor: '#fff', borderWidth: 1 }
+  }]
+});
+
+window.addEventListener('resize', function() {
+  chartDocType.resize();
+  chartSubject.resize();
+  chartClc.resize();
+  chartWordcloud.resize();
+  chartWordTop10.resize();
+  chartGrowthBar.resize();
+  chartGrowthArea.resize();
+  chartUsageScatter.resize();
+  chartUsageHeatmap.resize();
+});
+</script>
+</body>
+</html>
