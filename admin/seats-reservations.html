@@ -938,7 +938,7 @@ function getBtns(r){
     return '<span class="link" data-act="reopen" data-id="'+id+'">重新启用</span><span class="op-sep">|</span>'+detail;
   }
   if(sk==='done'){
-    return '<span class="text-muted">已结束</span><span class="op-sep">|</span>'+detail;
+    return detail;
   }
   return '<span class="link" data-act="clear-violation" data-id="'+id+'">消除违约</span><span class="op-sep">|</span>'+detail;
 }
