@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -551,6 +551,7 @@ table.u-matrix tbody tr:hover th.seat-col{background:#f8fafc}
         <div class="list-toolbar">
           <div class="lt-left">
             <button class="btn btn-primary" onclick="openAddModal()">＋ 新增预约</button>
+            <button class="btn btn-ghost" onclick="refreshData()">🔄 刷新数据</button>
             <button class="btn btn-ghost" onclick="openLegal()" title="查看10 种状态流转与释义"><i class="fas fa-book-open"></i> 状态说明</button>
             <button class="btn btn-ghost" onclick="openUsage()" title="查看座位当天的使用情况与未来预约">🪑 座位使用及预约状态</button>
           </div>
@@ -1091,6 +1092,7 @@ function batchAction(type){
 }
 function batchExport(){ toast('已导出 '+state.selected.size+' 条预约记录'); clearSelection(); }
 function clearSelection(){ state.selected.clear(); renderTable(); }
+function refreshData(){ state.page = 1; state.selected.clear(); renderTable(); toast('数据已刷新'); }
 function updateBatchBar(){
   $('selCount').textContent = state.selected.size;
   $('batchBar').classList.toggle('show', state.selected.size>0);

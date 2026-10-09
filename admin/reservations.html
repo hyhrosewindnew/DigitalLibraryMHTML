@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -629,8 +629,8 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
           <div class="toolbar-left">
             <button class="btn btn-primary" onclick="openNewReserve()">📅 办理预约</button>
             <button class="btn btn-info" onclick="openPickup()">✅ 取书确认</button>
+            <button class="btn btn-ghost" onclick="refreshData()">🔄 刷新数据</button>
             <button class="btn" onclick="batchNotice()">📢 批量到书提醒</button>
-            <!-- ★ 改动②：新增预约分析按钮 -->
             <button class="btn btn-ghost" onclick="openReserveAnalysis()">📊 预约分析</button>
           </div>
           <div class="toolbar-right">
@@ -1160,6 +1160,13 @@ function setQuick(el, q){
   state.quick = q;
   state.page = 1;
   renderTable();
+}
+
+function refreshData(){
+  state.page = 1;
+  selected.clear();
+  renderTable();
+  toast('数据已刷新');
 }
 
 function renderTable(){

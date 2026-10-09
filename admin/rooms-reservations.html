@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -596,6 +596,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
         <div class="panel-head">
           <div class="actions">
             <button class="btn btn-primary" id="btnAdd">＋ 新增预约</button>
+            <button class="btn btn-ghost" id="btnRefresh">🔄 刷新数据</button>
             <button class="btn btn-sm btn-danger" id="btnBatchCancel">批量取消</button>
             <button class="btn btn-ghost" id="btnLegal">📖 状态说明</button>
             <button class="btn btn-ghost" id="btnRoomStatus">🏛 研修室使用及预约状态</button>
@@ -2149,6 +2150,7 @@ function bind(){
     if(e.target.id==='btnBatchCancel') batchCancel();
     if(e.target.id==='btnLegal') openLegal();
     if(e.target.id==='btnRoomStatus') openRoomStatus();
+    if(e.target.id==='btnRefresh'){ state.page=1; state.selected.clear(); render(); $('checkAll').checked=false; toast('数据已刷新'); }
 
     const link = e.target.closest('[data-act]');
     if(link && link.dataset.act){ act(link.dataset.act, link.dataset.id); return; }
