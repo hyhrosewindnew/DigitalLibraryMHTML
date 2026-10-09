@@ -39,7 +39,7 @@
   .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
   .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
   .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
-  .nav { display: flex; gap: 6px; }
+  .nav { display: flex; gap: 6px; align-items: center; }
   .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
   .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
   .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
@@ -60,21 +60,12 @@
 
   .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
 
-  /* 主体 */
   .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
   .left-col > * + * { margin-top: 18px; }
   .right-col > * + * { margin-top: 18px; }
 
-  /* 详情卡片 */
-  .detail-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    overflow: hidden;
-  }
+  .detail-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
 
-  /* 头部 */
   .detail-head {
     padding: 28px 32px 22px;
     border-bottom: 1px solid var(--border);
@@ -103,7 +94,6 @@
   .detail-meta span { display: flex; align-items: center; gap: 5px; }
   .detail-meta b { color: var(--text-2); font-weight: 500; }
 
-  /* 标签 */
   .tag {
     display: inline-block;
     padding: 2px 10px;
@@ -129,7 +119,6 @@
   .status.ok { background: #ecfdf5; color: #15803d; }
   .status.ok i { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.14); }
 
-  /* 摘要 */
   .detail-summary {
     margin: 0 32px;
     margin-top: 22px;
@@ -143,7 +132,6 @@
   }
   .detail-summary b { color: #1d4ed8; }
 
-  /* 正文 */
   .detail-body {
     padding: 28px 32px 8px;
     font-size: 15px;
@@ -175,7 +163,6 @@
   }
   .detail-body th { background: #f8fafc; font-weight: 600; color: var(--text); }
 
-  /* 文件下载 */
   .attachments {
     padding: 18px 32px 28px;
     border-top: 1px dashed var(--border);
@@ -224,7 +211,6 @@
   }
   .file-item .download:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,158,255,0.3); }
 
-  /* 操作栏 */
   .detail-ops {
     display: flex;
     align-items: center;
@@ -263,7 +249,6 @@
   }
   .ops-right button:hover { border-color: var(--sky); color: var(--primary); }
 
-  /* 上下篇 */
   .prev-next { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 12px; }
   .pn-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; transition: .2s; }
   .pn-item:hover { color: var(--primary); }
@@ -272,7 +257,6 @@
   .pn-item .t { flex: 1; font-size: 13.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pn-item.disabled .t { color: var(--text-3); }
 
-  /* 相关推荐 */
   .related { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
   .related h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .related h3::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
@@ -293,12 +277,10 @@
   .rel-item .t { flex: 1; font-size: 13.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .rel-item .date { font-size: 11.5px; color: var(--text-3); flex-shrink: 0; }
 
-  /* 右侧 */
   .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
   .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
 
-  /* 文章目录 */
   .toc { display: flex; flex-direction: column; gap: 6px; }
   .toc a {
     display: block;
@@ -314,7 +296,6 @@
   .toc a:hover { background: rgba(74,158,255,0.08); color: var(--primary); border-left-color: var(--sky); }
   .toc a.sub { padding-left: 24px; font-size: 12.5px; }
 
-  /* 元信息 */
   .meta-card .row {
     display: flex; align-items: center; gap: 10px;
     padding: 9px 0;
@@ -326,7 +307,6 @@
   .meta-card .row .value { color: var(--text); font-weight: 500; flex: 1; }
   .meta-card .row .value.mono { font-family: ui-monospace, monospace; font-size: 12.5px; }
 
-  /* 操作 */
   .quick-card { background: linear-gradient(135deg, #fafcff, #f0f9ff); border-radius: 12px; padding: 18px; border: 1px solid #dbeafe; }
   .quick-card .tip { font-size: 12.5px; color: var(--text-2); line-height: 1.7; margin-bottom: 14px; }
   .quick-card .tip b { color: var(--primary); }
@@ -336,7 +316,6 @@
   .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
   .notice-card .text b { color: #b45309; }
 
-  /* Toast */
   .toast {
     position: fixed; top: 26px; left: 50%;
     transform: translateX(-50%) translateY(-14px);
@@ -353,6 +332,78 @@
   @media (max-width: 1240px) {
     .main-grid { grid-template-columns: 1fr; }
   }
+
+  /* ============== 空间预约下拉 ============== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before { opacity: 1; }
+
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease;
+    z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important;
+    align-items: center; gap: 12px;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    border-radius: 10px;
+    transition: .15s;
+    line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ============== 下拉结束 ============== */
 </style>
 </head>
 <body>
@@ -380,12 +431,46 @@
     </div>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="#">馆藏检索</a>
-      <a href="#">电子资源</a>
-      <a href="#">空间预约</a>
-      <a href="#">读者服务</a>
-      <a href="#">信息素养</a>
-      <a href="#" class="active">公告/资讯</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+      <!-- 空间预约下拉 -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+      <a href="读者服务导航.html">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="校园公告.html" class="active">公告/资讯</a>
     </nav>
     <div class="user-area">
       <button class="notif-btn">🔔<span class="badge"></span></button>
@@ -401,9 +486,9 @@
   <div class="breadcrumb">
     <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="公告列表页.html">校园公告</a>
+    <a href="校园公告.html">校园公告</a>
     <span class="sep">›</span>
-    <a href="公告列表页.html">馆务通知</a>
+    <a href="校园公告.html">馆务通知</a>
     <span class="sep">›</span>
     <span class="current">正文详情</span>
   </div>
@@ -413,13 +498,10 @@
 
   <div class="main-grid">
 
-    <!-- 左侧 -->
     <div class="left-col">
 
-      <!-- 详情卡片 -->
       <div class="detail-card">
 
-        <!-- 头部 -->
         <div class="detail-head">
           <div class="tag-row">
             <span class="tag tag-blue">馆务通知</span>
@@ -436,12 +518,10 @@
           </div>
         </div>
 
-        <!-- 摘要 -->
         <div class="detail-summary">
           <b>📋 公告摘要：</b>10月1日至10月7日闭馆，10月8日起恢复正常开放，自助还书机24小时可用。闭馆期间数字图书馆线上服务正常，请读者合理安排借还书时间。
         </div>
 
-        <!-- 正文 -->
         <div class="detail-body">
           <p>各位读者：</p>
           <p>根据学校国庆节放假安排，结合图书馆工作实际，现将 2025 年国庆节期间开放时间调整事项通知如下：</p>
@@ -485,7 +565,6 @@
           <p style="text-align:right;color:var(--text-3);font-style:italic;">2025 年 9 月 25 日</p>
         </div>
 
-        <!-- 附件下载 -->
         <div class="attachments">
           <h4>附件下载（2 个）</h4>
           <div class="file-list">
@@ -516,7 +595,6 @@
           </div>
         </div>
 
-        <!-- 操作栏 -->
         <div class="detail-ops">
           <div class="ops-left">
             <button id="likeBtn" onclick="toggleLike()">👍 点赞 <span style="margin-left:3px;color:var(--primary);">(86)</span></button>
@@ -525,14 +603,13 @@
             <button onclick="toast('分享链接已复制')">🔗 分享</button>
           </div>
           <div class="ops-right">
-            <button>�� 打印</button>
+            <button onclick="window.print()">🖨 打印</button>
             <button onclick="window.print()">📤 导出 PDF</button>
           </div>
         </div>
 
       </div>
 
-      <!-- 上下篇 -->
       <div class="prev-next">
         <div class="pn-item">
           <span class="ico">←</span>
@@ -546,7 +623,6 @@
         </div>
       </div>
 
-      <!-- 相关推荐 -->
       <div class="related">
         <h3>相关公告推荐</h3>
         <div class="rel-list">
@@ -580,10 +656,8 @@
 
     </div>
 
-    <!-- 右侧 -->
     <div class="right-col">
 
-      <!-- 文章目录 -->
       <div class="side-card">
         <h4>📑 公告目录</h4>
         <div class="toc">
@@ -599,7 +673,6 @@
         </div>
       </div>
 
-      <!-- 元信息 -->
       <div class="side-card meta-card">
         <h4>📌 公告元信息</h4>
         <div class="row">
@@ -636,10 +709,9 @@
         </div>
       </div>
 
-      <!-- 快捷操作 -->
       <div class="quick-card">
         <div class="tip">📞 如有疑问，请联系图书馆咨询服务台<br>工作时间：<b>8:00-22:00</b></div>
-        <button style="width:100%;padding:10px;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;margin-bottom:8px;">💬 在线咨询馆员</button>
+        <a href="座位预约.html" style="display:block;width:100%;padding:10px;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;margin-bottom:8px;text-align:center;text-decoration:none;">💬 在线咨询馆员</a>
         <button style="width:100%;padding:10px;background:#fff;border:1px solid var(--sky);color:var(--primary);border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;">📞 电话咨询 0000-1234567</button>
       </div>
 
@@ -647,7 +719,6 @@
 
   </div>
 
-  <!-- 提示 -->
   <div class="notice-card">
     <span class="ico">💡</span>
     <div class="text">
@@ -691,6 +762,20 @@
       btn.classList.remove('liked');
       btn.innerHTML = '⭐ 收藏 <span style="margin-left:3px;color:var(--warning);">(124)</span>';
     }
+  }
+
+  /* 空间预约下拉：触屏 click 兼容 */
+  const dropdown = document.getElementById('navSpace');
+  if (dropdown) {
+    dropdown.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
   }
 </script>
 

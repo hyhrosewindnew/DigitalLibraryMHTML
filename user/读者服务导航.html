@@ -32,7 +32,6 @@
     --max-w: 1440px;
   }
 
-  /* ===== 外壳 ===== */
   .top-bar {
     background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%);
     color: #fff;
@@ -84,7 +83,7 @@
     font-weight: 500;
   }
 
-  .nav { display: flex; gap: 8px; }
+  .nav { display: flex; gap: 8px; align-items: center; }
   .nav a {
     font-size: 15px; color: var(--text);
     padding: 10px 18px; position: relative;
@@ -176,7 +175,6 @@
   }
   .avatar-name { font-size: 13.5px; color: var(--primary); font-weight: 600; }
 
-  /* ===== 主体 ===== */
   .container {
     max-width: var(--max-w);
     margin: 0 auto;
@@ -297,7 +295,6 @@
     color: var(--primary);
   }
 
-  /* 统计卡片 */
   .stat-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -352,7 +349,6 @@
     font-weight: 500;
   }
 
-  /* 双栏 */
   .content-grid {
     display: grid;
     grid-template-columns: 1fr 320px;
@@ -396,7 +392,6 @@
   .panel-head .more:hover { color: var(--primary); }
   .panel-body { padding: 18px 22px; }
 
-  /* 借阅列表 */
   .borrow-list { display: flex; flex-direction: column; }
   .borrow-item {
     display: grid;
@@ -458,7 +453,6 @@
   .b-status.normal { background: #f0f9eb; color: #16a34a; }
   .b-status.urgent { background: #fff3e0; color: #d97706; }
 
-  /* 信用进度 */
   .credit-wrap {
     padding: 4px 4px 6px;
   }
@@ -508,7 +502,6 @@
     line-height: 1.7;
   }
 
-  /* 预约列表 */
   .reserve-list .r-item {
     padding: 12px 0;
     border-bottom: 1px dashed var(--border-light);
@@ -541,7 +534,6 @@
     margin-right: 5px;
   }
 
-  /* 费用 */
   .fee-row {
     display: flex;
     justify-content: space-between;
@@ -560,7 +552,6 @@
   .fee-row .val.zero { color: var(--success); }
   .fee-row .val.warn { color: #d97706; }
 
-  /* 推荐阅读 */
   .recommend-card {
     background: linear-gradient(135deg, #fffbeb, #fef3c7);
     border: 1px solid #fde68a;
@@ -597,11 +588,391 @@
     .stat-grid { grid-template-columns: repeat(3, 1fr); }
     .content-grid { grid-template-columns: 1fr; }
   }
+
+  /* ============== 空间预约下拉 ============== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before { opacity: 1; }
+
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease;
+    z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important;
+    align-items: center; gap: 12px;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    border-radius: 10px;
+    transition: .15s;
+    line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ============== 下拉结束 ============== */
+
+  /* ============================================
+     以下为 container 内部新增样式（不影响外壳）
+     ============================================ */
+
+  /* 待办条 */
+  .alert-bar {
+    background: linear-gradient(90deg, #fff7ed, #fef3c7);
+    border: 1px solid #fde68a;
+    border-left: 3px solid #f59e0b;
+    border-radius: 8px;
+    padding: 10px 18px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #7c2d12;
+    margin-bottom: 16px;
+  }
+  .alert-bar > .ico { font-size: 18px; flex-shrink: 0; }
+  .alert-bar .txt { flex: 1; }
+  .alert-bar .txt b { color: #c2410c; }
+  .alert-bar .ops { display: flex; gap: 6px; flex-shrink: 0; }
+  .alert-bar .ops a {
+    font-size: 12.5px; padding: 4px 10px; border-radius: 4px;
+    background: #fff; border: 1px solid #fbbf24; color: #b45309;
+  }
+  .alert-bar .ops a:hover { background: #f59e0b; color: #fff; }
+
+  /* 主体两栏 */
+  .layout { display: grid; grid-template-columns: 1fr 320px; gap: 18px; }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+
+  /* 卡片基础（仅 container 内用） */
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden;
+  }
+  .card + .card { margin-top: 16px; }
+  .card-head {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h3 {
+    font-size: 15.5px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-head h3::before {
+    content: ''; width: 3px; height: 14px;
+    background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px;
+  }
+  .card-head h3 .num {
+    font-size: 11px; padding: 1px 7px; border-radius: 10px;
+    background: rgba(74,158,255,0.1); color: var(--primary); font-weight: 500;
+  }
+  .card-head h3 .num.warn { background: rgba(245,158,11,0.15); color: #b45309; }
+  .card-head .more {
+    font-size: 12.5px; color: var(--text-3); transition: .2s; cursor: pointer;
+  }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 14px 20px; }
+
+  /* 主区 tabs */
+  .tab-bar {
+    display: flex; gap: 24px; padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-bar .tab {
+    padding: 14px 4px; font-size: 14.5px; color: var(--text-2);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    font-weight: 500; transition: .2s; position: relative;
+  }
+  .tab-bar .tab:hover { color: var(--primary); }
+  .tab-bar .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab-bar .tab .badge {
+    margin-left: 4px; font-size: 11px; padding: 0 6px;
+    background: #dc2626; color: #fff; border-radius: 8px; vertical-align: 1px;
+  }
+
+  /* tab content padding */
+  .tab-pane { padding: 18px 20px 22px; }
+
+  /* 在借图书行 */
+  .borrow-row {
+    display: grid; grid-template-columns: 44px 1fr auto auto;
+    gap: 14px; padding: 12px 0;
+    border-bottom: 1px dashed var(--border-light); align-items: center;
+  }
+  .borrow-row:last-child { border-bottom: none; }
+  .borrow-row .bc {
+    width: 36px; height: 48px; border-radius: 3px;
+    background: linear-gradient(135deg, #4a9eff, #0d3b66);
+    color: #fff; font-size: 12px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .borrow-row .bc.green { background: linear-gradient(135deg, #10b981, #047857); }
+  .borrow-row .bc.amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .borrow-row .bc.purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .borrow-row .bc.red { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+  .borrow-row .bm .t {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .borrow-row .bm .t.danger { color: var(--danger); }
+  .borrow-row .bm .m {
+    font-size: 12px; color: var(--text-3); font-family: Consolas, monospace;
+  }
+  .borrow-row .bm .m .hl { color: var(--warn); font-weight: 600; }
+  .borrow-row .bm .m .hl.red { color: var(--danger); }
+  .borrow-row .bs { font-size: 12px; }
+  .borrow-row .bs .due { color: var(--text-2); margin-bottom: 4px; }
+  .borrow-row .bs .due b { color: var(--primary); font-weight: 600; }
+  .borrow-row .bs .due b.urgent { color: #d97706; }
+  .borrow-row .bs .due b.danger { color: var(--danger); }
+  .stt {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 500;
+  }
+  .stt.g { background: #dcfce7; color: #16a34a; }
+  .stt.a { background: #fef3c7; color: #b45309; }
+  .stt.r { background: #fee2e2; color: #b91c1c; }
+  .borrow-row .ba { display: flex; flex-direction: column; gap: 5px; }
+  .op {
+    padding: 5px 12px; font-size: 12.5px; border-radius: 4px;
+    background: #fff; border: 1px solid var(--border); color: var(--text-2);
+    cursor: pointer; text-align: center; white-space: nowrap;
+  }
+  .op:hover { color: var(--primary); border-color: var(--primary); }
+  .op.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .op.primary:hover { background: #1a5a96; }
+  .op.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .op.danger:hover { background: #b91c1c; }
+
+  /* 预约 / 消息 时间线 */
+  .tl { position: relative; padding-left: 18px; }
+  .tl::before {
+    content: ''; position: absolute; left: 4px; top: 8px; bottom: 8px;
+    width: 1px; background: var(--border);
+  }
+  .tl-item { position: relative; padding-bottom: 14px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -18px; top: 5px;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--border);
+  }
+  .tl-item.done::before { background: var(--primary); border-color: var(--primary); }
+  .tl-item.active::before { background: #fff; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,59,102,0.15); }
+  .tl-item .tt { font-size: 13.5px; color: var(--text); font-weight: 500; display: flex; gap: 6px; align-items: center; }
+  .tl-item .ts { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+  .tl-item .tag {
+    font-size: 10.5px; padding: 1px 7px; border-radius: 8px;
+    background: #ecf5ff; color: #2c6eb0; font-weight: 500;
+  }
+  .tl-item .tag.amber { background: #fef3c7; color: #92400e; }
+  .tl-item .tag.purple { background: #f5f3ff; color: #7c3aed; }
+
+  /* 消息列表 */
+  .ml {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px dashed var(--border-light);
+    cursor: pointer; transition: .15s;
+  }
+  .ml:last-child { border-bottom: none; }
+  .ml:hover { padding-left: 4px; }
+  .ml .mi {
+    width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+    background: #eff6ff; color: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+  .ml .mi.t2 { background: #fef3c7; color: #b45309; }
+  .ml .mi.t3 { background: #dcfce7; color: #16a34a; }
+  .ml .mi.t4 { background: #fce7f3; color: #be185d; }
+  .ml .mi.t5 { background: #ede9fe; color: #6d28d9; }
+  .ml .mb { flex: 1; min-width: 0; }
+  .ml .mb .mt {
+    display: flex; justify-content: space-between; margin-bottom: 4px;
+    font-size: 13.5px; font-weight: 500; color: var(--text);
+  }
+  .ml .mb .mt small { color: var(--text-3); font-weight: 400; font-size: 12px; }
+  .ml .mb .md {
+    font-size: 12.5px; color: var(--text-3);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ml .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--danger); margin-top: 13px; flex-shrink: 0; }
+
+  /* 信用 */
+  .cr {
+    display: flex; gap: 18px; align-items: center; padding: 4px;
+  }
+  .cr-ring {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: conic-gradient(#4a9eff 0% 95%, #f0f3f7 95% 100%);
+    display: grid; place-items: center; flex-shrink: 0;
+    position: relative;
+  }
+  .cr-ring::before {
+    content: ''; position: absolute; inset: 8px;
+    background: #fff; border-radius: 50%;
+  }
+  .cr-ring > div { position: relative; text-align: center; }
+  .cr-ring .v { font-size: 22px; font-weight: 700; color: var(--text); }
+  .cr-ring .l { font-size: 10px; color: var(--text-3); }
+  .cr-info { flex: 1; font-size: 13px; }
+  .cr-info .row {
+    display: flex; justify-content: space-between; padding: 7px 0;
+  }
+  .cr-info .row + .row { border-top: 1px dashed var(--border-light); }
+  .cr-info .row span:first-child { color: var(--text-2); }
+  .cr-info .row span:last-child { color: var(--text); font-weight: 500; }
+  .cr-info .row.danger span:last-child { color: var(--danger); }
+
+  /* 服务网格 */
+  .sg {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border); border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+  .sg-item {
+    background: #fff; padding: 18px 10px; text-align: center;
+    cursor: pointer; transition: .15s;
+  }
+  .sg-item:hover { background: #fafcff; }
+  .sg-item .si { font-size: 22px; margin-bottom: 6px; color: var(--primary); }
+  .sg-item .sn { font-size: 13px; color: var(--text); }
+  .sg-item .sd { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .sg-item.has-new { position: relative; }
+  .sg-item .dot {
+    position: absolute; top: 8px; right: 12px;
+    width: 6px; height: 6px; background: var(--danger); border-radius: 50%;
+  }
+
+  /* 右栏 */
+  .panel-mini {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden;
+  }
+  .panel-mini + .panel-mini { margin-top: 16px; }
+  .panel-mini .ph {
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-mini .ph h3 {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .panel-mini .ph h3 small { font-size: 11px; color: var(--text-3); font-weight: 400; }
+  .panel-mini .ph a { font-size: 12px; color: var(--text-3); }
+  .panel-mini .ph a:hover { color: var(--primary); }
+  .panel-mini .pb { padding: 12px 18px; }
+
+  /* 费用简洁行 */
+  .fee-l { display: flex; justify-content: space-between; padding: 9px 0; font-size: 13px; border-bottom: 1px dashed var(--border-light); }
+  .fee-l:last-child { border-bottom: none; }
+  .fee-l .l { color: var(--text-2); }
+  .fee-l .v { color: var(--text); font-weight: 600; font-family: Consolas, monospace; }
+  .fee-l .v.zero { color: var(--success); }
+  .fee-l .v.warn { color: var(--warn); }
+  .fee-l.total { border-top: 1px dashed var(--border); margin-top: 4px; padding-top: 12px; }
+  .fee-l.total .l { color: var(--text); font-weight: 600; }
+  .fee-l.total .v { font-size: 16px; }
+
+  /* 馆员小卡 */
+  .lib {
+    background: linear-gradient(135deg, #fef9e7, #fef3c7);
+    border: 1px solid #fde68a; border-radius: 8px;
+    padding: 12px; display: flex; gap: 10px; align-items: center;
+  }
+  .lib .la {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .lib .lt { flex: 1; min-width: 0; }
+  .lib .lt .n { font-size: 13px; font-weight: 600; color: var(--text); }
+  .lib .lt .r { font-size: 11.5px; color: #b45309; margin-top: 2px; }
+  .lib .lt .c {
+    font-size: 11.5px; color: #92400e; margin-top: 4px;
+    font-family: Consolas, monospace;
+  }
+
+  /* 右侧帮助区 */
+  .help-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px dashed var(--border-light);
+    font-size: 13px;
+  }
+  .help-row:last-child { border-bottom: none; }
+  .help-row .hi {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #eff6ff; color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .help-row .ht { flex: 1; }
+  .help-row .ht .ht-t { color: var(--text); font-weight: 500; }
+  .help-row .ht .ht-s { color: var(--text-3); font-size: 11.5px; margin-top: 2px; }
+  .help-row a { color: var(--primary); font-size: 12.5px; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; pointer-events: none; }
+  .toast {
+    background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border-radius: 4px; padding: 9px 16px; font-size: 13px;
+    border-left: 3px solid #16a34a; margin-bottom: 6px;
+    animation: slideDown .2s ease;
+  }
+  .toast.error { border-left-color: #dc2626; }
+  .toast.warn { border-left-color: #d97706; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
 
-<!-- ===== 外壳 ===== -->
 <div class="top-bar">
   <div class="top-bar-inner">
     <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
@@ -625,16 +996,50 @@
     </a>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="馆藏检索.html">馆藏检索</a>
-      <a href="#">电子资源</a>
-      <a href="#">空间预约</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+      <!-- 空间预约下拉 -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
       <a href="读者服务导航.html" class="active">读者服务</a>
-      <a href="#">信息素养</a>
-      <a href="#">捐赠/荐购</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
     </nav>
     <div class="user-area">
-      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
-      <a class="favorite-btn" href="我的收藏.html" title="我的收藏">★<span class="favorite-badge">8</span></a>
+      <a class="notif-btn" href="消息中心.html" title="消息通知" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">🔔<span class="badge"></span></a>
+      <a class="favorite-btn" href="我的收藏.html" title="我的收藏" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">★<span class="favorite-badge">8</span></a>
       <div class="avatar-wrap">
         <div class="avatar">陈</div>
         <span class="avatar-name">陈思远</span>
@@ -643,7 +1048,6 @@
   </div>
 </header>
 
-<!-- ===== 主体 ===== -->
 <div class="container">
 
   <div class="breadcrumb">
@@ -652,7 +1056,7 @@
     <span class="current">读者服务</span>
   </div>
 
-  <!-- 顶部资料卡 -->
+  <!-- 顶部用户信息 -->
   <section class="profile-hero">
     <div class="profile-row">
       <div class="profile-info">
@@ -671,7 +1075,6 @@
           </div>
         </div>
       </div>
-
       <div class="profile-actions">
         <a class="p-btn" href="账户设置.html">✏ 编辑资料</a>
         <a class="p-btn primary" href="账户设置.html">⚙ 账户设置</a>
@@ -679,225 +1082,489 @@
     </div>
   </section>
 
-  <!-- 统计 -->
-  <section class="stat-grid">
-    <a class="stat-card c1" href="#">
-      <div class="ico">📖</div>
-      <div class="num">3 / 10</div>
-      <div class="label">在借图书</div>
-      <div class="extra">本科生上限 10 册</div>
-    </a>
-    <a class="stat-card c2" href="#">
-      <div class="ico">⏰</div>
-      <div class="num">2 本</div>
-      <div class="label">即将到期</div>
-      <div class="extra">7 天内到期</div>
-    </a>
-    <a class="stat-card c3" href="#">
-      <div class="ico">📅</div>
-      <div class="num">1 个</div>
-      <div class="label">预约待签到</div>
-      <div class="extra">明天 14:00 生效</div>
-    </a>
-    <a class="stat-card c4" href="#">
-      <div class="ico">★</div>
-      <div class="num">8</div>
-      <div class="label">收藏</div>
-      <div class="extra">图书 5 / 资源 2 / 检索式 1</div>
-    </a>
-    <a class="stat-card c5" href="#">
-      <div class="ico">💰</div>
-      <div class="num">¥0.00</div>
-      <div class="label">待缴费用</div>
-      <div class="extra">保持良好信用</div>
-    </a>
-  </section>
+  <!-- 待办速读条：含消息中心直达 -->
+  <div class="alert-bar">
+    <span class="ico">🔔</span>
+    <div class="txt">您有 <b>3 条未读消息</b>、<b>1 条违章待处理</b>，可点击右侧按钮直达处理。</div>
+    <div class="ops">
+      <a href="消息中心.html">查看消息</a>
+      <a href="违章查询.html">处理违章</a>
+    </div>
+  </div>
 
-  <!-- 内容双栏 -->
-  <div class="content-grid">
+  <!-- 主体两栏 -->
+  <div class="layout">
 
+    <!-- 主区 -->
     <div>
-      <!-- 在借图书 -->
-      <div class="panel">
-        <div class="panel-head">
-          <h3>📚 在借图书</h3>
-          <a class="more" href="#">查看全部 ›</a>
+
+      <!-- 单卡片（含 tab） -->
+      <div class="card">
+
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchTab('overview', this)">📊 总览</div>
+          <div class="tab" onclick="switchTab('borrow', this)">📖 我的借阅</div>
+          <div class="tab" onclick="switchTab('message', this)">🔔 消息 <span class="badge">3</span></div>
+          <div class="tab" onclick="switchTab('reservation', this)">📅 我的预约</div>
+          <div class="tab" onclick="switchTab('credit', this)">💎 信用</div>
         </div>
-        <div class="borrow-list">
 
-          <div class="borrow-item">
-            <div class="b-cover">
-              <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
-                <defs><linearGradient id="bc1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a9eff"/><stop offset="100%" stop-color="#0a2d52"/></linearGradient></defs>
-                <rect width="300" height="400" fill="url(#bc1)"/>
-                <text x="150" y="200" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">航空发动机</text>
-                <text x="150" y="230" text-anchor="middle" fill="#fff" font-size="18" font-family="serif">结构与系统</text>
-                <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">刘永泉</text>
-              </svg>
+        <!-- 总览 -->
+        <div class="tab-pane" id="tab-overview">
+
+          <!-- 数据快读 -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;">
+            <div style="padding: 14px; background: #eff6ff; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-2); margin-bottom: 6px;">📖 在借</div>
+              <div style="font-size: 22px; font-weight: 700; color: #1d4ed8;">3<span style="font-size: 12px; color: var(--text-3); font-weight: 400;"> / 10</span></div>
+              <div style="font-size: 11px; color: #d97706; margin-top: 4px;">2 本即将到期</div>
             </div>
-            <div class="b-info">
-              <div class="b-title">航空发动机结构与系统（第二版）</div>
-              <div class="b-meta">
-                <span><b>作者：</b>刘永泉</span>
-                <span><b>索书号：</b>V233/L-2</span>
-                <span><b>条码：</b>BK2021-0003</span>
-              </div>
+            <div style="padding: 14px; background: #fef3c7; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-2); margin-bottom: 6px;">⚠️ 待缴</div>
+              <div style="font-size: 22px; font-weight: 700; color: #b45309;">¥0.80</div>
+              <div style="font-size: 11px; color: #b91c1c; margin-top: 4px;">1 条违章待处理</div>
             </div>
-            <div class="b-side">
-              <div class="b-due urgent">应还 <b>12-28</b></div>
-              <span class="b-status urgent">⚠ 即将到期</span>
+            <div style="padding: 14px; background: #f5f3ff; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-2); margin-bottom: 6px;">📅 预约</div>
+              <div style="font-size: 22px; font-weight: 700; color: #6d28d9;">16</div>
+              <div style="font-size: 11px; color: #d97706; margin-top: 4px;">2 条待签到</div>
+            </div>
+            <div style="padding: 14px; background: #dcfce7; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-2); margin-bottom: 6px;">💎 信用</div>
+              <div style="font-size: 22px; font-weight: 700; color: #16a34a;">95<span style="font-size: 12px; color: var(--text-3); font-weight: 400;"> 分</span></div>
+              <div style="font-size: 11px; color: var(--text-3); margin-top: 4px;">A 级 · 优秀</div>
             </div>
           </div>
 
-          <div class="borrow-item">
-            <div class="b-cover">
-              <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
-                <defs><linearGradient id="bc2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#064e3b"/></linearGradient></defs>
-                <rect width="300" height="400" fill="url(#bc2)"/>
-                <text x="150" y="200" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="serif">数控车床</text>
-                <text x="150" y="230" text-anchor="middle" fill="#fff" font-size="16" font-family="serif">编程与操作</text>
-                <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">陈洪涛</text>
-              </svg>
-            </div>
-            <div class="b-info">
-              <div class="b-title">数控车床编程与操作实训教程</div>
-              <div class="b-meta">
-                <span><b>作者：</b>陈洪涛</span>
-                <span><b>索书号：</b>TG519/C-1</span>
-                <span><b>条码：</b>BK2020-0088</span>
+          <!-- 速读模块：3 列 -->
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px;">
+
+            <!-- 最近借阅 -->
+            <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+              <div style="padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 600;">📖 最近借阅</span>
+                <a onclick="switchTabById('borrow', document.querySelector('[onclick*=borrow]'))" style="font-size: 12px; color: var(--text-3); cursor: pointer;">更多 ›</a>
+              </div>
+              <div style="padding: 4px 14px;">
+                <div style="display: flex; gap: 10px; padding: 8px 0; align-items: center; border-bottom: 1px dashed var(--border-light);">
+                  <div class="bc" style="width:30px;height:40px;border-radius:3px;background:linear-gradient(135deg,#4a9eff,#0d3b66);"></div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size: 12.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">《计算机网络：自顶向下方法》</div>
+                    <div style="font-size: 11px; color: var(--text-3);">应还 <span style="color:#d97706; font-weight: 600;">12-30</span></div>
+                  </div>
+                  <span class="stt a">即将到期</span>
+                </div>
+                <div style="display: flex; gap: 10px; padding: 8px 0; align-items: center; border-bottom: 1px dashed var(--border-light);">
+                  <div class="bc" style="width:30px;height:40px;border-radius:3px;background:linear-gradient(135deg,#dc2626,#b91c1c);"></div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size: 12.5px; font-weight: 500; color: #dc2626; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">《人类简史：从动物到上帝》</div>
+                    <div style="font-size: 11px; color: #dc2626;">逾期 4 天 · 滞纳金 ¥0.80</div>
+                  </div>
+                  <span class="stt r">已逾期</span>
+                </div>
+                <div style="display: flex; gap: 10px; padding: 8px 0; align-items: center;">
+                  <div class="bc" style="width:30px;height:40px;border-radius:3px;background:linear-gradient(135deg,#10b981,#047857);"></div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size: 12.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">《算法导论》</div>
+                    <div style="font-size: 11px; color: var(--text-3);">应还 01-03</div>
+                  </div>
+                  <span class="stt g">借阅中</span>
+                </div>
               </div>
             </div>
-            <div class="b-side">
-              <div class="b-due urgent">应还 <b>01-02</b></div>
-              <span class="b-status urgent">⚠ 即将到期</span>
+
+            <!-- 待办 -->
+            <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+              <div style="padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 600;">📌 我的待办</span>
+                <span style="font-size: 11px; color: var(--danger); font-weight: 600;">4 条</span>
+              </div>
+              <div style="padding: 4px 14px;">
+                <a href="违章查询.html" style="display: flex; gap: 8px; padding: 8px 0; align-items: center; border-bottom: 1px dashed var(--border-light); font-size: 12.5px; text-decoration: none;">
+                  <span style="color:#dc2626;">⚠</span>
+                  <span style="flex:1; color: var(--text);">《人类简史》逾期</span>
+                  <span style="color:#dc2626; font-weight:600;">¥0.80</span>
+                </a>
+                <a href="消息中心.html" style="display: flex; gap: 8px; padding: 8px 0; align-items: center; border-bottom: 1px dashed var(--border-light); font-size: 12.5px; text-decoration: none;">
+                  <span style="color:#d97706;">⏰</span>
+                  <span style="flex:1; color: var(--text);">《计算机网络》即将到期</span>
+                </a>
+                <a href="我的预约记录.html" style="display: flex; gap: 8px; padding: 8px 0; align-items: center; border-bottom: 1px dashed var(--border-light); font-size: 12.5px; text-decoration: none;">
+                  <span style="color:#6d28d9;">📍</span>
+                  <span style="flex:1; color: var(--text);">A12 座位 12-27 14:00 待签到</span>
+                </a>
+                <a href="我的预约记录.html" style="display: flex; gap: 8px; padding: 8px 0; align-items: center; font-size: 12.5px; text-decoration: none;">
+                  <span style="color:#6d28d9;">🏛</span>
+                  <span style="flex:1; color: var(--text);">305 研讨间 12-30 19:00 待签到</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- 消息速读 -->
+            <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+              <div style="padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, #fef3c7, transparent);">
+                <span style="font-size: 13px; font-weight: 600;">🔔 消息速读</span>
+                <a href="消息中心.html" style="font-size: 12px; color: var(--primary); cursor: pointer; font-weight: 500;">全部 ›</a>
+              </div>
+              <div style="padding: 4px 14px;">
+                <a href="消息中心.html" style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--border-light); font-size: 12.5px; text-decoration: none; align-items: flex-start;">
+                  <span class="dot" style="width:6px;height:6px;border-radius:50%;background:#dc2626;margin-top:6px;flex-shrink:0;"></span>
+                  <div style="flex:1; min-width:0;">
+                    <div style="color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">《计算机网络》即将到期</div>
+                    <div style="color: var(--text-3); font-size: 11px; margin-top: 2px;">借阅提醒 · 10:42</div>
+                  </div>
+                </a>
+                <a href="消息中心.html" style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--border-light); font-size: 12.5px; text-decoration: none; align-items: flex-start;">
+                  <span class="dot" style="width:6px;height:6px;border-radius:50%;background:#dc2626;margin-top:6px;flex-shrink:0;"></span>
+                  <div style="flex:1; min-width:0;">
+                    <div style="color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">《百年孤独》已到馆</div>
+                    <div style="color: var(--text-3); font-size: 11px; margin-top: 2px;">借阅提醒 · 昨天</div>
+                  </div>
+                </a>
+                <a href="消息中心.html" style="display: flex; gap: 8px; padding: 8px 0; font-size: 12.5px; text-decoration: none; align-items: flex-start;">
+                  <span class="dot" style="width:6px;height:6px;border-radius:50%;background:#dc2626;margin-top:6px;flex-shrink:0;"></span>
+                  <div style="flex:1; min-width:0;">
+                    <div style="color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">元旦开馆时间调整通知</div>
+                    <div style="color: var(--text-3); font-size: 11px; margin-top: 2px;">系统通知 · 前天</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 我的借阅 -->
+        <div class="tab-pane" id="tab-borrow" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 13px; color: var(--text-2);">共 <b style="color: var(--text);">3</b> 本 · <b style="color: #d97706;">1</b> 本逾期</div>
+            <div>
+              <a class="op primary" href="续借.html" style="text-decoration: none; margin-right: 6px;">⚡ 全部续借</a>
+              <a class="op" href="我的借阅.html" style="text-decoration: none;">查看历史</a>
             </div>
           </div>
 
-          <div class="borrow-item">
-            <div class="b-cover">
-              <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
-                <defs><linearGradient id="bc3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#581c87"/></linearGradient></defs>
-                <rect width="300" height="400" fill="url(#bc3)"/>
-                <text x="150" y="200" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">空中乘务</text>
-                <text x="150" y="230" text-anchor="middle" fill="#fff" font-size="18" font-family="serif">礼仪与技能</text>
-                <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">陈敏</text>
-              </svg>
+          <div class="borrow-row">
+            <div class="bc">网络</div>
+            <div class="bm">
+              <div class="t">《计算机网络：自顶向下方法》<span style="font-family: Consolas,monospace; font-size: 11px; color: var(--text-3); margin-left: 6px;">TP393/K-7</span></div>
+              <div class="m">刘永泉 · 借出 12-01 · <span class="hl">应还 12-30</span> · 续借 0/2</div>
             </div>
-            <div class="b-info">
-              <div class="b-title">空中乘务实务（第三版）</div>
-              <div class="b-meta">
-                <span><b>作者：</b>陈敏</span>
-                <span><b>索书号：</b>F560.7/C-3</span>
-                <span><b>条码：</b>BK2022-0211</span>
-              </div>
+            <div class="bs">
+              <div class="due">应还 <b class="urgent">12-30</b></div>
+              <span class="stt a">即将到期</span>
             </div>
-            <div class="b-side">
-              <div class="b-due">应还 <b>02-18</b></div>
-              <span class="b-status normal">借阅中</span>
+            <div class="ba">
+              <a class="op primary" href="续借.html" style="text-decoration: none;">🔄 续借</a>
+              <a class="op" href="#" style="text-decoration: none;">详情</a>
             </div>
           </div>
 
+          <div class="borrow-row">
+            <div class="bc red">简史</div>
+            <div class="bm">
+              <div class="t danger">《人类简史：从动物到上帝》<span style="font-family: Consolas,monospace; font-size: 11px; color: var(--text-3); margin-left: 6px;">K02/H-1</span></div>
+              <div class="m">借出 11-15 · <span class="hl red">应还 12-13（已逾期 4 天）</span> · 续借 2/2 已用完</div>
+            </div>
+            <div class="bs">
+              <div class="due">逾期 <b class="danger">4 天</b></div>
+              <span class="stt r">已逾期</span>
+            </div>
+            <div class="ba">
+              <a class="op danger" href="违章查询.html" style="text-decoration: none;">💰 缴罚</a>
+              <a class="op" href="#" style="text-decoration: none;">详情</a>
+            </div>
+          </div>
+
+          <div class="borrow-row">
+            <div class="bc green">算法</div>
+            <div class="bm">
+              <div class="t">《算法导论》<span style="font-family: Consolas,monospace; font-size: 11px; color: var(--text-3); margin-left: 6px;">TP301.6/C-1</span></div>
+              <div class="m">借出 12-05 · 应还 01-03 · 续借 1/2</div>
+            </div>
+            <div class="bs">
+              <div class="due">应还 <b>01-03</b></div>
+              <span class="stt g">借阅中</span>
+            </div>
+            <div class="ba">
+              <a class="op primary" href="续借.html" style="text-decoration: none;">🔄 续借</a>
+              <a class="op" href="#" style="text-decoration: none;">详情</a>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; font-size: 12.5px; color: #7c2d12;">
+            💡 续借每次延长 15 天，本科生共 <b>2 次</b> 机会；到期前 7 天内办理，逾期或被预约图书不可续。
+          </div>
+        </div>
+
+        <!-- 消息 -->
+        <div class="tab-pane" id="tab-message" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 13px; color: var(--text-2);">未读 <b style="color: var(--danger);">3</b> 条 · 历史 <b>156</b> 条</div>
+            <a href="消息中心.html" class="op primary" style="text-decoration: none;">进入消息中心 →</a>
+          </div>
+
+          <div class="ml">
+            <div class="mi">📖</div>
+            <div class="mb">
+              <div class="mt"><span>《计算机网络》即将到期</span><small>10:42</small></div>
+              <div class="md">陈思远 同学，您借阅的《计算机网络：自顶向下方法》将于 2025-12-30 到期</div>
+            </div>
+            <div class="dot"></div>
+          </div>
+          <div class="ml">
+            <div class="mi">📦</div>
+            <div class="mb">
+              <div class="mt"><span>《百年孤独》已到馆</span><small>昨天</small></div>
+              <div class="md">请携带校园卡于 3 日内到 总馆 / 2F / 中文图书借阅区 取书</div>
+            </div>
+            <div class="dot"></div>
+          </div>
+          <div class="ml">
+            <div class="mi t2">📢</div>
+            <div class="mb">
+              <div class="mt"><span>元旦假期开馆时间调整通知</span><small>前天</small></div>
+              <div class="md">1月1日—3日全馆闭馆，4 日（周日）正常开放 08:00-22:00</div>
+            </div>
+            <div class="dot"></div>
+          </div>
+          <div class="ml">
+            <div class="mi t3">⏰</div>
+            <div class="mb">
+              <div class="mt"><span>图书逾期提醒：尽快归还《人类简史》</span><small>3 天前</small></div>
+              <div class="md">已逾期 4 天，请尽快归还并到一楼服务台处理滞纳金</div>
+            </div>
+          </div>
+          <div class="ml">
+            <div class="mi t5">🎉</div>
+            <div class="mb">
+              <div class="mt"><span>"书香校园·秋季读书月"系列活动启动</span><small>12-15</small></div>
+              <div class="md">读书分享会、经典诵读大赛、信息素养讲座等 6 项活动报名开启</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; padding: 10px 14px; background: #eff6ff; border-radius: 6px; font-size: 12.5px; color: #1e40af;">
+            💡 可在 <a href="消息中心.html" style="color: var(--primary); font-weight: 500;">消息中心</a> 设置免打扰时段（22:00-08:00）、订阅感兴趣类型、调整推送渠道。
+          </div>
+        </div>
+
+        <!-- 我的预约 -->
+        <div class="tab-pane" id="tab-reservation" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="font-size: 13px; color: var(--text-2);">共 <b style="color: var(--text);">16</b> 条 · <b style="color: #d97706;">2</b> 条待签到</div>
+            <a href="我的预约记录.html" class="op" style="text-decoration: none;">查看全部</a>
+          </div>
+
+          <div class="tl">
+            <div class="tl-item">
+              <div class="tt">📍 二楼自习区 A12 <span class="tag">座位预约</span></div>
+              <div class="ts">2025-12-27 14:00 · 需在 14:00 前完成签到</div>
+            </div>
+            <div class="tl-item">
+              <div class="tt">🏛 三楼研讨间 305 <span class="tag amber">研修室</span></div>
+              <div class="ts">2025-12-30 19:00 · 小组讨论 · 4 人</div>
+            </div>
+            <div class="tl-item active">
+              <div class="tt">📚 飞机结构修理工艺 <span class="tag purple">图书预约</span></div>
+              <div class="ts">已预约到馆 · 归还后通知您优先借阅</div>
+            </div>
+            <div class="tl-item">
+              <div class="tt">📍 一楼考研区 03 <span class="tag">座位预约</span></div>
+              <div class="ts">2026-01-04 08:00 · 元旦假期后首日</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 信用 -->
+        <div class="tab-pane" id="tab-credit" style="display: none;">
+          <div class="cr">
+            <div class="cr-ring">
+              <div>
+                <div class="v">95</div>
+                <div class="l">/ 100 分</div>
+              </div>
+            </div>
+            <div class="cr-info">
+              <div class="row"><span>信用等级</span><span>A 级 · 优秀</span></div>
+              <div class="row"><span>累计违章</span><span class="danger">1 次（待处理）</span></div>
+              <div class="row"><span>已缴滞纳金</span><span>¥ 0.00</span></div>
+              <div class="row"><span>当前借阅权限</span><span>本科 · 10 册 / 60 天</span></div>
+              <div class="row"><span>累计已续借</span><span>1 / 2 次</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; padding: 12px 14px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 13px; color: #7f1d1d; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 18px;">⚠</span>
+            <div style="flex: 1;">您有 1 条违章待处理：《人类简史》逾期 4 天，需缴滞纳金 <b>¥0.80</b> 并扣 3 信用分。</div>
+            <a class="op danger" href="违章查询.html" style="text-decoration: none;">立即处理</a>
+          </div>
+
+          <div style="margin-top: 12px; padding: 12px 14px; background: #f0f9ff; border-radius: 6px; font-size: 12.5px; color: #075985; line-height: 1.7;">
+            <b>📖 信用分规则：</b>逾期 1 天 = 滞纳金 0.2 元 + 扣 3 信用分；未签到 / 暂离超时 = 扣 3 分；累计 3 次违章暂停借阅 7 天。
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 服务网格 -->
+      <div class="card">
+        <div class="card-head">
+          <h3>🚀 全部读者服务</h3>
+          <a class="more" href="#" onclick="toast('查看更多服务')">查看全部 ›</a>
+        </div>
+        <div class="sg">
+          <a class="sg-item" href="馆藏检索导航.html">
+            <div class="si">🔍</div><div class="sn">馆藏检索</div><div class="sd">OPAC 检索</div>
+          </a>
+          <a class="sg-item has-new" href="消息中心.html">
+            <div class="dot"></div>
+            <div class="si">🔔</div><div class="sn">消息中心</div><div class="sd">3 条未读</div>
+          </a>
+          <a class="sg-item" href="我的借阅.html">
+            <div class="si">📖</div><div class="sn">我的借阅</div><div class="sd">在借 3 本</div>
+          </a>
+          <a class="sg-item" href="续借.html">
+            <div class="si">🔄</div><div class="sn">在线续借</div><div class="sd">+15 天 / 次</div>
+          </a>
+          <a class="sg-item" href="违章查询.html">
+            <div class="si">⚠</div><div class="sn">违章查询</div><div class="sd">1 条待办</div>
+          </a>
+          <a class="sg-item" href="我的预约记录.html">
+            <div class="si">📅</div><div class="sn">我的预约</div><div class="sd">16 条记录</div>
+          </a>
+          <a class="sg-item" href="座位预约.html">
+            <div class="si">🪑</div><div class="sn">座位预约</div><div class="sd">实时选座</div>
+          </a>
+          <a class="sg-item" href="研修室预约.html">
+            <div class="si">🏛</div><div class="sn">研修室</div><div class="sd">27 间 · 研讨</div>
+          </a>
+          <a class="sg-item" href="电子资源导航.html">
+            <div class="si">📚</div><div class="sn">电子资源</div><div class="sd">数据库导航</div>
+          </a>
+          <a class="sg-item" href="学科服务.html">
+            <div class="si">🎓</div><div class="sn">学科服务</div><div class="sd">文献 / 查引</div>
+          </a>
+          <a class="sg-item" href="论文检测.html">
+            <div class="si">📑</div><div class="sn">论文检测</div><div class="sd">知网 / 万方</div>
+          </a>
+          <a class="sg-item" href="我的收藏.html">
+            <div class="si">★</div><div class="sn">我的收藏</div><div class="sd">8 项收藏</div>
+          </a>
+          <a class="sg-item" href="图书荐购.html">
+            <div class="si">🎁</div><div class="sn">图书荐购</div><div class="sd">推荐采购</div>
+          </a>
+          <a class="sg-item" href="信息素养课程中心.html">
+            <div class="si">📖</div><div class="sn">信息素养</div><div class="sd">课程 / 培训</div>
+          </a>
+          <a class="sg-item" href="校外访问-VPN-入口.html">
+            <div class="si">🌐</div><div class="sn">校外访问</div><div class="sd">VPN 入口</div>
+          </a>
+          <a class="sg-item" href="账户设置.html">
+            <div class="si">⚙</div><div class="sn">账户设置</div><div class="sd">资料 / 隐私</div>
+          </a>
+          <a class="sg-item" href="意见反馈.html">
+            <div class="si">💬</div><div class="sn">意见反馈</div><div class="sd">建议 / 投诉</div>
+          </a>
         </div>
       </div>
 
-      <!-- 信用 -->
-      <div class="panel" style="margin-top: 18px;">
-        <div class="panel-head">
-          <h3>💎 信用与借阅权益</h3>
-          <a class="more" href="#">违章记录 ›</a>
-        </div>
-        <div class="panel-body">
-          <div class="credit-wrap">
-            <div class="credit-row">
-              <span>当前信用分</span>
-              <span><b>98</b> / 100 <span class="credit-level">A级 · 优秀</span></span>
-            </div>
-            <div class="credit-bar"><span style="width: 98%;"></span></div>
-            <div class="credit-tips">
-              💡 您当前享有 <b>本科生 10 册 / 60 天</b> 借阅权限，可续借 1 次。保持良好的借阅记录可继续提升借阅权益。
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- 右栏 -->
     <div>
-      <!-- 预约 -->
-      <div class="panel">
-        <div class="panel-head">
-          <h3>📅 我的预约</h3>
-          <a class="more" href="#">更多 ›</a>
+
+      <!-- 我的学科馆员 -->
+      <div class="panel-mini">
+        <div class="ph">
+          <h3>🎓 我的学科馆员 <small>· 计算机</small></h3>
         </div>
-        <div class="panel-body">
-          <div class="reserve-list">
-            <div class="r-item">
-              <div class="r-top">
-                <span class="r-name">📍 二楼自习区 A12</span>
-                <span class="r-time">12-27 14:00</span>
-              </div>
-              <div class="r-info">
-                <span class="r-tag">座位预约</span>需在 14:00 前完成签到
-              </div>
-            </div>
-
-            <div class="r-item">
-              <div class="r-top">
-                <span class="r-name">📍 三楼研讨间 305</span>
-                <span class="r-time">12-30 19:00</span>
-              </div>
-              <div class="r-info">
-                <span class="r-tag" style="background:#fef3c7;color:#92400e;">研修室</span>小组讨论 · 4人
-              </div>
-            </div>
-
-            <div class="r-item">
-              <div class="r-top">
-                <span class="r-name">📚 飞机结构修理工艺</span>
-                <span class="r-time">已预约到馆</span>
-              </div>
-              <div class="r-info">
-                <span class="r-tag" style="background:#f5f3ff;color:#7c3aed;">图书预约</span>归还后通知您
-              </div>
+        <div class="pb">
+          <div class="lib">
+            <div class="la">王</div>
+            <div class="lt">
+              <div class="n">王振宇</div>
+              <div class="r">高级馆员</div>
+              <div class="c">0376-1234-5678</div>
             </div>
           </div>
+          <div style="margin-top: 10px; font-size: 12px; color: var(--text-2); line-height: 1.7;">
+            💡 服务时间：周一至周五 08:00-17:30；查收查引 3-5 工作日。
+          </div>
+          <a href="学科服务.html" style="display: block; text-align: center; margin-top: 12px; padding: 8px 0; background: #f0f9ff; color: var(--primary); border-radius: 6px; font-size: 13px; font-weight: 500;">查看全部馆员 →</a>
         </div>
       </div>
 
       <!-- 费用 -->
-      <div class="panel" style="margin-top: 18px;">
-        <div class="panel-head">
+      <div class="panel-mini">
+        <div class="ph">
           <h3>💰 费用总览</h3>
-          <a class="more" href="#">缴费记录 ›</a>
+          <a href="违章查询.html">缴费记录 ›</a>
         </div>
-        <div class="panel-body">
-          <div class="fee-row">
-            <span class="lbl">逾期滞纳金</span>
-            <span class="val zero">¥ 0.00</span>
+        <div class="pb">
+          <div class="fee-l"><span class="l">逾期滞纳金</span><span class="v warn">¥ 0.80</span></div>
+          <div class="fee-l"><span class="l">图书损坏</span><span class="v zero">¥ 0.00</span></div>
+          <div class="fee-l"><span class="l">丢失赔偿</span><span class="v zero">¥ 0.00</span></div>
+          <div class="fee-l"><span class="l">研修室超时</span><span class="v zero">¥ 0.00</span></div>
+          <div class="fee-l total"><span class="l">合计待缴</span><span class="v warn">¥ 0.80</span></div>
+        </div>
+      </div>
+
+      <!-- 帮助 -->
+      <div class="panel-mini">
+        <div class="ph">
+          <h3>🛟 咨询帮助</h3>
+        </div>
+        <div class="pb">
+          <div class="help-row">
+            <div class="hi">📞</div>
+            <div class="ht">
+              <div class="ht-t">服务热线</div>
+              <div class="ht-s">0000-1234567</div>
+            </div>
+            <a>拨号</a>
           </div>
-          <div class="fee-row">
-            <span class="lbl">图书损坏赔偿</span>
-            <span class="val zero">¥ 0.00</span>
+          <div class="help-row">
+            <div class="hi">📧</div>
+            <div class="ht">
+              <div class="ht-t">咨询邮箱</div>
+              <div class="ht-s">lib@xihang.edu.cn</div>
+            </div>
+            <a>发邮件</a>
           </div>
-          <div class="fee-row">
-            <span class="lbl">丢失赔偿</span>
-            <span class="val zero">¥ 0.00</span>
+          <div class="help-row">
+            <div class="hi">⏰</div>
+            <div class="ht">
+              <div class="ht-t">开馆时间</div>
+              <div class="ht-s">周一至周五 08:00-22:00</div>
+            </div>
           </div>
-          <div class="fee-row" style="border-top:1px dashed var(--border);padding-top:14px;margin-top:6px;">
-            <span class="lbl" style="font-weight:600;color:var(--text);">合计待缴</span>
-            <span class="val zero" style="font-size:18px;">¥ 0.00</span>
+          <div class="help-row">
+            <div class="hi">📍</div>
+            <div class="ht">
+              <div class="ht-t">馆藏地</div>
+              <div class="ht-s">总馆 · 南区 · 东校区 · 医学</div>
+            </div>
+            <a href="楼层详情.html">地图</a>
+          </div>
+          <div class="help-row">
+            <div class="hi">💬</div>
+            <div class="ht">
+              <div class="ht-t">在线咨询</div>
+              <div class="ht-s">QQ 群 / 微信工作日 09:00-17:00</div>
+            </div>
+            <a>开始</a>
           </div>
         </div>
       </div>
 
-      <!-- 推荐 -->
       <div class="recommend-card">
         <div>
           <h4>📚 想读更多好书？</h4>
           <p>前往馆藏检索，发现与你专业相关的图书和专题书架。</p>
         </div>
-        <a class="btn" href="馆藏检索.html">前往检索</a>
+        <a class="btn" href="馆藏检索导航.html">前往检索</a>
       </div>
+
     </div>
 
   </div>
@@ -909,6 +1576,53 @@
     © 2025 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
   </div>
 </footer>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  function toast(msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 2200);
+  }
+
+  function switchTab(key, el) {
+    document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+    const target = document.getElementById('tab-' + key);
+    if (target) target.style.display = 'block';
+  }
+
+  function switchTabById(key, el) {
+    document.querySelectorAll('.tab-bar .tab').forEach((t, i) => {
+      const map = ['overview', 'borrow', 'message', 'reservation', 'credit'];
+      if (map[i] === key) {
+        t.classList.add('active');
+        switchTab(key, t);
+      } else {
+        t.classList.remove('active');
+      }
+    });
+  }
+
+  /* 空间预约下拉：触屏 click 兼容 */
+  const dropdown = document.getElementById('navSpace');
+  if (dropdown) {
+    dropdown.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+  }
+</script>
 
 </body>
 </html>

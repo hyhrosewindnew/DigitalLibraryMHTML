@@ -50,7 +50,7 @@
   .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
   .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
 
-  /* ===== 新增：空间预约下拉菜单 ===== */
+  /* ===== 空间预约下拉菜单 ===== */
   .nav-item-dropdown { position: relative; }
   .nav-item-dropdown > a { display: inline-block; }
   .nav-item-dropdown > a::before {
@@ -118,7 +118,7 @@
   /* ===== 下拉菜单结束 ===== */
 
   .user-area { display: flex; align-items: center; gap: 14px; }
-  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; display: flex; align-items: center; justify-content: center; }
   .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
   .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
   .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
@@ -365,7 +365,7 @@
   <div class="top-bar-inner">
     <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
     <div>
-      <a href="#">学校首页</a>
+      <a href="首页.html">学校首页</a>
       <a href="#">读者协会</a>
       <a href="#">志愿服务</a>
       <a href="#">English</a>
@@ -375,25 +375,24 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">
+    <a class="logo" href="首页.html">
       <div class="icon">📚</div>
       <div class="text">
         <h1>信阳航空职业学院</h1>
         <p>Digital Library · 飞阅书海 · 启智天路</p>
       </div>
-    </div>
+    </a>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="馆藏检索.html">馆藏检索</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
       <a href="电子资源导航.html">电子资源</a>
 
-      <!-- ① 空间预约改为下拉菜单（原 <a href="#" class="active">空间预约</a>） -->
-      <div class="nav-item-dropdown" id="navSpace">
-        <a href="#" class="active" onclick="return false;">空间预约</a>
+      <div class="nav-item-dropdown active" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
         <div class="dropdown-menu">
           <a href="座位预约.html">
             <div class="dd-ico">
-              <svg class="ico" viewBox="0 0 24 24"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
             </div>
             <div class="dd-text">
               <div class="dd-name">座位预约</div>
@@ -402,7 +401,7 @@
           </a>
           <a href="研修室预约.html">
             <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
-              <svg class="ico" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
             </div>
             <div class="dd-text">
               <div class="dd-name">研修室预约</div>
@@ -412,7 +411,7 @@
           </a>
           <a href="我的预约记录.html">
             <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
-              <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             </div>
             <div class="dd-text">
               <div class="dd-name">我的预约记录</div>
@@ -422,18 +421,17 @@
           </a>
         </div>
       </div>
-      <!-- 下拉菜单结束 -->
 
-      <a href="个人中心.html">读者服务</a>
+      <a href="读者服务导航.html">读者服务</a>
       <a href="信息素养课程中心.html">信息素养</a>
       <a href="图书荐购.html">捐赠/荐购</a>
     </nav>
     <div class="user-area">
-      <button class="notif-btn">🔔<span class="badge"></span></button>
-      <div class="avatar-wrap">
+      <a class="notif-btn" href="消息中心.html" title="消息通知">🔔<span class="badge"></span></a>
+      <a class="avatar-wrap" href="账户设置.html">
         <div class="avatar">陈</div>
         <span class="avatar-name">陈思远</span>
-      </div>
+      </a>
     </div>
   </div>
 </header>
@@ -442,7 +440,7 @@
   <div class="breadcrumb">
     <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="我的预约记录.html">空间预约</a>  <!-- ② 原来 href="seat-reservation.html" 改成我的预约记录.html -->
+    <a href="座位预约.html">空间预约</a>
     <span class="sep">›</span>
     <span class="current">我的预约记录</span>
   </div>
@@ -650,7 +648,7 @@
             <div class="l2">
               <span>📍 <b>总馆 / 3F / 电子阅览区</b></span>
               <span>📅 <b>今天 12-09</b></span>
-              <span>�� 08:00 - 10:00（2h）</span>
+              <span>🕒 08:00 - 10:00（2h）</span>
             </div>
             <div class="l3">记录ID #R24040912 · 12-09 08:02 签到 → 10:00 签退 · 按时归还 · <span class="hl-good">无违约</span></div>
           </div>
@@ -663,7 +661,7 @@
         <!-- 记录 7 - 已取消 -->
         <div class="record-item">
           <div class="record-type seat">
-            <div class="ico">��</div>
+            <div class="ico">🪑</div>
             <div class="lbl">座位</div>
           </div>
           <div class="record-main">
@@ -726,22 +724,22 @@
       <div class="quick-card">
         <h4>快捷操作</h4>
         <div class="quick-grid">
-          <div class="quick-btn" onclick="location.href='seat-reservation.html'">
+          <a class="quick-btn" href="座位预约.html">
             <div class="ico">🪑</div>
             <span>预约座位</span>
-          </div>
-          <div class="quick-btn" onclick="location.href='room-reservation.html'">
+          </a>
+          <a class="quick-btn" href="研修室预约.html">
             <div class="ico">🏠</div>
             <span>预约研修室</span>
-          </div>
-          <div class="quick-btn" onclick="toast('正在跳转历史记录...', '')">
+          </a>
+          <a class="quick-btn" href="我的预约记录.html">
             <div class="ico">📜</div>
             <span>历史记录</span>
-          </div>
-          <div class="quick-btn" onclick="toast('正在跳转违约查询...', '')">
+          </a>
+          <a class="quick-btn" href="违章查询.html">
             <div class="ico">📋</div>
             <span>违约查询</span>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -771,7 +769,7 @@
           </div>
         </div>
         <div class="credit-tip">
-          💡 <b>信用分说明：</b>单次未签到 / 暂离超时 / 未签离扣 5 分；连续 3 次违约暂停预约 7 天；信用分 < 80 不可预约热门时段。
+          💡 <b>信用分说明：</b>单次未签到 / 暂离超时 / 未签离扣 5 分；连续 3 次违约暂停预约 7 天；信用分 &lt; 80 不可预约热门时段。
         </div>
       </div>
 
@@ -845,12 +843,10 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-  // ===== 新增：当前页高亮 + 触屏 click =====
+  // 空间预约下拉：触屏 click 兼容
   (function(){
     const sp = document.getElementById('navSpace');
     if (!sp) return;
-    const here = location.pathname.split('/').pop();
-    if (['座位预约.html','研修室预约.html','我的预约记录.html'].includes(here)) sp.classList.add('active');
     sp.addEventListener('click', e => {
       if (window.matchMedia('(hover: none)').matches) { e.preventDefault(); sp.classList.toggle('open'); }
     });

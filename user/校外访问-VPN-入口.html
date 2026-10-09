@@ -26,6 +26,7 @@
     --text-2: #606266;
     --text-3: #909399;
     --border: #e4e7ed;
+    --warning: #f59e0b;
     --max-w: 1440px;
   }
 
@@ -44,6 +45,78 @@
   .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
   .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
   .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* ============== 空间预约下拉 ============== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before { opacity: 1; }
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease;
+    z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important;
+    align-items: center; gap: 12px;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    border-radius: 10px;
+    transition: .15s;
+    line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ============== 下拉结束 ============== */
+
   .user-area { display: flex; align-items: center; gap: 14px; }
   .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
   .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
@@ -386,19 +459,54 @@
     </div>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="#">馆藏检索</a>
-      <a href="#">电子资源</a>
-      <a href="#">空间预约</a>
-      <a href="#" class="active">读者服务</a>
-      <a href="#">信息素养</a>
-      <a href="#">捐赠/荐购</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="读者服务导航.html" class="active">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
     </nav>
     <div class="user-area">
-      <button class="notif-btn">🔔<span class="badge"></span></button>
-      <div class="avatar-wrap">
+      <a class="notif-btn" href="消息中心.html" title="消息通知">🔔<span class="badge"></span></a>
+      <a class="avatar-wrap" href="账户设置.html">
         <div class="avatar">陈</div>
         <span class="avatar-name">陈思远</span>
-      </div>
+      </a>
     </div>
   </div>
 </header>
@@ -407,9 +515,9 @@
   <div class="breadcrumb">
     <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="#">读者服务</a>
+    <a href="读者服务导航.html">读者服务</a>
     <span class="sep">›</span>
-    <a href="#">帮助中心</a>
+    <a href="读者服务导航.html">帮助中心</a>
     <span class="sep">›</span>
     <span class="current">校外访问 / VPN 入口</span>
   </div>
@@ -486,7 +594,7 @@
       <div class="card">
         <div class="card-head">
           <h3><span class="dot"></span>数据库直连 · CARSI 认证</h3>
-          <a class="more">查看全部 16 个数据库 ›</a>
+          <a class="more" href="电子资源导航.html">查看全部 16 个数据库 ›</a>
         </div>
         <div class="card-body">
           <div class="db-list">
@@ -546,7 +654,7 @@
       <div class="card">
         <div class="card-head">
           <h3><span class="dot"></span>使用步骤 · WebVPN 为例</h3>
- </div>
+        </div>
         <div class="card-body">
           <div class="step-grid">
             <div class="step-item">
@@ -644,7 +752,7 @@
           <div class="info-row"><div class="ico">✅</div><span class="label">账号状态</span><span class="value" style="color:#16a34a;">正常</span></div>
         </div>
         <div style="margin-top:14px;">
-          <button style="width:100%;padding:9px 0;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;">修改密码</button>
+          <button style="width:100%;padding:9px 0;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;" onclick="window.location.href='账户设置.html'">修改密码</button>
         </div>
       </div>
 
@@ -668,7 +776,7 @@
   <div class="notice-card">
     <span class="ico">⚠️</span>
     <div class="text">
-      <b>合规使用提示：</b> 校外访问账号 <b>严禁借给他人使用</b>，一经发现将冻结账号并按违规处理。所有访问行为均被记录，请合规使用。如发现账号异常或被冒用，请立即拨打 <b>0000-1234569</b> 挂失。
+      <b>合规使用提示：</b> 校外访问账号 <b>严禁借给他人使用</b>，一经发现将冻结账号并按违规处理。所有访问行为均被记录，请合规使用。如发现账号异常或被冒用，请立即拨打 <b>0000-1234569</b> 挂失。相关处理规则详见 <b><a href="借阅规则与违规说明.html" style="color:#b45309;text-decoration:underline;">借阅规则与违规说明</a></b>。
     </div>
   </div>
 
@@ -686,6 +794,20 @@
   }
   function openWebVPN() { toast('正在打开 WebVPN 登录页...'); }
   function openCARSI() { toast('正在跳转到 CARSI 联邦认证...'); }
+
+  /* 空间预约下拉：触屏 click 兼容 */
+  const dropdown = document.getElementById('navSpace');
+  if (dropdown) {
+    dropdown.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+  }
 </script>
 
 </body>

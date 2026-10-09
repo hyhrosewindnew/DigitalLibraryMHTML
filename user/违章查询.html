@@ -33,7 +33,6 @@
     --info: #2563eb;
     --max-w: 1440px;
   }
-  /* 顶部 / 头部 / 面包屑 - 与首页同款 */
   .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
   .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
   .top-bar a { margin-left: 14px; color: #fff; }
@@ -44,7 +43,7 @@
   .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
   .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
   .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
-  .nav { display: flex; gap: 6px; }
+  .nav { display: flex; gap: 6px; align-items: center; }
   .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
   .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
   .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
@@ -64,7 +63,6 @@
 
   .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
 
-  /* 顶部 */
   .violation-hero {
     background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
     border-radius: 14px; padding: 30px 36px; color: #fff; margin-bottom: 22px;
@@ -80,7 +78,6 @@
   .violation-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; max-width: 880px; }
   .violation-hero p b { color: var(--gold); font-weight: 600; }
 
-  /* 信用分卡片 */
   .credit-overview {
     background: linear-gradient(135deg, #fef3c7, #fef9e7);
     border: 1px solid #fde68a; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px;
@@ -115,7 +112,6 @@
   .credit-btn:hover { border-color: var(--sky); color: var(--sky); }
   .credit-btn.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border-color: transparent; }
 
-  /* Tab */
   .tab-bar { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 0 18px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; gap: 4px; }
   .tab-item { padding: 14px 22px; font-size: 14.5px; color: var(--text-2); cursor: pointer; position: relative; font-weight: 500; transition: .2s; }
   .tab-item:hover { color: var(--primary); }
@@ -125,7 +121,6 @@
   .tab-item.active .cnt { background: rgba(74,158,255,0.15); color: var(--primary); }
   .tab-item.has-warn .cnt { background: rgba(220,38,38,0.12); color: var(--error); }
 
-  /* 表格 */
   .violation-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
   .card-toolbar { padding: 14px 22px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: linear-gradient(180deg, #fafcff, #fff); }
   .toolbar-left { display: flex; gap: 8px; align-items: center; }
@@ -137,9 +132,7 @@
     appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center;
   }
   .filter-chip-select:focus { border-color: var(--sky); }
-  .filter-search {
-    position: relative; width: 220px;
-  }
+  .filter-search { position: relative; width: 220px; }
   .filter-search input {
     width: 100%; height: 34px; padding: 0 12px 0 32px; border: 1px solid var(--border); background: #fff;
     border-radius: 8px; font-size: 12.5px; color: var(--text); outline: none; font-family: inherit; transition: .15s;
@@ -155,7 +148,6 @@
   .btn-tool.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border-color: transparent; }
   .btn-tool.primary:hover:not(:disabled) { transform: translateY(-1px); }
 
-  /* 违章卡片 */
   .violation-grid { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
   .vio-item {
     display: flex; gap: 16px; padding: 16px; background: #fff;
@@ -214,13 +206,11 @@
   .vio-btn.gray { background: #f5f5f5; color: var(--text-3); border-color: #e5e5e5; cursor: not-allowed; }
   .vio-btn.success { background: #ecfdf5; color: var(--success); border-color: #a7f3d0; cursor: default; }
 
-  /* 空状态 */
   .empty-state { padding: 80px 20px; text-align: center; color: var(--text-3); font-size: 14px; }
   .empty-state .big { font-size: 60px; margin-bottom: 16px; }
   .empty-state .text { color: var(--text-2); font-size: 14.5px; }
   .empty-state .sub { color: var(--text-3); font-size: 12.5px; margin-top: 8px; }
 
-  /* 申诉 */
   .appeal-banner {
     background: linear-gradient(135deg, #eff6ff, #f0f9ff);
     border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px;
@@ -234,7 +224,6 @@
   }
   .appeal-banner .btn:hover { background: var(--info); color: #fff; border-color: var(--info); }
 
-  /* 弹窗 */
   .mask { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
   .mask.show { display: flex; }
   .modal { background: #fff; border-radius: 14px; max-width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: pop .2s ease; overflow: hidden; }
@@ -258,7 +247,6 @@
   .form-field textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
   .form-field select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
-  /* Toast */
   .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
   .toast { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 20px; font-size: 13.5px; border-left: 3px solid var(--success); animation: slideDown .2s ease; white-space: nowrap; color: var(--text); }
   .toast.error { border-left-color: var(--error); }
@@ -268,6 +256,78 @@
   @media (max-width: 1240px) {
     .credit-overview { grid-template-columns: 1fr; text-align: center; }
   }
+
+  /* ============== 空间预约下拉 ============== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before { opacity: 1; }
+
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease;
+    z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important;
+    align-items: center; gap: 12px;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    border-radius: 10px;
+    transition: .15s;
+    line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ============== 下拉结束 ============== */
 </style>
 </head>
 <body>
@@ -295,12 +355,46 @@
     </div>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="search-results.html">馆藏检索</a>
-      <a href="e-resources.html">电子资源</a>
-      <a href="seat-reservation.html">空间预约</a>
-      <a href="#" class="active">读者服务</a>
-      <a href="#">信息素养</a>
-      <a href="#">捐赠/荐购</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+      <!-- 空间预约下拉 -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+      <a href="读者服务导航.html" class="active">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
     </nav>
     <div class="user-area">
       <button class="notif-btn">🔔<span class="badge"></span></button>
@@ -316,9 +410,9 @@
   <div class="breadcrumb">
     <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="my-borrow.html">读者服务</a>
+    <a href="我的借阅.html">读者服务</a>
     <span class="sep">›</span>
-    <a href="#">违章查询</a>
+    <a href="违章查询.html">违章查询</a>
     <span class="sep">›</span>
     <span class="current">处理</span>
   </div>
@@ -326,7 +420,6 @@
 
 <div class="container">
 
-  <!-- 顶部 -->
   <div class="violation-hero">
     <div class="violation-hero-content">
       <h2>⚠️ 违章查询与处理 · 信用分管理</h2>
@@ -334,7 +427,6 @@
     </div>
   </div>
 
-  <!-- 信用分卡片 -->
   <div class="credit-overview">
     <div class="credit-score">
       <div class="num">
@@ -359,7 +451,6 @@
     </div>
   </div>
 
-  <!-- 申诉提示 -->
   <div class="appeal-banner">
     <span class="ico">💡</span>
     <div style="flex: 1;">
@@ -368,7 +459,6 @@
     <button class="btn" onclick="openAppeal()">📝 我要申诉</button>
   </div>
 
-  <!-- Tab -->
   <div class="tab-bar">
     <span class="tab-item active has-warn" onclick="switchTab('all', this)">📋 全部违章 <span class="cnt">1</span></span>
     <span class="tab-item" onclick="switchTab('overdue', this)">⏰ 逾期未还 <span class="cnt">1</span></span>
@@ -378,7 +468,6 @@
     <span class="tab-item" onclick="switchTab('history', this)">📜 已处理 <span class="cnt">0</span></span>
   </div>
 
-  <!-- 违章列表 -->
   <div class="violation-card" id="tab-all">
     <div class="card-toolbar">
       <div class="toolbar-left">
@@ -410,7 +499,6 @@
 
     <div class="violation-grid" id="violationList">
 
-      <!-- 违章记录 1 - 逾期未还 -->
       <div class="vio-item">
         <div class="vio-type t-overdue">⏰</div>
         <div class="vio-main">
@@ -447,7 +535,6 @@
     </div>
   </div>
 
-  <!-- 已处理 -->
   <div class="violation-card" id="tab-history" style="display: none;">
     <div class="empty-state">
       <div class="big">🎉</div>
@@ -456,7 +543,6 @@
     </div>
   </div>
 
-  <!-- 提示 -->
   <div style="margin-top: 18px; padding: 16px 20px; background: linear-gradient(135deg, #f0f9ff, #ecfdf5); border: 1px solid #bae6fd; border-radius: 10px; font-size: 13px; color: #0c4a6e; line-height: 1.7;">
     💡 <b style="color: #0e7490;">信用分规则：</b>
     <ul style="margin: 6px 0 0 20px; padding: 0;">
@@ -471,7 +557,6 @@
 
 </div>
 
-<!-- 申诉弹窗 -->
 <div class="mask" id="appealMask">
   <div class="modal" style="width: 560px;">
     <div class="modal-header"><span>📝 提起申诉</span><button class="modal-close" onclick="closeAppeal()">✕</button></div>
@@ -513,7 +598,6 @@
   </div>
 </div>
 
-<!-- 缴费弹窗 -->
 <div class="mask" id="payMask">
   <div class="modal" style="width: 520px;">
     <div class="modal-header"><span>💰 缴纳滞纳金</span><button class="modal-close" onclick="closePay()">✕</button></div>
@@ -543,7 +627,6 @@
   </div>
 </div>
 
-<!-- 信用分规则弹窗 -->
 <div class="mask" id="creditMask">
   <div class="modal" style="width: 640px;">
     <div class="modal-header"><span>📊 信用分规则</span><button class="modal-close" onclick="closeCredit()">✕</button></div>
@@ -651,6 +734,20 @@
   }
   function closeCredit() {
     document.getElementById('creditMask').classList.remove('show');
+  }
+
+  /* 空间预约下拉：触屏 click 兼容 */
+  const dropdown = document.getElementById('navSpace');
+  if (dropdown) {
+    dropdown.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
   }
 </script>
 

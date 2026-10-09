@@ -50,8 +50,80 @@
   .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
   .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%); }
   .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%); border-radius: 2px; }
+
+  /* ============== 空间预约下拉 ============== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before { opacity: 1; }
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease;
+    z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important;
+    align-items: center; gap: 12px;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    border-radius: 10px;
+    transition: .15s;
+    line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ============== 下拉结束 ============== */
+
   .user-area { display: flex; align-items: center; gap: 14px; }
-  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; display: flex; align-items: center; justify-content: center; }
   .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
   .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
   .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 2px 10px rgba(139,92,246,0.35); }
@@ -341,7 +413,7 @@
   <div class="top-bar-inner">
     <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
     <div>
-      <a href="#">学校首页</a>
+      <a href="首页.html">学校首页</a>
       <a href="#">读者协会</a>
       <a href="#">志愿服务</a>
       <a href="#">English</a>
@@ -351,28 +423,63 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">
+    <a class="logo" href="首页.html">
       <div class="icon">📚</div>
       <div class="text">
         <h1>信阳航空职业学院</h1>
         <p>Digital Library · 飞阅书海 · 启智天路</p>
       </div>
-    </div>
+    </a>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="search-results.html">馆藏检索</a>
-      <a href="e-resources.html" class="active">电子资源</a>
-      <a href="#">空间预约</a>
-      <a href="#">读者服务</a>
-      <a href="#">信息素养</a>
-      <a href="#">捐赠/荐购</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html" class="active">电子资源</a>
+
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="读者服务导航.html">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
     </nav>
     <div class="user-area">
-      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
-      <div class="avatar-wrap">
+      <a class="notif-btn" href="消息中心.html" title="消息通知">🔔<span class="badge"></span></a>
+      <a class="avatar-wrap" href="账户设置.html">
         <div class="avatar">陈</div>
         <span class="avatar-name">陈思远</span>
-      </div>
+      </a>
     </div>
   </div>
 </header>
@@ -381,7 +488,7 @@
   <div class="breadcrumb">
     <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="e-resources.html">电子资源</a>
+    <a href="电子资源导航.html">电子资源</a>
     <span class="sep">›</span>
     <span class="current">超星汇雅电子书</span>
   </div>
@@ -468,7 +575,7 @@
           <p>超星汇雅电子书数据库是超星集团旗下的<strong>中文电子图书在线阅读与检索平台</strong>，依托集团海量数字化资源储备，向广大高校用户提供涵盖哲学、文学、历史学、法学、教育学、经济学、管理学、艺术学、理学、工学、医学、农学等全部学科门类的<strong>正版中文电子图书在线阅读与全文检索</strong>服务。</p>
           <p>本馆已订购 <strong>25 万册</strong> 电子图书，覆盖 22 大类中图法分类，支持<strong>在线阅读、目录检索、章节下载、笔记标注、跨端同步</strong>等功能。平台采用 DRM 版权保护技术，每位用户每月可下载 <strong>30 册</strong>，借阅期 <strong>14 天</strong>，到期自动归还。</p>
           <p>超星汇雅提供三种使用方式：<strong>①</strong> 校园网 IP 段内免登录访问；<strong>②</strong> 校外通过 <strong>CARSI 联邦认证</strong>漫游访问；<strong>③</strong> 移动端下载 <strong>超星移动图书馆</strong> App，使用学校账号绑定后实现随时随地的碎片化阅读。</p>
-          <p style="color: var(--text-3); font-size: 13px; margin-top: 20px;">— 数据更新于 2026-09-01，由超星集团提供，与后台 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:Consolas,monospace;color:#475569;">electronic-resources.html</code> 实时同步</p>
+          <p style="color: var(--text-3); font-size: 13px; margin-top: 20px;">— 数据更新于 2026-09-01，由超星集团提供，与后台 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:Consolas,monospace;color:#475569;">电子资源导航.html</code> 实时同步</p>
         </div>
 
         <div class="stats-row">
@@ -633,7 +740,7 @@
             <div class="guide-num">6</div>
             <div class="guide-content">
               <h5>常见问题与故障</h5>
-              <p>如遇访问异常、登录失败、检索无结果、下载异常等问题，请优先查看 <a style="color: var(--primary);">超星使用指南（FAQ）</a>，或在工作时段（08:00-22:00）联系负责馆员 <strong>王馆员</strong>（电话 <code>010-88880002</code>，邮箱 <code>lib@xyhkxy.edu.cn</code>）。</p>
+              <p>如遇访问异常、登录失败、检索无结果、下载异常等问题，请优先查看 <a href="意见反馈.html" style="color: var(--primary);">超星使用指南（FAQ）</a>，或在工作时段（08:00-22:00）联系负责馆员 <strong>王馆员</strong>（电话 <code>010-88880002</code>，邮箱 <code>lib@xyhkxy.edu.cn</code>）。</p>
             </div>
           </div>
         </div>
@@ -791,37 +898,37 @@
   <div class="related-card">
     <div class="related-head">
       <h3>相关资源推荐</h3>
-      <a style="font-size: 13px; color: var(--text-3); cursor: pointer;">查看更多 ›</a>
+      <a href="电子资源导航.html" style="font-size: 13px; color: var(--text-3); cursor: pointer;">查看更多 ›</a>
     </div>
     <div class="related-grid">
-      <div class="related-item">
+      <a class="related-item" href="电子资源导航.html">
         <div class="logo" style="background: linear-gradient(135deg, #d32f2f, #b71c1c);">CN</div>
         <div class="info">
           <div class="name">知网电子期刊</div>
           <div class="meta">IP 认证 · 中文期刊</div>
         </div>
-      </div>
-      <div class="related-item">
+      </a>
+      <a class="related-item" href="电子资源导航.html">
         <div class="logo" style="background: linear-gradient(135deg, #1976d2, #0d47a1);">VP</div>
         <div class="info">
           <div class="name">维普中文期刊</div>
           <div class="meta">IP 认证 · 中文期刊</div>
         </div>
-      </div>
-      <div class="related-item">
+      </a>
+      <a class="related-item" href="电子资源导航.html">
         <div class="logo" style="background: linear-gradient(135deg, #7b1fa2, #4a148c);">读</div>
         <div class="info">
           <div class="name">读秀学术搜索</div>
           <div class="meta">IP 认证 · 综合检索</div>
         </div>
-      </div>
-      <div class="related-item">
+      </a>
+      <a class="related-item" href="电子资源导航.html">
         <div class="logo" style="background: linear-gradient(135deg, #5e35b1, #311b92);">A</div>
         <div class="info">
           <div class="name">方正 Apabi 电子书</div>
           <div class="meta">IP 认证 · 试用中</div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 
@@ -837,6 +944,20 @@
       document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
     });
   });
+
+  /* 空间预约下拉：触屏 click 兼容 */
+  const dropdown = document.getElementById('navSpace');
+  if (dropdown) {
+    dropdown.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+  }
 </script>
 
 </body>

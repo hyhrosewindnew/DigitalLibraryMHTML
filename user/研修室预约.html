@@ -34,6 +34,12 @@
     --info: #2563eb;
     --max-w: 1440px;
   }
+  /* 通用 SVG 图标 */
+  .ico {
+    display: inline-block; vertical-align: middle; flex-shrink: 0;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
   /* 顶部 / 头部 / 面包屑（同款） */
   .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
   .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
@@ -429,10 +435,10 @@
     </div>
     <nav class="nav">
       <a href="首页.html">首页</a>
-      <a href="馆藏检索.html">馆藏检索</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
       <a href="电子资源导航.html">电子资源</a>
 
-      <!-- ① 空间预约改为下拉菜单（原 <a href="#" class="active">空间预约</a>） -->
+      <!-- 空间预约下拉 -->
       <div class="nav-item-dropdown" id="navSpace">
         <a href="#" class="active" onclick="return false;">空间预约</a>
         <div class="dropdown-menu">
@@ -467,18 +473,17 @@
           </a>
         </div>
       </div>
-      <!-- 下拉菜单结束 -->
 
-      <a href="个人中心.html">读者服务</a>
+      <a href="读者服务导航.html">读者服务</a>
       <a href="信息素养课程中心.html">信息素养</a>
       <a href="图书荐购.html">捐赠/荐购</a>
     </nav>
     <div class="user-area">
-      <button class="notif-btn">🔔<span class="badge"></span></button>
-      <div class="avatar-wrap">
+      <button class="notif-btn" onclick="location.href='消息中心.html'" title="消息通知">🔔<span class="badge"></span></button>
+      <a class="avatar-wrap" href="读者服务导航.html">
         <div class="avatar">陈</div>
         <span class="avatar-name">陈思远</span>
-      </div>
+      </a>
     </div>
   </div>
 </header>
@@ -487,7 +492,7 @@
   <div class="breadcrumb">
     <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="研修室预约.html">空间预约</a>  <!-- ② 原来 href="seat-reservation.html" 改成研修室预约.html -->
+    <a href="座位预约.html">空间预约</a>
     <span class="sep">›</span>
     <span class="current">研修室预约</span>
   </div>
@@ -760,7 +765,7 @@
         <div class="item"><span class="l">📍 位置：</span><span class="v">南馆 / 4F / 数字资源区</span></div>
         <div class="item"><span class="l">👥 容量：</span><span class="v">8 人（≥3 人起）</span></div>
         <div class="item"><span class="l">📅 今日：</span><span class="v">4 场预约</span></div>
-        <div class="item"><span class="l">�� 状态：</span><span class="v">可预约</span></div>
+        <div class="item"><span class="l">📆 状态：</span><span class="v">可预约</span></div>
       </div>
       <div class="room-slots">
         <div class="room-slots-title">今日开放时段</div>
@@ -769,7 +774,7 @@
         </div>
       </div>
       <div class="room-devices">
-        <span class="device-tag">�� 显示屏</span>
+        <span class="device-tag">🖥 显示屏</span>
         <span class="device-tag">📡 无线投屏</span>
         <span class="device-tag">📹 视频会议</span>
       </div>
