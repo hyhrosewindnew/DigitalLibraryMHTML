@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>超星汇雅电子书 - 数据库详情 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --max-w: 1440px;
+  }
+
+  /* 顶部栏 / 头部 / 面包屑（同款） */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 16px rgba(74,158,255,0.3); }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 2px 10px rgba(139,92,246,0.35); }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); transition: .2s; }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部主区 */
+  .er-top {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: grid; grid-template-columns: 140px 1fr 320px; gap: 32px;
+  }
+  /* 大 Logo */
+  .er-top-logo {
+    width: 130px; height: 130px; border-radius: 22px;
+    background: linear-gradient(135deg, #f4a261, #e76f51);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 56px; font-weight: 700;
+    font-family: Georgia, "Times New Roman", serif;
+    box-shadow: 0 12px 32px rgba(244,162,97,0.3);
+    position: relative; overflow: hidden;
+  }
+  .er-top-logo::after {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  }
+
+  /* 主信息 */
+  .er-top-info {}
+  .er-top-name {
+    font-size: 28px; color: var(--text); font-weight: 700; line-height: 1.35; margin-bottom: 6px;
+  }
+  .er-top-en {
+    font-size: 14px; color: var(--text-3); margin-bottom: 16px;
+  }
+  .er-top-badges { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .er-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; padding: 3px 10px; border-radius: 12px;
+    font-weight: 500; line-height: 18px;
+  }
+  .er-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .er-badge.trial    { background: rgba(245,158,11,0.12); color: #d97706; }
+  .er-badge.active   { background: rgba(22,197,94,0.12); color: #16a34a; }
+  .er-badge.expired  { background: rgba(220,38,38,0.12); color: #dc2626; }
+  .er-badge.recommend { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; padding-left: 4px; }
+  .er-badge.recommend::before { display: none; }
+  .er-badge.recommend::after { content: '⭐'; }
+
+  .er-top-meta {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 24px;
+    padding: 14px 18px; background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border-light); border-radius: 10px;
+  }
+  .er-top-meta .item { display: flex; gap: 8px; font-size: 13px; line-height: 1.6; }
+  .er-top-meta .k { color: var(--text-3); flex-shrink: 0; min-width: 64px; }
+  .er-top-meta .v { color: var(--text); font-weight: 500; }
+  .er-top-meta .v.url { font-family: "SF Mono", Consolas, monospace; color: #2c6eb0; word-break: break-all; }
+
+  .er-top-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+  .er-tag {
+    font-size: 12px; padding: 3px 12px; border-radius: 14px;
+    background: var(--bg-page); color: var(--text-2);
+  }
+  .er-tag.cat { background: #ecf3fe; color: #2c6eb0; }
+
+  /* 访问面板 */
+  .access-panel {
+    background: linear-gradient(135deg, #fafcff 0%, #f5f9ff 100%);
+    border: 1px solid #e3eaf3; border-radius: 12px; padding: 22px; align-self: start;
+  }
+  .access-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .access-head h3 { font-size: 15px; color: var(--text); font-weight: 600; }
+  .access-status { font-size: 12px; padding: 3px 10px; border-radius: 12px; font-weight: 500; background: #e6f7e6; color: #1e7b1e; }
+  .access-status::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 4px; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+  .access-block {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center;
+  }
+  .access-block .ico {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  }
+  .access-block.open .ico { background: rgba(239,68,68,0.12); color: var(--error); }
+  .access-block.ip   .ico { background: rgba(74,158,255,0.12); color: var(--sky); }
+  .access-block.carsi .ico { background: rgba(34,197,94,0.12); color: var(--success); }
+  .access-block .info { flex: 1; }
+  .access-block .info .name { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .access-block .info .desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  .access-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .btn-primary-lg {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    color: #fff; border: none; padding: 13px 18px; border-radius: 10px;
+    font-weight: 600; font-size: 14.5px; cursor: pointer;
+    transition: .2s; box-shadow: 0 6px 14px rgba(74,158,255,0.3);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-primary-lg:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(74,158,255,0.45); }
+  .btn-secondary-lg {
+    background: #fff; color: var(--accent); border: 1.5px solid var(--accent);
+    padding: 11px 18px; border-radius: 10px; font-weight: 500; font-size: 13.5px;
+    cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-secondary-lg:hover { background: var(--accent); color: #fff; }
+  .access-tips {
+    font-size: 12px; color: var(--text-3); line-height: 1.7; padding: 12px 14px;
+    background: rgba(74,158,255,0.05); border-radius: 8px; border-left: 3px solid var(--sky);
+  }
+  .access-tips b { color: var(--primary); }
+
+  /* Tab 区域 */
+  .er-tabs-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .er-tabs {
+    display: flex; gap: 0; padding: 0 8px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .er-tabs span {
+    padding: 16px 22px; font-size: 14.5px; color: var(--text-2);
+    cursor: pointer; position: relative; font-weight: 500;
+    transition: .2s; border-bottom: 2px solid transparent;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .er-tabs span:hover { color: var(--primary); }
+  .er-tabs span.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--sky); }
+  .er-tabs-body { padding: 28px 32px; min-height: 360px; }
+  .er-pane { display: none; }
+  .er-pane.active { display: block; }
+
+  /* 简介 */
+  .er-summary { font-size: 14.5px; color: var(--text); line-height: 1.9; max-width: 980px; }
+  .er-summary p { margin-bottom: 12px; text-indent: 2em; }
+  .er-summary strong { color: var(--primary); }
+
+  /* 资源指标 */
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 20px; max-width: 980px; }
+  .stat-item {
+    padding: 16px; background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border); border-radius: 10px; text-align: center;
+  }
+  .stat-item .num { font-size: 24px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .stat-item .lbl { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+  /* 收录范围 */
+  .scope-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 980px; }
+  .scope-item {
+    border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px;
+    background: linear-gradient(180deg, #fafcff, #fff);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .scope-item .ico {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: rgba(74,158,255,0.1); color: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .scope-item .text { flex: 1; }
+  .scope-item .title { font-size: 14px; color: var(--text); font-weight: 600; }
+  .scope-item .desc { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+  .scope-item .count { font-size: 12px; color: var(--primary); font-weight: 600; white-space: nowrap; }
+
+  /* 使用说明 */
+  .guide-list { max-width: 980px; }
+  .guide-item {
+    display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px dashed var(--border);
+  }
+  .guide-item:last-child { border-bottom: none; }
+  .guide-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; font-weight: 600; font-size: 14px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .guide-content { flex: 1; }
+  .guide-content h5 { font-size: 14.5px; color: var(--text); margin-bottom: 6px; font-weight: 600; }
+  .guide-content p { font-size: 13px; color: var(--text-2); line-height: 1.8; }
+  .guide-content code {
+    background: rgba(74,158,255,0.08); color: var(--primary);
+    padding: 1px 7px; border-radius: 4px; font-family: "SF Mono", Consolas, monospace; font-size: 12.5px;
+  }
+
+  /* 视频教程 */
+  .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 980px; }
+  .video-item {
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    transition: .2s; cursor: pointer;
+  }
+  .video-item:hover { border-color: var(--sky); transform: translateY(-2px); }
+  .video-thumb {
+    aspect-ratio: 16/9; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0d3b66, #1a5a96);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-thumb .play {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.95); color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: .2s;
+  }
+  .video-item:hover .play { transform: scale(1.1); }
+  .video-thumb .duration {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-family: "SF Mono", Consolas, monospace;
+  }
+  .video-info { padding: 12px 14px; }
+  .video-info .title { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.5; }
+  .video-info .meta { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+
+  /* 读者评价 */
+  .review-summary {
+    display: grid; grid-template-columns: 200px 1fr; gap: 32px;
+    padding: 24px; background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid #e3eaf3; border-radius: 12px; margin-bottom: 22px; max-width: 980px;
+  }
+  .review-score-block { text-align: center; padding-right: 20px; border-right: 1px dashed var(--border); }
+  .review-score-num { font-size: 56px; font-weight: 700; color: var(--accent); line-height: 1; font-family: Georgia, serif; }
+  .review-score-stars { color: #fbbf24; font-size: 20px; margin: 8px 0; letter-spacing: 2px; }
+  .review-score-count { font-size: 12.5px; color: var(--text-3); }
+  .review-bars { display: flex; flex-direction: column; gap: 10px; }
+  .review-bar-row { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .review-bar-row .lbl { width: 60px; color: var(--text-2); }
+  .review-bar-row .bar { flex: 1; height: 8px; background: #eef2f7; border-radius: 10px; overflow: hidden; }
+  .review-bar-row .bar span { display: block; height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); border-radius: 10px; }
+  .review-bar-row .num { color: var(--text-3); font-size: 12.5px; min-width: 36px; }
+
+  .review-list { max-width: 980px; }
+  .review-item { padding: 18px 0; border-bottom: 1px dashed var(--border); }
+  .review-item:last-child { border-bottom: none; }
+  .review-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .review-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #4a9eff); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .review-head .name { font-size: 14px; color: var(--text); font-weight: 500; }
+  .review-head .meta { font-size: 12px; color: var(--text-3); }
+  .review-head .stars { color: #fbbf24; font-size: 13px; letter-spacing: 1px; }
+  .review-content { font-size: 14px; color: var(--text); line-height: 1.8; }
+
+  /* 相关推荐 */
+  .related-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 24px; margin-top: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .related-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .related-head h3 { font-size: 17px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .related-head h3::before { content: ''; width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .related-item {
+    display: flex; gap: 12px; padding: 14px; border: 1px solid var(--border);
+    border-radius: 10px; transition: .25s; cursor: pointer;
+  }
+  .related-item:hover { border-color: var(--sky); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(13,59,102,0.08); }
+  .related-item .logo {
+    width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 16px; flex-shrink: 0; font-family: Georgia, serif;
+  }
+  .related-item .info { flex: 1; min-width: 0; }
+  .related-item .name { font-size: 13.5px; color: var(--text); font-weight: 600; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px;
+  }
+  .related-item .meta { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+
+  @media (max-width: 1240px) {
+    .er-top { grid-template-columns: 100px 1fr; gap: 20px; padding: 24px; }
+    .er-top-logo { width: 100px; height: 100px; font-size: 40px; }
+    .access-panel { grid-column: 1 / -1; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .scope-list { grid-template-columns: 1fr; }
+    .video-grid { grid-template-columns: repeat(2, 1fr); }
+    .related-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html">馆藏检索</a>
+      <a href="e-resources.html" class="active">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="e-resources.html">电子资源</a>
+    <span class="sep">›</span>
+    <span class="current">超星汇雅电子书</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部主区 -->
+  <div class="er-top">
+    <div class="er-top-logo">超</div>
+
+    <div class="er-top-info">
+      <h1 class="er-top-name">超星汇雅电子书</h1>
+      <div class="er-top-en">Chaoxing Huiya e-Book Database · 超星集团旗下数字图书资源平台</div>
+
+      <div class="er-top-badges">
+        <span class="er-badge recommend">馆员推荐</span>
+        <span class="er-badge active">正式订购</span>
+        <span class="er-badge" style="background: rgba(34,197,94,0.12); color: #16a34a;">● 开放访问</span>
+      </div>
+
+      <div class="er-top-meta">
+        <div class="item"><span class="k">资源类型：</span><span class="v">电子图书</span></div>
+        <div class="item"><span class="k">语　　种：</span><span class="v">中文</span></div>
+        <div class="item"><span class="k">供 应 商：</span><span class="v">超星集团</span></div>
+        <div class="item"><span class="k">负责馆员：</span><span class="v">王馆员（010-88880002）</span></div>
+        <div class="item"><span class="k">订购周期：</span><span class="v">2026.01.01 ~ 2026.12.31</span></div>
+        <div class="item"><span class="k">合同金额：</span><span class="v">¥ 180,000.00 CNY（已付款）</span></div>
+        <div class="item"><span class="k">访问地址：</span><span class="v url">https://www.sslibrary.com/page/239443/show</span></div>
+        <div class="item"><span class="k">使用指南：</span><span class="v url">https://lib.xyhkxy.edu.cn/guide/chaoxing</span></div>
+      </div>
+
+      <div class="er-top-tags">
+        <span class="er-tag cat">文学</span>
+        <span class="er-tag cat">管理学</span>
+        <span class="er-tag cat">教育学</span>
+        <span class="er-tag cat">经济学</span>
+        <span class="er-tag cat">艺术</span>
+        <span class="er-tag cat">历史</span>
+      </div>
+    </div>
+
+    <div class="access-panel">
+      <div class="access-head">
+        <h3>🔐 访问入口</h3>
+        <span class="access-status">校园内可用</span>
+      </div>
+
+      <div class="access-block open">
+        <div class="ico">🆓</div>
+        <div class="info">
+          <div class="name">开放访问</div>
+          <div class="desc">校园网 / 校外均可直接访问，无需登录</div>
+        </div>
+      </div>
+
+      <div class="access-actions">
+        <button class="btn-primary-lg">🚀 立即访问</button>
+        <button class="btn-secondary-lg">📋 复制访问地址</button>
+        <button class="btn-secondary-lg" style="border-color: var(--primary); color: var(--primary);">⭐ 收藏此资源</button>
+      </div>
+
+      <div class="access-tips">
+        💡 移动端可下载 <b>超星移动图书馆</b> App，使用学校账号绑定后即可在手机/平板上阅读。绑定流程详见「使用说明」Tab。
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 区 -->
+  <div class="er-tabs-card">
+    <div class="er-tabs">
+      <span class="active" data-tab="summary">📄 资源简介</span>
+      <span data-tab="scope">📚 收录范围</span>
+      <span data-tab="guide">📋 使用说明</span>
+      <span data-tab="video">🎬 视频教程</span>
+      <span data-tab="reviews">💬 读者评价 <span class="count" style="font-size:11px;background:rgba(74,158,255,0.12);color:var(--primary);padding:1px 7px;border-radius:8px;margin-left:4px;">86</span></span>
+    </div>
+
+    <div class="er-tabs-body">
+
+      <!-- 资源简介 -->
+      <div class="er-pane active" id="pane-summary">
+        <div class="er-summary">
+          <p>超星汇雅电子书数据库是超星集团旗下的<strong>中文电子图书在线阅读与检索平台</strong>，依托集团海量数字化资源储备，向广大高校用户提供涵盖哲学、文学、历史学、法学、教育学、经济学、管理学、艺术学、理学、工学、医学、农学等全部学科门类的<strong>正版中文电子图书在线阅读与全文检索</strong>服务。</p>
+          <p>本馆已订购 <strong>25 万册</strong> 电子图书，覆盖 22 大类中图法分类，支持<strong>在线阅读、目录检索、章节下载、笔记标注、跨端同步</strong>等功能。平台采用 DRM 版权保护技术，每位用户每月可下载 <strong>30 册</strong>，借阅期 <strong>14 天</strong>，到期自动归还。</p>
+          <p>超星汇雅提供三种使用方式：<strong>①</strong> 校园网 IP 段内免登录访问；<strong>②</strong> 校外通过 <strong>CARSI 联邦认证</strong>漫游访问；<strong>③</strong> 移动端下载 <strong>超星移动图书馆</strong> App，使用学校账号绑定后实现随时随地的碎片化阅读。</p>
+          <p style="color: var(--text-3); font-size: 13px; margin-top: 20px;">— 数据更新于 2026-09-01，由超星集团提供，与后台 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:Consolas,monospace;color:#475569;">electronic-resources.html</code> 实时同步</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-item"><div class="num">25万</div><div class="lbl">馆藏电子图书</div></div>
+          <div class="stat-item"><div class="num">22</div><div class="lbl">学科门类</div></div>
+          <div class="stat-item"><div class="num">30</div><div class="lbl">月下载上限（册）</div></div>
+          <div class="stat-item"><div class="num">14</div><div class="lbl">借阅期（天）</div></div>
+          <div class="stat-item"><div class="num">3</div><div class="lbl">终端类型</div></div>
+        </div>
+      </div>
+
+      <!-- 收录范围 -->
+      <div class="er-pane" id="pane-scope">
+        <div style="margin-bottom: 18px; padding: 14px 18px; background: linear-gradient(135deg, #fafcff, #f5f9ff); border-left: 3px solid var(--sky); border-radius: 8px; font-size: 13px; color: #1e3a8a; line-height: 1.7;">
+          💡 本馆订购了超星汇雅电子书的<strong>全部 22 个一级学科</strong>门类资源，覆盖面广、学科均衡。下表展示了主要学科门类下的代表性子库与典型规模。
+        </div>
+
+        <div class="scope-list">
+          <div class="scope-item">
+            <div class="ico">📖</div>
+            <div class="text">
+              <div class="title">文学艺术库</div>
+              <div class="desc">中外文学、戏剧、影视、艺术理论、绘画、设计等</div>
+            </div>
+            <div class="count">≈ 3.2 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">💼</div>
+            <div class="text">
+              <div class="title">经济管理库</div>
+              <div class="desc">经济学、金融学、会计学、市场营销、人力资源、企业管理等</div>
+            </div>
+            <div class="count">≈ 4.5 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">🎓</div>
+            <div class="text">
+              <div class="title">教育体育库</div>
+              <div class="desc">教育学、心理学、体育学、教学法、课程论等</div>
+            </div>
+            <div class="count">≈ 2.1 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">⚖️</div>
+            <div class="text">
+              <div class="title">政治法律库</div>
+              <div class="desc">政治学、法学、马克思主义理论、行政管理、国际关系等</div>
+            </div>
+            <div class="count">≈ 1.8 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">🔬</div>
+            <div class="text">
+              <div class="title">数理化学库</div>
+              <div class="desc">数学、物理、化学、天文、地球科学等基础学科</div>
+            </div>
+            <div class="count">≈ 1.5 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">⚙️</div>
+            <div class="text">
+              <div class="title">工业技术库</div>
+              <div class="desc">机械、电子、计算机、航空航天、建筑、自动化等</div>
+            </div>
+            <div class="count">≈ 2.8 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">💊</div>
+            <div class="text">
+              <div class="title">医药卫生库</div>
+              <div class="desc">基础医学、临床医学、护理学、药学、中医学等</div>
+            </div>
+            <div class="count">≈ 1.2 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">📜</div>
+            <div class="text">
+              <div class="title">历史地理库</div>
+              <div class="desc">史学理论、中国史、世界史、考古学、人文地理等</div>
+            </div>
+            <div class="count">≈ 1.6 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">🌍</div>
+            <div class="text">
+              <div class="title">哲学综合库</div>
+              <div class="desc">哲学、宗教、心理学、伦理学、逻辑学等</div>
+            </div>
+            <div class="count">≈ 1.4 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">🚀</div>
+            <div class="text">
+              <div class="title">航空航天特色库</div>
+              <div class="desc">航空发动机、无人机、空乘礼仪、机场运行等我校特色学科</div>
+            </div>
+            <div class="count" style="color: var(--accent);">≈ 0.3 万册 ⭐</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">📚</div>
+            <div class="text">
+              <div class="title">语言文字库</div>
+              <div class="desc">汉语语言学、英语、翻译、辞典、教学参考等</div>
+            </div>
+            <div class="count">≈ 1.5 万册</div>
+          </div>
+          <div class="scope-item">
+            <div class="ico">🌐</div>
+            <div class="text">
+              <div class="title">其他综合类</div>
+              <div class="desc">工具书、检索书、教材教辅、考试用书等</div>
+            </div>
+            <div class="count">≈ 2.1 万册</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 使用说明 -->
+      <div class="er-pane" id="pane-guide">
+        <div class="guide-list">
+          <div class="guide-item">
+            <div class="guide-num">1</div>
+            <div class="guide-content">
+              <h5>校园网内直接访问</h5>
+              <p>在校园网 IP 段（教学楼、图书馆、宿舍区、办公区）内，打开浏览器直接访问 <code>https://www.sslibrary.com/page/239443/show</code>，<strong>无需账号密码</strong>，浏览器自动识别 IP 段。打开后建议先在右上角"个人中心"注册一个个人账号（用于收藏、笔记），注册不会影响资源使用。</p>
+            </div>
+          </div>
+
+          <div class="guide-item">
+            <div class="guide-num">2</div>
+            <div class="guide-content">
+              <h5>校外 CARSI 联邦认证</h5>
+              <p>不在校园网时，访问 <code>https://www.sslibrary.com/page/239443/show</code>，点击页面右上角"<strong>CARSI 登录</strong>"，在机构列表中选择"<strong>信阳航空职业学院</strong>"，使用学校统一身份认证账号（学号 / 工号 + 密码）登录即可。CARSI 由 CERNET 联邦认证提供安全保障。</p>
+            </div>
+          </div>
+
+          <div class="guide-item">
+            <div class="guide-num">3</div>
+            <div class="guide-content">
+              <h5>移动端 App 使用</h5>
+              <p>下载"<strong>超星移动图书馆</strong>" App（iOS / Android 各大应用商店均可），在登录页面选择"<strong>机构登录</strong>" → 搜索"<strong>信阳航空职业学院</strong>" → 使用学校账号登录。首次登录会要求绑定手机号，绑定后支持离线下载、碎片化阅读、跨端笔记同步。</p>
+            </div>
+          </div>
+
+          <div class="guide-item">
+            <div class="guide-num">4</div>
+            <div class="guide-content">
+              <h5>全文检索与下载</h5>
+              <p>支持按 <strong>书名 / 作者 / 出版社 / ISBN / 全文关键词</strong> 检索。结果页可按学科、年份、热度筛选。每本书提供 <strong>在线阅读 / 目录浏览 / 章节下载（PDF） / 试读 20%</strong> 多种使用方式。<strong>每月最多下载 30 册</strong>，借阅期 <strong>14 天</strong>，到期自动归还。</p>
+            </div>
+          </div>
+
+          <div class="guide-item">
+            <div class="guide-num">5</div>
+            <div class="guide-content">
+              <h5>使用限制与版权</h5>
+              <p>所有资源仅供<strong>本校师生教学与科研使用</strong>，不得用于任何商业目的，不得恶意批量下载、不得传播给非本校人员。单本图书借阅期 <strong>14 天</strong>，期满自动归还；如需继续使用请重新借阅。系统会自动检测异常下载行为，违规账号将被暂停使用权限。</p>
+            </div>
+          </div>
+
+          <div class="guide-item">
+            <div class="guide-num">6</div>
+            <div class="guide-content">
+              <h5>常见问题与故障</h5>
+              <p>如遇访问异常、登录失败、检索无结果、下载异常等问题，请优先查看 <a style="color: var(--primary);">超星使用指南（FAQ）</a>，或在工作时段（08:00-22:00）联系负责馆员 <strong>王馆员</strong>（电话 <code>010-88880002</code>，邮箱 <code>lib@xyhkxy.edu.cn</code>）。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 视频教程 -->
+      <div class="er-pane" id="pane-video">
+        <div style="margin-bottom: 18px; font-size: 14px; color: var(--text-2);">
+          🎬 以下是超星集团官方制作的快速上手视频，建议首次使用的读者按顺序观看（合计 38 分钟）。
+        </div>
+        <div class="video-grid">
+          <div class="video-item">
+            <div class="video-thumb" style="background: linear-gradient(135deg, #1a5a96, #4a9eff);">
+              <div class="play">▶</div>
+              <div class="duration">08:32</div>
+            </div>
+            <div class="video-info">
+              <div class="title">① 5分钟快速了解超星汇雅电子书</div>
+              <div class="meta">2026 版 · 4.2k 播放</div>
+            </div>
+          </div>
+          <div class="video-item">
+            <div class="video-thumb" style="background: linear-gradient(135deg, #047857, #10b981);">
+              <div class="play">▶</div>
+              <div class="duration">12:15</div>
+            </div>
+            <div class="video-info">
+              <div class="title">② 高级检索与筛选技巧</div>
+              <div class="meta">2026 版 · 2.8k 播放</div>
+            </div>
+          </div>
+          <div class="video-item">
+            <div class="video-thumb" style="background: linear-gradient(135deg, #b45309, #f59e0b);">
+              <div class="play">▶</div>
+              <div class="duration">06:48</div>
+            </div>
+            <div class="video-info">
+              <div class="title">③ 个人账号注册与绑定</div>
+              <div class="meta">2026 版 · 1.9k 播放</div>
+            </div>
+          </div>
+          <div class="video-item">
+            <div class="video-thumb" style="background: linear-gradient(135deg, #6d28d9, #8b5cf6);">
+              <div class="play">▶</div>
+              <div class="duration">10:21</div>
+            </div>
+            <div class="video-info">
+              <div class="title">④ 移动端 App 使用全流程</div>
+              <div class="meta">2026 版 · 3.5k 播放</div>
+            </div>
+          </div>
+          <div class="video-item">
+            <div class="video-thumb" style="background: linear-gradient(135deg, #be185d, #ec4899);">
+              <div class="play">▶</div>
+              <div class="duration">05:32</div>
+            </div>
+            <div class="video-info">
+              <div class="title">⑤ 笔记与划线的高效用法</div>
+              <div class="meta">2026 版 · 1.2k 播放</div>
+            </div>
+          </div>
+          <div class="video-item">
+            <div class="video-thumb" style="background: linear-gradient(135deg, #4f46e5, #6366f1);">
+              <div class="play">▶</div>
+              <div class="duration">07:14</div>
+            </div>
+            <div class="video-info">
+              <div class="title">⑥ CARSI 校外访问完整流程</div>
+              <div class="meta">2026 版 · 2.3k 播放</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 读者评价 -->
+      <div class="er-pane" id="pane-reviews">
+        <div class="review-summary">
+          <div class="review-score-block">
+            <div class="review-score-num">4.7</div>
+            <div class="review-score-stars">★★★★★</div>
+            <div class="review-score-count">基于 86 条评价</div>
+          </div>
+          <div class="review-bars">
+            <div class="review-bar-row"><span class="lbl">★★★★★ 5星</span><div class="bar"><span style="width: 72%"></span></div><span class="num">62</span></div>
+            <div class="review-bar-row"><span class="lbl">★★★★ 4星</span><div class="bar"><span style="width: 18%"></span></div><span class="num">15</span></div>
+            <div class="review-bar-row"><span class="lbl">★★★ 3星</span><div class="bar"><span style="width: 8%"></span></div><span class="num">7</span></div>
+            <div class="review-bar-row"><span class="lbl">★★ 2星</span><div class="bar"><span style="width: 2%"></span></div><span class="num">2</span></div>
+            <div class="review-bar-row"><span class="lbl">★ 1星</span><div class="bar"><span style="width: 0%"></span></div><span class="num">0</span></div>
+          </div>
+        </div>
+
+        <div class="review-list">
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar">陈</div>
+              <div style="flex:1">
+                <div class="name">陈思远 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 飞行器制造 · 大三</span></div>
+                <div class="meta">2025-12-22 · 已使用 3 个月</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="review-content">
+              资源<strong>非常丰富</strong>，特别是航空特色库的发动机、无人机相关书籍几乎能找到市面上所有的中文版。检索体验很棒，章节级检索特别适合写论文时查细节。CARSI 校外访问也很丝滑，强烈推荐！
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar" style="background: linear-gradient(135deg, #ec4899, #be185d);">王</div>
+              <div style="flex:1">
+                <div class="name">王晓雯 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 汉语言文学 · 大二</span></div>
+                <div class="meta">2025-12-18 · 已使用 1 年</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="review-content">
+              文学库里的现当代文学、古典文献特别全！<strong>笔记和划线功能</strong>是我的最爱，可以同步到手机端随时回看，期末复习效率翻倍。
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar" style="background: linear-gradient(135deg, #10b981, #047857);">李</div>
+              <div style="flex:1">
+                <div class="name">李明 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 工商管理 · 大四</span></div>
+                <div class="meta">2025-12-10 · 已使用 6 个月</div>
+              </div>
+              <div class="stars">★★★★☆</div>
+            </div>
+            <div class="review-content">
+              管理类书籍很齐全，对 MBA 课程帮助很大。<strong>建议改进</strong>：每月 30 册的下载额度对写毕业论文期间的研究生略紧张，希望能区分本科生/研究生差异化额度。
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">张</div>
+              <div style="flex:1">
+                <div class="name">张教师 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 马克思主义学院</span></div>
+                <div class="meta">2025-11-25 · 已使用 2 年</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="review-content">
+              作为思政课教师，备课查资料非常方便。<strong>书内检索 + 跨书检索</strong>功能是最大亮点，能快速定位到不同书籍对同一主题的论述，给学生备课节省了大量时间。
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 相关推荐 -->
+  <div class="related-card">
+    <div class="related-head">
+      <h3>相关资源推荐</h3>
+      <a style="font-size: 13px; color: var(--text-3); cursor: pointer;">查看更多 ›</a>
+    </div>
+    <div class="related-grid">
+      <div class="related-item">
+        <div class="logo" style="background: linear-gradient(135deg, #d32f2f, #b71c1c);">CN</div>
+        <div class="info">
+          <div class="name">知网电子期刊</div>
+          <div class="meta">IP 认证 · 中文期刊</div>
+        </div>
+      </div>
+      <div class="related-item">
+        <div class="logo" style="background: linear-gradient(135deg, #1976d2, #0d47a1);">VP</div>
+        <div class="info">
+          <div class="name">维普中文期刊</div>
+          <div class="meta">IP 认证 · 中文期刊</div>
+        </div>
+      </div>
+      <div class="related-item">
+        <div class="logo" style="background: linear-gradient(135deg, #7b1fa2, #4a148c);">读</div>
+        <div class="info">
+          <div class="name">读秀学术搜索</div>
+          <div class="meta">IP 认证 · 综合检索</div>
+        </div>
+      </div>
+      <div class="related-item">
+        <div class="logo" style="background: linear-gradient(135deg, #5e35b1, #311b92);">A</div>
+        <div class="info">
+          <div class="name">方正 Apabi 电子书</div>
+          <div class="meta">IP 认证 · 试用中</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Tab 切换
+  document.querySelectorAll('.er-tabs span').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.er-tabs span').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.er-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

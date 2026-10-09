@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图书荐购 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar {
+    background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%);
+    color: #fff;
+    font-size: 13px;
+    padding: 8px 0;
+  }
+  .top-bar-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+
+  .header {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(13,59,102,0.06);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 30px;
+    height: 76px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    border-radius: 12px;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+
+  .nav { display: flex; gap: 6px; }
+  .nav a {
+    font-size: 15px; color: var(--text);
+    padding: 10px 16px; position: relative;
+    transition: .25s; font-weight: 500;
+    border-radius: 8px;
+  }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after {
+    content: '';
+    position: absolute; bottom: 4px; left: 50%;
+    transform: translateX(-50%);
+    width: 22px; height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--sky));
+    border-radius: 2px;
+  }
+
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn {
+    position: relative;
+    background: var(--bg-page);
+    border: none;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 18px;
+  }
+  .notif-btn .badge {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 15px;
+  }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  /* 面包屑 */
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 14px 30px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部流程说明 */
+  .hero-banner {
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 16px;
+    padding: 32px 36px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: 200px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .hero-banner .tag {
+    display: inline-block;
+    padding: 5px 14px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    font-size: 12.5px;
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .hero-banner h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .hero-banner p {
+    font-size: 14px;
+    opacity: 0.92;
+    line-height: 1.7;
+    max-width: 720px;
+    position: relative; z-index: 1;
+  }
+
+  /* 主体 */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h3 {
+    font-size: 16px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text);
+  }
+  .card-head h3 .dot {
+    width: 3px; height: 16px;
+    background: linear-gradient(180deg, var(--primary), var(--sky));
+    border-radius: 2px;
+  }
+  .card-body { padding: 24px; }
+
+  /* 流程步骤 */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    position: relative;
+  }
+  .step-item {
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    position: relative;
+  }
+  .step-item .num {
+    position: absolute;
+    top: 12px; left: 12px;
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .step-item .ico {
+    width: 50px; height: 50px;
+    margin: 8px auto 10px;
+    background: linear-gradient(135deg, #dbeafe, #93c5fd);
+    color: #1d4ed8;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .step-item:nth-child(2) .ico { background: linear-gradient(135deg, #d1fae5, #6ee7b7); color: #047857; }
+  .step-item:nth-child(3) .ico { background: linear-gradient(135deg, #fed7aa, #fb923c); color: #c2410c; }
+  .step-item:nth-child(4) .ico { background: linear-gradient(135deg, #ede9fe, #c4b5fd); color: #6d28d9; }
+  .step-item .name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .step-item .desc { font-size: 11.5px; color: var(--text-3); line-height: 1.5; }
+
+  /* 表单 */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 20px;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field label {
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .field label .req { color: #ef4444; margin-left: 2px; }
+  .field label .tip {
+    margin-left: 6px;
+    font-size: 11.5px;
+    color: var(--text-3);
+    font-weight: 400;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 13.5px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: .15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(74,158,255,0.12);
+  }
+  .field textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+  .field select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23909399' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    appearance: none;
+    padding-right: 30px;
+  }
+  .form-tip {
+    font-size: 11.5px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .form-actions {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .form-actions .left-info {
+    font-size: 12.5px;
+    color: var(--text-3);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .form-actions .left-info b { color: var(--primary); }
+  .btn-row { display: flex; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-2);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: .15s;
+  }
+  .btn:hover { border-color: var(--sky); color: var(--primary); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(74,158,255,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(74,158,255,0.4); }
+  .btn-ghost {
+    background: #f8fafc;
+    color: var(--text-2);
+  }
+
+  /* 右侧卡片 */
+  .side-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .side-card h4 {
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .side-card h4::before {
+    content: '';
+    width: 3px; height: 14px;
+    background: linear-gradient(180deg, var(--primary), var(--sky));
+    border-radius: 2px;
+  }
+
+  /* 推荐榜 */
+  .rank-list { display: flex; flex-direction: column; gap: 12px; }
+  .rank-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .rank-item:last-child { border-bottom: none; }
+  .rank-no {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-3);
+    background: var(--bg-page);
+    flex-shrink: 0;
+  }
+  .rank-item:nth-child(1) .rank-no { background: linear-gradient(135deg, #f43f5e, #be123c); color: #fff; }
+  .rank-item:nth-child(2) .rank-no { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+  .rank-item:nth-child(3) .rank-no { background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff; }
+  .rank-info { flex: 1; min-width: 0; }
+  .rank-info .name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-info .meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .rank-count { font-size: 12px; color: var(--primary); font-weight: 600; flex-shrink: 0; }
+
+  /* 提示卡 */
+  .tip-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .tip-card h4 {
+    font-size: 14px; font-weight: 600;
+    color: #92400e;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tip-card h4::before { content: '💡'; }
+  .tip-card ul { list-style: none; }
+  .tip-card li {
+    font-size: 12.5px;
+    color: #92400e;
+    line-height: 1.9;
+    padding-left: 16px;
+    position: relative;
+  }
+  .tip-card li::before {
+    content: '•';
+    position: absolute;
+    left: 4px;
+    color: #d97706;
+    font-weight: 700;
+  }
+
+  /* 我的荐购 */
+  .my-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .my-stat {
+    background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .my-stat .n { font-size: 22px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .my-stat .l { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .my-stat:nth-child(2) { background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
+  .my-stat:nth-child(2) .n { color: #16a34a; }
+  .my-stat:nth-child(3) { background: linear-gradient(135deg, #fef3c7, #fef9c3); }
+  .my-stat:nth-child(3) .n { color: #d97706; }
+  .my-stat:nth-child(4) { background: linear-gradient(135deg, #ede9fe, #f3e8ff); }
+  .my-stat:nth-child(4) .n { color: #7c3aed; }
+
+  .my-list { display: flex; flex-direction: column; gap: 8px; }
+  .my-item {
+    padding: 10px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 12.5px;
+  }
+  .my-item .t { font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .my-item .m { color: var(--text-3); font-size: 11px; display: flex; justify-content: space-between; }
+  .status-tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 10.5px;
+    font-weight: 500;
+  }
+  .status-pending { background: rgba(245,158,11,0.12); color: #d97706; }
+  .status-approved { background: rgba(22,197,94,0.12); color: #16a34a; }
+  .status-rejected { background: rgba(220,38,38,0.12); color: #dc2626; }
+  .status-ordered { background: rgba(124,58,237,0.12); color: #7c3aed; }
+
+  /* 推荐分类 */
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .category-item {
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .category-item:hover {
+    border-color: var(--sky);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(74,158,255,0.12);
+  }
+  .category-item .ico {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(74,158,255,0.12);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .category-item .name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .category-item .count { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#" class="active">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">捐赠/荐购</a>
+    <span class="sep">›</span>
+    <span class="current">图书荐购</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部 Hero Banner -->
+  <div class="hero-banner">
+    <span class="tag">✈ 荐购一本书 · 点亮一片天</span>
+    <h2>图书荐购</h2>
+    <p>您想要的书，图书馆帮您采购。每一条荐购都会由采访馆员认真审阅、查重评估，审核通过后将纳入下批采购计划。读者荐购是馆藏建设的重要补充，您的每一次推荐都让图书馆更贴近需求。</p>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 流程图 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>荐购流程</h3>
+          <span style="font-size:12.5px;color:var(--text-3);">从提交到上架的 4 步闭环</span>
+        </div>
+        <div class="card-body">
+          <div class="steps">
+            <div class="step-item">
+              <div class="num">1</div>
+              <div class="ico">📝</div>
+              <div class="name">提交荐购</div>
+              <div class="desc">填写书名、ISBN、作者及推荐理由</div>
+            </div>
+            <div class="step-item">
+              <div class="num">2</div>
+              <div class="ico">🔍</div>
+              <div class="name">审核查重</div>
+              <div class="desc">采访馆员查重评估 3-5 个工作日</div>
+            </div>
+            <div class="step-item">
+              <div class="num">3</div>
+              <div class="ico">🛒</div>
+              <div class="name">采购到货</div>
+              <div class="desc">订单下达、供应商发货、验收入库</div>
+            </div>
+            <div class="step-item">
+              <div class="num">4</div>
+              <div class="ico">📚</div>
+              <div class="name">编目上架</div>
+              <div class="desc">分配索书号、上架流通、读者可借</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 荐购表单 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>填写荐购信息</h3>
+          <span style="font-size:12.5px;color:var(--text-3);">带 <span style="color:#ef4444">*</span> 为必填项</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label>书名 <span class="req">*</span></label>
+              <input type="text" placeholder="请输入图书完整书名">
+            </div>
+            <div class="field">
+              <label>作者 <span class="req">*</span></label>
+              <input type="text" placeholder="主要作者，多位作者用逗号分隔">
+            </div>
+            <div class="field">
+              <label>出版社 <span class="req">*</span></label>
+              <input type="text" placeholder="如：机械工业出版社">
+            </div>
+            <div class="field">
+              <label>出版年 <span class="req">*</span></label>
+              <input type="number" placeholder="如：2024" min="1900" max="2099">
+            </div>
+            <div class="field">
+              <label>ISBN <span class="req">*</span></label>
+              <input type="text" placeholder="13 位 ISBN，例如 978-7-100-12345-6">
+              <div class="form-tip">13 位国际标准书号，期刊请填写 ISSN</div>
+            </div>
+            <div class="field">
+              <label>预估定价（元）</label>
+              <input type="number" placeholder="选填" min="0" step="0.01">
+            </div>
+            <div class="field">
+              <label>复本数</label>
+              <input type="number" value="1" min="1" max="10">
+              <div class="form-tip">建议 1-3 册，热门书籍可多填</div>
+            </div>
+            <div class="field">
+              <label>学科分类 <span class="req">*</span></label>
+              <select>
+                <option>请选择学科分类</option>
+                <option>航空工程 / TU-V</option>
+                <option>机械工程 / TH</option>
+                <option>计算机科学 / TP</option>
+                <option>电子信息 / TN</option>
+                <option>经济管理 / F</option>
+                <option>文学艺术 / I</option>
+                <option>社会科学 / C</option>
+                <option>其他</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>中图法分类号</label>
+              <input type="text" placeholder="选填，如：TP393（计算机网络）">
+              <div class="form-tip">不确定可不填，馆员会协助分配</div>
+            </div>
+            <div class="field">
+              <label>推荐人</label>
+              <input type="text" value="陈思远" readonly>
+            </div>
+            <div class="field full">
+              <label>推荐理由 <span class="req">*</span> <span class="tip">说明荐购此书的必要性，将作为审核参考</span></label>
+              <textarea placeholder="请说明：①推荐此书的理由 ②适用的课程或研究方向 ③馆藏现有同类书情况 ④预估使用人数等"></textarea>
+            </div>
+            <div class="field full">
+              <label>备注信息</label>
+              <input type="text" placeholder="选填，如：教师指定教材、课程用书、考试参考等">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <div class="left-info">
+              <span>📌</span>
+              <span>提交后预计 <b>3-5 个工作日</b> 完成审核，结果将通过站内信通知</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-ghost">💾 保存草稿</button>
+              <button class="btn">取消</button>
+              <button class="btn btn-primary">🚀 提交荐购</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 推荐说明 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>荐购须知</h3>
+        </div>
+        <div class="card-body" style="font-size:13.5px;line-height:1.9;color:var(--text-2);">
+          <p style="margin-bottom:10px;"><b style="color:var(--text);">①荐购范围：</b>国内外正式出版的中外文图书（含教材、专著、工具书等），电子资源请使用「数据库申请」渠道。</p>
+          <p style="margin-bottom:10px;"><b style="color:var(--text);">②查重机制：</b>馆员会先查重馆藏情况，重复或已有同类书籍的荐购将被驳回，避免资源浪费。</p>
+          <p style="margin-bottom:10px;"><b style="color:var(--text);">③审核周期：</b>普通荐购 3-5 个工作日回复，热门/特殊书籍 5-10 个工作日。请耐心等待。</p>
+          <p style="margin-bottom:10px;"><b style="color:var(--text);">④采购限制：</b>单本定价超 500 元、套装超过 5 册或全外文原版教材，需经馆长审批。</p>
+          <p><b style="color:var(--text);">⑤版权与质量：</b>盗版、违规出版物不予采购；教材类请优先选择近 3 年内的新版。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 我的荐购 -->
+      <div class="side-card">
+        <h4>我的荐购</h4>
+        <div class="my-stats">
+          <div class="my-stat">
+            <div class="n">12</div>
+            <div class="l">累计提交</div>
+          </div>
+          <div class="my-stat">
+            <div class="n">8</div>
+            <div class="l">已通过</div>
+          </div>
+          <div class="my-stat">
+            <div class="n">2</div>
+            <div class="l">审核中</div>
+          </div>
+          <div class="my-stat">
+            <div class="n">5</div>
+            <div class="l">已上架</div>
+          </div>
+        </div>
+        <div class="my-list">
+          <div class="my-item">
+            <div class="t">深入理解计算机系统</div>
+            <div class="m">
+              <span>12-08 提交</span>
+              <span class="status-tag status-pending">审核中</span>
+            </div>
+          </div>
+          <div class="my-item">
+            <div class="t">Python 编程：从入门到实践</div>
+            <div class="m">
+              <span>12-05 提交</span>
+              <span class="status-tag status-ordered">已采购</span>
+            </div>
+          </div>
+          <div class="my-item">
+            <div class="t">空气动力学基础</div>
+            <div class="m">
+              <span>11-28 提交</span>
+              <span class="status-tag status-approved">已批准</span>
+            </div>
+          </div>
+          <div class="my-item">
+            <div class="t">C++ Primer Plus</div>
+            <div class="m">
+              <span>11-15 提交</span>
+              <span class="status-tag status-rejected">已驳回</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:12px;">
+          <a style="font-size:12.5px;color:var(--sky);cursor:pointer;">查看全部历史 ›</a>
+        </div>
+      </div>
+
+      <!-- 本月热荐榜 -->
+      <div class="side-card">
+        <h4>本月热荐榜</h4>
+        <div class="rank-list">
+          <div class="rank-item">
+            <div class="rank-no">1</div>
+            <div class="rank-info">
+              <div class="name">航空发动机结构与系统</div>
+              <div class="meta">机械工程 · 刘永泉</div>
+            </div>
+            <div class="rank-count">23 次</div>
+          </div>
+          <div class="rank-item">
+            <div class="rank-no">2</div>
+            <div class="rank-info">
+              <div class="name">无人机设计与控制</div>
+              <div class="meta">航空工程 · 全权</div>
+            </div>
+            <div class="rank-count">19 次</div>
+          </div>
+          <div class="rank-item">
+            <div class="rank-no">3</div>
+            <div class="rank-info">
+              <div class="name">Python 编程从入门到实践</div>
+              <div class="meta">计算机 · Eric Matthes</div>
+            </div>
+            <div class="rank-count">17 次</div>
+          </div>
+          <div class="rank-item">
+            <div class="rank-no">4</div>
+            <div class="rank-info">
+              <div class="name">数控车床编程与操作</div>
+              <div class="meta">机械工程 · 陈洪涛</div>
+            </div>
+            <div class="rank-count">15 次</div>
+          </div>
+          <div class="rank-item">
+            <div class="rank-no">5</div>
+            <div class="rank-info">
+              <div class="name">空中乘务实务</div>
+              <div class="meta">航空服务 · 陈敏</div>
+            </div>
+            <div class="rank-count">12 次</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 提示卡 -->
+      <div class="tip-card">
+        <h4>推荐小贴士</h4>
+        <ul>
+          <li>优先推荐近 3 年内出版的图书</li>
+          <li>填写详细的推荐理由能加速审核</li>
+          <li>教材类请确认学院课程使用</li>
+          <li>外文原版建议提供 ISBN 便于采购</li>
+          <li>通过率高的荐购会被优先采购</li>
+        </ul>
+      </div>
+
+      <!-- 推荐分类 -->
+      <div class="side-card">
+        <h4>热门荐购分类</h4>
+        <div class="category-grid">
+          <div class="category-item">
+            <div class="ico">✈</div>
+            <div class="name">航空工程</div>
+            <div class="count">已荐 86 本</div>
+          </div>
+          <div class="category-item">
+            <div class="ico">⚙</div>
+            <div class="name">机械工程</div>
+            <div class="count">已荐 64 本</div>
+          </div>
+          <div class="category-item">
+            <div class="ico">💻</div>
+            <div class="name">计算机</div>
+            <div class="count">已荐 152 本</div>
+          </div>
+          <div class="category-item">
+            <div class="ico">📐</div>
+            <div class="name">电子信息</div>
+            <div class="count">已荐 73 本</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

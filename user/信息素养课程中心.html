@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>信息素养课程中心 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif; background: #f2f3f5; color: #303133; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66; --primary-light: #1a5a96; --sky: #4a9eff;
+    --accent: #f4a261; --gold: #ffc857;
+    --bg-page: #f2f3f5; --surface: #fff;
+    --text: #303133; --text-2: #606266; --text-3: #909399;
+    --border: #e4e7ed; --border-light: #eef2f7;
+    --success: #16a34a; --warning: #d97706; --error: #dc2626; --info: #2563eb;
+    --max-w: 1440px;
+  }
+  /* ========= 顶部条 + 头部 + 导航（同款） ========= */
+  .top-bar { background: linear-gradient(90deg,#0d3b66 0%,#1a5a96 100%); color:#fff; font-size:13px; padding:8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin:0 auto; padding:0 30px; display:flex; justify-content:space-between; align-items:center; }
+  .top-bar a { margin-left:14px; color:#fff; }
+  .top-bar a:hover { color:var(--gold); }
+  .header { background:#fff; box-shadow:0 2px 12px rgba(13,59,102,0.06); position:sticky; top:0; z-index:100; }
+  .header-inner { max-width: var(--max-w); margin:0 auto; padding:0 30px; height:76px; display:flex; align-items:center; justify-content:space-between; }
+  .logo { display:flex; align-items:center; gap:14px; }
+  .logo .icon { width:48px; height:48px; background:linear-gradient(135deg,var(--primary),var(--sky)); border-radius:12px; color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; }
+  .logo .text h1 { font-size:20px; color:var(--primary); margin-bottom:2px; font-weight:700; }
+  .logo .text p { font-size:10.5px; color:var(--text-3); letter-spacing:1.2px; }
+  .nav { display:flex; gap:6px; }
+  .nav a { font-size:15px; color:var(--text); padding:10px 16px; position:relative; transition:.25s; font-weight:500; border-radius:8px; }
+  .nav a:hover { color:var(--primary); background:rgba(13,59,102,0.05); }
+  .nav a.active { color:var(--primary); background:linear-gradient(135deg,rgba(74,158,255,0.12),rgba(74,158,255,0.06)); }
+  .nav a.active::after { content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:22px; height:3px; background:linear-gradient(90deg,var(--primary),var(--sky)); border-radius:2px; }
+  .user-area { display:flex; align-items:center; gap:14px; }
+  .notif-btn { position:relative; background:var(--bg-page); border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; color:var(--primary); font-size:18px; }
+  .notif-btn .badge { position:absolute; top:6px; right:6px; width:8px; height:8px; background:var(--accent); border-radius:50%; border:2px solid #fff; }
+  .avatar-wrap { display:flex; align-items:center; gap:10px; cursor:pointer; padding:4px 10px 4px 4px; border-radius:30px; }
+  .avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#6d28d9 50%,#4a9eff); display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:15px; }
+  .avatar-name { font-size:13.5px; color:var(--text); font-weight:500; }
+  .breadcrumb-wrap { background:#fff; border-bottom:1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin:0 auto; padding:14px 30px; font-size:13px; color:var(--text-3); }
+  .breadcrumb a { color:var(--text-2); }
+  .breadcrumb a:hover { color:var(--primary); }
+  .breadcrumb .sep { margin:0 8px; color:var(--text-3); }
+  .breadcrumb .current { color:var(--text); font-weight:500; }
+
+  .container { max-width: var(--max-w); margin:0 auto; padding:24px 30px 60px; }
+
+  /* ========= 顶部数据（沿用研修室页面同款 hero） ========= */
+  .lit-hero {
+    background: linear-gradient(135deg,#0a2d52 0%,#1a5a96 50%,#4a9eff 100%);
+    border-radius:14px; padding:30px 36px; color:#fff; margin-bottom:22px;
+    position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(13,59,102,0.15);
+  }
+  .lit-hero::before { content:''; position:absolute; inset:0; background-image: radial-gradient(ellipse at 85% 30%,rgba(255,255,255,0.12) 0,transparent 40%); pointer-events:none; }
+  .lit-hero-content { position:relative; z-index:2; display:grid; grid-template-columns:1fr auto; gap:30px; align-items:center; }
+  .lit-hero h2 { font-size:24px; margin-bottom:8px; font-weight:600; display:flex; align-items:center; gap:10px; }
+  .lit-hero p { font-size:13.5px; opacity:.9; line-height:1.7; max-width:760px; }
+  .lit-hero p b { color:var(--gold); font-weight:600; }
+  .lit-hero-stats { display:flex; gap:18px; }
+  .lit-hero-stat { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:16px 22px; backdrop-filter:blur(10px); min-width:130px; text-align:center; }
+  .lit-hero-stat .num { font-size:28px; font-weight:700; color:var(--gold); font-variant-numeric:tabular-nums; line-height:1; }
+  .lit-hero-stat .lbl { font-size:12px; opacity:.9; margin-top:6px; }
+
+  /* ========= 学习概览卡片（我的进度） ========= */
+  .progress-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px; }
+  .progress-card {
+    background:#fff; border:1px solid var(--border); border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04); position:relative; overflow:hidden;
+  }
+  .progress-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,var(--primary),var(--sky)); transform:scaleX(0); transform-origin:left; transition:.35s; }
+  .progress-card:hover::before { transform:scaleX(1); }
+  .progress-card:hover { transform:translateY(-3px); box-shadow:0 8px 22px rgba(13,59,102,0.12); }
+  .progress-card .pc-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .progress-card .pc-ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; }
+  .progress-card.c1 .pc-ico { background:linear-gradient(135deg,#4a9eff,#2563eb); }
+  .progress-card.c2 .pc-ico { background:linear-gradient(135deg,#f59e0b,#d97706); }
+  .progress-card.c3 .pc-ico { background:linear-gradient(135deg,#10b981,#059669); }
+  .progress-card.c4 .pc-ico { background:linear-gradient(135deg,#a855f7,#7c3aed); }
+  .progress-card .pc-title { font-size:13.5px; color:var(--text-2); font-weight:500; }
+  .progress-card .pc-num { font-size:24px; font-weight:700; color:var(--primary); line-height:1.1; font-variant-numeric:tabular-nums; }
+  .progress-card .pc-num small { font-size:12px; color:var(--text-3); font-weight:400; }
+  .progress-card .pc-bar { margin-top:10px; height:6px; background:var(--bg-page); border-radius:3px; overflow:hidden; }
+  .progress-card .pc-bar-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--sky)); border-radius:3px; }
+  .progress-card .pc-bar-fill.amber { background:linear-gradient(90deg,#f59e0b,#d97706); }
+  .progress-card .pc-bar-fill.green { background:linear-gradient(90deg,#10b981,#059669); }
+  .progress-card .pc-bar-fill.purple { background:linear-gradient(90deg,#a855f7,#7c3aed); }
+  .progress-card .pc-extra { font-size:11.5px; color:var(--text-3); margin-top:6px; }
+  .progress-card .pc-extra .up { color:#16a34a; font-weight:600; }
+
+  /* ========= Tab + 筛选 ========= */
+  .toolbar { background:#fff; border:1px solid var(--border); border-radius:14px; padding:14px 22px; display:flex; align-items:center; gap:14px; margin-bottom:18px; box-shadow:0 1px 3px rgba(0,0,0,0.04); flex-wrap:wrap; }
+  .tabs-pill { display:flex; gap:4px; background:var(--bg-page); padding:4px; border-radius:10px; }
+  .tabs-pill span { padding:7px 18px; font-size:13px; border-radius:7px; cursor:pointer; color:var(--text-2); transition:.2s; font-weight:500; }
+  .tabs-pill span.active { background:linear-gradient(135deg,var(--primary),var(--sky)); color:#fff; box-shadow:0 4px 10px rgba(74,158,255,0.25); }
+  .toolbar .filter-group { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text-2); }
+  .toolbar select { height:32px; padding:0 28px 0 10px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:12.5px; color:var(--text); cursor:pointer; outline:none; font-family:inherit; appearance:none; background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; }
+  .toolbar input { height:32px; padding:0 12px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:12.5px; color:var(--text); outline:none; font-family:inherit; min-width:180px; }
+  .toolbar input:focus, .toolbar select:focus { border-color:var(--sky); box-shadow:0 0 0 3px rgba(74,158,255,0.1); }
+  .toolbar .search-btn { height:32px; padding:0 18px; border:none; border-radius:6px; background:linear-gradient(135deg,var(--primary),var(--sky)); color:#fff; font-size:13px; cursor:pointer; font-weight:500; }
+  .toolbar .view-toggle { display:flex; gap:2px; padding:2px; background:var(--bg-page); border-radius:6px; margin-left:auto; }
+  .toolbar .view-toggle span { width:30px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:4px; cursor:pointer; color:var(--text-3); font-size:14px; }
+  .toolbar .view-toggle span.active { background:#fff; color:var(--primary); }
+
+  /* ========= 课程分类入口（6宫格，呼应截图布局） ========= */
+  .category-section { background:#fff; border:1px solid var(--border); border-radius:14px; padding:22px; margin-bottom:18px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+  .cat-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-top:14px; }
+  .cat-item { background:linear-gradient(135deg,#fafcff 0%,#f5f9ff 100%); border:1px solid var(--border); border-radius:12px; padding:22px 12px; text-align:center; cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
+  .cat-item::before { content:''; position:absolute; top:-40%; right:-40%; width:100px; height:100px; background:radial-gradient(circle,rgba(74,158,255,0.18) 0,transparent 70%); border-radius:50%; }
+  .cat-item:hover { transform:translateY(-4px); background:linear-gradient(135deg,#0d3b66 0%,#1a5a96 100%); border-color:transparent; box-shadow:0 12px 28px rgba(13,59,102,0.25); }
+  .cat-item:hover .cat-ico { background:rgba(255,255,255,0.2); color:#fff; }
+  .cat-item:hover .cat-name, .cat-item:hover .cat-sub { color:#fff; }
+  .cat-ico { width:48px; height:48px; margin:0 auto 10px; background:rgba(74,158,255,0.12); color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; transition:.3s; }
+  .cat-name { font-size:14px; font-weight:600; color:var(--primary); transition:.3s; }
+  .cat-sub { font-size:11.5px; color:var(--text-3); margin-top:3px; transition:.3s; }
+
+  /* ========= 主体：左课程列表 + 右学习侧栏 ========= */
+  .main-grid { display:grid; grid-template-columns:1fr 320px; gap:18px; }
+
+  /* 课程卡 */
+  .section-head { display:flex; justify-content:space-between; align-items:center; margin:4px 0 14px; }
+  .section-head h3 { font-size:17px; color:var(--text); font-weight:600; display:flex; align-items:center; gap:8px; }
+  .section-head h3::before { content:''; width:3px; height:16px; background:linear-gradient(180deg,var(--primary),var(--sky)); border-radius:2px; }
+  .section-head .more { font-size:13px; color:var(--text-3); cursor:pointer; transition:.2s; }
+  .section-head .more:hover { color:var(--primary); }
+
+  .course-card {
+    background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden;
+    transition:.3s; box-shadow:0 1px 3px rgba(0,0,0,0.04); display:flex; gap:0; margin-bottom:14px;
+  }
+  .course-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(13,59,102,0.12); border-color:var(--sky); }
+  .course-cover {
+    width:240px; flex-shrink:0; position:relative; overflow:hidden;
+    background:linear-gradient(135deg,#4a9eff,#0a2d52);
+  }
+  .course-cover svg { width:100%; height:100%; display:block; }
+  .course-cover .badge-row { position:absolute; top:10px; left:10px; display:flex; gap:5px; }
+  .course-cover .badge-row span { font-size:10.5px; padding:2px 8px; border-radius:10px; background:rgba(0,0,0,0.45); color:#fff; backdrop-filter:blur(8px); font-weight:500; }
+  .course-cover .badge-row .hot { background:linear-gradient(135deg,#ef4444,#dc2626); }
+  .course-cover .badge-row .new { background:linear-gradient(135deg,#10b981,#059669); }
+  .course-cover .badge-row .rec { background:linear-gradient(135deg,#f59e0b,#d97706); }
+  .course-cover .play-icon { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:52px; height:52px; background:rgba(255,255,255,0.95); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:22px; box-shadow:0 6px 20px rgba(0,0,0,0.3); }
+  .course-cover .duration { position:absolute; bottom:10px; right:10px; font-size:11px; padding:2px 8px; border-radius:10px; background:rgba(0,0,0,0.6); color:#fff; }
+
+  .course-body { flex:1; padding:18px 22px; display:flex; flex-direction:column; min-width:0; }
+  .course-body .c-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .course-body .c-title { font-size:16px; font-weight:600; color:var(--text); line-height:1.4; flex:1; }
+  .course-body .c-title:hover { color:var(--primary); cursor:pointer; }
+  .course-body .c-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .course-body .c-tag { font-size:11px; padding:2px 8px; border-radius:10px; background:var(--bg-page); color:var(--text-2); }
+  .course-body .c-tag.tag-video { background:rgba(74,158,255,0.12); color:#1d4ed8; }
+  .course-body .c-tag.tag-ppt { background:rgba(245,158,11,0.12); color:#b45309; }
+  .course-body .c-tag.tag-test { background:rgba(16,185,129,0.12); color:#047857; }
+  .course-body .c-desc { font-size:12.5px; color:var(--text-2); line-height:1.7; margin-top:10px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .course-body .c-meta { display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--text-3); flex-wrap:wrap; }
+  .course-body .c-meta span { display:inline-flex; align-items:center; gap:4px; }
+  .course-body .c-progress { margin-top:14px; padding-top:12px; border-top:1px dashed var(--border); display:flex; align-items:center; gap:14px; }
+  .course-body .c-progress .bar { flex:1; height:6px; background:var(--bg-page); border-radius:3px; overflow:hidden; }
+  .course-body .c-progress .bar-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--sky)); border-radius:3px; }
+  .course-body .c-progress .bar-fill.done { background:linear-gradient(90deg,#10b981,#059669); }
+  .course-body .c-progress .txt { font-size:12px; color:var(--text-2); white-space:nowrap; }
+  .course-body .c-progress .txt b { color:var(--primary); font-weight:700; }
+  .course-body .c-progress .txt.done b { color:#16a34a; }
+  .course-body .c-actions { display:flex; gap:8px; margin-top:14px; }
+  .btn { padding:7px 16px; font-size:12.5px; border-radius:8px; cursor:pointer; font-family:inherit; font-weight:500; transition:.2s; border:1px solid; display:inline-flex; align-items:center; gap:5px; }
+  .btn-primary { background:linear-gradient(135deg,var(--primary),var(--sky)); color:#fff; border-color:transparent; box-shadow:0 3px 8px rgba(74,158,255,0.25); }
+  .btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 14px rgba(74,158,255,0.4); }
+  .btn-ghost { background:#fff; color:var(--text-2); border-color:var(--border); }
+  .btn-ghost:hover { border-color:var(--sky); color:var(--sky); }
+
+  /* 右栏 */
+  .right-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,0.04); margin-bottom:14px; }
+  .right-card h4 { font-size:14px; color:var(--text); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+  .right-card h4::before { content:''; width:3px; height:13px; background:linear-gradient(180deg,var(--primary),var(--sky)); border-radius:2px; }
+  /* 学习日历 */
+  .calendar { margin-top:6px; }
+  .calendar .week-row, .calendar .date-row { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; text-align:center; font-size:11px; }
+  .calendar .week-row { color:var(--text-3); margin-bottom:6px; font-weight:500; }
+  .calendar .date-row .day { padding:7px 0; border-radius:6px; color:var(--text-2); position:relative; cursor:pointer; transition:.15s; font-weight:500; }
+  .calendar .date-row .day:hover { background:rgba(74,158,255,0.1); }
+  .calendar .date-row .day.muted { color:var(--text-3); opacity:.5; }
+  .calendar .date-row .day.today { background:linear-gradient(135deg,var(--primary),var(--sky)); color:#fff; box-shadow:0 3px 8px rgba(74,158,255,0.3); }
+  .calendar .date-row .day.has-task::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--accent); }
+  .calendar .date-row .day.today.has-task::after { background:var(--gold); }
+  .cal-legend { display:flex; gap:14px; font-size:11.5px; color:var(--text-3); margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+  .cal-legend .lg { display:inline-flex; align-items:center; gap:4px; }
+  .cal-legend .lg::before { content:''; width:8px; height:8px; border-radius:2px; }
+  .cal-legend .lg.today::before { background:linear-gradient(135deg,var(--primary),var(--sky)); }
+  .cal-legend .lg.task::before { background:var(--accent); border-radius:50%; }
+
+  /* 学习榜单 */
+  .rank-list .rank-item { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px dashed var(--border-light); font-size:12.5px; }
+  .rank-list .rank-item:last-child { border-bottom:none; }
+  .rank-list .rank-num { width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--text-3); background:var(--bg-page); flex-shrink:0; }
+  .rank-list .rank-item.r1 .rank-num { background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; }
+  .rank-list .rank-item.r2 .rank-num { background:linear-gradient(135deg,#a3a3a3,#737373); color:#fff; }
+  .rank-list .rank-item.r3 .rank-num { background:linear-gradient(135deg,#cd7f32,#a16207); color:#fff; }
+  .rank-list .rank-info { flex:1; min-width:0; }
+  .rank-list .rank-name { color:var(--text); font-weight:500; }
+  .rank-list .rank-dept { font-size:11px; color:var(--text-3); margin-top:2px; }
+  .rank-list .rank-score { font-size:13px; font-weight:700; color:var(--primary); white-space:nowrap; }
+
+  /* 学习路径 */
+  .path-list .path-item { padding:11px 0; border-bottom:1px dashed var(--border-light); position:relative; padding-left:22px; }
+  .path-list .path-item:last-child { border-bottom:none; }
+  .path-list .path-item::before { content:''; position:absolute; left:0; top:14px; width:12px; height:12px; border-radius:50%; background:#fff; border:3px solid var(--sky); }
+  .path-list .path-item::after { content:''; position:absolute; left:5px; top:30px; bottom:-11px; width:2px; background:var(--border-light); }
+  .path-list .path-item:last-child::after { display:none; }
+  .path-list .path-item.done::before { background:var(--sky); }
+  .path-list .path-item .p-title { font-size:13px; color:var(--text); font-weight:500; }
+  .path-list .path-item.done .p-title { color:var(--text-3); text-decoration:line-through; }
+  .path-list .path-item .p-meta { font-size:11.5px; color:var(--text-3); margin-top:3px; }
+
+  /* 资源下载 */
+  .resource-list .rs-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--border-light); font-size:12.5px; }
+  .resource-list .rs-item:last-child { border-bottom:none; }
+  .resource-list .rs-ico { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; flex-shrink:0; }
+  .resource-list .rs-info { flex:1; min-width:0; }
+  .resource-list .rs-name { color:var(--text); font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .resource-list .rs-meta { font-size:11px; color:var(--text-3); margin-top:2px; }
+  .resource-list .rs-dl { font-size:11.5px; color:var(--sky); cursor:pointer; font-weight:500; }
+
+  @media (max-width: 1240px) {
+    .lit-hero-content { grid-template-columns:1fr; }
+    .cat-grid { grid-template-columns:repeat(3,1fr); }
+    .progress-grid { grid-template-columns:repeat(2,1fr); }
+    .main-grid { grid-template-columns:1fr; }
+    .course-card { flex-direction:column; }
+    .course-cover { width:100%; height:160px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html">馆藏检索</a>
+      <a href="e-resources.html">电子资源</a>
+      <a href="seat-reservation.html">空间预约</a>
+      <a href="reader-service.html">读者服务</a>
+      <a href="#" class="active">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">读者服务</a>
+    <span class="sep">›</span>
+    <span class="current">信息素养课程中心</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部数据 hero -->
+  <div class="lit-hero">
+    <div class="lit-hero-content">
+      <div>
+        <h2>🎓 信息素养课程中心 · 飞向学术的起跑线</h2>
+        <p>面向全校师生开设 <b>6 大主题</b> 信息素养课程，配套 <b>180+</b> 节视频课、<b>420+</b> 套 PPT 课件、<b>60+</b> 套在线测试，累计学习人次 <b>23.6 万</b>。完成课程可获得图书馆颁发的 <b>信息素养等级证书</b>。</p>
+      </div>
+      <div class="lit-hero-stats">
+        <div class="lit-hero-stat"><div class="num">180+</div><div class="lbl">视频课程</div></div>
+        <div class="lit-hero-stat"><div class="num">420+</div><div class="lbl">PPT 课件</div></div>
+        <div class="lit-hero-stat"><div class="num">60+</div><div class="lbl">在线测试</div></div>
+        <div class="lit-hero-stat"><div class="num">23.6w</div><div class="lbl">累计学习</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 我的学习概览 -->
+  <div class="progress-grid">
+    <div class="progress-card c1">
+      <div class="pc-head">
+        <div class="pc-ico">📚</div>
+        <div class="pc-title">学习中课程</div>
+      </div>
+      <div class="pc-num">3 <small>/ 8 门</small></div>
+      <div class="pc-bar"><div class="pc-bar-fill" style="width:37.5%;"></div></div>
+      <div class="pc-extra">本周新增 <span class="up">+1</span> 门</div>
+    </div>
+    <div class="progress-card c2">
+      <div class="pc-head">
+        <div class="pc-ico">⏱</div>
+        <div class="pc-title">累计学时</div>
+      </div>
+      <div class="pc-num">86.5 <small>小时</small></div>
+      <div class="pc-bar"><div class="pc-bar-fill amber" style="width:72%;"></div></div>
+      <div class="pc-extra">本周学习 <span class="up">+4.2h</span></div>
+    </div>
+    <div class="progress-card c3">
+      <div class="pc-head">
+        <div class="pc-ico">✅</div>
+        <div class="pc-title">已完成课程</div>
+      </div>
+      <div class="pc-num">5 <small>/ 8 门</small></div>
+      <div class="pc-bar"><div class="pc-bar-fill green" style="width:62.5%;"></div></div>
+      <div class="pc-extra">已获 <b>2 张</b> 等级证书</div>
+    </div>
+    <div class="progress-card c4">
+      <div class="pc-head">
+        <div class="pc-ico">🏆</div>
+        <div class="pc-title">素养等级</div>
+      </div>
+      <div class="pc-num">L3 <small>进阶学者</small></div>
+      <div class="pc-bar"><div class="pc-bar-fill purple" style="width:75%;"></div></div>
+      <div class="pc-extra">距 L4 还需 <span class="up">420 积分</span></div>
+    </div>
+  </div>
+
+  <!-- 课程分类入口（6宫格，呼应截图） -->
+  <div class="category-section">
+    <div class="section-head" style="margin:0 0 4px;">
+      <h3>课程分类 · 一键直达</h3>
+      <a class="more">查看完整分类 ›</a>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-item">
+        <div class="cat-ico">🔍</div>
+        <div class="cat-name">检索基础</div>
+        <div class="cat-sub">12 门课</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-ico">📖</div>
+        <div class="cat-name">数据库使用</div>
+        <div class="cat-sub">28 门课</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-ico">📝</div>
+        <div class="cat-name">论文写作</div>
+        <div class="cat-sub">36 门课</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-ico">🎓</div>
+        <div class="cat-name">学术规范</div>
+        <div class="cat-sub">22 门课</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-ico">🛡</div>
+        <div class="cat-name">信息安全</div>
+        <div class="cat-sub">18 门课</div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-ico">📊</div>
+        <div class="cat-name">数据分析</div>
+        <div class="cat-sub">24 门课</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 工具栏 -->
+  <div class="toolbar">
+    <div class="tabs-pill">
+      <span class="active">全部课程</span>
+      <span>视频课</span>
+      <span>PPT 课件</span>
+      <span>在线测试</span>
+      <span>学习路径</span>
+    </div>
+    <div class="filter-group">
+      <span>难度：</span>
+      <select>
+        <option>全部</option>
+        <option>入门</option>
+        <option>进阶</option>
+        <option>高级</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span>分类：</span>
+      <select>
+        <option>全部分类</option>
+        <option>检索基础</option>
+        <option>数据库使用</option>
+        <option>论文写作</option>
+        <option>学术规范</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span>状态：</span>
+      <select>
+        <option>全部</option>
+        <option>学习中</option>
+        <option>已完成</option>
+        <option>未开始</option>
+      </select>
+    </div>
+    <input type="text" placeholder="🔍 搜索课程名称 / 教师 / 关键词">
+    <button class="search-btn">搜索</button>
+    <div class="view-toggle">
+      <span class="active">▦</span>
+      <span>≡</span>
+    </div>
+  </div>
+
+  <!-- 主体两栏 -->
+  <div class="main-grid">
+    <!-- 左：课程列表 -->
+    <div>
+      <div class="section-head">
+        <h3>推荐课程 · 8 门</h3>
+        <a class="more">按热度排序 ›</a>
+      </div>
+
+      <!-- 课程卡片 1 -->
+      <div class="course-card">
+        <div class="course-cover">
+          <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="cv1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a9eff"/><stop offset="100%" stop-color="#0a2d52"/></linearGradient></defs>
+            <rect width="240" height="180" fill="url(#cv1)"/>
+            <g transform="translate(120,75)" stroke="#fff" stroke-width="2.5" fill="none" opacity="0.95">
+              <circle r="28"/>
+              <circle r="8" fill="#fff"/>
+              <path d="M0,-28 L0,-58 A18,18 0 0,1 14,-50 L8,-30 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L42,-30 A18,18 0 0,1 48,-10 L24,-6 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L50,0 A18,18 0 0,1 42,14 L22,8 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L30,42 A18,18 0 0,1 10,48 L6,24 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L-30,42 A18,18 0 0,1 -48,10 L-22,6 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L-50,0 A18,18 0 0,1 -42,-14 L-22,-8 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L-42,-30 A18,18 0 0,1 -10,-48 L-6,-24 Z" fill="#fff" opacity="0.85"/>
+              <path d="M0,0 L0,-58 A18,18 0 0,0 -14,-50 L-8,-30 Z" fill="#fff" opacity="0.85"/>
+            </g>
+            <text x="120" y="155" text-anchor="middle" fill="#fff" font-size="13" font-weight="600" font-family="serif" opacity="0.9">信息检索基础</text>
+          </svg>
+          <div class="badge-row"><span class="hot">🔥 热门</span><span>12 课时</span></div>
+          <div class="play-icon">▶</div>
+          <div class="duration">⏱ 06:24:18</div>
+        </div>
+        <div class="course-body">
+          <div class="c-head">
+            <div class="c-title">学术信息检索与高效获取：从搜索引擎到学术数据库</div>
+          </div>
+          <div class="c-tags">
+            <span class="c-tag tag-video">🎬 视频课</span>
+            <span class="c-tag tag-ppt">📑 PPT 课件</span>
+            <span class="c-tag tag-test">📝 在线测试</span>
+            <span class="c-tag">入门</span>
+            <span class="c-tag">必修</span>
+          </div>
+          <div class="c-desc">系统讲解 Google Scholar、CNKI、Web of Science 等中外学术资源的检索技巧，结合航空专业实例演示检索式构造、字段限定、结果筛选与文献管理全流程。</div>
+          <div class="c-meta">
+            <span>👨‍🏫 主讲：张丽华 · 图书馆学科馆员</span>
+            <span>👥 已学 8,624 人</span>
+            <span>⭐ 4.9 / 5.0</span>
+          </div>
+          <div class="c-progress">
+            <div class="bar"><div class="bar-fill" style="width:65%;"></div></div>
+            <div class="txt">已学 <b>65%</b> · 7/12 节</div>
+          </div>
+          <div class="c-actions">
+            <button class="btn btn-primary">▶ 继续学习</button>
+            <button class="btn btn-ghost">📋 查看章节</button>
+            <button class="btn btn-ghost">📝 章节测试</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 课程卡片 2 -->
+      <div class="course-card">
+        <div class="course-cover">
+          <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="cv2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#064e3b"/></linearGradient></defs>
+            <rect width="240" height="180" fill="url(#cv2)"/>
+            <g transform="translate(120,80)" fill="#fff" opacity="0.95">
+              <rect x="-30" y="-22" width="60" height="44" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/>
+              <line x1="-30" y1="-12" x2="30" y2="-12" stroke="#fff" stroke-width="1.5"/>
+              <line x1="-30" y1="-2" x2="30" y2="-2" stroke="#fff" stroke-width="1.5"/>
+              <line x1="-30" y1="8" x2="30" y2="8" stroke="#fff" stroke-width="1.5"/>
+              <line x1="-30" y1="18" x2="20" y2="18" stroke="#fff" stroke-width="1.5"/>
+              <rect x="-50" y="-30" width="14" height="14" fill="#10b981" stroke="#fff" stroke-width="2"/>
+              <rect x="-46" y="-26" width="6" height="6" fill="#fff"/>
+            </g>
+            <text x="120" y="155" text-anchor="middle" fill="#fff" font-size="13" font-weight="600" font-family="serif" opacity="0.9">学术论文写作</text>
+          </svg>
+          <div class="badge-row"><span class="rec">⭐ 推荐</span><span>18 课时</span></div>
+          <div class="play-icon">▶</div>
+          <div class="duration">⏱ 09:12:30</div>
+        </div>
+        <div class="course-body">
+          <div class="c-head">
+            <div class="c-title">本科毕业论文写作全流程：选题·文献综述·结构·规范</div>
+          </div>
+          <div class="c-tags">
+            <span class="c-tag tag-video">🎬 视频课</span>
+            <span class="c-tag tag-ppt">📑 PPT 课件</span>
+            <span class="c-tag tag-test">📝 在线测试</span>
+            <span class="c-tag">进阶</span>
+            <span class="c-tag">毕设</span>
+          </div>
+          <div class="c-desc">面向大四本科生的毕业论文写作专题，覆盖选题论证、文献综述写作、章节结构搭建、图表规范、引用格式（GB/T 7714）等核心环节，提供 6 类工科专业范文。</div>
+          <div class="c-meta">
+            <span>👨‍🏫 主讲：王志强 · 副教授</span>
+            <span>👥 已学 6,138 人</span>
+            <span>⭐ 4.8 / 5.0</span>
+          </div>
+          <div class="c-progress">
+            <div class="bar"><div class="bar-fill" style="width:33%;"></div></div>
+            <div class="txt">已学 <b>33%</b> · 6/18 节</div>
+          </div>
+          <div class="c-actions">
+            <button class="btn btn-primary">▶ 继续学习</button>
+            <button class="btn btn-ghost">📋 查看章节</button>
+            <button class="btn btn-ghost">📝 章节测试</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 课程卡片 3 -->
+      <div class="course-card">
+        <div class="course-cover">
+          <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="cv3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#5b21b6"/></linearGradient></defs>
+            <rect width="240" height="180" fill="url(#cv3)"/>
+            <g transform="translate(120,80)" stroke="#fff" stroke-width="2.5" fill="none" opacity="0.95">
+              <rect x="-32" y="-28" width="64" height="56" rx="2"/>
+              <line x1="-32" y1="-12" x2="32" y2="-12"/>
+              <line x1="-32" y1="4" x2="32" y2="4"/>
+              <line x1="-32" y1="20" x2="20" y2="20"/>
+              <circle cx="-20" cy="-20" r="6" fill="#ffc857" stroke="none"/>
+              <line x1="0" y1="-20" x2="20" y2="-20"/>
+            </g>
+            <text x="120" y="155" text-anchor="middle" fill="#fff" font-size="13" font-weight="600" font-family="serif" opacity="0.9">学术规范与诚信</text>
+          </svg>
+          <div class="badge-row"><span class="new">NEW</span><span>8 课时</span></div>
+          <div class="play-icon">▶</div>
+          <div class="duration">⏱ 03:45:00</div>
+        </div>
+        <div class="course-body">
+          <div class="c-head">
+            <div class="c-title">学术规范与学术诚信：避开查重雷区与学术不端</div>
+          </div>
+          <div class="c-tags">
+            <span class="c-tag tag-video">🎬 视频课</span>
+            <span class="c-tag tag-ppt">📑 PPT 课件</span>
+            <span class="c-tag tag-test">📝 在线测试</span>
+            <span class="c-tag">入门</span>
+            <span class="c-tag">必修</span>
+          </div>
+          <div class="c-desc">解读《高等学校科学技术学术规范指南》，详解抄袭、剽窃、伪造数据等学术不端行为边界，结合近三年本校查重报告实例讲解降重与引文规范。</div>
+          <div class="c-meta">
+            <span>👨‍🏫 主讲：陈静 · 研究生院</span>
+            <span>👥 已学 4,891 人</span>
+            <span>⭐ 4.7 / 5.0</span>
+          </div>
+          <div class="c-progress">
+            <div class="bar"><div class="bar-fill done" style="width:100%;"></div></div>
+            <div class="txt done">已学完 · 8/8 节</div>
+          </div>
+          <div class="c-actions">
+            <button class="btn btn-ghost">�� 重新学习</button>
+            <button class="btn btn-ghost">📋 查看章节</button>
+            <button class="btn btn-ghost">🏆 查看证书</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 课程卡片 4 -->
+      <div class="course-card">
+        <div class="course-cover">
+          <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="cv4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#7c2d12"/></linearGradient></defs>
+            <rect width="240" height="180" fill="url(#cv4)"/>
+            <g transform="translate(120,80)" stroke="#fff" stroke-width="2.5" fill="none" opacity="0.95">
+              <circle cx="-22" cy="0" r="14" fill="#fff" opacity="0.6"/>
+              <circle cx="22" cy="0" r="14" fill="#fff" opacity="0.6"/>
+              <line x1="-8" y1="0" x2="8" y2="0"/>
+              <circle cx="0" cy="-30" r="6" fill="#ffc857" stroke="none"/>
+            </g>
+            <text x="120" y="155" text-anchor="middle" fill="#fff" font-size="13" font-weight="600" font-family="serif" opacity="0.9">数据可视化</text>
+          </svg>
+          <div class="badge-row"><span>10 课时</span></div>
+          <div class="play-icon">▶</div>
+          <div class="duration">⏱ 04:48:00</div>
+        </div>
+        <div class="course-body">
+          <div class="c-head">
+            <div class="c-title">数据可视化基础：从 Excel 到 Python 图表全攻略</div>
+          </div>
+          <div class="c-tags">
+            <span class="c-tag tag-video">🎬 视频课</span>
+            <span class="c-tag tag-ppt">📑 PPT 课件</span>
+            <span class="c-tag tag-test">📝 在线测试</span>
+            <span class="c-tag">进阶</span>
+          </div>
+          <div class="c-desc">从基础柱状图、折线图到 Python matplotlib/seaborn 高级可视化，配合作业系统的飞行数据案例实战，零基础到独立完成毕业设计图表。</div>
+          <div class="c-meta">
+            <span>👨‍🏫 主讲：李明 · 数据科学学院</span>
+            <span>👥 已学 3,256 人</span>
+            <span>⭐ 4.6 / 5.0</span>
+          </div>
+          <div class="c-progress">
+            <div class="bar"><div class="bar-fill" style="width:0%;"></div></div>
+            <div class="txt">未开始 · 0/10 节</div>
+          </div>
+          <div class="c-actions">
+            <button class="btn btn-primary">▶ 开始学习</button>
+            <button class="btn btn-ghost">📋 查看章节</button>
+            <button class="btn btn-ghost">＋ 加入学习路径</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右栏 -->
+    <div>
+      <!-- 学习日历 -->
+      <div class="right-card">
+        <h4>📅 学习日历 · 2025年12月</h4>
+        <div class="calendar">
+          <div class="week-row">
+            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+          </div>
+          <div class="date-row">
+            <span class="day muted">24</span>
+            <span class="day muted">25</span>
+            <span class="day muted">26</span>
+            <span class="day">27</span>
+            <span class="day">28</span>
+            <span class="day">29</span>
+            <span class="day">30</span>
+          </div>
+          <div class="date-row">
+            <span class="day">1</span>
+            <span class="day has-task">2</span>
+            <span class="day has-task">3</span>
+            <span class="day">4</span>
+            <span class="day has-task">5</span>
+            <span class="day">6</span>
+            <span class="day">7</span>
+          </div>
+          <div class="date-row">
+            <span class="day has-task">8</span>
+            <span class="day today has-task">9</span>
+            <span class="day">10</span>
+            <span class="day">11</span>
+            <span class="day">12</span>
+            <span class="day">13</span>
+            <span class="day">14</span>
+          </div>
+          <div class="date-row">
+            <span class="day">15</span>
+            <span class="day">16</span>
+            <span class="day">17</span>
+            <span class="day">18</span>
+            <span class="day">19</span>
+            <span class="day">20</span>
+            <span class="day">21</span>
+          </div>
+        </div>
+        <div class="cal-legend">
+          <span class="lg today">今天</span>
+          <span class="lg task">有学习任务</span>
+        </div>
+      </div>
+
+      <!-- 学习路径 -->
+      <div class="right-card">
+        <h4>🎯 我的学习路径</h4>
+        <div class="path-list">
+          <div class="path-item done">
+            <div class="p-title">第 1 阶段：检索入门</div>
+            <div class="p-meta">✅ 已完成 · 4 节 · 3.2h</div>
+          </div>
+          <div class="path-item done">
+            <div class="p-title">第 2 阶段：数据库进阶</div>
+            <div class="p-meta">✅ 已完成 · 6 节 · 5.4h</div>
+          </div>
+          <div class="path-item">
+            <div class="p-title">第 3 阶段：论文写作</div>
+            <div class="p-meta">📍 进行中 · 6/18 节</div>
+          </div>
+          <div class="path-item">
+            <div class="p-title">第 4 阶段：学术规范</div>
+            <div class="p-meta">🔒 未解锁</div>
+          </div>
+          <div class="path-item">
+            <div class="p-title">第 5 阶段：数据分析</div>
+            <div class="p-meta">🔒 未解锁</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 资源下载 -->
+      <div class="right-card">
+        <h4>📥 热门资源下载</h4>
+        <div class="resource-list">
+          <div class="rs-item">
+            <div class="rs-ico" style="background:linear-gradient(135deg,#4a9eff,#2563eb);">PDF</div>
+            <div class="rs-info">
+              <div class="rs-name">GB/T 7714-2015 文后参考文献著录规则</div>
+              <div class="rs-meta">PDF · 2.1MB · 12,458 下载</div>
+            </div>
+            <span class="rs-dl">↓ 下载</span>
+          </div>
+          <div class="rs-item">
+            <div class="rs-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706);">PPT</div>
+            <div class="rs-info">
+              <div class="rs-name">学术论文写作 PPT 模板</div>
+              <div class="rs-meta">PPTX · 8.6MB · 8,932 下载</div>
+            </div>
+            <span class="rs-dl">↓ 下载</span>
+          </div>
+          <div class="rs-item">
+            <div class="rs-ico" style="background:linear-gradient(135deg,#10b981,#059669);">XLS</div>
+            <div class="rs-info">
+              <div class="rs-name">开题报告 / 文献综述模板包</div>
+              <div class="rs-meta">ZIP · 5.3MB · 6,742 下载</div>
+            </div>
+            <span class="rs-dl">↓ 下载</span>
+          </div>
+          <div class="rs-item">
+            <div class="rs-ico" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">DOC</div>
+            <div class="rs-info">
+              <div class="rs-name">信息素养等级证书申请表</div>
+              <div class="rs-meta">DOCX · 0.3MB · 4,118 下载</div>
+            </div>
+            <span class="rs-dl">↓ 下载</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.tabs-pill span').forEach(t => {
+    t.addEventListener('click', () => {
+      t.parentElement.querySelectorAll('span').forEach(s => s.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.toolbar .view-toggle span').forEach(t => {
+    t.addEventListener('click', () => {
+      t.parentElement.querySelectorAll('span').forEach(s => s.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

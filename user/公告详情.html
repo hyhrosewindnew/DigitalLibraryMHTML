@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公告详情 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 主体 */
+  .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  /* 详情卡片 */
+  .detail-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  /* 头部 */
+  .detail-head {
+    padding: 28px 32px 22px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff 0%, #fff 100%);
+    position: relative;
+  }
+  .detail-head::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #1d6ee0, #4a9eff);
+  }
+  .detail-head .tag-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .detail-head h1 {
+    font-size: 24px; font-weight: 700; color: var(--text);
+    line-height: 1.4; margin-bottom: 14px;
+  }
+  .detail-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+    font-size: 13px; color: var(--text-3);
+  }
+  .detail-meta span { display: flex; align-items: center; gap: 5px; }
+  .detail-meta b { color: var(--text-2); font-weight: 500; }
+
+  /* 标签 */
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .tag-blue { background: #e8f1ff; color: #1d6ee0; }
+  .tag-purple { background: #f2ebff; color: #7c3aed; }
+  .tag-cyan { background: #e0f7f6; color: #0d8f8a; }
+  .tag-orange { background: #fff2e3; color: #c26a05; }
+  .tag-indigo { background: #eceefb; color: #4f56c9; }
+  .tag-green { background: #e6f7ee; color: #15803d; }
+  .tag-top { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
+  .tag-hot { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #b91c1c; }
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 2px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 500;
+  }
+  .status.ok { background: #ecfdf5; color: #15803d; }
+  .status.ok i { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.14); }
+
+  /* 摘要 */
+  .detail-summary {
+    margin: 0 32px;
+    margin-top: 22px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #ecf5ff, #f0f9ff);
+    border-left: 3px solid var(--sky);
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1e3a8a;
+    line-height: 1.7;
+  }
+  .detail-summary b { color: #1d4ed8; }
+
+  /* 正文 */
+  .detail-body {
+    padding: 28px 32px 8px;
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--text);
+  }
+  .detail-body p { margin-bottom: 14px; text-indent: 2em; }
+  .detail-body h3 { font-size: 17px; font-weight: 700; margin: 22px 0 12px; color: var(--primary); }
+  .detail-body ol, .detail-body ul { padding-left: 36px; margin-bottom: 14px; }
+  .detail-body ol li, .detail-body ul li { margin-bottom: 8px; line-height: 1.85; }
+  .detail-body blockquote {
+    border-left: 3px solid var(--sky);
+    background: #f7faff;
+    padding: 12px 18px;
+    color: var(--text-2);
+    margin-bottom: 16px;
+    border-radius: 0 6px 6px 0;
+  }
+  .detail-body table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .detail-body th, .detail-body td {
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    text-align: left;
+  }
+  .detail-body th { background: #f8fafc; font-weight: 600; color: var(--text); }
+
+  /* 文件下载 */
+  .attachments {
+    padding: 18px 32px 28px;
+    border-top: 1px dashed var(--border);
+    margin-top: 16px;
+  }
+  .attachments h4 {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+  }
+  .attachments h4::before { content: '📎'; }
+  .file-list { display: flex; flex-direction: column; gap: 10px; }
+  .file-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: .2s;
+    cursor: pointer;
+  }
+  .file-item:hover { border-color: var(--sky); background: linear-gradient(135deg, #f0f9ff, #fafcff); }
+  .file-item .ico {
+    width: 38px; height: 38px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .file-item .info { flex: 1; }
+  .file-item .name { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .file-item .meta { font-size: 11.5px; color: var(--text-3); display: flex; gap: 12px; }
+  .file-item .meta b { color: var(--text-2); font-weight: 500; }
+  .file-item .download {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: .2s;
+    flex-shrink: 0;
+  }
+  .file-item .download:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,158,255,0.3); }
+
+  /* 操作栏 */
+  .detail-ops {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: linear-gradient(180deg, #fafcff, #fff);
+    border-top: 1px solid var(--border);
+  }
+  .ops-left { display: flex; gap: 8px; }
+  .ops-left button {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: .2s;
+    font-family: inherit;
+  }
+  .ops-left button:hover { border-color: var(--sky); color: var(--primary); background: rgba(74,158,255,0.04); }
+  .ops-left button.liked { background: linear-gradient(135deg, #fee2e2, #fecaca); border-color: #fca5a5; color: #b91c1c; }
+  .ops-right { display: flex; gap: 8px; }
+  .ops-right button {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: .2s;
+    font-family: inherit;
+  }
+  .ops-right button:hover { border-color: var(--sky); color: var(--primary); }
+
+  /* 上下篇 */
+  .prev-next { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 12px; }
+  .pn-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; transition: .2s; }
+  .pn-item:hover { color: var(--primary); }
+  .pn-item .ico { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+  .pn-item .label { font-size: 12px; color: var(--text-3); min-width: 64px; }
+  .pn-item .t { flex: 1; font-size: 13.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pn-item.disabled .t { color: var(--text-3); }
+
+  /* 相关推荐 */
+  .related { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .related h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .related h3::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .rel-list { display: flex; flex-direction: column; gap: 10px; }
+  .rel-item {
+    display: flex; gap: 10px; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    cursor: pointer;
+    transition: .2s;
+  }
+  .rel-item:last-child { border-bottom: none; }
+  .rel-item:hover .t { color: var(--primary); }
+  .rel-item .num { width: 22px; height: 22px; background: var(--bg-page); color: var(--text-3); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .rel-item:nth-child(1) .num { background: linear-gradient(135deg, #f43f5e, #be123c); color: #fff; }
+  .rel-item:nth-child(2) .num { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+  .rel-item:nth-child(3) .num { background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff; }
+  .rel-item .t { flex: 1; font-size: 13.5px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rel-item .date { font-size: 11.5px; color: var(--text-3); flex-shrink: 0; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* 文章目录 */
+  .toc { display: flex; flex-direction: column; gap: 6px; }
+  .toc a {
+    display: block;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-2);
+    background: var(--bg-page);
+    border-radius: 6px;
+    border-left: 2px solid transparent;
+    transition: .2s;
+    cursor: pointer;
+  }
+  .toc a:hover { background: rgba(74,158,255,0.08); color: var(--primary); border-left-color: var(--sky); }
+  .toc a.sub { padding-left: 24px; font-size: 12.5px; }
+
+  /* 元信息 */
+  .meta-card .row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px;
+  }
+  .meta-card .row:last-child { border-bottom: none; }
+  .meta-card .row .label { color: var(--text-3); min-width: 60px; }
+  .meta-card .row .value { color: var(--text); font-weight: 500; flex: 1; }
+  .meta-card .row .value.mono { font-family: ui-monospace, monospace; font-size: 12.5px; }
+
+  /* 操作 */
+  .quick-card { background: linear-gradient(135deg, #fafcff, #f0f9ff); border-radius: 12px; padding: 18px; border: 1px solid #dbeafe; }
+  .quick-card .tip { font-size: 12.5px; color: var(--text-2); line-height: 1.7; margin-bottom: 14px; }
+  .quick-card .tip b { color: var(--primary); }
+
+  .notice-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid var(--warning); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e293b; color: #fff;
+    padding: 10px 22px; border-radius: 9px;
+    font-size: 13.5px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.28);
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#" class="active">公告/资讯</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="公告列表页.html">校园公告</a>
+    <span class="sep">›</span>
+    <a href="公告列表页.html">馆务通知</a>
+    <span class="sep">›</span>
+    <span class="current">正文详情</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 详情卡片 -->
+      <div class="detail-card">
+
+        <!-- 头部 -->
+        <div class="detail-head">
+          <div class="tag-row">
+            <span class="tag tag-blue">馆务通知</span>
+            <span class="tag tag-top">📌 置顶</span>
+            <span class="status ok"><i></i>已发布</span>
+          </div>
+          <h1>关于2025年国庆节期间图书馆开放时间调整的通知</h1>
+          <div class="detail-meta">
+            <span>👤 发布人：<b>张明远</b></span>
+            <span>📅 发布时间：<b>2025-09-25 10:30</b></span>
+            <span>👁 阅读量：<b style="color:var(--primary);">2,841</b></span>
+            <span>💬 评论：<b>23</b></span>
+            <span>🕐 最后更新：<b>2025-09-25 18:20</b></span>
+          </div>
+        </div>
+
+        <!-- 摘要 -->
+        <div class="detail-summary">
+          <b>📋 公告摘要：</b>10月1日至10月7日闭馆，10月8日起恢复正常开放，自助还书机24小时可用。闭馆期间数字图书馆线上服务正常，请读者合理安排借还书时间。
+        </div>
+
+        <!-- 正文 -->
+        <div class="detail-body">
+          <p>各位读者：</p>
+          <p>根据学校国庆节放假安排，结合图书馆工作实际，现将 2025 年国庆节期间开放时间调整事项通知如下：</p>
+
+          <h3>一、闭馆安排</h3>
+          <p>2025 年 10 月 1 日（周三）至 10 月 7 日（周二）共 7 天，全馆（含一楼总服务台、各借阅区、阅览室、自习区、研修室）实行闭馆管理。期间不在馆内办理任何借还书、阅览、自习等线下业务。</p>
+
+          <h3>二、线上服务</h3>
+          <p>国庆期间，数字图书馆线上服务 7×24 小时不间断，包括：</p>
+          <ol>
+            <li><b>电子资源访问：</b>CNKI、万方、维普等全部数据库正常访问；</li>
+            <li><b>移动 APP：</b>支持在线借阅查询、续借、读者证管理；</li>
+            <li><b>电子图书：</b>230 万册电子书可在线阅读；</li>
+            <li><b>参考咨询：</b>在线客服与 QQ 群正常响应。</li>
+          </ol>
+
+          <h3>三、自助还书</h3>
+          <p>总馆一楼北门入口处自助还书机 24 小时开放，闭馆期间图书归还不计逾期。读者可在自助还书机归还任意图书，无需到人工服务台办理。</p>
+
+          <blockquote>
+            💡 <b>温馨提示：</b>闭馆前请合理安排借还时间，建议在 9 月 30 日前完成假期需要的图书借阅。借阅期默认为 30 天，逾期将按读者管理办法相关规定处理。
+          </blockquote>
+
+          <h3>四、10 月 8 日恢复开放</h3>
+          <p>10 月 8 日（周三）起恢复日常开放，时间为：</p>
+          <ul>
+            <li>周一至周五：08:00 - 22:00</li>
+            <li>周六至周日：09:00 - 21:00</li>
+            <li>期末复习季延长至 23:00（另行通知）</li>
+          </ul>
+
+          <h3>五、咨询服务</h3>
+          <p>如有疑问，可通过以下方式联系图书馆：</p>
+          <ul>
+            <li>📞 服务热线：0000-1234567</li>
+            <li>📧 邮箱：lib@xihang.edu.cn</li>
+            <li>💬 在线 QQ 群：12345678</li>
+          </ul>
+
+          <p style="margin-top:24px;text-align:right;color:var(--text-3);font-style:italic;">图书馆</p>
+          <p style="text-align:right;color:var(--text-3);font-style:italic;">2025 年 9 月 25 日</p>
+        </div>
+
+        <!-- 附件下载 -->
+        <div class="attachments">
+          <h4>附件下载（2 个）</h4>
+          <div class="file-list">
+            <div class="file-item">
+              <div class="ico" style="color:#dc2626;">📄</div>
+              <div class="info">
+                <div class="name">2025年国庆节图书馆开放安排表.docx</div>
+                <div class="meta">
+                  <span>📦 Word 文档</span>
+                  <span>📏 <b>56.8 KB</b></span>
+                  <span>⬇ 下载 <b>234</b> 次</span>
+                </div>
+              </div>
+              <button class="download">⬇ 下载</button>
+            </div>
+            <div class="file-item">
+              <div class="ico" style="color:#16a34a;">📊</div>
+              <div class="info">
+                <div class="name">国庆期间线上资源访问指南.pdf</div>
+                <div class="meta">
+                  <span>📦 PDF 文档</span>
+                  <span>📏 <b>1.2 MB</b></span>
+                  <span>⬇ 下载 <b>189</b> 次</span>
+                </div>
+              </div>
+              <button class="download">⬇ 下载</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作栏 -->
+        <div class="detail-ops">
+          <div class="ops-left">
+            <button id="likeBtn" onclick="toggleLike()">👍 点赞 <span style="margin-left:3px;color:var(--primary);">(86)</span></button>
+            <button id="favBtn" onclick="toggleFav()">⭐ 收藏 <span style="margin-left:3px;color:var(--warning);">(124)</span></button>
+            <button onclick="toast('评论功能开发中')">💬 评论 (23)</button>
+            <button onclick="toast('分享链接已复制')">🔗 分享</button>
+          </div>
+          <div class="ops-right">
+            <button>�� 打印</button>
+            <button onclick="window.print()">📤 导出 PDF</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 上下篇 -->
+      <div class="prev-next">
+        <div class="pn-item">
+          <span class="ico">←</span>
+          <span class="label">上一篇</span>
+          <span class="t">数字图书馆移动端 APP v3.2 版本更新公告</span>
+        </div>
+        <div class="pn-item">
+          <span class="ico">→</span>
+          <span class="label">下一篇</span>
+          <span class="t">"书香校园·秋季读书月"系列活动报名开启</span>
+        </div>
+      </div>
+
+      <!-- 相关推荐 -->
+      <div class="related">
+        <h3>相关公告推荐</h3>
+        <div class="rel-list">
+          <div class="rel-item">
+            <div class="num">1</div>
+            <span class="t">数字图书馆移动端 APP v3.2 版本更新公告</span>
+            <span class="date">2025-09-18</span>
+          </div>
+          <div class="rel-item">
+            <div class="num">2</div>
+            <span class="t">暑期数字图书馆服务安排公告</span>
+            <span class="date">2025-07-01</span>
+          </div>
+          <div class="rel-item">
+            <div class="num">3</div>
+            <span class="t">图书馆电子资源校外访问指南（2025版）</span>
+            <span class="date">2025-09-01</span>
+          </div>
+          <div class="rel-item">
+            <div class="num">4</div>
+            <span class="t">关于暂停超星移动图书馆借阅服务的紧急通知</span>
+            <span class="date">2025-08-28</span>
+          </div>
+          <div class="rel-item">
+            <div class="num">5</div>
+            <span class="t">中国知网（CNKI）数据库访问异常说明</span>
+            <span class="date">2025-09-12</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 文章目录 -->
+      <div class="side-card">
+        <h4>📑 公告目录</h4>
+        <div class="toc">
+          <a href="#section-1">一、闭馆安排</a>
+          <a class="sub" href="#">10月1日—10月7日闭馆</a>
+          <a href="#section-2">二、线上服务</a>
+          <a class="sub" href="#">电子资源 / APP / 电子书</a>
+          <a href="#section-3">三、自助还书</a>
+          <a class="sub" href="#">24 小时自助还书机</a>
+          <a href="#section-4">四、恢复开放</a>
+          <a class="sub" href="#">10月8日起恢复正常</a>
+          <a href="#section-5">五、咨询服务</a>
+        </div>
+      </div>
+
+      <!-- 元信息 -->
+      <div class="side-card meta-card">
+        <h4>📌 公告元信息</h4>
+        <div class="row">
+          <span class="label">类型</span>
+          <span class="value"><span class="tag tag-blue" style="font-size:11.5px;">馆务通知</span></span>
+        </div>
+        <div class="row">
+          <span class="label">发布人</span>
+          <span class="value">张明远（馆长）</span>
+        </div>
+        <div class="row">
+          <span class="label">所属部门</span>
+          <span class="value">馆务办公室</span>
+        </div>
+        <div class="row">
+          <span class="label">阅读量</span>
+          <span class="value">2,841 / 5,000</span>
+        </div>
+        <div class="row">
+          <span class="label">评论数</span>
+          <span class="value">23 条</span>
+        </div>
+        <div class="row">
+          <span class="label">公开范围</span>
+          <span class="value">全校师生</span>
+        </div>
+        <div class="row">
+          <span class="label">权重</span>
+          <span class="value">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="row">
+          <span class="label">有效期</span>
+          <span class="value">2025-09-25 至 2025-11-30</span>
+        </div>
+      </div>
+
+      <!-- 快捷操作 -->
+      <div class="quick-card">
+        <div class="tip">📞 如有疑问，请联系图书馆咨询服务台<br>工作时间：<b>8:00-22:00</b></div>
+        <button style="width:100%;padding:10px;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;margin-bottom:8px;">💬 在线咨询馆员</button>
+        <button style="width:100%;padding:10px;background:#fff;border:1px solid var(--sky);color:var(--primary);border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;">📞 电话咨询 0000-1234567</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 公告内容可能根据实际情况动态调整，请以最新版为准。如对公告内容有疑问，可通过 <b>站内信</b> 或致电 <b>0000-1234567</b> 联系图书馆办公室。本公告自发布之日起 7 天内推送至全体读者 <b>站内信</b>。
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let liked = false, faved = false;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => el.classList.remove('show'), 2000);
+  }
+  function toggleLike() {
+    const btn = document.getElementById('likeBtn');
+    liked = !liked;
+    if (liked) {
+      btn.classList.add('liked');
+      btn.innerHTML = '👍 已点赞 <span style="margin-left:3px;color:#b91c1c;">(87)</span>';
+      toast('感谢您的支持！');
+    } else {
+      btn.classList.remove('liked');
+      btn.innerHTML = '👍 点赞 <span style="margin-left:3px;color:var(--primary);">(86)</span>';
+    }
+  }
+  function toggleFav() {
+    const btn = document.getElementById('favBtn');
+    faved = !faved;
+    if (faved) {
+      btn.classList.add('liked');
+      btn.innerHTML = '⭐ 已收藏 <span style="margin-left:3px;color:#b45309;">(125)</span>';
+      toast('已添加到收藏夹');
+    } else {
+      btn.classList.remove('liked');
+      btn.innerHTML = '⭐ 收藏 <span style="margin-left:3px;color:var(--warning);">(124)</span>';
+    }
+  }
+</script>
+
+</body>
+</html>

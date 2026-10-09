@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>续借 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #fff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    --max-w: 1440px;
+  }
+  /* 顶部 / 头部 / 面包屑 - 与首页同款 */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部 */
+  .renew-hero {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px; padding: 30px 36px; color: #fff; margin-bottom: 22px;
+    position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(13,59,102,0.15);
+  }
+  .renew-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .renew-hero-content { position: relative; z-index: 2; }
+  .renew-hero h2 { font-size: 24px; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .renew-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; max-width: 880px; }
+  .renew-hero p b { color: var(--gold); font-weight: 600; }
+
+  /* 提示横幅 */
+  .info-banner {
+    background: linear-gradient(135deg, #ecfeff, #f0f9ff);
+    border: 1px solid #bae6fd; border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: #0c4a6e; line-height: 1.7;
+  }
+  .info-banner b { color: #0e7490; }
+  .info-banner .ico { font-size: 26px; flex-shrink: 0; }
+  .info-banner ul { margin-top: 6px; padding-left: 20px; }
+  .info-banner li { margin-top: 2px; }
+
+  /* 单本 / 批量 Tab */
+  .tab-bar { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 0 18px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; gap: 4px; }
+  .tab-item { padding: 14px 22px; font-size: 14.5px; color: var(--text-2); cursor: pointer; position: relative; font-weight: 500; transition: .2s; }
+  .tab-item:hover { color: var(--primary); }
+  .tab-item.active { color: var(--primary); font-weight: 600; }
+  .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 3px 3px 0 0; }
+  .tab-item .cnt { font-size: 11.5px; background: var(--bg-page); color: var(--text-3); padding: 1px 7px; border-radius: 8px; margin-left: 4px; }
+  .tab-item.active .cnt { background: rgba(74,158,255,0.15); color: var(--primary); }
+
+  /* 表格区 */
+  .renew-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .card-toolbar { padding: 14px 22px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: linear-gradient(180deg, #fafcff, #fff); }
+  .toolbar-left { display: flex; gap: 8px; align-items: center; }
+  .toolbar-right { font-size: 13px; color: var(--text-2); }
+  .toolbar-right b { color: var(--text); font-weight: 600; }
+  .btn-tool {
+    height: 36px; padding: 0 16px; border: 1px solid var(--border); background: #fff; color: var(--text-2);
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-tool:hover { border-color: var(--sky); color: var(--sky); }
+  .btn-tool:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-tool.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border-color: transparent; box-shadow: 0 3px 8px rgba(74,158,255,0.25); }
+  .btn-tool.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,158,255,0.4); }
+  .btn-tool.success { background: linear-gradient(135deg, #16a34a, #059669); color: #fff; border-color: transparent; }
+
+  .batch-bar { display: none; padding: 12px 22px; background: rgba(37,99,235,0.06); border-bottom: 1px solid #bfdbfe; align-items: center; gap: 12px; font-size: 13px; color: #1e40af; flex-wrap: wrap; }
+  .batch-bar.show { display: flex; }
+  .batch-bar b { font-weight: 600; }
+  .batch-bar .spacer { flex: 1; }
+
+  /* 图书列表 */
+  .renew-list { padding: 8px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .renew-item {
+    display: flex; gap: 16px; padding: 16px; background: #fff;
+    border: 1px solid var(--border-light); border-radius: 12px; transition: .2s; align-items: stretch;
+  }
+  .renew-item:hover { border-color: var(--sky); box-shadow: 0 4px 14px rgba(74,158,255,0.08); }
+  .renew-item.checked { background: linear-gradient(135deg, #f0f9ff, #ecfdf5); border-color: var(--success); }
+  .renew-item.disabled { opacity: .55; }
+
+  .check-box { display: flex; align-items: center; padding-top: 24px; }
+  .check-box input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--success); cursor: pointer; }
+
+  .book-cover-mid {
+    width: 78px; height: 104px; border-radius: 6px; flex-shrink: 0;
+    background: linear-gradient(135deg, #4a9eff, #0d3b66);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #fff; box-shadow: 0 4px 10px rgba(13,59,102,0.2);
+    position: relative; overflow: hidden;
+  }
+  .book-cover-mid::after { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: rgba(0,0,0,0.18); }
+  .book-cover-mid .ci { font-size: 30px; line-height: 1; }
+  .book-cover-mid .ct { font-size: 11px; margin-top: 4px; font-weight: 500; }
+  .book-cover-mid.tp2 { background: linear-gradient(135deg, #10b981, #047857); }
+  .book-cover-mid.tp3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .book-cover-mid.tp4 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+
+  .renew-main { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .renew-main .title { font-size: 16px; font-weight: 600; color: var(--text); }
+  .renew-main .title .key { font-family: ui-monospace, monospace; font-size: 12.5px; color: var(--text-3); font-weight: 400; margin-left: 8px; }
+  .renew-main .info { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-2); }
+  .renew-main .info span { display: flex; align-items: center; gap: 4px; }
+  .renew-main .info b { color: var(--text); font-weight: 500; font-family: ui-monospace, monospace; }
+  .renew-main .info .em-warn { color: var(--warning); font-weight: 600; }
+  .renew-main .info .em-danger { color: var(--error); font-weight: 600; }
+  .renew-main .info .em-success { color: var(--success); font-weight: 600; }
+  .renew-main .location { font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace; }
+  .renew-main .location .icon { color: var(--sky); }
+
+  /* 续借时间对比 */
+  .time-compare {
+    display: flex; gap: 8px; align-items: center; padding: 8px 12px;
+    background: linear-gradient(135deg, #f8fafc, #f0f9ff);
+    border: 1px solid var(--border-light); border-radius: 8px; font-size: 12.5px;
+  }
+  .time-compare .from { color: var(--text-3); font-family: ui-monospace, monospace; text-decoration: line-through; }
+  .time-compare .arrow { color: var(--success); font-size: 16px; }
+  .time-compare .to { color: var(--success); font-weight: 600; font-family: ui-monospace, monospace; }
+  .time-compare .plus { color: var(--success); font-weight: 600; margin-left: auto; }
+
+  /* 状态标识 */
+  .status-tag {
+    display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 12px; font-size: 11.5px; font-weight: 500;
+  }
+  .status-tag::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .status-tag.borrowing { background: rgba(37,99,235,0.1); color: var(--info); }
+  .status-tag.duesoon { background: rgba(245,158,11,0.1); color: var(--warning); }
+  .status-tag.overdue { background: rgba(220,38,38,0.1); color: var(--error); }
+  .status-tag.renewed { background: rgba(22,197,94,0.1); color: var(--success); }
+  .status-tag.renew-failed { background: rgba(107,114,128,0.1); color: var(--text-3); }
+
+  /* 右侧操作 */
+  .renew-right { display: flex; flex-direction: column; gap: 8px; min-width: 200px; justify-content: center; }
+  .renew-right .time-left { font-size: 12.5px; color: var(--text-2); text-align: right; }
+  .renew-right .time-left b { display: block; font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .renew-right .time-left.warn b { color: var(--warning); }
+  .renew-right .time-left.danger b { color: var(--error); }
+  .renew-right .time-left.good b { color: var(--success); }
+
+  .renew-btn {
+    padding: 9px 16px; font-size: 13px; border-radius: 8px; cursor: pointer;
+    font-family: inherit; font-weight: 500; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .renew-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .renew-btn.doing { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+  .renew-btn.done { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; cursor: default; }
+  .renew-btn.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border: 1px solid transparent; box-shadow: 0 3px 8px rgba(74,158,255,0.25); }
+  .renew-btn.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,158,255,0.4); }
+  .renew-btn.ghost { background: #fff; color: var(--text-2); border: 1px solid var(--border); }
+  .renew-btn.ghost:hover { border-color: var(--sky); color: var(--sky); }
+
+  /* 失败原因 */
+  .fail-reason {
+    background: linear-gradient(135deg, #fef2f2, #fff7ed);
+    border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px;
+    font-size: 12.5px; color: #991b1b; line-height: 1.6;
+  }
+  .fail-reason b { color: #dc2626; }
+
+  /* 空状态 */
+  .empty-state { padding: 60px 20px; text-align: center; color: var(--text-3); font-size: 13.5px; }
+  .empty-state .big { font-size: 40px; margin-bottom: 12px; opacity: .55; }
+  .empty-state .text { font-size: 13px; color: var(--text-3); }
+
+  /* 提示卡 */
+  .tip-card {
+    margin-top: 18px; padding: 16px 20px; background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px; font-size: 13px; color: #92400e; line-height: 1.7;
+  }
+  .tip-card b { color: #b45309; }
+  .tip-card ul { margin: 6px 0 0 20px; }
+
+  /* 弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .mask.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: pop .2s ease; overflow: hidden; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 600; }
+  .modal-close { width: 30px; height: 30px; border-radius: 6px; background: transparent; border: none; cursor: pointer; color: var(--text-3); font-size: 18px; }
+  .modal-close:hover { background: var(--bg-page); color: var(--text); }
+  .modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+  .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #fafcff; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 20px; font-size: 13.5px; border-left: 3px solid var(--success); animation: slideDown .2s ease; white-space: nowrap; color: var(--text); }
+  .toast.error { border-left-color: var(--error); }
+  .toast.warn { border-left-color: var(--warning); }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 1240px) {
+    .renew-hero-content { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html">馆藏检索</a>
+      <a href="e-resources.html">电子资源</a>
+      <a href="seat-reservation.html">空间预约</a>
+      <a href="#" class="active">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="my-borrow.html">读者服务</a>
+    <span class="sep">›</span>
+    <a href="my-borrow.html">我的借阅</a>
+    <span class="sep">›</span>
+    <span class="current">续借</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部概览 -->
+  <div class="renew-hero">
+    <div class="renew-hero-content">
+      <h2>🔄 在线续借 · 延长借期 15 天</h2>
+      <p>本科生 <b>2 次</b> 续借机会，每次延长 <b>15 天</b>。请在 <b style="color: #ffc857;">到期前 7 天内</b> 办理；已逾期或被他人预约的图书无法续借。</p>
+    </div>
+  </div>
+
+  <!-- 提示横幅 -->
+  <div class="info-banner">
+    <span class="ico">📋</span>
+    <div>
+      <b>续借规则：</b>
+      <ul>
+        <li>必须在 <b>应还日期前 7 天内</b> 办理；逾期或正在被他人预约的图书不可续借</li>
+        <li>每次续借延长 <b>15 天</b>（教师 30 天，临时 7 天，校外 7 天）；本科生累计 <b>2 次</b></li>
+        <li>续借期间若图书 <b>被预约</b>，需在 <b>3 日内</b> 归还，否则每次扣 <b>3 信用分</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tab -->
+  <div class="tab-bar">
+    <span class="tab-item active" onclick="switchTab('single', this)">📖 单本续借 <span class="cnt">3</span></span>
+    <span class="tab-item" onclick="switchTab('batch', this)">✨ 批量续借 <span class="cnt">2</span></span>
+    <span class="tab-item" onclick="switchTab('history', this)">📜 续借记录 <span class="cnt">5</span></span>
+  </div>
+
+  <!-- 单本续借 -->
+  <div class="renew-card" id="tab-single">
+    <div class="card-toolbar">
+      <div class="toolbar-left">
+        <button class="btn-tool primary" onclick="renewAll()">⚡ 续借全部可续借图书</button>
+        <button class="btn-tool">↻ 刷新</button>
+      </div>
+      <div class="toolbar-right">可续借 <b>2</b> 本 · 即将到期 <b>1</b> 本 · 已用完 <b>0</b> 次</div>
+    </div>
+
+    <div class="renew-list">
+
+      <!-- 可续借 1 - 即将到期 -->
+      <div class="renew-item" id="r1">
+        <div class="book-cover-mid tp1">
+          <div class="ci">📖</div>
+          <div class="ct">计算机</div>
+        </div>
+        <div class="renew-main">
+          <div class="title">《计算机网络：自顶向下方法》（第七版）<span class="key">TP393/K-7</span></div>
+          <div class="info">
+            <span>📅 借出：<b>2025-12-01</b></span>
+            <span>🕒 应还：<b class="em-warn">2025-12-30</b></span>
+            <span>🔄 已续借：<b>0 / 2</b> 次</span>
+            <span class="status-tag duesoon">即将到期</span>
+          </div>
+          <div class="location"><span class="icon">📍</span>总馆 / 2F / 中文图书借阅区 / 第 1 排 / 第 1 书架 / 第 2 层 / 第 12 格</div>
+          <div class="time-compare">
+            <span class="from">2025-12-30</span>
+            <span class="arrow">→</span>
+            <span class="to">2026-01-14</span>
+            <span class="plus">+ 15 天</span>
+          </div>
+        </div>
+        <div class="renew-right">
+          <div class="time-left warn">距到期<b>3 天</b></div>
+          <button class="renew-btn primary" onclick="doRenew('r1', this)">🔄 立即续借</button>
+          <button class="renew-btn ghost" onclick="openDetail()">📄 详情</button>
+        </div>
+      </div>
+
+      <!-- 可续借 2 - 借阅中 -->
+      <div class="renew-item" id="r2">
+        <div class="book-cover-mid tp2">
+          <div class="ci">📗</div>
+          <div class="ct">算法</div>
+        </div>
+        <div class="renew-main">
+          <div class="title">《算法导论》（第三版）<span class="key">TP301.6/C-1</span></div>
+          <div class="info">
+            <span>📅 借出：<b>2025-12-05</b></span>
+            <span>🕒 应还：<b>2026-01-03</b></span>
+            <span>🔄 已续借：<b>1 / 2</b> 次</span>
+            <span class="status-tag borrowing">借阅中</span>
+          </div>
+          <div class="location"><span class="icon">📍</span>总馆 / 2F / 中文图书借阅区 / 第 2 排 / 第 1 书架 / 第 2 层 / 第 8 格</div>
+          <div class="time-compare">
+            <span class="from">2026-01-03</span>
+            <span class="arrow">→</span>
+            <span class="to">2026-01-18</span>
+            <span class="plus">+ 15 天</span>
+          </div>
+        </div>
+        <div class="renew-right">
+          <div class="time-left good">剩余<b>29 天</b></div>
+          <button class="renew-btn primary" onclick="doRenew('r2', this)">🔄 立即续借</button>
+          <button class="renew-btn ghost" onclick="openDetail()">📄 详情</button>
+        </div>
+      </div>
+
+      <!-- 不可续借 3 - 已逾期 -->
+      <div class="renew-item disabled">
+        <div class="book-cover-mid tp3" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+          <div class="ci">📕</div>
+          <div class="ct">逾期</div>
+        </div>
+        <div class="renew-main">
+          <div class="title" style="color: #dc2626;">《人类简史：从动物到上帝》<span class="key">K02/H-1</span></div>
+          <div class="info">
+            <span>📅 借出：<b>2025-11-15</b></span>
+            <span>🕒 应还：<b class="em-danger">2025-12-13</b>（已逾期 4 天）</span>
+            <span>🔄 已续借：<b>2 / 2</b> 次（已用完）</span>
+            <span class="status-tag overdue">已逾期</span>
+          </div>
+          <div class="location"><span class="icon">📍</span>总馆 / 2F / 中文图书借阅区 / 第 3 排 / 第 1 书架 / 第 1 层 / 第 3 格</div>
+          <div class="fail-reason">
+            ⚠ <b>无法续借，原因：</b>该图书已逾期 4 天且您已用完本年生 2 次续借机会；请尽快归还并缴纳 <b>滞纳金 ￥0.80</b> 后，方可继续借阅。
+          </div>
+        </div>
+        <div class="renew-right">
+          <div class="time-left danger">逾期<b>4 天</b></div>
+          <button class="renew-btn" disabled>⛔ 已逾期</button>
+          <button class="renew-btn ghost" onclick="openDetail()">📄 详情</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 批量续借 -->
+  <div class="renew-card" id="tab-batch" style="display: none;">
+    <div class="card-toolbar">
+      <div class="toolbar-left">
+        <button class="btn-tool primary" id="batchBtn" onclick="batchRenew()" disabled>⚡ 一键批量续借（0 本）</button>
+        <button class="btn-tool">全选</button>
+        <button class="btn-tool">反选</button>
+      </div>
+      <div class="toolbar-right">已选 <b id="selCount">0</b> 本，可续借 <b>0</b> 本</div>
+    </div>
+
+    <div class="batch-bar" id="batchBar">
+      <span>已选 <b id="selCount2">0</b> 本</span>
+      <span>可续借 <b id="canRenewCount">0</b> 本</span>
+      <div class="spacer"></div>
+      <button class="btn-tool" style="height: 28px; padding: 0 12px; font-size: 12.5px;" onclick="clearAll()">取消选择</button>
+    </div>
+
+    <div class="renew-list">
+      <div class="renew-item" onclick="toggleItem('r3', event)">
+        <div class="check-box"><input type="checkbox" class="row-check" data-id="r3" data-allow="true" data-extra-days="15" data-original-due="2025-12-30" onchange="onCheckChange()"></div>
+        <div class="book-cover-mid tp1">
+          <div class="ci">📖</div>
+          <div class="ct">计算机</div>
+        </div>
+        <div class="renew-main">
+          <div class="title">《计算机网络：自顶向下方法》<span class="key">TP393/K-7</span></div>
+          <div class="info">
+            <span>📅 借出：<b>2025-12-01</b></span>
+            <span>🕒 应还：<b>2025-12-30</b></span>
+            <span>🔄 已续借：<b>0 / 2</b> 次</span>
+            <span class="status-tag duesoon">即将到期</span>
+          </div>
+          <div class="location">📍 总馆 / 2F / 中文图书借阅区 / 第 1 排 / 第 1 书架 / 第 2 层 / 第 12 格</div>
+        </div>
+        <div class="renew-right">
+          <div class="time-left warn">距到期<b>3 天</b></div>
+          <button class="renew-btn primary" onclick="event.stopPropagation(); singleRenew('r3')">🔄 续借</button>
+        </div>
+      </div>
+
+      <div class="renew-item" onclick="toggleItem('r4', event)">
+        <div class="check-box"><input type="checkbox" class="row-check" data-id="r4" data-allow="true" data-extra-days="15" data-original-due="2026-01-03" onchange="onCheckChange()"></div>
+        <div class="book-cover-mid tp2">
+          <div class="ci">📗</div>
+          <div class="ct">算法</div>
+        </div>
+        <div class="renew-main">
+          <div class="title">《算法导论》<span class="key">TP301.6/C-1</span></div>
+          <div class="info">
+            <span>📅 借出：<b>2025-12-05</b></span>
+            <span>🕒 应还：<b>2026-01-03</b></span>
+            <span>🔄 已续借：<b>1 / 2</b> 次</span>
+            <span class="status-tag borrowing">借阅中</span>
+          </div>
+          <div class="location">📍 总馆 / 2F / 中文图书借阅区 / 第 2 排 / 第 1 书架 / 第 2 层 / 第 8 格</div>
+        </div>
+        <div class="renew-right">
+          <div class="time-left good">剩余<b>29 天</b></div>
+          <button class="renew-btn primary" onclick="event.stopPropagation(); singleRenew('r4')">🔄 续借</button>
+        </div>
+      </div>
+
+      <div class="renew-item disabled" style="opacity: .55;">
+        <div class="check-box"><input type="checkbox" disabled title="已逾期，无法续借"></div>
+        <div class="book-cover-mid tp3" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+          <div class="ci">📕</div>
+          <div class="ct">逾期</div>
+        </div>
+        <div class="renew-main">
+          <div class="title" style="color: #dc2626;">《人类简史：从动物到上帝》<span class="key">K02/H-1</span></div>
+          <div class="info">
+            <span>📅 借出：<b>2025-11-15</b></span>
+            <span>🕒 应还：<b>2025-12-13</b></span>
+            <span>🔄 已续借：<b>2 / 2</b> 次（已用完）</span>
+            <span class="status-tag overdue">已逾期</span>
+          </div>
+          <div class="fail-reason">⚠ <b>无法勾选</b>：已逾期且已用完续借次数；请先归还并缴滞纳金 ￥0.80</div>
+        </div>
+        <div class="renew-right">
+          <div class="time-left danger">逾期<b>4 天</b></div>
+          <button class="renew-btn" disabled>⛔ 已逾期</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提示 -->
+  <div class="tip-card">
+    💡 <b>温馨提示：</b>
+    <ul>
+      <li>续借成功后，<b>新应还日期</b> 立即生效；请留意是否有其他读者在排队预约此书</li>
+      <li>续借后的图书若被预约，需在 <b style="color: #dc2626;">3 日内</b> 归还，否则将记违约并扣 <b>3 信用分</b></li>
+      <li>每年累计 <b>3 次违约</b>（逾期 / 暂离超时 / 未签离 / 拒绝归还预约书）将暂停借阅 <b>7 天</b></li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- 弹窗 -->
+<div class="mask" id="successMask">
+  <div class="modal" style="width: 460px;">
+    <div class="modal-header" style="background: linear-gradient(135deg, #ecfdf5, #fff); border-bottom-color: #a7f3d0;">
+      <span style="color: #047857;">✓ 续借成功</span>
+      <button class="modal-close" onclick="closeSuccess()">✕</button>
+    </div>
+    <div class="modal-body" style="text-align: center; padding: 32px 22px;">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-size: 32px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">✓</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px;" id="successTitle">续借成功</div>
+      <div style="font-size: 13.5px; color: var(--text-2); line-height: 1.7; margin-bottom: 16px;" id="successDesc">《计算机网络：自顶向下方法》续借成功，<br>新应还日期：<b style="color: #16a34a;">2026-01-14</b></div>
+      <div style="background: #f0fdf4; border: 1px solid #a7f3d0; border-radius: 8px; padding: 12px; font-size: 12.5px; color: #047857; line-height: 1.7; text-align: left;">
+        ✓ 剩余可续借次数：<b>1 / 2</b><br>
+        ✓ 累计已续借：<b>1</b> 次<br>
+        ✓ 信用分：<b>95</b>（无变更）
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-tool" onclick="closeSuccess()">关闭</button>
+      <button class="btn-tool primary" onclick="closeSuccess(); location.href='my-borrow.html';">📋 返回我的借阅</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  function toast(msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = '.25s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-8px)';
+      setTimeout(() => el.remove(), 250);
+    }, 2200);
+  }
+
+  function switchTab(key, el) {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.renew-card').forEach(c => c.style.display = 'none');
+    document.getElementById('tab-' + key).style.display = 'block';
+  }
+
+  function doRenew(id, btn) {
+    const item = document.getElementById(id);
+    if (!item) return;
+    btn.classList.remove('primary');
+    btn.classList.add('doing');
+    btn.disabled = true;
+    btn.textContent = '⏳ 处理中...';
+    setTimeout(() => {
+      btn.classList.remove('doing');
+      btn.classList.add('done');
+      btn.textContent = '✓ 续借成功';
+      item.querySelector('.status-tag').className = 'status-tag renewed';
+      item.querySelector('.status-tag').textContent = '已续借';
+      const t = item.querySelector('.time-compare .to');
+      t.textContent = '2026-01-14';
+      t.style.color = 'var(--success)';
+      const tl = item.querySelector('.time-left');
+      tl.classList.remove('warn');
+      tl.classList.add('good');
+      tl.innerHTML = '剩余<b>30 天</b>';
+      openSuccess('《计算机网络：自顶向下方法》', '2025-12-30', '2026-01-14');
+    }, 800);
+  }
+
+  function renewAll() {
+    document.querySelectorAll('#tab-single .renew-btn.primary').forEach(btn => {
+      const item = btn.closest('.renew-item');
+      if (item && !item.classList.contains('disabled')) {
+        setTimeout(() => doRenew(item.id, btn), 200);
+      }
+    });
+  }
+
+  function onCheckChange() {
+    const checked = document.querySelectorAll('.row-check:checked:not([disabled])');
+    const canRenew = Array.from(checked).filter(c => c.dataset.allow === 'true');
+    document.getElementById('selCount').textContent = checked.length;
+    document.getElementById('selCount2').textContent = checked.length;
+    document.getElementById('canRenewCount').textContent = canRenew.length;
+    document.getElementById('batchBar').classList.toggle('show', checked.length > 0);
+    document.getElementById('batchBtn').textContent = '⚡ 一键批量续借（' + canRenew.length + ' 本）';
+    document.getElementById('batchBtn').disabled = canRenew.length === 0;
+    checked.forEach(c => c.closest('.renew-item').classList.add('checked'));
+  }
+
+  function toggleItem(id, ev) {
+    if (ev.target.classList.contains('renew-btn') || ev.target.tagName === 'BUTTON') return;
+    const cb = document.querySelector(`#tab-batch .row-check[data-id="${id}"]`);
+    if (cb && !cb.disabled) {
+      cb.checked = !cb.checked;
+      onCheckChange();
+    }
+  }
+
+  function clearAll() {
+    document.querySelectorAll('#tab-batch .row-check').forEach(c => {
+      c.checked = false;
+      c.closest('.renew-item').classList.remove('checked');
+    });
+    onCheckChange();
+  }
+
+  function batchRenew() {
+    const checked = document.querySelectorAll('.row-check:checked:not([disabled])');
+    const canRenew = Array.from(checked).filter(c => c.dataset.allow === 'true');
+    if (canRenew.length === 0) { toast('请选择可续借的图书', 'warn'); return; }
+    let n = 0;
+    canRenew.forEach(c => {
+      const item = c.closest('.renew-item');
+      const btn = item.querySelector('.renew-btn.primary');
+      if (btn) {
+        setTimeout(() => {
+          btn.classList.remove('primary');
+          btn.classList.add('done');
+          btn.disabled = true;
+          btn.textContent = '✓ 已续借';
+          item.querySelector('.status-tag').className = 'status-tag renewed';
+          item.querySelector('.status-tag').textContent = '已续借';
+          item.classList.remove('checked');
+          c.checked = false;
+        }, 100 + n * 150);
+        n++;
+      }
+    });
+    setTimeout(() => {
+      toast('✓ 批量续借成功！共 ' + n + ' 本图书已延长 15 天借期', '');
+      onCheckChange();
+    }, n * 150 + 300);
+  }
+
+  function singleRenew(id) {
+    const cb = document.querySelector(`#tab-batch .row-check[data-id="${id}"]`);
+    cb.checked = true;
+    onCheckChange();
+    batchRenew();
+  }
+
+  function openSuccess(title, oldDate, newDate) {
+    document.getElementById('successTitle').textContent = '续借成功';
+    document.getElementById('successDesc').innerHTML = title + ' 续借成功，<br>新应还日期：<b style="color: #16a34a;">' + newDate + '</b>';
+    document.getElementById('successMask').classList.add('show');
+  }
+
+  function closeSuccess() {
+    document.getElementById('successMask').classList.remove('show');
+  }
+
+  function openDetail() {
+    toast('打开借阅详情', '');
+  }
+</script>
+
+</body>
+</html>

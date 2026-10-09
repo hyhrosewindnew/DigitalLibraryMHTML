@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>航空发动机结构与系统 - 图书详情 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 16px rgba(74,158,255,0.3); }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 2px 10px rgba(139,92,246,0.35); }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); transition: .2s; }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 主区 - 顶部 */
+  .detail-top {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 32px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: grid; grid-template-columns: 280px 1fr 280px; gap: 32px;
+  }
+  /* 左侧大封面 */
+  .cover-block { text-align: center; }
+  .cover-lg {
+    width: 240px; height: 320px; border-radius: 8px;
+    background: #f0f1f3; position: relative; overflow: hidden;
+    box-shadow: -3px 0 0 -1px rgba(0,0,0,0.15), -8px 0 18px rgba(0,0,0,0.2), 8px 12px 30px rgba(0,0,0,0.2);
+    margin: 0 auto;
+  }
+  .cover-lg svg { width: 100%; height: 100%; display: block; }
+  .cover-lg::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: rgba(0,0,0,0.2); z-index: 2; }
+  .cover-actions { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
+  .cover-action {
+    background: #fff; border: 1px solid var(--border); color: var(--text-2);
+    padding: 8px 14px; border-radius: 8px; font-size: 12.5px; cursor: pointer;
+    transition: .2s; display: flex; align-items: center; gap: 4px;
+  }
+  .cover-action:hover { border-color: var(--sky); color: var(--sky); }
+  .cover-action.danger:hover { border-color: var(--error); color: var(--error); }
+  .cover-meta { margin-top: 14px; font-size: 11.5px; color: var(--text-3); line-height: 1.6; }
+  .cover-meta span { color: var(--text-2); }
+
+  /* 中间主信息 */
+  .info-block {}
+  .book-title-lg { font-size: 28px; color: var(--text); font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .book-subtitle { font-size: 14px; color: var(--text-3); margin-bottom: 14px; }
+  .book-rating-row { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px dashed var(--border); }
+  .rating-stars { color: #fbbf24; font-size: 18px; letter-spacing: 2px; }
+  .rating-num { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .rating-count { color: var(--text-3); font-size: 13px; }
+  .rating-link { color: var(--primary); font-size: 13px; cursor: pointer; }
+  .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 28px; }
+  .info-row { display: flex; gap: 10px; font-size: 13.5px; line-height: 1.7; }
+  .info-row .k { color: var(--text-3); flex-shrink: 0; min-width: 64px; }
+  .info-row .v { color: var(--text); font-weight: 500; }
+  .info-row .v.mono { font-family: "SF Mono", Consolas, monospace; color: #2c6eb0; }
+  .info-row .v.callno { font-family: "SF Mono", Consolas, monospace; color: #7c3aed; font-weight: 600; }
+  .info-row .v a { color: var(--primary); }
+  .info-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); }
+  .info-tags .tag {
+    font-size: 12px; padding: 4px 12px; border-radius: 14px;
+    background: var(--bg-page); color: var(--text-2);
+  }
+  .info-tags .tag.cat { background: #ecf3fe; color: #2c6eb0; font-weight: 500; }
+  .info-tags .tag.cat b { font-family: "SF Mono", Consolas, monospace; }
+  .info-tags .tag.sub { background: #f5f3ff; color: #7c3aed; }
+  .info-tags .tag.hot { background: linear-gradient(135deg, #fef0f0, #fee2e2); color: #b91c1c; font-weight: 500; }
+
+  /* 右侧借阅卡 */
+  .borrow-card {
+    background: linear-gradient(135deg, #fafcff 0%, #f5f9ff 100%);
+    border: 1px solid #e3eaf3; border-radius: 12px; padding: 22px;
+    align-self: start;
+  }
+  .borrow-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .borrow-head h3 { font-size: 15px; color: var(--text); font-weight: 600; }
+  .borrow-head .status { font-size: 12px; padding: 3px 10px; border-radius: 12px; font-weight: 500; }
+  .status.available { background: #e6f7e6; color: #1e7b1e; }
+  .status.partial  { background: #fff3e0; color: #b45f06; }
+  .status.empty    { background: #ffeaea; color: #c0392b; }
+  .borrow-stock { display: flex; gap: 10px; align-items: center; padding: 14px; background: #fff; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 14px; }
+  .borrow-stock .num { font-size: 36px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; line-height: 1; }
+  .borrow-stock .num.urgent { color: var(--warning); }
+  .borrow-stock .num.empty { color: var(--error); }
+  .borrow-stock .info-text { flex: 1; }
+  .borrow-stock .info-text .l { font-size: 12px; color: var(--text-3); }
+  .borrow-stock .info-text .b { font-size: 13px; color: var(--text); font-weight: 500; }
+  .borrow-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .btn-primary-lg {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    color: #fff; border: none; padding: 13px 18px; border-radius: 10px;
+    font-weight: 600; font-size: 14.5px; cursor: pointer;
+    transition: .2s; box-shadow: 0 6px 14px rgba(74,158,255,0.3);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-primary-lg:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(74,158,255,0.45); }
+  .btn-primary-lg:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+  .btn-secondary-lg {
+    background: #fff; color: var(--accent); border: 1.5px solid var(--accent);
+    padding: 11px 18px; border-radius: 10px; font-weight: 500; font-size: 13.5px;
+    cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-secondary-lg:hover { background: var(--accent); color: #fff; }
+  .borrow-tips { font-size: 12px; color: var(--text-3); line-height: 1.7; padding: 12px 14px; background: rgba(74,158,255,0.05); border-radius: 8px; border-left: 3px solid var(--sky); }
+  .borrow-tips b { color: var(--primary); }
+
+  /* Tab 区域 */
+  .detail-tabs-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .detail-tabs {
+    display: flex; gap: 0; padding: 0 8px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .detail-tabs span {
+    padding: 16px 24px; font-size: 14.5px; color: var(--text-2);
+    cursor: pointer; position: relative; font-weight: 500;
+    transition: .2s; border-bottom: 2px solid transparent;
+  }
+  .detail-tabs span:hover { color: var(--primary); }
+  .detail-tabs span.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--sky); }
+  .detail-tabs span .count { font-size: 11px; background: var(--bg-page); color: var(--text-3); padding: 1px 7px; border-radius: 8px; margin-left: 4px; }
+  .detail-tabs span.active .count { background: rgba(74,158,255,0.12); color: var(--primary); }
+  .detail-body { padding: 28px 32px; min-height: 400px; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* 简介 */
+  .summary-text { font-size: 14.5px; color: var(--text); line-height: 1.9; max-width: 920px; }
+  .summary-text p { margin-bottom: 12px; text-indent: 2em; }
+  .summary-text strong { color: var(--primary); }
+
+  /* 目录 */
+  .toc-list { max-width: 920px; }
+  .toc-chapter {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    border-radius: 8px; transition: .15s; cursor: pointer; font-size: 14px; color: var(--text);
+  }
+  .toc-chapter:hover { background: var(--bg-page); color: var(--primary); }
+  .toc-chapter .num { color: var(--text-3); font-family: "SF Mono", Consolas, monospace; font-size: 12.5px; flex-shrink: 0; width: 40px; }
+  .toc-chapter .name { flex: 1; }
+  .toc-chapter .page { color: var(--text-3); font-size: 12.5px; font-family: "SF Mono", Consolas, monospace; }
+  .toc-divider {
+    font-size: 13px; color: var(--text-2); font-weight: 600;
+    padding: 14px 14px 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .toc-divider::before { content: ''; width: 3px; height: 12px; background: var(--sky); border-radius: 2px; }
+
+  /* 复本表 */
+  .copies-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
+  .copies-table thead th {
+    background: var(--bg-page); color: var(--text-2);
+    padding: 12px 16px; text-align: left; font-weight: 600;
+    font-size: 12px; text-transform: uppercase; letter-spacing: .5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .copies-table tbody td { padding: 14px 16px; border-bottom: 1px solid var(--border-light); }
+  .copies-table tbody tr:hover { background: #fafcff; }
+  .copies-table tbody tr:last-child td { border-bottom: none; }
+  .copies-table .barcode { font-family: "SF Mono", Consolas, monospace; font-weight: 500; color: #2c6eb0; }
+  .copies-table .loc {
+    font-family: "SF Mono", Consolas, monospace;
+    background: #ecf5ff; color: #1d4ed8;
+    padding: 3px 10px; border-radius: 5px; font-size: 12px;
+    display: inline-block;
+  }
+  .copies-table .loc-cell { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .copies-table .layer-tag {
+    background: #f5f3ff; color: #7c3aed;
+    padding: 2px 7px; border-radius: 4px; font-family: "SF Mono", Consolas, monospace;
+    font-size: 11.5px;
+  }
+  .copies-status {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500;
+  }
+  .copies-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .copies-status.available { background: #e6f7e6; color: #1e7b1e; }
+  .copies-status.borrowed  { background: #e8f0fe; color: #2c6eb0; }
+  .copies-status.lost      { background: #ffeaea; color: #c0392b; }
+  .copies-status.damaged   { background: #fff3e0; color: #b45f06; }
+  .copies-status.offline   { background: #eef2f7; color: #6b7b8b; }
+
+  .copy-row-action {
+    color: var(--primary); font-size: 12.5px; cursor: pointer; font-weight: 500; margin-right: 10px;
+  }
+  .copy-row-action:hover { text-decoration: underline; }
+  .copy-row-action.danger { color: var(--error); }
+  .copy-row-action.warn { color: var(--warning); }
+
+  /* 借阅规则 */
+  .rules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; max-width: 920px; }
+  .rule-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 18px;
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .rule-card h5 {
+    font-size: 14px; color: var(--primary); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px; font-weight: 600;
+  }
+  .rule-card h5::before { content: ''; width: 3px; height: 14px; background: var(--sky); border-radius: 2px; }
+  .rule-card .row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--border-light); }
+  .rule-card .row:last-child { border-bottom: none; }
+  .rule-card .row .k { color: var(--text-2); }
+  .rule-card .row .v { color: var(--text); font-weight: 500; font-family: "SF Mono", Consolas, monospace; }
+  .rule-notice {
+    margin-top: 18px; padding: 14px 18px;
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 8px;
+    font-size: 13px; color: #92400e; line-height: 1.8;
+  }
+  .rule-notice b { color: #b45309; }
+
+  /* 评论区 */
+  .review-summary {
+    display: grid; grid-template-columns: 200px 1fr; gap: 32px;
+    padding: 24px; background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid #e3eaf3; border-radius: 12px; margin-bottom: 22px;
+  }
+  .review-score-block { text-align: center; padding-right: 20px; border-right: 1px dashed var(--border); }
+  .review-score-num { font-size: 56px; font-weight: 700; color: var(--accent); line-height: 1; font-family: Georgia, serif; }
+  .review-score-stars { color: #fbbf24; font-size: 20px; margin: 8px 0; letter-spacing: 2px; }
+  .review-score-count { font-size: 12.5px; color: var(--text-3); }
+  .review-bars { display: flex; flex-direction: column; gap: 10px; }
+  .review-bar-row { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .review-bar-row .lbl { width: 60px; color: var(--text-2); }
+  .review-bar-row .bar { flex: 1; height: 8px; background: #eef2f7; border-radius: 10px; overflow: hidden; }
+  .review-bar-row .bar span { display: block; height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); border-radius: 10px; }
+  .review-bar-row .num { color: var(--text-3); font-size: 12.5px; min-width: 36px; }
+
+  .review-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+  }
+  .review-filters { display: flex; gap: 8px; }
+  .review-filters span {
+    padding: 6px 14px; border-radius: 16px; font-size: 13px; color: var(--text-2);
+    background: var(--bg-page); cursor: pointer; transition: .2s;
+  }
+  .review-filters span.active { background: var(--sky); color: #fff; }
+  .btn-write-review {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    color: #fff; border: none; padding: 8px 18px; border-radius: 18px;
+    font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px;
+  }
+
+  .review-list { display: flex; flex-direction: column; gap: 18px; }
+  .review-item {
+    padding: 18px 0; border-bottom: 1px dashed var(--border);
+  }
+  .review-item:last-child { border-bottom: none; }
+  .review-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .review-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #4a9eff); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .review-head .name { font-size: 14px; color: var(--text); font-weight: 500; }
+  .review-head .meta { font-size: 12px; color: var(--text-3); }
+  .review-head .stars { color: #fbbf24; font-size: 13px; letter-spacing: 1px; }
+  .review-content { font-size: 14px; color: var(--text); line-height: 1.8; }
+  .review-actions { display: flex; gap: 18px; margin-top: 10px; font-size: 12.5px; color: var(--text-3); }
+  .review-actions span { cursor: pointer; transition: .2s; display: flex; align-items: center; gap: 4px; }
+  .review-actions span:hover { color: var(--primary); }
+  .review-tag { display: inline-block; padding: 2px 8px; background: #f0f9eb; color: #16a34a; font-size: 11.5px; border-radius: 10px; margin-right: 6px; }
+
+  /* 相关推荐 */
+  .related-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 24px; margin-top: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .related-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .related-head h3 { font-size: 17px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .related-head h3::before { content: ''; width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .related-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .related-item { cursor: pointer; transition: .25s; }
+  .related-item:hover { transform: translateY(-3px); }
+  .related-cover {
+    aspect-ratio: 3/4; border-radius: 4px 2px 4px 2px;
+    box-shadow: -2px 0 0 -1px rgba(0,0,0,0.15), -4px 0 8px rgba(0,0,0,0.2), 4px 4px 12px rgba(0,0,0,0.15);
+    position: relative; overflow: hidden;
+  }
+  .related-cover svg { width: 100%; height: 100%; display: block; }
+  .related-cover::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: rgba(0,0,0,0.2); z-index: 2; }
+  .related-item .name {
+    margin-top: 10px; font-size: 13px; font-weight: 500; color: var(--text);
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    line-height: 1.4; min-height: 36px;
+  }
+  .related-item .author { font-size: 11.5px; color: var(--text-3); margin-top: 3px; }
+
+  @media (max-width: 1240px) {
+    .detail-top { grid-template-columns: 220px 1fr 260px; gap: 20px; padding: 24px; }
+    .cover-lg { width: 200px; height: 270px; }
+    .rules-grid { grid-template-columns: 1fr; }
+    .related-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html" class="active">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="search-results.html">馆藏检索</a>
+    <span class="sep">›</span>
+    <a href="search-results.html">检索结果</a>
+    <span class="sep">›</span>
+    <span class="current">航空发动机结构与系统</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部详情 -->
+  <div class="detail-top">
+    <!-- 左侧封面 -->
+    <div class="cover-block">
+      <div class="cover-lg">
+        <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+          <defs><linearGradient id="main" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a9eff"/><stop offset="100%" stop-color="#0a2d52"/></linearGradient></defs>
+          <rect width="300" height="400" fill="url(#main)"/>
+          <g transform="translate(150,140)" stroke="#fff" stroke-width="3" fill="none" opacity="0.95">
+            <circle r="22"/><circle r="6" fill="#fff"/>
+            <path d="M0,0 L0,-50 A18,18 0 0,1 14,-42 L8,-22 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L42,-30 A18,18 0 0,1 48,-10 L24,-6 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L50,0 A18,18 0 0,1 42,14 L22,8 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L30,42 A18,18 0 0,1 10,48 L6,24 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L-30,42 A18,18 0 0,1 -48,10 L-22,6 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L-50,0 A18,18 0 0,1 -42,-14 L-22,-8 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L-42,-30 A18,18 0 0,1 -10,-48 L-6,-24 Z" fill="#fff" opacity="0.85"/>
+            <path d="M0,0 L0,-50 A18,18 0 0,0 -14,-42 L-8,-22 Z" fill="#fff" opacity="0.85"/>
+          </g>
+          <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.7"/>
+          <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">航空发动机</text>
+          <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">结构与系统</text>
+          <text x="150" y="320" text-anchor="middle" fill="#fff" font-size="9" opacity="0.7" letter-spacing="2">AERO ENGINE · STRUCTURE</text>
+          <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">刘永泉 · 编著</text>
+        </svg>
+      </div>
+      <div class="cover-actions">
+        <span class="cover-action">🔍 放大</span>
+        <span class="cover-action">📤 分享</span>
+        <span class="cover-action danger">⚠ 报错</span>
+      </div>
+      <div class="cover-meta">
+        封面来源：<span>出版社提供</span><br>
+        文件大小：<span>3.2 MB</span><br>
+        分辨率：<span>600×800</span>
+      </div>
+    </div>
+
+    <!-- 中间主信息 -->
+    <div class="info-block">
+      <h1 class="book-title-lg">航空发动机结构与系统（第二版）</h1>
+      <div class="book-subtitle">Aero Engine Structure and Systems (Second Edition) · 普通高等教育"十三五"规划教材</div>
+
+      <div class="book-rating-row">
+        <span class="rating-stars">★★★★★</span>
+        <span class="rating-num">4.9</span>
+        <span class="rating-count">/ 32 条评价</span>
+        <span class="rating-link">› 查看全部评价</span>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-row"><span class="k">作　者：</span><span class="v">刘永泉</span></div>
+        <div class="info-row"><span class="k">出版社：</span><span class="v">北京航空航天大学出版社</span></div>
+        <div class="info-row"><span class="k">ISBN：</span><span class="v mono">978-7-5124-1234-5</span></div>
+        <div class="info-row"><span class="k">出版年：</span><span class="v">2021 年 8 月</span></div>
+        <div class="info-row"><span class="k">页　数：</span><span class="v">486 页</span></div>
+        <div class="info-row"><span class="k">装　帧：</span><span class="v">平装 / 16 开</span></div>
+        <div class="info-row"><span class="k">索书号：</span><span class="v callno">V233/L-2</span></div>
+        <div class="info-row"><span class="k">分　类：</span><span class="v"><a href="#">V 航空、航天</a> › <a href="#">V23 航空发动机</a></span></div>
+        <div class="info-row"><span class="k">语　种：</span><span class="v">中文（简体）</span></div>
+        <div class="info-row"><span class="k">版　次：</span><span class="v">第 2 版，第 4 次印刷</span></div>
+        <div class="info-row"><span class="k">定　价：</span><span class="v" style="color:var(--error);font-weight:600;">¥ 78.00</span></div>
+        <div class="info-row"><span class="k">馆藏册数：</span><span class="v">6 册（5 册在架）</span></div>
+      </div>
+
+      <div class="info-tags">
+        <span class="tag cat"><b>V233</b> 航空发动机</span>
+        <span class="tag sub">专业教材</span>
+        <span class="tag sub">"十三五"规划</span>
+        <span class="tag hot">🔥 借阅热门</span>
+        <span class="tag">推荐</span>
+      </div>
+    </div>
+
+    <!-- 右侧借阅卡 -->
+    <div class="borrow-card">
+      <div class="borrow-head">
+        <h3>📖 借阅信息</h3>
+        <span class="status available">● 在架可借</span>
+      </div>
+
+      <div class="borrow-stock">
+        <div class="num">5</div>
+        <div class="info-text">
+          <div class="l">馆藏复本</div>
+          <div class="b">共 6 本，1 本借出</div>
+        </div>
+      </div>
+
+      <div class="borrow-actions">
+        <button class="btn-primary-lg">📖 立即借阅</button>
+        <button class="btn-secondary-lg">⭐ 收藏此书</button>
+        <button class="btn-secondary-lg" style="border-color:var(--primary);color:var(--primary);">🔔 预约到馆通知</button>
+      </div>
+
+      <div class="borrow-tips">
+        💡 本校读者 <b>本科生限借 10 册 / 60 天</b>；研究生限借 <b>15 册 / 90 天</b>。当前您在借 <b>3 / 10</b> 册，借期 60 天，<b>可续借 1 次</b>。
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 区 -->
+  <div class="detail-tabs-card">
+    <div class="detail-tabs">
+      <span class="active" data-tab="summary">📄 内容简介</span>
+      <span data-tab="toc">📑 目录</span>
+      <span data-tab="copies">📚 馆藏复本 <span class="count">6</span></span>
+      <span data-tab="rules">📋 借阅规则</span>
+      <span data-tab="reviews">💬 读者评论 <span class="count">32</span></span>
+    </div>
+
+    <div class="detail-body">
+
+      <!-- 内容简介 -->
+      <div class="tab-pane active" id="pane-summary">
+        <div class="summary-text">
+          <p>本书是普通高等教育"<strong>十三五</strong>"国家级规划教材，是航空发动机专业方向的核心教材之一。第二版在保留第一版经典结构的基础上，全面更新了<strong>涡扇发动机、涡轴发动机、桨扇发动机</strong>等新型动力装置的内容，并结合<strong>CFM LEAP、PW1100G、Trent XWB</strong>等先进民用发动机型号进行了工程实例解析。</p>
+          <p>全书共分<strong>十二章</strong>，系统阐述了航空发动机的基本类型与发展历程、热力循环与总体性能参数、进气道、压气机、燃烧室、涡轮、排气装置、附件传动与润滑系统、起动与点火系统、控制系统以及发动机状态监控与故障诊断等内容。每章均配有<strong>思考题与工程案例</strong>，便于读者巩固所学知识。</p>
+          <p>本书可作为<strong>飞行器动力工程、热能与动力工程</strong>等本科专业教材，也可供从事航空发动机设计、制造、试验和维修的工程技术人员参考使用。配套数字资源包括教学课件、习题解答及部分视频讲解，读者可扫描封底二维码获取。</p>
+          <p style="color: var(--text-3); font-size: 13px; margin-top: 20px;">— 摘自《航空发动机结构与系统》第二版前言</p>
+        </div>
+      </div>
+
+      <!-- 目录 -->
+      <div class="tab-pane" id="pane-toc">
+        <div class="toc-list">
+          <div class="toc-divider">第 1 章 绪论</div>
+          <div class="toc-chapter"><span class="num">1.1</span><span class="name">航空发动机的发展简史</span><span class="page">P001</span></div>
+          <div class="toc-chapter"><span class="num">1.2</span><span class="name">航空发动机的分类与特点</span><span class="page">P012</span></div>
+          <div class="toc-chapter"><span class="num">1.3</span><span class="name">我国航空发动机工业概况</span><span class="page">P024</span></div>
+
+          <div class="toc-divider">第 2 章 航空发动机的工作原理与性能</div>
+          <div class="toc-chapter"><span class="num">2.1</span><span class="name">热力循环与工作过程</span><span class="page">P032</span></div>
+          <div class="toc-chapter"><span class="num">2.2</span><span class="name">主要性能参数与指标</span><span class="page">P048</span></div>
+          <div class="toc-chapter"><span class="num">2.3</span><span class="name">发动机特性与匹配</span><span class="page">P062</span></div>
+
+          <div class="toc-divider">第 3 章 进气道</div>
+          <div class="toc-chapter"><span class="num">3.1</span><span class="name">亚音速进气道</span><span class="page">P078</span></div>
+          <div class="toc-chapter"><span class="num">3.2</span><span class="name">超音速进气道</span><span class="page">P092</span></div>
+          <div class="toc-chapter"><span class="num">3.3</span><span class="name">进气道与发动机的匹配</span><span class="page">P108</span></div>
+
+          <div class="toc-divider">第 4 章 压气机</div>
+          <div class="toc-chapter"><span class="num">4.1</span><span class="name">轴流式压气机工作原理</span><span class="page">P118</span></div>
+          <div class="toc-chapter"><span class="num">4.2</span><span class="name">压气机气动设计</span><span class="page">P138</span></div>
+          <div class="toc-chapter"><span class="num">4.3</span><span class="name">压气机稳定性与防喘</span><span class="page">P156</span></div>
+          <div class="toc-chapter"><span class="num">4.4</span><span class="name">离心式压气机</span><span class="page">P172</span></div>
+
+          <div class="toc-divider">第 5 章 燃烧室</div>
+          <div class="toc-chapter"><span class="num">5.1</span><span class="name">燃烧室类型与基本要求</span><span class="page">P186</span></div>
+          <div class="toc-chapter"><span class="num">5.2</span><span class="name">燃烧室设计与性能</span><span class="page">P198</span></div>
+          <div class="toc-chapter"><span class="num">5.3</span><span class="name">主燃烧室与加力燃烧室</span><span class="page">P216</span></div>
+
+          <div class="toc-divider">第 6 章 涡轮</div>
+          <div class="toc-chapter"><span class="num">6.1</span><span class="name">涡轮工作原理</span><span class="page">P232</span></div>
+          <div class="toc-chapter"><span class="num">6.2</span><span class="name">涡轮气动设计</span><span class="page">P248</span></div>
+          <div class="toc-chapter"><span class="num">6.3</span><span class="name">涡轮冷却技术</span><span class="page">P266</span></div>
+
+          <div class="toc-divider">第 7 章 排气装置</div>
+          <div class="toc-chapter"><span class="num">7.1</span><span class="name">尾喷管工作原理</span><span class="page">P282</span></div>
+          <div class="toc-chapter"><span class="num">7.2</span><span class="name">反推力装置</span><span class="page">P296</span></div>
+
+          <div class="toc-divider">第 8 章 附件传动与润滑系统</div>
+          <div class="toc-chapter"><span class="num">8.1</span><span class="name">附件传动系统</span><span class="page">P312</span></div>
+          <div class="toc-chapter"><span class="num">8.2</span><span class="name">润滑系统组成与设计</span><span class="page">P326</span></div>
+
+          <div class="toc-divider">第 9 章 起动与点火系统</div>
+          <div class="toc-chapter"><span class="num">9.1</span><span class="name">起动系统</span><span class="page">P342</span></div>
+          <div class="toc-chapter"><span class="num">9.2</span><span class="name">点火系统</span><span class="page">P358</span></div>
+
+          <div class="toc-divider">第 10 章 控制系统</div>
+          <div class="toc-chapter"><span class="num">10.1</span><span class="name">液压机械控制器</span><span class="page">P372</span></div>
+          <div class="toc-chapter"><span class="num">10.2</span><span class="name">FADEC 全权限数字发动机控制器</span><span class="page">P388</span></div>
+
+          <div class="toc-divider">第 11 章 状态监控与故障诊断</div>
+          <div class="toc-chapter"><span class="num">11.1</span><span class="name">发动机状态监控</span><span class="page">P408</span></div>
+          <div class="toc-chapter"><span class="num">11.2</span><span class="name">常见故障诊断方法</span><span class="page">P424</span></div>
+
+          <div class="toc-divider">第 12 章 典型航空发动机实例分析</div>
+          <div class="toc-chapter"><span class="num">12.1</span><span class="name">CFM56 系列民用发动机</span><span class="page">P444</span></div>
+          <div class="toc-chapter"><span class="num">12.2</span><span class="name">某型涡轴发动机</span><span class="page">P462</span></div>
+
+          <div class="toc-chapter" style="margin-top: 14px; color: var(--text-3); font-size: 13px; cursor: default;">
+            <span class="num">📎</span><span class="name">参考文献</span><span class="page">P478</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 馆藏复本 -->
+      <div class="tab-pane" id="pane-copies">
+        <div style="margin-bottom: 14px; padding: 12px 16px; background: linear-gradient(135deg, #f0f9ff, #ecf5ff); border-radius: 10px; font-size: 13px; color: #1e3a8a; display: flex; align-items: center; gap: 8px;">
+          💡 本书共 <b>6</b> 册复本，分布于 <b>2</b> 个馆藏地。下表展示所有复本实时状态（与后台数据同步）。
+        </div>
+        <table class="copies-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th style="width: 140px;">条码</th>
+              <th>馆藏位置（区›排›架›层）</th>
+              <th style="width: 120px;">复本状态</th>
+              <th>入藏时间</th>
+              <th style="width: 160px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="barcode">BK2021-0001</span></td>
+              <td><div class="loc-cell"><span class="loc">I区3排1架</span><span class="layer-tag">第3层</span><span class="layer-tag">第5格</span></div></td>
+              <td><span class="copies-status available">在架</span></td>
+              <td style="color: var(--text-2); font-size: 12.5px;">2021-09-12</td>
+              <td><span class="copy-row-action">📖 借阅</span><span class="copy-row-action">📍 导航</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="barcode">BK2021-0002</span></td>
+              <td><div class="loc-cell"><span class="loc">I区3排1架</span><span class="layer-tag">第3层</span><span class="layer-tag">第6格</span></div></td>
+              <td><span class="copies-status available">在架</span></td>
+              <td style="color: var(--text-2); font-size: 12.5px;">2021-09-12</td>
+              <td><span class="copy-row-action">📖 借阅</span><span class="copy-row-action">📍 导航</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="barcode">BK2021-0003</span></td>
+              <td><div class="loc-cell"><span class="loc">I区3排1架</span><span class="layer-tag">第3层</span><span class="layer-tag">第7格</span></div></td>
+              <td><span class="copies-status borrowed">已借出</span></td>
+              <td style="color: var(--text-2); font-size: 12.5px;">2021-09-12<br><span style="color: var(--text-3);">应还：2025-12-28</span></td>
+              <td><span class="copy-row-action warn">🔔 预约</span><span class="copy-row-action">📍 导航</span></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="barcode">BK2021-0004</span></td>
+              <td><div class="loc-cell"><span class="loc">I区3排2架</span><span class="layer-tag">第1层</span><span class="layer-tag">第2格</span></div></td>
+              <td><span class="copies-status available">在架</span></td>
+              <td style="color: var(--text-2); font-size: 12.5px;">2021-09-12</td>
+              <td><span class="copy-row-action">📖 借阅</span><span class="copy-row-action">📍 导航</span></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="barcode">BK2021-0005</span></td>
+              <td><div class="loc-cell"><span class="loc">I区3排2架</span><span class="layer-tag">第1层</span><span class="layer-tag">第3格</span></div></td>
+              <td><span class="copies-status available">在架</span></td>
+              <td style="color: var(--text-2); font-size: 12.5px;">2021-09-12</td>
+              <td><span class="copy-row-action">📖 借阅</span><span class="copy-row-action">📍 导航</span></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="barcode">BK2021-0006</span></td>
+              <td><div class="loc-cell"><span class="loc">I区3排2架</span><span class="layer-tag">第1层</span><span class="layer-tag">第4格</span></div></td>
+              <td><span class="copies-status available">在架</span></td>
+              <td style="color: var(--text-2); font-size: 12.5px;">2021-09-12</td>
+              <td><span class="copy-row-action">📖 借阅</span><span class="copy-row-action">📍 导航</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 借阅规则 -->
+      <div class="tab-pane" id="pane-rules">
+        <div class="rules-grid">
+          <div class="rule-card">
+            <h5>📚 借阅册数与期限</h5>
+            <div class="row"><span class="k">本科生</span><span class="v">10 册 / 60 天</span></div>
+            <div class="row"><span class="k">研究生</span><span class="v">15 册 / 90 天</span></div>
+            <div class="row"><span class="k">教师 / 职工</span><span class="v">20 册 / 180 天</span></div>
+            <div class="row"><span class="k">外聘 / 临时</span><span class="v">3 册 / 30 天</span></div>
+          </div>
+
+          <div class="rule-card">
+            <h5>🔄 续借与预约</h5>
+            <div class="row"><span class="k">续借次数</span><span class="v">1 次</span></div>
+            <div class="row"><span class="k">续借时长</span><span class="v">+30 天</span></div>
+            <div class="row"><span class="k">续借门槛</span><span class="v">到期前 7 天内</span></div>
+            <div class="row"><span class="k">预约保留</span><span class="v">3 个自然日</span></div>
+          </div>
+
+          <div class="rule-card">
+            <h5>⚠ 逾期与违章</h5>
+            <div class="row"><span class="k">逾期费</span><span class="v">¥ 0.20 / 天 / 册</span></div>
+            <div class="row"><span class="k">单册上限</span><span class="v">¥ 50.00</span></div>
+            <div class="row"><span class="k">污损 / 撕页</span><span class="v">按原书价 50% 赔偿</span></div>
+            <div class="row"><span class="k">遗失</span><span class="v">按原书价 3 倍赔偿</span></div>
+          </div>
+
+          <div class="rule-card">
+            <h5>📍 借还方式</h5>
+            <div class="row"><span class="k">自助借还机</span><span class="v">一层大厅 / 二层</span></div>
+            <div class="row"><span class="k">人工服务台</span><span class="v">08:00 - 22:00</span></div>
+            <div class="row"><span class="k">移动端续借</span><span class="v">微信小程序 / APP</span></div>
+            <div class="row"><span class="k">异地还书</span><span class="v">总馆 / 三分馆通用</span></div>
+          </div>
+        </div>
+
+        <div class="rule-notice">
+          📌 <b>特别说明：</b>工具书、特藏文献、期刊现刊等仅供馆内阅览，不外借；寒暑假期间借期自动顺延，开学后 7 日内归还；考试周前两周停止续借。如有疑问，请咨询一层服务台（电话：<b>010-88880001</b>）。
+        </div>
+      </div>
+
+      <!-- 读者评论 -->
+      <div class="tab-pane" id="pane-reviews">
+        <div class="review-summary">
+          <div class="review-score-block">
+            <div class="review-score-num">4.9</div>
+            <div class="review-score-stars">★★★★★</div>
+            <div class="review-score-count">基于 32 条评价</div>
+          </div>
+          <div class="review-bars">
+            <div class="review-bar-row"><span class="lbl">★★★★★ 5星</span><div class="bar"><span style="width: 78%"></span></div><span class="num">25</span></div>
+            <div class="review-bar-row"><span class="lbl">★★★★ 4星</span><div class="bar"><span style="width: 16%"></span></div><span class="num">5</span></div>
+            <div class="review-bar-row"><span class="lbl">★★★ 3星</span><div class="bar"><span style="width: 6%"></span></div><span class="num">2</span></div>
+            <div class="review-bar-row"><span class="lbl">★★ 2星</span><div class="bar"><span style="width: 0%"></span></div><span class="num">0</span></div>
+            <div class="review-bar-row"><span class="lbl">★ 1星</span><div class="bar"><span style="width: 0%"></span></div><span class="num">0</span></div>
+          </div>
+        </div>
+
+        <div class="review-toolbar">
+          <div class="review-filters">
+            <span class="active">全部 32</span>
+            <span>好评 30</span>
+            <span>中评 2</span>
+            <span>差评 0</span>
+            <span>有图 8</span>
+          </div>
+          <button class="btn-write-review">✏ 写评价</button>
+        </div>
+
+        <div class="review-list">
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar">王</div>
+              <div style="flex:1">
+                <div class="name">王明远 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 飞行器动力工程 · 大三</span></div>
+                <div class="meta">2025-12-15 · 已读完</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="review-content">
+              <span class="review-tag">专业必备</span>这本书是我们专业方向的"圣经"！第二版增加了 FADEC 数字控制的内容，特别贴近工程实际。书中关于 <strong>压气机防喘</strong> 和 <strong>涡轮冷却</strong> 的章节写得非常透彻，配图清晰，公式推导严谨，是我们期末复习和毕业设计反复翻阅的参考书。强烈推荐给所有航空动力专业的同学！
+            </div>
+            <div class="review-actions">
+              <span>👍 28</span><span>💬 3</span><span>↗ 分享</span><span>⚐ 举报</span>
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar" style="background: linear-gradient(135deg, #ec4899, #be185d);">李</div>
+              <div style="flex:1">
+                <div class="name">李佳慧 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 航空学院 · 大二</span></div>
+                <div class="meta">2025-12-10 · 借阅中</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="review-content">
+              作为通识课入门读物非常合适！虽然内容偏专业，但作者的讲解很接地气，每个章节前面的<strong>工程实例</strong>能很好地激发学习兴趣。第 12 章的 CFM56 案例分析特别精彩，看完有种"原来民航发动机是这样工作的"恍然大悟的感觉。借阅体验也很棒，馆藏量大，自助借还机一分钟搞定。
+            </div>
+            <div class="review-actions">
+              <span>👍 19</span><span>💬 1</span><span>↗ 分享</span><span>⚐ 举报</span>
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar" style="background: linear-gradient(135deg, #10b981, #047857);">张</div>
+              <div style="flex:1">
+                <div class="name">张工程师 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 校外 · 航空发动机维修</span></div>
+                <div class="meta">2025-11-28 · 历史借阅</div>
+              </div>
+              <div class="stars">★★★★☆</div>
+            </div>
+            <div class="review-content">
+              工作中偶尔需要翻阅，整体质量很高。第 11 章的<strong>状态监控与故障诊断</strong>对我帮助最大，IVHM 的内容讲得比较前沿。但有部分小错误，比如第 4 章 4.3 节的某公式印刷有误，建议勘误时一并修正。<strong>图书馆有 6 册库存，强烈好评！</strong>
+            </div>
+            <div class="review-actions">
+              <span>👍 12</span><span>💬 0</span><span>↗ 分享</span><span>⚐ 举报</span>
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-head">
+              <div class="review-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">陈</div>
+              <div style="flex:1">
+                <div class="name">陈思远 <span style="color: var(--text-3); font-weight: normal; font-size: 12px;">· 飞行器制造 · 大三</span></div>
+                <div class="meta">2025-11-20 · 借阅中</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="review-content">
+              我是制造方向的，本来以为这本书侧重设计，但读完发现<strong>结构与制造工艺结合得非常好</strong>，第 5 章燃烧室和第 8 章润滑系统的讲解对我们做加工工艺设计很有启发。配套的数字资源也丰富，扫码就能看视频，赞一个 👍
+            </div>
+            <div class="review-actions">
+              <span>👍 8</span><span>💬 0</span><span>↗ 分享</span><span>⚐ 举报</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 相关推荐 -->
+  <div class="related-card">
+    <div class="related-head">
+      <h3>同主题推荐 · 航空发动机</h3>
+      <a style="font-size: 13px; color: var(--text-3); cursor: pointer;">查看更多 ›</a>
+    </div>
+    <div class="related-grid">
+      <div class="related-item">
+        <div class="related-cover">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="r1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0c4a6e"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#r1)"/>
+            <text x="150" y="220" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">空气动力学</text>
+            <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">安德森</text>
+          </svg>
+        </div>
+        <div class="name">空气动力学基础（第六版）</div>
+        <div class="author">J.D. Anderson</div>
+      </div>
+      <div class="related-item">
+        <div class="related-cover">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="r2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#r2)"/>
+            <text x="150" y="220" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">无人机</text>
+            <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">全权</text>
+          </svg>
+        </div>
+        <div class="name">无人机设计与控制</div>
+        <div class="author">全权 / 戴训华</div>
+      </div>
+      <div class="related-item">
+        <div class="related-cover">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="r3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#064e3b"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#r3)"/>
+            <text x="150" y="220" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">飞机性能</text>
+            <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">张仲麟</text>
+          </svg>
+        </div>
+        <div class="name">飞机性能与控制</div>
+        <div class="author">张仲麟</div>
+      </div>
+      <div class="related-item">
+        <div class="related-cover">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="r4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#581c87"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#r4)"/>
+            <text x="150" y="220" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">燃气涡轮</text>
+            <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">Sutton</text>
+          </svg>
+        </div>
+        <div class="name">燃气涡轮发动机</div>
+        <div class="author">G. Sutton</div>
+      </div>
+      <div class="related-item">
+        <div class="related-cover">
+          <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="r5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#831843"/></linearGradient></defs>
+            <rect width="300" height="400" fill="url(#r5)"/>
+            <text x="150" y="220" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="serif">FADEC</text>
+            <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="16" font-weight="500" font-family="serif">数字控制</text>
+            <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">王远</text>
+          </svg>
+        </div>
+        <div class="name">航空发动机数字控制</div>
+        <div class="author">王远</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Tab 切换
+  document.querySelectorAll('.detail-tabs span').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.detail-tabs span').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+  // 评论筛选
+  document.querySelectorAll('.review-filters span').forEach(s => {
+    s.addEventListener('click', () => {
+      document.querySelectorAll('.review-filters span').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

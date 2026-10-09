@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>违章查询 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #fff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    --max-w: 1440px;
+  }
+  /* 顶部 / 头部 / 面包屑 - 与首页同款 */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部 */
+  .violation-hero {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px; padding: 30px 36px; color: #fff; margin-bottom: 22px;
+    position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(13,59,102,0.15);
+  }
+  .violation-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .violation-hero-content { position: relative; z-index: 2; }
+  .violation-hero h2 { font-size: 24px; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .violation-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; max-width: 880px; }
+  .violation-hero p b { color: var(--gold); font-weight: 600; }
+
+  /* 信用分卡片 */
+  .credit-overview {
+    background: linear-gradient(135deg, #fef3c7, #fef9e7);
+    border: 1px solid #fde68a; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center; box-shadow: 0 2px 8px rgba(245,158,11,0.1);
+  }
+  .credit-score {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: conic-gradient(#f59e0b 0% 95%, #f3f4f6 95% 100%);
+    display: grid; place-items: center; position: relative;
+  }
+  .credit-score::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: #fff; }
+  .credit-score .num { position: relative; z-index: 2; text-align: center; }
+  .credit-score .v { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; }
+  .credit-score .l { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+  .credit-info { display: flex; flex-direction: column; gap: 10px; }
+  .credit-info h3 { font-size: 17px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .credit-info h3::before { content: '🛡'; font-size: 22px; }
+  .credit-info .level { font-size: 12.5px; color: #b45309; font-weight: 500; padding: 4px 12px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 12px; align-self: flex-start; }
+  .credit-stats { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); }
+  .credit-stats .item { display: flex; align-items: center; gap: 5px; }
+  .credit-stats .item b { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; font-size: 16px; }
+  .credit-stats .item.warn b { color: var(--warning); }
+  .credit-stats .item.danger b { color: var(--error); }
+  .credit-stats .item.success b { color: var(--success); }
+
+  .credit-actions { display: flex; flex-direction: column; gap: 8px; }
+  .credit-btn {
+    height: 36px; padding: 0 16px; border: 1px solid var(--border); background: #fff; color: var(--text-2);
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .credit-btn:hover { border-color: var(--sky); color: var(--sky); }
+  .credit-btn.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border-color: transparent; }
+
+  /* Tab */
+  .tab-bar { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 0 18px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; gap: 4px; }
+  .tab-item { padding: 14px 22px; font-size: 14.5px; color: var(--text-2); cursor: pointer; position: relative; font-weight: 500; transition: .2s; }
+  .tab-item:hover { color: var(--primary); }
+  .tab-item.active { color: var(--primary); font-weight: 600; }
+  .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 3px 3px 0 0; }
+  .tab-item .cnt { font-size: 11.5px; background: var(--bg-page); color: var(--text-3); padding: 1px 7px; border-radius: 8px; margin-left: 4px; }
+  .tab-item.active .cnt { background: rgba(74,158,255,0.15); color: var(--primary); }
+  .tab-item.has-warn .cnt { background: rgba(220,38,38,0.12); color: var(--error); }
+
+  /* 表格 */
+  .violation-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .card-toolbar { padding: 14px 22px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: linear-gradient(180deg, #fafcff, #fff); }
+  .toolbar-left { display: flex; gap: 8px; align-items: center; }
+  .toolbar-right { font-size: 13px; color: var(--text-2); }
+  .toolbar-right b { color: var(--text); font-weight: 600; }
+  .filter-chip-select {
+    height: 34px; padding: 0 28px 0 10px; border: 1px solid var(--border); background: #fff; color: var(--text);
+    border-radius: 8px; font-size: 12.5px; cursor: pointer; outline: none; font-family: inherit; min-width: 110px;
+    appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .filter-chip-select:focus { border-color: var(--sky); }
+  .filter-search {
+    position: relative; width: 220px;
+  }
+  .filter-search input {
+    width: 100%; height: 34px; padding: 0 12px 0 32px; border: 1px solid var(--border); background: #fff;
+    border-radius: 8px; font-size: 12.5px; color: var(--text); outline: none; font-family: inherit; transition: .15s;
+  }
+  .filter-search input:focus { border-color: var(--sky); }
+  .filter-search .ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 13px; }
+  .btn-tool {
+    height: 34px; padding: 0 14px; border: 1px solid var(--border); background: #fff; color: var(--text-2);
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-tool:hover { border-color: var(--sky); color: var(--sky); }
+  .btn-tool:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-tool.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border-color: transparent; }
+  .btn-tool.primary:hover:not(:disabled) { transform: translateY(-1px); }
+
+  /* 违章卡片 */
+  .violation-grid { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .vio-item {
+    display: flex; gap: 16px; padding: 16px; background: #fff;
+    border: 1px solid var(--border-light); border-radius: 12px; transition: .2s;
+  }
+  .vio-item:hover { border-color: var(--sky); box-shadow: 0 4px 14px rgba(74,158,255,0.08); }
+  .vio-item.handled { background: #f8fafc; opacity: .85; }
+  .vio-item.disputing { border-color: var(--warning); background: linear-gradient(135deg, #fffbeb, #fff); }
+
+  .vio-type {
+    width: 56px; height: 56px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    color: #fff;
+  }
+  .vio-type.t-overdue { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .vio-type.t-noshow { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .vio-type.t-temp { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .vio-type.t-nocheckout { background: linear-gradient(135deg, #ec4899, #be185d); }
+  .vio-type.t-booking { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+  .vio-type.t-lost { background: linear-gradient(135deg, #64748b, #475569); }
+
+  .vio-main { flex: 1; min-width: 0; }
+  .vio-main .row1 { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+  .vio-main .title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .vio-main .row2 { display: flex; gap: 14px; font-size: 12.5px; color: var(--text-2); flex-wrap: wrap; margin-bottom: 6px; }
+  .vio-main .row2 span { display: flex; align-items: center; gap: 4px; }
+  .vio-main .row2 b { color: var(--text); font-weight: 500; font-family: ui-monospace, monospace; }
+  .vio-main .row3 { font-size: 12px; color: var(--text-3); line-height: 1.6; padding: 8px 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid var(--border); }
+
+  .vio-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .vio-tag {
+    display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 4px; font-size: 11.5px; font-weight: 500;
+  }
+  .vio-tag.danger { background: rgba(220,38,38,0.1); color: var(--error); }
+  .vio-tag.warn { background: rgba(245,158,11,0.1); color: var(--warning); }
+  .vio-tag.info { background: rgba(37,99,235,0.1); color: var(--info); }
+  .vio-tag.success { background: rgba(22,197,94,0.1); color: var(--success); }
+  .vio-tag.gray { background: rgba(107,114,128,0.1); color: var(--text-3); }
+
+  .vio-right { display: flex; flex-direction: column; gap: 6px; min-width: 200px; }
+  .vio-fine { padding: 10px 14px; background: linear-gradient(135deg, #fef2f2, #fff7ed); border: 1px solid #fecaca; border-radius: 8px; text-align: center; }
+  .vio-fine .l { font-size: 11.5px; color: var(--error); font-weight: 500; }
+  .vio-fine .v { font-size: 19px; font-weight: 700; color: var(--error); font-variant-numeric: tabular-nums; line-height: 1.2; }
+
+  .vio-actions { display: flex; flex-direction: column; gap: 6px; }
+  .vio-btn {
+    padding: 7px 14px; font-size: 12.5px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; border: 1px solid; transition: .15s;
+  }
+  .vio-btn.primary { background: var(--error); color: #fff; border-color: var(--error); }
+  .vio-btn.primary:hover { background: #b91c1c; }
+  .vio-btn.ghost { background: #fff; color: var(--text-2); border-color: var(--border); }
+  .vio-btn.ghost:hover { border-color: var(--sky); color: var(--sky); }
+  .vio-btn.warn { background: #fff7ed; color: var(--warning); border-color: #fed7aa; }
+  .vio-btn.warn:hover { background: var(--warning); color: #fff; }
+  .vio-btn.gray { background: #f5f5f5; color: var(--text-3); border-color: #e5e5e5; cursor: not-allowed; }
+  .vio-btn.success { background: #ecfdf5; color: var(--success); border-color: #a7f3d0; cursor: default; }
+
+  /* 空状态 */
+  .empty-state { padding: 80px 20px; text-align: center; color: var(--text-3); font-size: 14px; }
+  .empty-state .big { font-size: 60px; margin-bottom: 16px; }
+  .empty-state .text { color: var(--text-2); font-size: 14.5px; }
+  .empty-state .sub { color: var(--text-3); font-size: 12.5px; margin-top: 8px; }
+
+  /* 申诉 */
+  .appeal-banner {
+    background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+    border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px;
+    font-size: 13px; color: #1e40af; line-height: 1.7; display: flex; align-items: center; gap: 12px;
+  }
+  .appeal-banner b { color: #1d4ed8; }
+  .appeal-banner .ico { font-size: 24px; }
+  .appeal-banner .btn {
+    background: #fff; color: var(--info); border: 1px solid #93c5fd;
+    padding: 6px 14px; border-radius: 6px; font-size: 12.5px; cursor: pointer; font-weight: 500;
+  }
+  .appeal-banner .btn:hover { background: var(--info); color: #fff; border-color: var(--info); }
+
+  /* 弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .mask.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: pop .2s ease; overflow: hidden; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 600; }
+  .modal-header.danger { background: linear-gradient(135deg, #fef2f2, #fff); border-bottom-color: #fecaca; }
+  .modal-header.danger span { color: var(--error); }
+  .modal-close { width: 30px; height: 30px; border-radius: 6px; background: transparent; border: none; cursor: pointer; color: var(--text-3); font-size: 18px; }
+  .modal-close:hover { background: var(--bg-page); color: var(--text); }
+  .modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+  .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #fafcff; }
+
+  .form-field { margin-bottom: 14px; }
+  .form-field label { display: block; font-size: 13px; color: var(--text-2); font-weight: 500; margin-bottom: 6px; }
+  .form-field label .req { color: var(--error); margin-left: 2px; }
+  .form-field input, .form-field select, .form-field textarea {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text); background: #fff; outline: none; font-family: inherit;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(74,158,255,0.1); }
+  .form-field textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+  .form-field select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 20px; font-size: 13.5px; border-left: 3px solid var(--success); animation: slideDown .2s ease; white-space: nowrap; color: var(--text); }
+  .toast.error { border-left-color: var(--error); }
+  .toast.warn { border-left-color: var(--warning); }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 1240px) {
+    .credit-overview { grid-template-columns: 1fr; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html">馆藏检索</a>
+      <a href="e-resources.html">电子资源</a>
+      <a href="seat-reservation.html">空间预约</a>
+      <a href="#" class="active">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="my-borrow.html">读者服务</a>
+    <span class="sep">›</span>
+    <a href="#">违章查询</a>
+    <span class="sep">›</span>
+    <span class="current">处理</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部 -->
+  <div class="violation-hero">
+    <div class="violation-hero-content">
+      <h2>⚠️ 违章查询与处理 · 信用分管理</h2>
+      <p>查询本人 <b>借阅 / 预约</b> 过程中的所有违章记录，包括<b>逾期未还</b>、<b>未签到</b>、<b>暂离超时</b>、<b>未签离</b>、<b>拒绝归还预约书</b> 等。每条违章按规则扣 <b style="color: #ffc857;">3-5 信用分</b>，满 <b style="color: #ffc857;">3 次</b> 暂停借阅 <b style="color: #ffc857;">7 天</b>。对记录有异议可 <b style="color: #ffc857;">提起申诉</b>。</p>
+    </div>
+  </div>
+
+  <!-- 信用分卡片 -->
+  <div class="credit-overview">
+    <div class="credit-score">
+      <div class="num">
+        <div class="v">95</div>
+        <div class="l">满分 100</div>
+      </div>
+    </div>
+    <div class="credit-info">
+      <h3>陈思远 · 我的信用档案</h3>
+      <span class="level">🟢 信用良好 · 距离 3 次违约上限还差 2 次</span>
+      <div class="credit-stats">
+        <div class="item"><span>📊 当前信用分</span><b>95</b></div>
+        <div class="item danger"><span>⚠ 累计违章</span><b>1</b> <span style="color: var(--text-3);">次</span></div>
+        <div class="item warn"><span>📋 待处理</span><b>0</b> <span style="color: var(--text-3);">条</span></div>
+        <div class="item success"><span>✅ 已申诉</span><b>0</b> <span style="color: var(--text-3);">条</span></div>
+        <div class="item"><span>💰 已缴滞纳金</span><b>￥0.80</b></div>
+      </div>
+    </div>
+    <div class="credit-actions">
+      <button class="credit-btn primary" onclick="openAppeal()">📝 提起申诉</button>
+      <button class="credit-btn" onclick="openCredit()">📊 信用分规则</button>
+    </div>
+  </div>
+
+  <!-- 申诉提示 -->
+  <div class="appeal-banner">
+    <span class="ico">💡</span>
+    <div style="flex: 1;">
+      <b>对违章记录有异议？</b> 您可在违章发生后 <b>7 天内</b> 提起申诉，馆员将在 <b>3 个工作日内</b> 审核处理。申诉成功后，该记录与扣分将撤销。
+    </div>
+    <button class="btn" onclick="openAppeal()">📝 我要申诉</button>
+  </div>
+
+  <!-- Tab -->
+  <div class="tab-bar">
+    <span class="tab-item active has-warn" onclick="switchTab('all', this)">📋 全部违章 <span class="cnt">1</span></span>
+    <span class="tab-item" onclick="switchTab('overdue', this)">⏰ 逾期未还 <span class="cnt">1</span></span>
+    <span class="tab-item" onclick="switchTab('noshow', this)">🚫 未签到 / 未签离 <span class="cnt">0</span></span>
+    <span class="tab-item" onclick="switchTab('temp', this)">⏸ 暂离超时 <span class="cnt">0</span></span>
+    <span class="tab-item" onclick="switchTab('booking', this)">📅 预约违约 <span class="cnt">0</span></span>
+    <span class="tab-item" onclick="switchTab('history', this)">📜 已处理 <span class="cnt">0</span></span>
+  </div>
+
+  <!-- 违章列表 -->
+  <div class="violation-card" id="tab-all">
+    <div class="card-toolbar">
+      <div class="toolbar-left">
+        <div class="filter-search">
+          <span class="ico">🔍</span>
+          <input type="text" placeholder="搜索记录ID / 图书 / 索书号 / 条码">
+        </div>
+        <select class="filter-chip-select">
+          <option>全部违章类型</option>
+          <option>逾期未还</option>
+          <option>未签到</option>
+          <option>暂离超时</option>
+          <option>未签离</option>
+          <option>拒绝归还预约书</option>
+        </select>
+        <select class="filter-chip-select">
+          <option>全部状态</option>
+          <option>待缴费</option>
+          <option>已缴费</option>
+          <option>申诉中</option>
+          <option>申诉成功</option>
+          <option>已逾期</option>
+        </select>
+        <button class="btn-tool">重置</button>
+        <button class="btn-tool primary">🔍 查询</button>
+      </div>
+      <div class="toolbar-right">共 <b>1</b> 条 · 累计扣 <b style="color: #dc2626;">5</b> 分 · 待缴 <b style="color: #dc2626;">￥0.80</b></div>
+    </div>
+
+    <div class="violation-grid" id="violationList">
+
+      <!-- 违章记录 1 - 逾期未还 -->
+      <div class="vio-item">
+        <div class="vio-type t-overdue">⏰</div>
+        <div class="vio-main">
+          <div class="row1">
+            <span class="vio-tag danger">逾期未还</span>
+            <span class="vio-tag warn">待缴费</span>
+            <span class="vio-tag info">2025-12-17 09:00 起算</span>
+          </div>
+          <div class="title">《人类简史：从动物到上帝》</div>
+          <div class="row2">
+            <span>📖 索书号：<b>K02/H-1</b></span>
+            <span>📅 借出：<b>2025-11-15</b></span>
+            <span>🕒 应还：<b style="color: #dc2626;">2025-12-13</b></span>
+            <span>⏱ 逾期 <b style="color: #dc2626;">4 天</b></span>
+            <span>📍 借阅单：<b>JY202511150003</b></span>
+          </div>
+          <div class="row3">
+            📝 <b>违章详情：</b>该图书已超过应还日期 <b>4 天</b> 未归还，按规定每逾期 1 天扣 0.2 元 × 4 = 0.80 元；同时扣 3 信用分。
+          </div>
+        </div>
+        <div class="vio-right">
+          <div class="vio-fine">
+            <div class="l">滞纳金 / 扣分</div>
+            <div class="v">￥0.80 · -3 分</div>
+          </div>
+          <div class="vio-actions">
+            <button class="vio-btn primary" onclick="payViolation()">💰 立即缴费</button>
+            <button class="vio-btn warn" onclick="openAppeal()">📝 提起申诉</button>
+            <button class="vio-btn ghost" onclick="toast('请到馆归还图书', '')">📍 到馆归还</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 已处理 -->
+  <div class="violation-card" id="tab-history" style="display: none;">
+    <div class="empty-state">
+      <div class="big">🎉</div>
+      <div class="text">您当前没有任何已处理的违章记录</div>
+      <div class="sub">保持良好的借阅习惯，信用分会越来越高哦～</div>
+    </div>
+  </div>
+
+  <!-- 提示 -->
+  <div style="margin-top: 18px; padding: 16px 20px; background: linear-gradient(135deg, #f0f9ff, #ecfdf5); border: 1px solid #bae6fd; border-radius: 10px; font-size: 13px; color: #0c4a6e; line-height: 1.7;">
+    💡 <b style="color: #0e7490;">信用分规则：</b>
+    <ul style="margin: 6px 0 0 20px; padding: 0;">
+      <li>逾期 1 天 = 滞纳金 0.2 元 + 扣 3 信用分（单次封顶 20 元 / 3 分）</li>
+      <li>未签到 / 暂离超时 / 未签离 = 扣 3 信用分（不收费）</li>
+      <li>拒绝归还预约书 = 滞纳金 5 元 + 扣 5 信用分</li>
+      <li>信用分 ≤ 80：不可预约热门时段座位/热门研修室</li>
+      <li>累计 3 次违章：自动暂停借阅 <b>7 天</b>，需到馆办理解禁</li>
+      <li>申诉成功：原记录与扣分自动撤销，无任何损失</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- 申诉弹窗 -->
+<div class="mask" id="appealMask">
+  <div class="modal" style="width: 560px;">
+    <div class="modal-header"><span>📝 提起申诉</span><button class="modal-close" onclick="closeAppeal()">✕</button></div>
+    <div class="modal-body">
+      <div style="background: linear-gradient(135deg, #eff6ff, #f0f9ff); border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 14px; font-size: 12.5px; color: #1e40af; margin-bottom: 18px; line-height: 1.7;">
+        ℹ <b>申诉流程：</b>提交申诉后，馆员将在 <b>3 个工作日内</b> 审核；如情况属实，违章记录与扣分将自动撤销。如有补充材料，请上传相关证明。
+      </div>
+      <div class="form-field">
+        <label>违章记录<span class="req">*</span></label>
+        <input type="text" value="V202512170001 - 《人类简史》逾期未还 4 天（滞纳金 ￥0.80）" disabled>
+      </div>
+      <div class="form-field">
+        <label>申诉类型<span class="req">*</span></label>
+        <select>
+          <option>系统误判（实际已按时还书）</option>
+          <option>身体突发状况</option>
+          <option>出差 / 实习 / 异地</option>
+          <option>图书馆设备故障（自助借还机）</option>
+          <option>其他特殊情况</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>申诉说明<span class="req">*</span></label>
+        <textarea placeholder="请详细描述情况，必要时附上证明材料（如医院证明、出差申请单等）"></textarea>
+      </div>
+      <div class="form-field">
+        <label>补充材料（选填）</label>
+        <div style="border: 1px dashed var(--border); border-radius: 8px; padding: 18px; text-align: center; background: #f8fafc; cursor: pointer; transition: .15s;">
+          <div style="font-size: 26px; color: var(--text-3); margin-bottom: 4px;">📎</div>
+          <div style="font-size: 13px; color: var(--text-2);">点击或拖拽文件至此处上传</div>
+          <div style="font-size: 11.5px; color: var(--text-3); margin-top: 2px;">支持 jpg/png/pdf，单个文件不超过 10 MB</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-tool" onclick="closeAppeal()">取消</button>
+      <button class="btn-tool primary" onclick="submitAppeal()">📤 提交申诉</button>
+    </div>
+  </div>
+</div>
+
+<!-- 缴费弹窗 -->
+<div class="mask" id="payMask">
+  <div class="modal" style="width: 520px;">
+    <div class="modal-header"><span>💰 缴纳滞纳金</span><button class="modal-close" onclick="closePay()">✕</button></div>
+    <div class="modal-body">
+      <div style="background: linear-gradient(135deg, #fef2f2, #fff7ed); border: 1px solid #fecaca; border-radius: 10px; padding: 18px; text-align: center; margin-bottom: 18px;">
+        <div style="font-size: 13px; color: #991b1b; margin-bottom: 6px;">本次需缴滞纳金</div>
+        <div style="font-size: 32px; font-weight: 700; color: #dc2626; font-variant-numeric: tabular-nums; line-height: 1;">￥0.80</div>
+        <div style="font-size: 12.5px; color: #991b1b; margin-top: 6px;">《人类简史：从动物到上帝》逾期 4 天 × 0.2 元/天</div>
+      </div>
+      <div class="form-field">
+        <label>支付方式<span class="req">*</span></label>
+        <select>
+          <option>微信支付</option>
+          <option>支付宝</option>
+          <option>校园卡</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>备注（选填）</label>
+        <input type="text" placeholder="如需发票请注明抬头与税号">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-tool" onclick="closePay()">取消</button>
+      <button class="btn-tool primary" onclick="confirmPay()">💳 立即支付</button>
+    </div>
+  </div>
+</div>
+
+<!-- 信用分规则弹窗 -->
+<div class="mask" id="creditMask">
+  <div class="modal" style="width: 640px;">
+    <div class="modal-header"><span>📊 信用分规则</span><button class="modal-close" onclick="closeCredit()">✕</button></div>
+    <div class="modal-body" style="font-size: 13px; line-height: 1.8; color: var(--text-2);">
+      <div style="background: linear-gradient(135deg, #fafcff, #f0f9ff); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px;">
+        <b style="color: #0e7490; font-size: 14px;">📌 信用分计算</b><br>
+        初始 100 分 / 学年；按 <b>违章类型</b> 实时扣分；通过 <b>申诉</b> 可恢复。
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+        <thead>
+          <tr style="background: #f8fafc;">
+            <th style="padding: 10px; text-align: left; font-size: 12px; color: #475569; border-bottom: 1px solid var(--border);">违章类型</th>
+            <th style="padding: 10px; text-align: left; font-size: 12px; color: #475569; border-bottom: 1px solid var(--border);">扣分</th>
+            <th style="padding: 10px; text-align: left; font-size: 12px; color: #475569; border-bottom: 1px solid var(--border);">滞纳金</th>
+            <th style="padding: 10px; text-align: left; font-size: 12px; color: #475569; border-bottom: 1px solid var(--border);">申诉期</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">逾期未还图书</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light); color: #dc2626; font-weight: 600;">-3 分</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">0.2 元/天（封顶 20）</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">7 天</td></tr>
+          <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">预约未签到 / 暂离超时 / 未签离</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light); color: #b45309; font-weight: 600;">-3 分</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">无</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">3 天</td></tr>
+          <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">座位被监督未返回</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light); color: #b45309; font-weight: 600;">-3 分</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">无</td><td style="padding: 10px; border-bottom: 1px solid var(--border-light);">3 天</td></tr>
+          <tr><td style="padding: 10px;">拒绝归还预约书 / 研修室违规</td><td style="padding: 10px; color: #dc2626; font-weight: 600;">-5 分</td><td style="padding: 10px;">5 元/次</td><td style="padding: 10px;">7 天</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 14px; padding: 12px 14px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid var(--warning); border-radius: 8px; font-size: 12.5px; color: #92400e;">
+        <b style="color: #b45309;">🚧 违约处罚阈值：</b> 当 <b>累计违章 3 次</b>，自动暂停借阅 <b>7 天</b>；信用分 < <b>80 分</b> 不可预约热门时段。
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-tool primary" onclick="closeCredit()">我了解了</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  function toast(msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = '.25s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-8px)';
+      setTimeout(() => el.remove(), 250);
+    }, 2200);
+  }
+
+  function switchTab(key, el) {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.violation-card').forEach(c => c.style.display = 'none');
+    document.getElementById('tab-' + (key === 'history' ? 'history' : 'all')).style.display = 'block';
+  }
+
+  function openAppeal() {
+    document.getElementById('appealMask').classList.add('show');
+  }
+  function closeAppeal() {
+    document.getElementById('appealMask').classList.remove('show');
+  }
+  function submitAppeal() {
+    closeAppeal();
+    toast('✓ 申诉已提交，预计 3 个工作日内审核完毕', '');
+  }
+
+  function payViolation() {
+    document.getElementById('payMask').classList.add('show');
+  }
+  function closePay() {
+    document.getElementById('payMask').classList.remove('show');
+  }
+  function confirmPay() {
+    closePay();
+    toast('✓ 滞纳金 ￥0.80 已支付成功，违章记录待核销', '');
+    setTimeout(() => {
+      const item = document.querySelector('.vio-item');
+      if (item) {
+        item.classList.add('handled');
+        item.querySelector('.vio-tag.warn')?.remove();
+        const fineBox = item.querySelector('.vio-fine');
+        if (fineBox) {
+          fineBox.style.background = 'linear-gradient(135deg, #ecfdf5, #d1fae5)';
+          fineBox.style.borderColor = '#a7f3d0';
+          fineBox.querySelector('.l').textContent = '✓ 已结清';
+          fineBox.querySelector('.l').style.color = '#047857';
+          fineBox.querySelector('.v').textContent = '¥0.80';
+          fineBox.querySelector('.v').style.color = '#047857';
+        }
+        const primaryBtn = item.querySelector('.vio-btn.primary');
+        if (primaryBtn) {
+          primaryBtn.className = 'vio-btn success';
+          primaryBtn.innerHTML = '✓ 已缴费';
+          primaryBtn.disabled = true;
+        }
+      }
+    }, 300);
+  }
+
+  function openCredit() {
+    document.getElementById('creditMask').classList.add('show');
+  }
+  function closeCredit() {
+    document.getElementById('creditMask').classList.remove('show');
+  }
+</script>
+
+</body>
+</html>

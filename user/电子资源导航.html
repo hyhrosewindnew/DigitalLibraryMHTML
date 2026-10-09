@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电子资源导航 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --trial: #f59e0b;
+    --expired: #dc2626;
+    --offline: #6b7280;
+    --max-w: 1440px;
+  }
+
+  /* 顶部栏 / 头部 / 面包屑（与首页同款） */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 16px rgba(74,158,255,0.3); }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 2px 10px rgba(139,92,246,0.35); }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); transition: .2s; }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部数据概览 */
+  .er-hero {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px; padding: 30px 36px; color: #fff;
+    position: relative; overflow: hidden; margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.15);
+  }
+  .er-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 40%),
+                      radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.1) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .er-hero-content { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; }
+  .er-hero h2 { font-size: 24px; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .er-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; max-width: 720px; }
+  .er-hero p b { color: var(--gold); font-weight: 600; }
+  .er-hero-stats { display: flex; gap: 18px; }
+  .er-hero-stat {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px; padding: 16px 22px; backdrop-filter: blur(10px); min-width: 130px; text-align: center;
+  }
+  .er-hero-stat .num { font-size: 28px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1; }
+  .er-hero-stat .lbl { font-size: 12px; opacity: .9; margin-top: 6px; }
+
+  /* 工具区（搜索 + 校内访问） */
+  .tools-bar {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center;
+  }
+  .search-wrap {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-page); padding: 6px 6px 6px 16px;
+    border: 1.5px solid transparent; border-radius: 10px; transition: .2s;
+  }
+  .search-wrap:focus-within { background: #fff; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(74,158,255,0.12); }
+  .search-wrap .ico { color: var(--sky); font-size: 18px; }
+  .search-wrap input {
+    flex: 1; border: none; outline: none; padding: 10px 0;
+    font-size: 14px; background: transparent; color: var(--text);
+  }
+  .search-wrap input::placeholder { color: var(--text-3); }
+  .search-wrap .btn-search {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; border: none; padding: 9px 22px; border-radius: 7px;
+    font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+    transition: .2s; white-space: nowrap;
+  }
+  .search-wrap .btn-search:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,158,255,0.4); }
+
+  .tools-extra { display: flex; align-items: center; gap: 10px; }
+  .tools-btn {
+    background: #fff; color: var(--text-2); border: 1px solid var(--border);
+    padding: 9px 14px; border-radius: 8px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: .2s; white-space: nowrap;
+  }
+  .tools-btn:hover { border-color: var(--sky); color: var(--sky); background: #f5f9ff; }
+  .tools-btn .badge-num {
+    background: var(--accent); color: #fff; font-size: 10px;
+    padding: 1px 6px; border-radius: 8px; font-weight: 600;
+  }
+
+  /* 分类标签导航 */
+  .cat-tabs-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 0; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden;
+  }
+  .cat-tabs {
+    display: flex; align-items: center; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .cat-tabs .cat-label {
+    padding: 0 22px; font-size: 14px; font-weight: 600; color: var(--text);
+    border-right: 1px solid var(--border); height: 60px; display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .cat-tabs .cat-label::before { content: ''; width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .cat-tabs-scroll { display: flex; gap: 4px; padding: 0 16px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+  .cat-tabs-scroll::-webkit-scrollbar { display: none; }
+  .cat-tabs-scroll span {
+    padding: 8px 16px; font-size: 13.5px; color: var(--text-2);
+    cursor: pointer; border-radius: 8px; transition: .2s;
+    white-space: nowrap; font-weight: 500;
+  }
+  .cat-tabs-scroll span:hover { background: rgba(74,158,255,0.06); color: var(--sky); }
+  .cat-tabs-scroll span.active { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; box-shadow: 0 4px 10px rgba(74,158,255,0.25); }
+  .cat-tabs-scroll .count { font-size: 11px; opacity: .7; margin-left: 4px; }
+
+  .auth-row {
+    display: flex; align-items: center; gap: 14px; padding: 12px 22px;
+    background: linear-gradient(90deg, #fafcff, #f5f9ff); border-top: 1px solid var(--border-light);
+    flex-wrap: wrap; font-size: 13px;
+  }
+  .auth-row .label { color: var(--text-2); font-weight: 600; }
+  .auth-row .auth-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 12px; background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; font-size: 12.5px; color: var(--text-2); cursor: pointer;
+    transition: .2s;
+  }
+  .auth-pill:hover { border-color: var(--sky); color: var(--sky); }
+  .auth-pill.active { background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(13,59,102,0.04)); border-color: var(--sky); color: var(--primary); font-weight: 500; }
+  .auth-pill .ico { font-size: 14px; }
+  .auth-row .extra { margin-left: auto; color: var(--text-3); font-size: 12.5px; }
+  .auth-row .extra b { color: var(--success); }
+
+  /* 资源网格 */
+  .er-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  }
+  .er-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; transition: .3s; cursor: pointer; position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .er-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(13,59,102,0.12);
+    border-color: var(--sky);
+  }
+  .er-card-head {
+    position: relative; padding: 22px 22px 0;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .er-logo {
+    width: 68px; height: 68px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 22px;
+    font-family: Georgia, "Times New Roman", serif;
+    flex-shrink: 0; position: relative; overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+  .er-logo::after {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  }
+  .er-logo.cnki    { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
+  .er-logo.chaox   { background: linear-gradient(135deg, #f4a261, #e76f51); }
+  .er-logo.vip     { background: linear-gradient(135deg, #1976d2, #0d47a1); }
+  .er-logo.duxiu   { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
+  .er-logo.emerald { background: linear-gradient(135deg, #00a878, #00695c); }
+  .er-logo.xdf     { background: linear-gradient(135deg, #ff6f00, #c43e00); }
+  .er-logo.cnki2   { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
+  .er-logo.bd      { background: linear-gradient(135deg, #2196f3, #0d47a1); }
+  .er-logo.airiti  { background: linear-gradient(135deg, #26a69a, #00695c); }
+  .er-logo.apabi   { background: linear-gradient(135deg, #5e35b1, #311b92); }
+  .er-logo.silver  { background: linear-gradient(135deg, #607d8b, #37474f); }
+  .er-logo.gold    { background: linear-gradient(135deg, #f4a261, #e76f51); }
+  .er-logo.blue    { background: linear-gradient(135deg, #4a9eff, #0d3b66); }
+
+  .er-card-title { flex: 1; min-width: 0; }
+  .er-card-title .name {
+    font-size: 16px; font-weight: 600; color: var(--text);
+    line-height: 1.4; transition: .2s;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; min-height: 44px;
+  }
+  .er-card:hover .er-card-title .name { color: var(--primary); }
+  .er-card-title .en {
+    font-size: 11.5px; color: var(--text-3); margin-top: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .er-card-badges {
+    position: absolute; top: 14px; right: 14px;
+    display: flex; flex-direction: column; gap: 4px; align-items: flex-end;
+  }
+  .er-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10.5px; padding: 2px 8px; border-radius: 10px;
+    font-weight: 600; line-height: 16px;
+  }
+  .er-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .er-badge.trial    { background: rgba(245,158,11,0.12); color: #d97706; }
+  .er-badge.active   { background: rgba(22,197,94,0.12); color: #16a34a; }
+  .er-badge.expired  { background: rgba(220,38,38,0.12); color: #dc2626; }
+  .er-badge.stopped  { background: rgba(107,114,128,0.12); color: #6b7280; }
+  .er-badge.recommend {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #b45309; padding-left: 4px;
+  }
+  .er-badge.recommend::before { display: none; }
+  .er-badge.recommend::after { content: '⭐'; }
+
+  .er-card-meta {
+    padding: 14px 22px; margin: 14px 22px 0;
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border-light); border-radius: 10px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;
+  }
+  .er-card-meta .item { font-size: 12px; }
+  .er-card-meta .lbl { color: var(--text-3); }
+  .er-card-meta .val { color: var(--text); font-weight: 500; }
+  .er-card-meta .val.warn { color: var(--warning); }
+  .er-card-meta .val.err  { color: var(--error); }
+
+  .er-card-desc {
+    padding: 14px 22px; font-size: 12.5px; color: var(--text-2);
+    line-height: 1.7;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden; min-height: 64px;
+  }
+  .er-card-subjects {
+    padding: 0 22px 14px; display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .er-subject {
+    font-size: 11px; padding: 2px 8px; background: var(--bg-page);
+    color: var(--text-2); border-radius: 10px;
+  }
+
+  .er-card-footer {
+    padding: 14px 22px; border-top: 1px solid var(--border-light);
+    display: flex; gap: 8px; align-items: center; background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .er-access {
+    flex: 1; display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-2);
+  }
+  .er-access .auth-ico {
+    width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0;
+  }
+  .er-access.ip     .auth-ico { background: rgba(74,158,255,0.12); color: var(--sky); }
+  .er-access.carsi  .auth-ico { background: rgba(34,197,94,0.12); color: var(--success); }
+  .er-access.vpn    .auth-ico { background: rgba(245,158,11,0.12); color: var(--warning); }
+  .er-access.acct   .auth-ico { background: rgba(139,92,246,0.12); color: #7c3aed; }
+  .er-access.open   .auth-ico { background: rgba(239,68,68,0.12); color: var(--error); }
+
+  .er-btn {
+    padding: 7px 14px; border-radius: 6px; font-size: 12.5px;
+    border: none; cursor: pointer; font-weight: 500;
+    display: flex; align-items: center; gap: 4px; transition: .2s;
+  }
+  .er-btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; box-shadow: 0 3px 8px rgba(74,158,255,0.25);
+  }
+  .er-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,158,255,0.4); }
+  .er-btn-primary:disabled {
+    background: #cbd5e1; color: #fff; cursor: not-allowed; box-shadow: none;
+  }
+  .er-btn-ghost {
+    background: #fff; color: var(--text-2); border: 1px solid var(--border);
+  }
+  .er-btn-ghost:hover { border-color: var(--sky); color: var(--sky); }
+
+  /* 排序区 */
+  .result-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding: 0 4px;
+  }
+  .result-head .count { font-size: 14px; color: var(--text-2); }
+  .result-head .count b { color: var(--primary); font-size: 18px; font-weight: 700; padding: 0 3px; }
+  .result-head .sort {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .result-head .sort .lbl { font-size: 13px; color: var(--text-3); }
+  .sort-select {
+    height: 32px; padding: 0 32px 0 12px; border: 1px solid var(--border);
+    border-radius: 6px; background: #fff; font-size: 12.5px; color: var(--text);
+    cursor: pointer; outline: none; transition: .2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .sort-select:focus { border-color: var(--sky); }
+  .view-toggle { display: flex; gap: 2px; padding: 2px; background: var(--bg-page); border-radius: 6px; }
+  .view-toggle span {
+    width: 30px; height: 28px; display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; cursor: pointer; color: var(--text-3); transition: .2s; font-size: 14px;
+  }
+  .view-toggle span.active { background: #fff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+  /* 公告与提示 */
+  .notice-card {
+    margin-top: 22px; padding: 16px 20px;
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 13px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+  .notice-card .btn {
+    background: #fff; color: #b45309; border: 1px solid #fde68a;
+    padding: 6px 14px; border-radius: 6px; font-size: 12.5px; cursor: pointer;
+  }
+  .notice-card .btn:hover { background: var(--warning); color: #fff; border-color: var(--warning); }
+
+  /* 帮助区 */
+  .help-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 22px; }
+  .help-item {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 18px; transition: .25s; cursor: pointer;
+    text-align: center;
+  }
+  .help-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13,59,102,0.08); border-color: var(--sky); }
+  .help-item .ico {
+    width: 50px; height: 50px; margin: 0 auto 12px;
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(13,59,102,0.04));
+    color: var(--primary); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    transition: .25s;
+  }
+  .help-item:hover .ico { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; transform: rotate(-6deg); }
+  .help-item .name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .help-item .desc { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+
+  @media (max-width: 1240px) {
+    .er-grid { grid-template-columns: repeat(2, 1fr); }
+    .help-grid { grid-template-columns: repeat(2, 1fr); }
+    .er-hero-content { grid-template-columns: 1fr; }
+    .er-hero-stats { justify-content: flex-start; flex-wrap: wrap; }
+    .tools-bar { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html">馆藏检索</a>
+      <a href="e-resources.html" class="active">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <span class="current">电子资源导航</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部数据概览 -->
+  <div class="er-hero">
+    <div class="er-hero-content">
+      <div>
+        <h2>🌐 电子资源导航中心</h2>
+        <p>已订购 <b>16 个</b> 中外文数据库，覆盖 <b>8 大学科门类</b>。所有资源均面向本校师生开放，<b>校园网内免登录</b> 即可访问；校外可通过 <b>CARSI / VPN / 漫游</b> 方式使用。试用数据库 <b>3 个</b>，欢迎反馈使用体验。</p>
+      </div>
+      <div class="er-hero-stats">
+        <div class="er-hero-stat"><div class="num">16</div><div class="lbl">订购数据库</div></div>
+        <div class="er-hero-stat"><div class="num">3</div><div class="lbl">试用数据库</div></div>
+        <div class="er-hero-stat"><div class="num">8</div><div class="lbl">学科门类</div></div>
+        <div class="er-hero-stat"><div class="num">230万+</div><div class="lbl">电子全文</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搜索 + 工具区 -->
+  <div class="tools-bar">
+    <div class="search-wrap">
+      <span class="ico">🔍</span>
+      <input type="text" placeholder="搜索数据库名称 / 学科 / 供应商 / 访问方式..." value="">
+      <button class="btn-search">搜索</button>
+    </div>
+    <div class="tools-extra">
+      <button class="tools-btn">📋 我的常用 <span class="badge-num">5</span></button>
+      <button class="tools-btn">📖 使用指南</button>
+      <button class="tools-btn">🛡️ 校外访问</button>
+    </div>
+  </div>
+
+  <!-- 分类 + 认证 -->
+  <div class="cat-tabs-card">
+    <div class="cat-tabs">
+      <div class="cat-label">资源分类</div>
+      <div class="cat-tabs-scroll" id="catTabs">
+        <span class="active">全部 <span class="count">16</span></span>
+        <span>中文数据库 <span class="count">8</span></span>
+        <span>外文数据库 <span class="count">3</span></span>
+        <span>电子期刊 <span class="count">2</span></span>
+        <span>电子图书 <span class="count">2</span></span>
+        <span>学位论文 <span class="count">0</span></span>
+        <span>多媒体 <span class="count">1</span></span>
+        <span>OA 资源 <span class="count">0</span></span>
+      </div>
+    </div>
+    <div class="auth-row">
+      <span class="label">认证方式：</span>
+      <span class="auth-pill active"><span class="ico">🏫</span> 校园网 IP 认证</span>
+      <span class="auth-pill"><span class="ico">🌐</span> CARSI 联邦认证</span>
+      <span class="auth-pill"><span class="ico">🔐</span> VPN 远程访问</span>
+      <span class="auth-pill"><span class="ico">👤</span> 账号密码</span>
+      <span class="auth-pill"><span class="ico">🆓</span> 开放访问</span>
+      <span class="extra">当前 IP 段 <b>10.10.0.0 / 192.168.20.0</b> 已在白名单内</span>
+    </div>
+  </div>
+
+  <!-- 列表头 -->
+  <div class="result-head">
+    <div class="count">为您找到 <b>16</b> 个电子资源</div>
+    <div class="sort">
+      <span class="lbl">排序：</span>
+      <select class="sort-select">
+        <option>推荐度 ↓</option>
+        <option>使用量 ↓</option>
+        <option>字母 A→Z</option>
+        <option>订购时间 ↓</option>
+      </select>
+      <div class="view-toggle">
+        <span class="active" data-view="grid">▦</span>
+        <span data-view="list">≡</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资源网格 -->
+  <div class="er-grid" id="erGrid">
+
+    <!-- 1. 知网电子期刊 -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge recommend">馆员推荐</span>
+        <span class="er-badge active">正式订购</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo cnki">CN</div>
+        <div class="er-card-title">
+          <div class="name">知网电子期刊</div>
+          <div class="en">CNKI Journal Full-text Database</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">同方知网</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">张馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val">2026.12.31</span></div>
+      </div>
+      <div class="er-card-desc">仅购买了电子学术期刊数据库，校园内IP可以使用。收录中国知网出版的学术期刊全文，涵盖基础科学、工程科技、医药卫生、人文社科等各学科领域。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">理学</span><span class="er-subject">工学</span><span class="er-subject">医学</span><span class="er-subject">文学</span><span class="er-subject">管理学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access ip">
+          <span class="auth-ico">🏫</span>
+          <span>IP 认证 · 校内直访</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="window.open('about:blank','_blank')">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 2. 超星汇雅电子书 -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge recommend">馆员推荐</span>
+        <span class="er-badge active">正式订购</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo chaox">超</div>
+        <div class="er-card-title">
+          <div class="name">超星汇雅电子书</div>
+          <div class="en">Chaoxing Huiya e-Book</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">超星集团</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">王馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val">2026.12.31</span></div>
+      </div>
+      <div class="er-card-desc">共25万册，不需要输入账号和密码就可以直接看。超星汇雅电子图书平台，提供百万余种中文电子图书在线阅读与下载，支持移动端扫码借阅。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">文学</span><span class="er-subject">管理学</span><span class="er-subject">教育学</span><span class="er-subject">经济学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access open">
+          <span class="auth-ico">🆓</span>
+          <span>开放访问 · 无需登录</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="location.href='e-resource-detail.html'">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 3. 维普（已过期） -->
+    <div class="er-card" style="opacity: .8;">
+      <div class="er-card-badges">
+        <span class="er-badge expired">已过期</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo vip">VP</div>
+        <div class="er-card-title">
+          <div class="name">维普中文期刊服务平台</div>
+          <div class="en">VIP Chinese Journal Service Platform</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">重庆维普</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">张馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val err">2024.12.31（已过期）</span></div>
+      </div>
+      <div class="er-card-desc">维普中文期刊全文数据库，收录中文期刊 1.4 万余种，含核心期刊 1900 余种。已纳入 2026 年度续订评估。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">理学</span><span class="er-subject">工学</span><span class="er-subject">医学</span><span class="er-subject">管理学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access ip" style="color: var(--text-3);">
+          <span class="auth-ico">🏫</span>
+          <span>IP 认证 · 已停用</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" disabled>暂不可用</button>
+      </div>
+    </div>
+
+    <!-- 4. 读秀学术搜索 -->
+    <div class="er-card" style="opacity: .8;">
+      <div class="er-card-badges">
+        <span class="er-badge expired">已过期</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo duxiu">读</div>
+        <div class="er-card-title">
+          <div class="name">读秀学术搜索</div>
+          <div class="en">Duxiu Academic Search</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">超星集团</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">王馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val err">2024.12.31（已过期）</span></div>
+      </div>
+      <div class="er-card-desc">图书、期刊、论文等学术资源的一站式检索与文献传递平台，可检索 430 余万种中文图书。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">文学</span><span class="er-subject">管理学</span><span class="er-subject">教育学</span><span class="er-subject">法学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access ip" style="color: var(--text-3);">
+          <span class="auth-ico">🏫</span>
+          <span>IP 认证 · 已停用</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" disabled>暂不可用</button>
+      </div>
+    </div>
+
+    <!-- 5. Emerald 外文期刊 -->
+    <div class="er-card" style="opacity: .8;">
+      <div class="er-card-badges">
+        <span class="er-badge expired">已过期</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo emerald">EM</div>
+        <div class="er-card-title">
+          <div class="name">Emerald 管理学期刊全文库</div>
+          <div class="en">Emerald Management eJournals</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">Emerald</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">外文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">李馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val err">2025.02.28（已过期）</span></div>
+      </div>
+      <div class="er-card-desc">Emerald 出版的管理学、人力资源、市场营销、图书馆学等领域期刊全文库。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">管理学</span><span class="er-subject">经济学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access carsi" style="color: var(--text-3);">
+          <span class="auth-ico">🌐</span>
+          <span>CARSI · 已停用</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" disabled>暂不可用</button>
+      </div>
+    </div>
+
+    <!-- 6. 新东方（已停用） -->
+    <div class="er-card" style="opacity: .75;">
+      <div class="er-card-badges">
+        <span class="er-badge stopped">已停用</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo xdf">XDF</div>
+        <div class="er-card-title">
+          <div class="name">新东方多媒体学习库</div>
+          <div class="en">New Oriental Multimedia Learning Library</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">新东方</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">王馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val err">2024.12.31（已停用）</span></div>
+      </div>
+      <div class="er-card-desc">新东方四六级、考研、托福、雅思、GRE 等考试培训多媒体课程资源库。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">教育学</span><span class="er-subject">文学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access acct" style="color: var(--text-3);">
+          <span class="auth-ico">👤</span>
+          <span>账号密码 · 已停用</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" disabled>暂不可用</button>
+      </div>
+    </div>
+
+    <!-- 7. 百度文库高校版（试用） -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge trial">试用中</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo bd">Baidu</div>
+        <div class="er-card-title">
+          <div class="name">百度文库高校版</div>
+          <div class="en">Baidu Wenku Campus Edition</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">百度</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">王馆员</span></div>
+        <div class="item"><span class="lbl">试用至：</span><span class="val warn">2026.11.30（剩 5 天）</span></div>
+      </div>
+      <div class="er-card-desc">百度文库高校版，提供教学资料、专业文档、考试题库等资源，目前处于试用评估阶段，欢迎各位读者反馈使用建议。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">理学</span><span class="er-subject">工学</span><span class="er-subject">文学</span><span class="er-subject">管理学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access acct">
+          <span class="auth-ico">👤</span>
+          <span>账号密码 · <a href="#" style="color: var(--primary);">查看账号 ›</a></span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="window.open('about:blank','_blank')">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 8. 华艺线上图书馆（试用） -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge trial">试用中</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo airiti">华</div>
+        <div class="er-card-title">
+          <div class="name">华艺线上图书馆</div>
+          <div class="en">Airiti Library</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">华艺数位</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">李馆员</span></div>
+        <div class="item"><span class="lbl">试用至：</span><span class="val warn">2026.12.14（剩 20 天）</span></div>
+      </div>
+      <div class="er-card-desc">收录台湾及全球华文学术期刊、学位论文与会议论文，涵盖人文社科与自然科学领域。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">理学</span><span class="er-subject">工学</span><span class="er-subject">医学</span><span class="er-subject">文学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access carsi">
+          <span class="auth-ico">🌐</span>
+          <span>CARSI 联邦认证</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="window.open('about:blank','_blank')">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 9. Apabi（试用） -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge trial">试用中</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo apabi">A</div>
+        <div class="er-card-title">
+          <div class="name">方正 Apabi 电子书</div>
+          <div class="en">Founder Apabi e-Book</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">方正电子</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">王馆员</span></div>
+        <div class="item"><span class="lbl">试用至：</span><span class="val warn">2027.01.31（剩 68 天）</span></div>
+      </div>
+      <div class="er-card-desc">方正 Apabi 电子图书数据库，以教材、教参、学术专著为主，目前处于试用洽谈阶段。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">文学</span><span class="er-subject">教育学</span><span class="er-subject">管理学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access ip">
+          <span class="auth-ico">🏫</span>
+          <span>IP 认证 · 校园网</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="location.href='e-resource-detail.html'">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 10. 国研网（占位） -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge active">正式订购</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo silver">DR</div>
+        <div class="er-card-title">
+          <div class="name">国研网 · 经济数据库</div>
+          <div class="en">DRCnet Economic Database</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">国研网</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">张馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val">2026.12.31</span></div>
+      </div>
+      <div class="er-card-desc">国务院发展研究中心建设的经济类综合数据库，提供宏观经济、行业经济、区域经济等深度数据与研究报告。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">经济学</span><span class="er-subject">管理学</span><span class="er-subject">法学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access ip">
+          <span class="auth-ico">🏫</span>
+          <span>IP 认证 · 校园网</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="location.href='e-resource-detail.html'">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 11. 京东读书（占位） -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge active">正式订购</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo gold">JD</div>
+        <div class="er-card-title">
+          <div class="name">京东读书 · 校园版</div>
+          <div class="en">JD Reading Campus Edition</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">京东读书</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">王馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val">2026.12.31</span></div>
+      </div>
+      <div class="er-card-desc">面向高校的电子书阅读平台，包含 20 万册正版电子书，支持手机/电脑/Pad 跨端同步阅读与笔记。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">文学</span><span class="er-subject">管理学</span><span class="er-subject">教育学</span><span class="er-subject">艺术</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access ip">
+          <span class="auth-ico">🏫</span>
+          <span>IP 认证 · 校园网</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="window.open('about:blank','_blank')">立即访问</button>
+      </div>
+    </div>
+
+    <!-- 12. 博看期刊（占位） -->
+    <div class="er-card">
+      <div class="er-card-badges">
+        <span class="er-badge active">正式订购</span>
+      </div>
+      <div class="er-card-head">
+        <div class="er-logo blue">博</div>
+        <div class="er-card-title">
+          <div class="name">博看期刊数据库</div>
+          <div class="en">Bokan Periodical Database</div>
+        </div>
+      </div>
+      <div class="er-card-meta">
+        <div class="item"><span class="lbl">供应商：</span><span class="val">博看网</span></div>
+        <div class="item"><span class="lbl">语种：</span><span class="val">中文</span></div>
+        <div class="item"><span class="lbl">负责馆员：</span><span class="val">李馆员</span></div>
+        <div class="item"><span class="lbl">订购至：</span><span class="val">2026.12.31</span></div>
+      </div>
+      <div class="er-card-desc">收录国内主流畅销期刊 4000 余种，支持原版阅读与语音朗读，提供手机 App 移动阅读。</div>
+      <div class="er-card-subjects">
+        <span class="er-subject">文学</span><span class="er-subject">管理学</span><span class="er-subject">教育学</span>
+      </div>
+      <div class="er-card-footer">
+        <div class="er-access open">
+          <span class="auth-ico">🆓</span>
+          <span>开放访问 · 无需登录</span>
+        </div>
+        <button class="er-btn er-btn-ghost">📖 详情</button>
+        <button class="er-btn er-btn-primary" onclick="location.href='e-resource-detail.html'">立即访问</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 试用提醒 -->
+  <div class="notice-card">
+    <span class="ico">⏰</span>
+    <div class="text">
+      <b>试用数据库即将结束：</b> 百度文库高校版将于 <b>2026.11.30</b> 试用结束（剩 5 天），华艺线上图书馆将于 <b>2026.12.14</b> 试用结束（剩 20 天）。请各位读者尽快反馈使用意见，将直接影响 2026 年度续订决策。
+    </div>
+    <button class="btn">提交反馈</button>
+  </div>
+
+  <!-- 帮助区 -->
+  <div class="help-grid">
+    <div class="help-item">
+      <div class="ico">🏫</div>
+      <div class="name">校园网访问</div>
+      <div class="desc">在校园网 IP 段内直接访问，无需任何登录</div>
+    </div>
+    <div class="help-item">
+      <div class="ico">🌐</div>
+      <div class="name">CARSI 联邦认证</div>
+      <div class="desc">校外使用本校账号登录 CARSI，即可访问</div>
+    </div>
+    <div class="help-item">
+      <div class="ico">🔐</div>
+      <div class="name">VPN 远程接入</div>
+      <div class="desc">下载 EasyConnect 客户端，校外访问内网资源</div>
+    </div>
+    <div class="help-item">
+      <div class="ico">📞</div>
+      <div class="name">馆员咨询</div>
+      <div class="desc">使用中遇到问题，联系对应负责馆员</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 分类标签切换
+  document.querySelectorAll('#catTabs span').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('#catTabs span').forEach(s => s.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+  // 认证方式切换
+  document.querySelectorAll('.auth-pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.auth-pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+  // 视图切换
+  document.querySelectorAll('.view-toggle span').forEach(v => {
+    v.addEventListener('click', () => {
+      document.querySelectorAll('.view-toggle span').forEach(x => x.classList.remove('active'));
+      v.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

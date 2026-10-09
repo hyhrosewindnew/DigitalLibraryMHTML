@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活动详情 · 报名 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 主区 */
+  .main-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  /* 详情卡片 */
+  .detail-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+
+  /* 大海报 */
+  .big-poster {
+    position: relative;
+    aspect-ratio: 16 / 6;
+    overflow: hidden;
+    background: linear-gradient(135deg, #6d28d9 0%, #a855f7 50%, #ec4899 100%);
+  }
+  .big-poster svg { width: 100%; height: 100%; display: block; }
+  .big-poster::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.25) 100%);
+  }
+  .poster-overlay {
+    position: absolute;
+    bottom: 24px; left: 32px;
+    color: #fff;
+    z-index: 1;
+  }
+  .poster-overlay .status-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    background: rgba(34,197,94,.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(34,197,94,.4);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .poster-overlay .status-tag::before {
+    content: ''; width: 7px; height: 7px;
+    background: #22c55e; border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(34,197,94,.4);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,.4); } 50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); } }
+  .poster-overlay h1 { font-size: 32px; font-weight: 700; text-shadow: 0 2px 12px rgba(0,0,0,.25); margin-bottom: 8px; }
+  .poster-overlay .sub { font-size: 14px; opacity: .95; }
+
+  /* 标签 */
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .tag-purple { background: #f2ebff; color: #7c3aed; }
+  .tag-blue { background: #e8f1ff; color: #1d6ee0; }
+  .tag-cyan { background: #e0f7f6; color: #0d8f8a; }
+  .tag-orange { background: #fff2e3; color: #c26a05; }
+  .tag-green { background: #e6f7ee; color: #15803d; }
+  .tag-pink { background: #fce7f3; color: #be185d; }
+  .tag-hot { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #b91c1c; }
+  .tag-rec { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
+
+  /* 信息网格 */
+  .info-grid {
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff 0%, #fff 100%);
+  }
+  .info-grid .item { display: flex; flex-direction: column; gap: 4px; }
+  .info-grid .label { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 4px; }
+  .info-grid .value { font-size: 14px; color: var(--text); font-weight: 600; }
+  .info-grid .value.mono { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 500; }
+  .info-grid .value.h { color: var(--primary); font-size: 16px; }
+
+  /* 章节 */
+  .section { padding: 24px 32px; border-bottom: 1px dashed var(--border); }
+  .section:last-child { border-bottom: none; }
+  .section h3 {
+    font-size: 17px; font-weight: 700; color: var(--text);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h3::before {
+    content: ''; width: 3px; height: 16px;
+    background: linear-gradient(180deg, var(--primary), var(--sky));
+    border-radius: 2px;
+  }
+  .section .desc {
+    font-size: 14px; line-height: 1.85; color: var(--text-2);
+  }
+  .section .desc p { margin-bottom: 10px; }
+  .section .desc b { color: var(--text); }
+
+  /* 议程时间线 */
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(180deg, #a855f7, #ec4899); border-radius: 1px; }
+  .tl-item { position: relative; padding-bottom: 16px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before { content: ''; position: absolute; left: -22px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid #a855f7; box-shadow: 0 0 0 3px #fff; }
+  .tl-item .time { font-size: 12px; color: #7c3aed; font-family: ui-monospace, monospace; font-weight: 600; margin-bottom: 4px; }
+  .tl-item .t { font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 3px; }
+  .tl-item .d { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+  .tl-item .who { font-size: 11.5px; color: #7c3aed; margin-top: 4px; display: inline-block; padding: 1px 8px; background: #f3e8ff; border-radius: 8px; }
+
+  /* 嘉宾 */
+  .guest-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .guest-item {
+    padding: 16px;
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .guest-item .av {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 auto 10px;
+    box-shadow: 0 4px 12px rgba(168,85,247,0.3);
+  }
+  .guest-item .name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .guest-item .post { font-size: 12px; color: var(--text-3); }
+
+  /* 亮点 */
+  .highlight-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hi-item {
+    display: flex; gap: 10px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #fafcff, #f0f9ff);
+    border-left: 3px solid #a855f7;
+    border-radius: 8px;
+  }
+  .hi-item .ico {
+    width: 32px; height: 32px;
+    background: #fff;
+    border: 1px solid #ddd6fe;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .hi-item .info .t { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .hi-item .info .d { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+  /* 奖励 */
+  .reward-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .reward-item {
+    padding: 16px;
+    background: linear-gradient(135deg, #fef9e7, #fef3c7);
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .reward-item .ico { font-size: 28px; margin-bottom: 6px; }
+  .reward-item .t { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 4px; }
+  .reward-item .d { font-size: 11.5px; color: #a16207; line-height: 1.5; }
+
+  /* 报名 / 进度条 */
+  .seat-bar { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+  .seat-bar .bar { flex: 1; height: 10px; background: #f1f5f9; border-radius: 5px; overflow: hidden; }
+  .seat-bar .fill { height: 100%; background: linear-gradient(90deg, #ef4444, #f97316); border-radius: 5px; }
+  .seat-bar .pct { font-size: 13px; color: #dc2626; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* 规则 */
+  .rule-list { display: flex; flex-direction: column; gap: 8px; }
+  .rule-item { display: flex; gap: 10px; font-size: 13.5px; color: var(--text-2); line-height: 1.7; padding: 10px 12px; background: var(--bg-page); border-radius: 8px; }
+  .rule-item::before { content: counter(rl, decimal) '.'; counter-increment: rl; color: var(--primary); font-weight: 700; flex-shrink: 0; }
+  .rule-list { counter-reset: rl; }
+  .rule-item b { color: var(--text); }
+
+  /* 报名卡 */
+  .signup-card {
+    position: sticky;
+    top: 100px;
+    background: linear-gradient(135deg, #6d28d9 0%, #a855f7 50%, #ec4899 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 12px 30px rgba(168,85,247,0.25);
+    overflow: hidden;
+    z-index: 1;
+  }
+  .signup-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .signup-card::after { content: ''; position: absolute; bottom: -60px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .signup-card .head { position: relative; z-index: 1; }
+  .signup-card .price-row { display: flex; align-items: baseline; gap: 8px; margin: 14px 0 4px; }
+  .signup-card .price { font-size: 36px; font-weight: 700; }
+  .signup-card .price small { font-size: 14px; opacity: .9; }
+  .signup-card .free { font-size: 28px; font-weight: 700; }
+  .signup-card .free-tag { padding: 2px 8px; background: rgba(254,243,199,0.3); border: 1px solid rgba(254,243,199,0.4); border-radius: 10px; font-size: 12px; margin-left: 6px; }
+  .signup-card .seat-info { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 12px 14px; margin: 14px 0; position: relative; z-index: 1; }
+  .signup-card .seat-info .n { font-size: 18px; font-weight: 700; }
+  .signup-card .seat-info .l { font-size: 11.5px; opacity: .92; margin-top: 2px; }
+  .signup-card .progress { background: rgba(255,255,255,0.2); height: 6px; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+  .signup-card .progress .fill { height: 100%; background: linear-gradient(90deg, #fef3c7, #fbbf24); border-radius: 3px; }
+  .signup-card .signup-btn {
+    width: 100%; padding: 14px;
+    background: #fff; color: #7c3aed;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    position: relative; z-index: 1;
+  }
+  .signup-card .signup-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.22); }
+  .signup-card .signup-btn:disabled { background: rgba(255,255,255,0.5); color: rgba(255,255,255,0.8); cursor: not-allowed; }
+  .signup-card .signup-btn.joined { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+  .signup-card .signup-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; opacity: .92; position: relative; z-index: 1; }
+
+  /* 侧栏 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  .meta-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px;
+  }
+  .meta-row:last-child { border-bottom: none; }
+  .meta-row .label { color: var(--text-3); min-width: 64px; }
+  .meta-row .value { color: var(--text); font-weight: 500; flex: 1; }
+  .meta-row .value.mono { font-family: ui-monospace, monospace; font-size: 12.5px; }
+
+  /* 报名名单 */
+  .joiner-list { display: flex; flex-direction: column; gap: 8px; }
+  .joiner-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
+  .joiner-av {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a9eff, #a855f7);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .joiner-name { flex: 1; color: var(--text); }
+  .joiner-time { font-size: 11px; color: var(--text-3); }
+
+  /* 联系 */
+  .contact-card {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .contact-card .row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0;
+    font-size: 12.5px;
+  }
+  .contact-card .row .label { color: var(--text-3); }
+  .contact-card .row .value { color: var(--text); font-weight: 500; font-family: ui-monospace, monospace; }
+
+  .notice-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid var(--warning); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e293b; color: #fff;
+    padding: 10px 22px; border-radius: 9px;
+    font-size: 13.5px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.28);
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: repeat(2, 1fr); }
+    .guest-list, .reward-grid, .highlight-list { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#" class="active">公告/资讯</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="活动专题页.html">活动专题</a>
+    <span class="sep">›</span>
+    <a href="活动专题页.html">读书分享</a>
+    <span class="sep">›</span>
+    <span class="current">活动详情 · 报名</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 详情卡片 -->
+      <div class="detail-card">
+
+        <!-- 大海报 -->
+        <div class="big-poster">
+          <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6d28d9"/>
+                <stop offset="50%" stop-color="#a855f7"/>
+                <stop offset="100%" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+            <rect width="800" height="300" fill="url(#bg-grad)"/>
+            <!-- 装饰元素 -->
+            <circle cx="700" cy="80" r="60" fill="#fff" opacity="0.1"/>
+            <circle cx="100" cy="220" r="80" fill="#fff" opacity="0.06"/>
+            <g transform="translate(680,160)" stroke="#fff" stroke-width="2" fill="none" opacity="0.18">
+              <rect x="-20" y="-26" width="40" height="50" rx="3"/>
+              <line x1="-12" y1="-16" x2="12" y2="-16"/>
+              <line x1="-12" y1="-8" x2="12" y2="-8"/>
+              <line x1="-12" y1="0" x2="6" y2="0"/>
+              <line x1="-12" y1="8" x2="12" y2="8"/>
+              <line x1="-12" y1="16" x2="8" y2="16"/>
+            </g>
+            <g transform="translate(740,200)" stroke="#fff" stroke-width="2" fill="none" opacity="0.15">
+              <circle r="18"/>
+              <path d="M0,-10 L8,8 L-8,8 Z" fill="#fff" opacity="0.5"/>
+            </g>
+            <!-- 中心装饰书堆 -->
+            <g transform="translate(640,130)" opacity="0.25">
+              <rect x="-30" y="0" width="60" height="12" rx="2" fill="#fff"/>
+              <rect x="-25" y="-10" width="50" height="10" rx="2" fill="#fff" opacity="0.7"/>
+              <rect x="-20" y="-18" width="40" height="8" rx="2" fill="#fff" opacity="0.5"/>
+            </g>
+            <!-- 大标题装饰 -->
+            <text x="50%" y="50%" text-anchor="middle" fill="#fff" font-size="40" font-weight="700" opacity="0.08" font-family="serif" transform="translate(0,40)">READ</text>
+          </svg>
+          <div class="poster-overlay">
+            <span class="status-tag">🔥 进行中</span>
+            <h1>"书香校园·秋季读书月"</h1>
+            <p class="sub">读书分享会 · 名师讲座 · 诵读大赛 · 馆藏寻宝</p>
+          </div>
+        </div>
+
+        <!-- 信息网格 -->
+        <div class="info-grid">
+          <div class="item">
+            <span class="label">📅 活动时间</span>
+            <span class="value">2025-10-08 至 11-08</span>
+          </div>
+          <div class="item">
+            <span class="label">📍 活动地点</span>
+            <span class="value">总馆一楼报告厅</span>
+          </div>
+          <div class="item">
+            <span class="label">👥 主办单位</span>
+            <span class="value">图书馆 联合 校团委</span>
+          </div>
+          <div class="item">
+            <span class="label">🎯 面向群体</span>
+            <span class="value">全校师生</span>
+          </div>
+          <div class="item">
+            <span class="label">📌 报名截止</span>
+            <span class="value" style="color:#dc2626;">2025-10-30 23:59</span>
+          </div>
+          <div class="item">
+            <span class="label">🎓 学分奖励</span>
+            <span class="value h">0.5 - 2.0 学分</span>
+          </div>
+          <div class="item">
+            <span class="label">🎁 纪念品</span>
+            <span class="value">定制文创 / 书签 / 证书</span>
+          </div>
+          <div class="item">
+            <span class="label">📚 累计参与</span>
+            <span class="value h">2,168 人次</span>
+          </div>
+        </div>
+
+        <!-- 简介 -->
+        <div class="section">
+          <h3>📖 活动简介</h3>
+          <div class="desc">
+            <p>为深入推进校园文化建设，营造浓厚的读书氛围，图书馆联合校团委举办"书香校园·秋季读书月"系列活动。本届读书月涵盖 6 项主题子活动，包括 <b>读书分享会</b>、<b>经典诵读大赛</b>、<b>名师导读讲座</b>、<b>书评征文</b>、<b>图书漂流</b>、<b>馆藏寻宝</b>，参与活动可获得第二课堂学分、定制文创纪念品及读书积分，优秀参与者更有机会成为 <b>"信航读者大使"</b>。</p>
+            <p>本届读书月以"<b>书香致远 · 阅读启航</b>"为主题，鼓励师生多读书、读好书、善读书，让阅读成为校园新风尚。欢迎广大师生积极参与，共建书香校园！</p>
+          </div>
+        </div>
+
+        <!-- 活动亮点 -->
+        <div class="section">
+          <h3>✨ 活动亮点</h3>
+          <div class="highlight-list">
+            <div class="hi-item">
+              <div class="ico">🎁</div>
+              <div class="info">
+                <div class="t">多重奖励</div>
+                <div class="d">学分 + 文创 + 证书 + 积分</div>
+              </div>
+            </div>
+            <div class="hi-item">
+              <div class="ico">📚</div>
+              <div class="info">
+                <div class="t">6 大主题</div>
+                <div class="d">覆盖阅读全场景</div>
+              </div>
+            </div>
+            <div class="hi-item">
+              <div class="ico">👨‍🏫</div>
+              <div class="info">
+                <div class="t">名师讲座</div>
+                <div class="d">12 位教授学者亲临</div>
+              </div>
+            </div>
+            <div class="hi-item">
+              <div class="ico">🏆</div>
+              <div class="info">
+                <div class="t">读者大使</div>
+                <div class="d">可获年度荣誉证书</div>
+              </div>
+            </div>
+            <div class="hi-item">
+              <div class="ico">📱</div>
+              <div class="info">
+                <div class="t">扫码签到</div>
+                <div class="d">支持活动现场快速核销</div>
+              </div>
+            </div>
+            <div class="hi-item">
+              <div class="ico">🤝</div>
+              <div class="info">
+                <div class="t">志愿机会</div>
+                <div class="d">可申请成为活动志愿者</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 嘉宾阵容 -->
+        <div class="section">
+          <h3>🎓 嘉宾阵容（部分）</h3>
+          <div class="guest-list">
+            <div class="guest-item">
+              <div class="av">张</div>
+              <div class="name">张教授</div>
+              <div class="post">航空工程学院 · 副院长</div>
+            </div>
+            <div class="guest-item">
+              <div class="av" style="background:linear-gradient(135deg,#0d3b66,#4a9eff);">李</div>
+              <div class="name">李教授</div>
+              <div class="post">文学院 · 文学研究所</div>
+            </div>
+            <div class="guest-item">
+              <div class="av" style="background:linear-gradient(135deg,#16a34a,#059669);">王</div>
+              <div class="name">王老师</div>
+              <div class="post">图书馆 · 学科馆员</div>
+            </div>
+            <div class="guest-item">
+              <div class="av" style="background:linear-gradient(135deg,#f59e0b,#d97706);">陈</div>
+              <div class="name">陈作家</div>
+              <div class="post">特邀作家 · 科幻文学</div>
+            </div>
+            <div class="guest-item">
+              <div class="av" style="background:linear-gradient(135deg,#0891b2,#06b6d4);">刘</div>
+              <div class="name">刘老师</div>
+              <div class="post">马克思主义学院</div>
+            </div>
+            <div class="guest-item">
+              <div class="av" style="background:linear-gradient(135deg,#be185d,#9d174d);">赵</div>
+              <div class="name">赵教授</div>
+              <div class="post">无人机研究所</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 日程安排 -->
+        <div class="section">
+          <h3>📅 关键日程</h3>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="time">10-08 19:00</div>
+              <div class="t">🎉 开幕式 · 读书分享会</div>
+              <div class="d">启动仪式 + 名师主题分享 + 优秀读者颁奖</div>
+              <div class="who">📍 总馆 1F 报告厅</div>
+            </div>
+            <div class="tl-item">
+              <div class="time">10-15 至 11-05</div>
+              <div class="t">📖 名师导读讲座系列</div>
+              <div class="d">每周三晚 19:00，连续 4 场专题讲座（航空/文学/科技/思政）</div>
+              <div class="who">📍 总馆 1F 报告厅</div>
+            </div>
+            <div class="tl-item">
+              <div class="time">10-20 至 10-25</div>
+              <div class="t">🎤 经典诵读大赛</div>
+              <div class="d">初赛 + 复赛 + 决赛，参赛队伍或个人均可报名</div>
+              <div class="who">📍 总馆 2F 多媒体研讨间</div>
+            </div>
+            <div class="tl-item">
+              <div class="time">10-15 至 11-08</div>
+              <div class="t">📝 书评征文大赛</div>
+              <div class="d">投稿主题图书书评，优秀作品集结成册出版</div>
+              <div class="who">📍 线上提交</div>
+            </div>
+            <div class="tl-item">
+              <div class="time">10-08 至 11-08</div>
+              <div class="t">🎁 图书漂流 & 馆藏寻宝</div>
+              <div class="d">持续开放，全员可参与，到馆即享</div>
+              <div class="who">📍 总馆各楼层</div>
+            </div>
+            <div class="tl-item">
+              <div class="time">11-08 19:00</div>
+              <div class="t">🏆 闭幕式 · 颁奖典礼</div>
+              <div class="d">读书月总结 + 各项评选颁奖 + "信航读者大使"聘任</div>
+              <div class="who">📍 总馆 1F 报告厅</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 奖励 -->
+        <div class="section">
+          <h3>🎁 奖励设置</h3>
+          <div class="reward-grid">
+            <div class="reward-item">
+              <div class="ico">🥇</div>
+              <div class="t">一等奖</div>
+              <div class="d">2.0 学分<br>荣誉证书<br>大礼包</div>
+            </div>
+            <div class="reward-item">
+              <div class="ico">🥈</div>
+              <div class="t">二等奖</div>
+              <div class="d">1.5 学分<br>荣誉证书<br>精美书签</div>
+            </div>
+            <div class="reward-item">
+              <div class="ico">🥉</div>
+              <div class="t">三等奖</div>
+              <div class="d">1.0 学分<br>荣誉证书<br>定制文创</div>
+            </div>
+            <div class="reward-item">
+              <div class="ico">🎖</div>
+              <div class="t">参与奖</div>
+              <div class="d">0.5 学分<br>电子证书<br>读书积分 +50</div>
+            </div>
+            <div class="reward-item">
+              <div class="ico">📚</div>
+              <div class="t">读者大使</div>
+              <div class="d">年度聘任<br>专属勋章<br>VIP 借阅权益</div>
+            </div>
+            <div class="reward-item">
+              <div class="ico">🌟</div>
+              <div class="t">惊喜抽奖</div>
+              <div class="d">闭幕式现场<br>抽取 10 名<br>神秘大奖</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 报名规则 -->
+        <div class="section">
+          <h3>📋 报名规则</h3>
+          <div class="rule-list">
+            <div class="rule-item"><span>面向全校师生，可同时报名多个子活动，但每场活动最多报名 <b>1 人 / 1 队</b>。</span></div>
+            <div class="rule-item"><span>报名成功后请准时参加，临时有事请提前 <b>24 小时</b> 取消报名，违约 2 次将暂停后续活动报名资格 <b>30 天</b>。</span></div>
+            <div class="rule-item"><span>报名时须填写真实姓名、学号、联系方式，便于现场签到核验及学分登记。</span></div>
+            <div class="rule-item"><span>活动当日凭 <b>报名成功短信</b> 或 <b>扫码签到</b> 入场，未签到视为放弃参与。</span></div>
+            <div class="rule-item"><span>学分奖励将自动累加到 <b>第二课堂</b>，次月 5 日前完成录入，请关注教务系统通知。</span></div>
+            <div class="rule-item"><span>活动现场会拍摄照片与视频用于活动回顾与校园宣传，报名即视为同意。</span></div>
+          </div>
+        </div>
+
+        <!-- 附件 -->
+        <div class="section" style="background:linear-gradient(180deg, #fafcff, #fff);">
+          <h3>📎 相关附件</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--sky)';" onmouseout="this.style.borderColor='var(--border)';">
+              <div style="width:36px;height:36px;background:#fef2e3;color:#c26a05;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📄</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;color:var(--text);">活动总方案.pdf</div>
+                <div style="font-size:11.5px;color:var(--text-3);margin-top:2px;">PDF · 2.4 MB</div>
+              </div>
+              <button style="background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">下载</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--sky)';" onmouseout="this.style.borderColor='var(--border)';">
+              <div style="width:36px;height:36px;background:#e8f1ff;color:#1d6ee0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;color:var(--text);">报名须知.docx</div>
+                <div style="font-size:11.5px;color:var(--text-3);margin-top:2px;">Word · 86 KB</div>
+              </div>
+              <button style="background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">下载</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 报名卡（sticky） -->
+      <div class="signup-card">
+        <div class="head">
+          <div style="display:flex;align-items:center;gap:6px;font-size:13px;opacity:.92;">
+            <span class="tag" style="background:rgba(254,243,199,0.3);color:#fef3c7;border:1px solid rgba(254,243,199,0.4);">🎁 免费</span>
+            <span>全校师生可报</span>
+          </div>
+          <div class="price-row">
+            <span class="free">免费参与</span>
+            <span class="free-tag">0 元</span>
+          </div>
+          <div style="font-size:12.5px;opacity:.85;">含学分、文创、证书等奖励</div>
+        </div>
+
+        <div class="seat-info">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div class="n">456 / 800</div>
+              <div class="l">已报名 / 总名额</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="n" style="color:#fef3c7;">57%</div>
+              <div class="l">报名进度</div>
+            </div>
+          </div>
+          <div class="progress"><div class="fill" style="width:57%"></div></div>
+        </div>
+
+        <button class="signup-btn joined" id="signupBtn" onclick="handleSignup()">
+          ✓ 已报名 · 等待活动开始
+        </button>
+        <div class="signup-meta">
+          <span>📅 10-08 19:00 开幕</span>
+          <span>👤 已 456 人</span>
+        </div>
+      </div>
+
+      <!-- 活动元信息 -->
+      <div class="side-card">
+        <h4>📌 活动元信息</h4>
+        <div class="meta-row"><span class="label">活动编号</span><span class="value mono">ACT-2025-001</span></div>
+        <div class="meta-row"><span class="label">活动类型</span><span class="value"><span class="tag tag-purple">校园活动</span></span></div>
+        <div class="meta-row"><span class="label">主办方</span><span class="value">图书馆 · 校团委</span></div>
+        <div class="meta-row"><span class="label">活动状态</span><span class="value"><span class="tag tag-green">报名进行中</span></span></div>
+        <div class="meta-row"><span class="label">报名截止</span><span class="value">2025-10-30 23:59</span></div>
+        <div class="meta-row"><span class="label">面向群体</span><span class="value">全校师生</span></div>
+        <div class="meta-row"><span class="label">参与规模</span><span class="value">800 人 / 6 项活动</span></div>
+        <div class="meta-row"><span class="label">联系老师</span><span class="value">王雅静 · 读者服务部</span></div>
+      </div>
+
+      <!-- 最近报名 -->
+      <div class="side-card">
+        <h4>👥 最新报名（实时）</h4>
+        <div class="joiner-list">
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#4a9eff,#0d3b66);">陈</div><span class="joiner-name">陈思远</span><span class="joiner-time">刚刚</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#10b981,#047857);">林</div><span class="joiner-name">林晓彤</span><span class="joiner-time">1 分钟前</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#f59e0b,#d97706);">王</div><span class="joiner-name">王雅静</span><span class="joiner-time">3 分钟前</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">赵</div><span class="joiner-name">赵文博</span><span class="joiner-time">5 分钟前</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#ec4899,#be185d);">何</div><span class="joiner-name">何静怡</span><span class="joiner-time">8 分钟前</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#06b6d4,#0891b2);">许</div><span class="joiner-name">许诗涵</span><span class="joiner-time">12 分钟前</span></div>
+        </div>
+        <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--primary);cursor:pointer;">查看全部 456 人 ›</div>
+      </div>
+
+      <!-- 联系 -->
+      <div class="contact-card">
+        <h4 style="font-size:14px;font-weight:600;color:#7c3aed;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+          📞 活动咨询
+        </h4>
+        <div class="row"><span class="label">活动负责</span><span class="value">王老师</span></div>
+        <div class="row"><span class="label">联系电话</span><span class="value">0000-1234568</span></div>
+        <div class="row"><span class="label">联系邮箱</span><span class="value" style="font-family:ui-monospace,monospace;font-size:12px;">act@xihang.edu.cn</span></div>
+        <div class="row"><span class="label">QQ 群</span><span class="value">88886666</span></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 活动期间请遵守 <b>总馆入场规范</b>，提前 15 分钟到场扫码签到。临时有事请至少提前 <b>24 小时</b> 取消报名，把名额让给其他同学。报名成功后可在 <b>"我的活动"</b> 中查看、取消或分享。
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let joined = true;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+  function handleSignup() {
+    const btn = document.getElementById('signupBtn');
+    if (joined) {
+      if (confirm('确定要取消报名吗？')) {
+        joined = false;
+        btn.classList.remove('joined');
+        btn.textContent = '🚀 立即报名';
+        toast('已取消报名，名额已释放');
+      }
+    } else {
+      joined = true;
+      btn.classList.add('joined');
+      btn.textContent = '✓ 报名成功 · 等待活动开始';
+      toast('报名成功！请关注活动通知');
+    }
+  }
+</script>
+
+</body>
+</html>

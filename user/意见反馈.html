@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>意见反馈 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 18px;
+    padding: 32px 36px;
+    color: #fff;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.18);
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 240px; height: 240px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -80px; right: 200px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .hero .tag { display: inline-block; padding: 5px 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25); border-radius: 20px; font-size: 12.5px; margin-bottom: 12px; position: relative; z-index: 1; }
+  .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.18); }
+  .hero .desc { font-size: 15px; opacity: 0.95; line-height: 1.7; max-width: 760px; margin-bottom: 22px; position: relative; z-index: 1; }
+  .hero-stats { display: flex; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .hero-stat { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 12px 18px; }
+  .hero-stat .n { font-size: 22px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .hero-stat .l { font-size: 11.5px; opacity: .92; margin-top: 2px; }
+
+  /* 主区 */
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .card-head { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-head h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .card-head h3 .dot { width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .card-head .more { font-size: 13px; color: var(--text-3); }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 22px; }
+
+  /* 类型选择 */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .type-card {
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .type-card:hover { border-color: var(--sky); transform: translateY(-2px); }
+  .type-card.active { border-color: var(--sky); background: linear-gradient(135deg, #ecf5ff, #dbeafe); box-shadow: 0 6px 18px rgba(74,158,255,0.2); }
+  .type-card .ico {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .type-card .ico.b { background: linear-gradient(135deg, #dbeafe, #93c5fd); color: #1d4ed8; }
+  .type-card .ico.p { background: linear-gradient(135deg, #ede9fe, #c4b5fd); color: #6d28d9; }
+  .type-card .ico.o { background: linear-gradient(135deg, #fed7aa, #fb923c); color: #c2410c; }
+  .type-card .ico.g { background: linear-gradient(135deg, #d1fae5, #6ee7b7); color: #047857; }
+  .type-card .name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .type-card .count { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+  /* 表单 */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+  .form-item { display: flex; flex-direction: column; gap: 7px; }
+  .form-item.full { grid-column: 1 / -1; }
+  .form-item > label { font-size: 13px; color: var(--text-2); font-weight: 500; }
+  .form-item > label .req { color: #ef4444; margin-right: 2px; }
+  .form-item > label .tip { margin-left: 6px; font-size: 11.5px; color: var(--text-3); font-weight: 400; }
+  .form-item input,
+  .form-item select,
+  .form-item textarea {
+    width: 100%; height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 13.5px;
+    color: var(--text);
+    outline: none;
+    transition: .15s;
+    background: #fff;
+    font-family: inherit;
+  }
+  .form-item textarea { height: auto; min-height: 130px; padding: 10px 12px; resize: vertical; line-height: 1.7; }
+  .form-item input:focus, .form-item select:focus, .form-item textarea:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(74,158,255,0.12);
+  }
+  .form-item select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+  .form-tip { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+  /* 满意度评分 */
+  .rating-row {
+    display: flex; gap: 8px;
+  }
+  .star {
+    font-size: 26px;
+    color: var(--border);
+    cursor: pointer;
+    transition: .15s;
+  }
+  .star:hover, .star.active { color: #f59e0b; transform: scale(1.1); }
+
+  /* 上传 */
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: .15s;
+    background: #fafcff;
+  }
+  .upload-area:hover { border-color: var(--sky); background: #f0f9ff; }
+  .upload-area .ico { font-size: 30px; margin-bottom: 8px; color: var(--text-3); }
+  .upload-area .t { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .upload-area .d { font-size: 11.5px; color: var(--text-3); }
+  .upload-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .upload-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    background: var(--bg-page);
+    border-radius: 6px;
+    font-size: 12.5px;
+  }
+  .upload-item .name { flex: 1; color: var(--text); }
+  .upload-item .size { color: var(--text-3); font-size: 11.5px; }
+  .upload-item .del { color: #ef4444; cursor: pointer; }
+
+  /* 联系偏好 */
+  .contact-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .contact-chip {
+    padding: 7px 14px;
+    background: var(--bg-page);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: .15s;
+  }
+  .contact-chip:hover { border-color: var(--sky); }
+  .contact-chip.active {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(74,158,255,0.3);
+  }
+
+  /* 隐私同意 */
+  .agree-box {
+    background: linear-gradient(135deg, #ecf5ff, #f0f9ff);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 12.5px;
+    color: var(--text-2);
+    line-height: 1.7;
+  }
+  .agree-box .ico { font-size: 22px; flex-shrink: 0; }
+  .agree-box .text b { color: var(--primary); }
+  .agree-box input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; margin-top: 3px; flex-shrink: 0; }
+
+  /* 操作按钮 */
+  .form-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--border); }
+  .form-actions .left { font-size: 12.5px; color: var(--text-3); }
+  .form-actions .left b { color: var(--primary); }
+  .btn-row { display: flex; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-2);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .15s;
+    font-family: inherit;
+  }
+  .btn:hover { border-color: var(--sky); color: var(--primary); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(74,158,255,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(74,158,255,0.4); }
+  .btn-ghost { background: #f8fafc; }
+
+  /* 我的反馈 */
+  .feedback-list { display: flex; flex-direction: column; gap: 12px; }
+  .fb-item {
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .fb-item:hover { border-color: var(--sky); transform: translateX(2px); }
+  .fb-item .top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .fb-item .no { font-family: ui-monospace, monospace; font-size: 11.5px; color: var(--text-3); }
+  .fb-item .type-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: rgba(74,158,255,0.12);
+    color: var(--primary);
+    border-radius: 10px;
+  }
+  .fb-item .status-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .fb-item .status-tag.replied { background: #ecfdf5; color: #15803d; }
+  .fb-item .status-tag.processing { background: #fff7ed; color: #c2410c; }
+  .fb-item .date { font-size: 11.5px; color: var(--text-3); margin-left: auto; }
+  .fb-item .t { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 5px; line-height: 1.5; }
+  .fb-item .reply {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    line-height: 1.7;
+  }
+  .fb-item .reply b { color: #15803d; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* 流程 */
+  .process-list { display: flex; flex-direction: column; gap: 10px; }
+  .process-item { display: flex; gap: 10px; align-items: flex-start; }
+  .process-item .num {
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .process-item .info .t { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .process-item .info .d { font-size: 11.5px; color: var(--text-3); line-height: 1.5; }
+
+  /* 反馈主题 */
+  .topic-list { display: flex; flex-direction: column; gap: 8px; }
+  .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-page); border-radius: 8px; font-size: 12.5px; color: var(--text-2); cursor: pointer; transition: .15s; }
+  .topic-item:hover { background: rgba(74,158,255,0.08); color: var(--primary); }
+  .topic-item .count { font-size: 11px; color: var(--text-3); }
+  .topic-item .badge { background: #ecfdf5; color: #15803d; font-size: 10.5px; padding: 1px 6px; border-radius: 8px; }
+
+  /* 联系 */
+  .info-list { display: flex; flex-direction: column; gap: 10px; }
+  .info-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .info-row .ico { width: 28px; height: 28px; background: #fff; border: 1px solid var(--border); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .info-row .label { color: var(--text-3); font-size: 12px; min-width: 60px; }
+  .info-row .value { color: var(--text); font-weight: 500; flex: 1; font-size: 12.5px; }
+  .info-row .value.mono { font-family: ui-monospace, monospace; font-size: 12px; }
+
+  .notice-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid var(--warning); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e293b; color: #fff;
+    padding: 10px 22px; border-radius: 9px;
+    font-size: 13.5px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.28);
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* 成功提交 Modal */
+  .mask {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,.5);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .mask.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 36px 28px 24px;
+    width: 420px;
+    max-width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(15,23,42,.25);
+    animation: pop .25s cubic-bezier(.3,.9,.4,1);
+  }
+  @keyframes pop { from { opacity:0;transform:scale(.92); } to { opacity:1;transform:none; } }
+  .modal .check {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 18px;
+    box-shadow: 0 8px 20px rgba(22,163,74,0.3);
+  }
+  .modal .t { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .modal .d { font-size: 13.5px; color: var(--text-2); line-height: 1.7; margin-bottom: 18px; }
+  .modal .t-no { background: #f0f9ff; padding: 10px 14px; border-radius: 8px; font-family: ui-monospace, monospace; font-size: 13px; color: var(--primary); margin-bottom: 18px; }
+  .modal .t-no b { font-size: 15px; }
+  .modal .btn { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .type-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#" class="active">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">读者服务</a>
+    <span class="sep">›</span>
+    <span class="current">意见反馈</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="tag">💌 您的声音 · 我们的改进</span>
+    <h1>意见反馈</h1>
+    <p class="desc">图书馆的发展离不开您的宝贵建议。无论是馆藏建设、服务优化、空间改造，还是任何让您觉得可以做得更好的细节，都欢迎您告诉我们。每一条反馈都将被认真阅读与处理。</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="n">328</div><div class="l">本月反馈</div></div>
+      <div class="hero-stat"><div class="n">96.5%</div><div class="l">回复率</div></div>
+      <div class="hero-stat"><div class="n">12h</div><div class="l">平均回复</div></div>
+      <div class="hero-stat"><div class="n">82%</div><div class="l">采纳率</div></div>
+      <div class="hero-stat"><div class="n">156</div><div class="l">已采纳建议</div></div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 类型选择 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>反馈类型</h3>
+          <span style="font-size:12.5px;color:var(--text-3);">请选择最贴近您反馈内容的类型</span>
+        </div>
+        <div class="card-body">
+          <div class="type-grid">
+            <div class="type-card active" onclick="selectType(this)">
+              <div class="ico b">📖</div>
+              <div class="name">馆藏建议</div>
+              <div class="count">建议采购新书</div>
+            </div>
+            <div class="type-card" onclick="selectType(this)">
+              <div class="ico p">⚙</div>
+              <div class="name">服务建议</div>
+              <div class="count">服务流程优化</div>
+            </div>
+            <div class="type-card" onclick="selectType(this)">
+              <div class="ico o">🏠</div>
+              <div class="name">环境建议</div>
+              <div class="count">空间 / 设备</div>
+            </div>
+            <div class="type-card" onclick="selectType(this)">
+              <div class="ico g">💡</div>
+              <div class="name">系统问题</div>
+              <div class="count">BUG 报告</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 表单 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>填写反馈内容</h3>
+          <span style="font-size:12.5px;color:var(--text-3);">带 <span style="color:#ef4444">*</span> 为必填</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+
+            <div class="form-item">
+              <label><span class="req">*</span>反馈标题</label>
+              <input type="text" id="fTitle" maxlength="60" placeholder="一句话概括您的问题或建议">
+            </div>
+
+            <div class="form-item">
+              <label><span class="req">*</span>所属部门 / 学院</label>
+              <select>
+                <option>计算机科学与技术学院</option>
+                <option>航空工程学院</option>
+                <option>机械工程学院</option>
+                <option>经济管理学院</option>
+                <option>文学院</option>
+                <option>马克思主义学院</option>
+                <option>其他</option>
+              </select>
+            </div>
+
+            <div class="form-item">
+              <label><span class="req">*</span>联系方式</label>
+              <input type="text" id="fContact" placeholder="手机号 / 邮箱（便于回复）" value="138-0000-0000">
+            </div>
+
+            <div class="form-item">
+              <label><span class="req">*</span>期望回复时间</label>
+              <select>
+                <option>尽快（24 小时内）</option>
+                <option>常规（3 个工作日）</option>
+                <option>不急（7 个工作日内）</option>
+              </select>
+            </div>
+
+            <div class="form-item full">
+              <label><span class="req">*</span>详细描述</label>
+              <textarea id="fContent" placeholder="请详细描述您遇到的问题、建议或想法，包括：发生场景、具体诉求、期望改进方向等。提供详细信息有助于我们快速处理。"></textarea>
+              <div class="form-tip">📝 已输入 <b style="color:var(--primary);" id="charCount">0</b> / 500 字</div>
+            </div>
+
+            <div class="form-item">
+              <label>满意度</label>
+              <div class="rating-row" id="ratingRow">
+                  <span class="star" onclick="setRating(1)">★</span>
+                  <span class="star" onclick="setRating(2)">★</span>
+                  <span class="star" onclick="setRating(3)">★</span>
+                  <span class="star" onclick="setRating(4)">★</span>
+                  <span class="star" onclick="setRating(5)">★</span>
+                </div>
+              <div class="form-tip">对图书馆整体服务的综合评价</div>
+            </div>
+
+            <div class="form-item">
+              <label>优先处理</label>
+              <select>
+                <option>普通</option>
+                <option>较急（影响日常使用）</option>
+                <option>紧急（影响借阅 / 访问）</option>
+              </select>
+            </div>
+
+            <div class="form-item full">
+              <label>相关截图或附件 <span class="tip">（选填，最多 3 个）</span></label>
+              <div class="upload-area" onclick="alert('点击上传文件（演示）')">
+                <div class="ico">📎</div>
+                <div class="t">点击或拖拽文件到此处上传</div>
+                <div class="d">支持 PNG / JPG / PDF / DOCX，单文件不超过 10 MB</div>
+              </div>
+              <div class="upload-list">
+                <div class="upload-item">
+                  <span>📷</span>
+                  <span class="name">图书馆空调问题.jpg</span>
+                  <span class="size">1.2 MB</span>
+                  <span class="del">✕</span>
+                </div>
+                <div class="upload-item">
+                  <span>📄</span>
+                  <span class="name">建议清单.pdf</span>
+                  <span class="size">486 KB</span>
+                  <span class="del">✕</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-item full">
+              <label>联系偏好</label>
+              <div class="contact-grid">
+                <span class="contact-chip active" onclick="toggleChip(this)">📱 短信</span>
+                <span class="contact-chip active" onclick="toggleChip(this)">📧 邮件</span>
+                <span class="contact-chip" onclick="toggleChip(this)">💬 站内信</span>
+                <span class="contact-chip" onclick="toggleChip(this)">📞 电话</span>
+              </div>
+            </div>
+
+            <div class="form-item full">
+              <div class="agree-box">
+                <input type="checkbox" id="agreeChk" checked>
+                <span class="ico">🛡</span>
+                <span class="text">本人确认上述内容真实有效，授权图书馆在<b>保护个人隐私</b> 的前提下使用本反馈信息进行处理与回复。图书馆将严格遵守《个人信息保护法》，不会向第三方透露您的个人信息。</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <div class="left">
+              💡 您的反馈将于 <b>24 小时内</b> 进入处理流程，结果将以您选择的偏好方式回复。
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-ghost" onclick="resetForm()">🔄 重置</button>
+              <button class="btn" onclick="toast('草稿已保存到"我的反馈"')">💾 保存草稿</button>
+              <button class="btn btn-primary" onclick="submitFeedback()">🚀 立即提交</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 我的反馈 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>我的反馈历史</h3>
+          <a class="more">查看全部 12 条 ›</a>
+        </div>
+        <div class="card-body">
+          <div class="feedback-list">
+
+            <div class="fb-item">
+              <div class="top">
+                <span class="no">#FB2025120103</span>
+                <span class="type-tag">📖馆藏建议</span>
+                <span class="status-tag replied">✓ 已回复</span>
+                <span class="date">2025-12-01</span>
+              </div>
+              <div class="t">建议增加《民航英语口语教程（第3版）》复本量</div>
+              <div class="reply">
+                <b>📞 馆员回复（张老师）：</b> 感谢您的建议！已记录到采购计划，预计下季度增订 5 册。如有急需可走馆际互借流程。<span style="color:var(--text-3);margin-left:6px;">2025-12-02 10:25</span>
+              </div>
+            </div>
+
+            <div class="fb-item">
+              <div class="top">
+                <span class="no">#FB2025112507</span>
+                <span class="type-tag">🏠 环境建议</span>
+                <span class="status-tag processing">⏳ 处理中</span>
+                <span class="date">2025-11-25</span>
+              </div>
+              <div class="t">三楼自习区 14 号座位旁的台灯损坏，影响夜间自习</div>
+            </div>
+
+            <div class="fb-item">
+              <div class="top">
+                <span class="no">#FB2025111802</span>
+                <span class="type-tag">⚙ 服务建议</span>
+                <span class="status-tag replied">✓ 已回复</span>
+                <span class="date">2025-11-18</span>
+              </div>
+              <div class="t">建议延长考研专区开放时间至 23:00</div>
+              <div class="reply">
+                <b>📞 馆员回复（王馆长）：</b> 已采纳！考研专区自 12 月 1 日起延长至 23:00（仅限考研学生）。<span style="color:var(--text-3);margin-left:6px;">2025-11-19 14:50</span>
+              </div>
+            </div>
+
+            <div class="fb-item">
+              <div class="top">
+                <span class="no">#FB2025111001</span>
+                <span class="type-tag">💡 系统问题</span>
+                <span class="status-tag replied">✓ 已回复</span>
+                <span class="date">2025-11-10</span>
+              </div>
+              <div class="t">移动 APP 扫码借阅偶发识别失败</div>
+              <div class="reply">
+                <b>📞 技术回复：</b> 已修复扫码模块兼容性 bug，v3.2.1 已发布，请更新至最新版。<span style="color:var(--text-3);margin-left:6px;">2025-11-11 09:15</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 处理流程 -->
+      <div class="side-card">
+        <h4>📋 处理流程</h4>
+        <div class="process-list">
+          <div class="process-item">
+            <div class="num">1</div>
+            <div class="info">
+              <div class="t">提交反馈</div>
+              <div class="d">填写反馈表单并提交</div>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="num">2</div>
+            <div class="info">
+              <div class="t">分类派单</div>
+              <div class="d">系统分发到对应部门处理</div>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="num">3</div>
+            <div class="info">
+              <div class="t">馆员处理</div>
+              <div class="d">相关部门 24 小时内响应</div>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="num">4</div>
+            <div class="info">
+              <div class="t">结果回复</div>
+              <div class="d">按您选择的偏好方式回复</div>
+            </div>
+          </div>
+          <div class="process-item">
+            <div class="num">5</div>
+            <div class="info">
+              <div class="t">评价反馈</div>
+              <div class="d">您可对回复进行满意度评价</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 热门反馈主题 -->
+      <div class="side-card">
+        <h4>🔥 本月热门反馈</h4>
+        <div class="topic-list">
+          <div class="topic-item">
+            <span>📚 希望增加考研自习专区</span>
+            <span class="badge">已采纳</span>
+          </div>
+          <div class="topic-item">
+            <span>📱 APP 扫码识别失败</span>
+            <span class="badge">已修复</span>
+          </div>
+          <div class="topic-item">
+            <span>🌡 三楼空调温度过低</span>
+            <span class="count">28 人反馈</span>
+          </div>
+          <div class="topic-item">
+            <span>📖 增加电子资源试用</span>
+            <span class="count">22 人反馈</span>
+          </div>
+          <div class="topic-item">
+            <span>🪑 部分自习座位松动</span>
+            <span class="count">18 人反馈</span>
+          </div>
+          <div class="topic-item">
+            <span>💡 优化检索响应速度</span>
+            <span class="count">15 人反馈</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 联系咨询 -->
+      <div class="side-card">
+        <h4>📞 紧急联系</h4>
+        <div class="info-list">
+          <div class="info-row"><div class="ico">📞</div><span class="label">服务总台</span><span class="value mono">0000-1234567</span></div>
+          <div class="info-row"><div class="ico">📧</div><span class="label">反馈邮箱</span><span class="value" style="font-size:12px;">feedback@xihang.edu.cn</span></div>
+          <div class="info-row"><div class="ico">💬</div><span class="label">在线咨询</span><span class="value" style="color:var(--primary);font-size:12.5px;">点击咨询 ›</span></div>
+          <div class="info-row"><div class="ico">⏰</div><span class="label">服务时间</span><span class="value">工作日 8:00-22:00</span></div>
+          <div class="info-row"><div class="ico">📍</div><span class="label">馆长信箱</span><span class="value" style="font-size:12.5px;">总馆 1F 门口</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 所有反馈将由 <b>馆长办公室</b> 统一管理并分发到相关部门。我们承诺：<b>24 小时内响应</b>、<b>100% 闭环处理</b>、<b>定期公开采纳情况</b>。优秀的建议将获得 <b>第二课堂学分</b> 或 <b>纪念品奖励</b>。您的每一条意见，都是图书馆进步的阶梯。
+    </div>
+  </div>
+
+</div>
+
+<!-- 成功提交 Modal -->
+<div class="mask" id="successMask">
+  <div class="modal">
+    <div class="check">✓</div>
+    <div class="t">反馈提交成功！</div>
+    <div class="d">感谢您的反馈！我们已收到并进入处理流程，结果将通过您选择的联系方式尽快回复。</div>
+    <div class="t-no">工单编号：<b>#FB2025120905</b></div>
+    <button class="btn" onclick="closeSuccess()" style="background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;">我知道了</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let rating = 0;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+  function selectType(el) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function toggleChip(el) { el.classList.toggle('active'); }
+  function setRating(n) {
+    rating = n;
+    document.querySelectorAll('#ratingRow .star').forEach((s, i) => {
+      s.classList.toggle('active', i < n);
+    });
+    const labels = ['', '非常不满意 😞', '不满意 😐', '一般 🙂', '满意 😊', '非常满意 🤩'];
+    toast(`已评分 ${n} 星 · ${labels[n]}`);
+  }
+  document.getElementById('fContent').addEventListener('input', e => {
+    document.getElementById('charCount').textContent = e.target.value.length;
+  });
+  function submitFeedback() {
+    const title = document.getElementById('fTitle').value.trim();
+    const content = document.getElementById('fContent').value.trim();
+    if (!title) { toast('请填写反馈标题'); return; }
+    if (!content) { toast('请填写详细描述'); return; }
+    if (!document.getElementById('agreeChk').checked) { toast('请先勾选隐私同意'); return; }
+    document.getElementById('successMask').classList.add('show');
+  }
+  function closeSuccess() {
+    document.getElementById('successMask').classList.remove('show');
+    resetForm();
+    toast('反馈已提交！处理编号 #FB2025120905');
+  }
+  function resetForm() {
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fContent').value = '';
+    document.getElementById('charCount').textContent = '0';
+    rating = 0;
+    document.querySelectorAll('#ratingRow .star').forEach(s => s.classList.remove('active'));
+  }
+</script>
+
+</body>
+</html>

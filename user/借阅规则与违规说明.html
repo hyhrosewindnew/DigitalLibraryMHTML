@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>借阅规则与违规说明 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 18px;
+    padding: 32px 36px;
+    color: #fff;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.18);
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 240px; height: 240px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -80px; right: 200px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .hero .tag { display: inline-block; padding: 5px 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25); border-radius: 20px; font-size: 12.5px; margin-bottom: 12px; position: relative; z-index: 1; }
+  .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.18); }
+  .hero .desc { font-size: 15px; opacity: 0.95; line-height: 1.7; max-width: 760px; margin-bottom: 22px; position: relative; z-index: 1; }
+  .hero-stats { display: flex; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .hero-stat { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 12px 18px; }
+  .hero-stat .n { font-size: 22px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .hero-stat .l { font-size: 11.5px; opacity: .92; margin-top: 2px; }
+
+  /* 主区 */
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .card-head { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-head h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .card-head h3 .dot { width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .card-head .more { font-size: 13px; color: var(--text-3); }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 22px; }
+
+  /* 分类导航 */
+  .cat-tabs {
+    display: flex;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 6px;
+    flex-wrap: wrap;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .cat-tabs span {
+    padding: 10px 16px;
+    font-size: 13.5px;
+    color: var(--text-2);
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: .2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .cat-tabs span:hover { color: var(--primary); background: rgba(74,158,255,0.08); }
+  .cat-tabs span.active { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; box-shadow: 0 4px 12px rgba(74,158,255,0.3); }
+
+  /* 规则表格 */
+  .rule-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .rule-table th { background: #f8fafc; color: var(--text-2); font-weight: 600; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .rule-table td { padding: 13px 16px; border-bottom: 1px solid var(--border-light); color: var(--text-2); }
+  .rule-table tr:hover { background: #fafcff; }
+  .rule-table .user-type {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px;
+    background: rgba(74,158,255,0.1);
+    color: var(--primary);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .rule-table .num { color: var(--primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .rule-table .num.big { color: #ea580c; }
+  .rule-table b { color: var(--text); }
+
+  /* 违规类型 */
+  .violation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .violation-card {
+    padding: 18px;
+    background: linear-gradient(135deg, #fafcff, #f0f9ff);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    border-left: 4px solid var(--sky);
+    transition: .2s;
+  }
+  .violation-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.05); }
+  .violation-card.level2 { border-left-color: var(--warning); background: linear-gradient(135deg, #fffbeb, #fef3c7); }
+  .violation-card.level3 { border-left-color: #ea580c; background: linear-gradient(135deg, #fff7ed, #fed7aa); }
+  .violation-card.level4 { border-left-color: var(--error); background: linear-gradient(135deg, #fef2f2, #fecaca); }
+  .violation-card .top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .violation-card .top .ico { font-size: 20px; }
+  .violation-card .top .name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .violation-card .top .level {
+    margin-left: auto;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .violation-card .level.lv1 { background: linear-gradient(135deg, #dbeafe, #93c5fd); color: #1d4ed8; }
+  .violation-card .level.lv2 { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
+  .violation-card .level.lv3 { background: linear-gradient(135deg, #fed7aa, #fb923c); color: #c2410c; }
+  .violation-card .level.lv4 { background: linear-gradient(135deg, #fecaca, #fca5a5); color: #b91c1c; }
+  .violation-card .desc { font-size: 12.5px; color: var(--text-2); line-height: 1.7; margin-bottom: 10px; }
+  .violation-card .punish { font-size: 12px; color: var(--text); padding: 8px 12px; background: rgba(255,255,255,0.6); border-radius: 6px; border-left: 2px solid currentColor; }
+  .violation-card.level .punish { color: var(--warning); }
+  .violation-card.level2 .punish { color: #b45309; }
+  .violation-card.level3 .punish { color: #c2410c; }
+  .violation-card.level4 .punish { color: #b91c1c; }
+  .violation-card .punish b { font-weight: 700; }
+
+  /* 处罚流程 */
+  .flow-diagram {
+    background: #f5f7fb;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    font-size: 13px;
+    line-height: 2.1;
+    color: var(--text-2);
+  }
+  .flow-diagram b { color: var(--primary); }
+  .flow-diagram .hl { background: #fef3c7; padding: 1px 5px; border-radius: 3px; color: #92400e; font-weight: 600; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* 我的信用 */
+  .credit-card {
+    background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .credit-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .credit-card h4::before { content: '🛡'; font-size: 16px; }
+  .credit-score { text-align: center; padding: 8px 0; }
+  .credit-score .num { font-size: 38px; font-weight: 700; color: #16a34a; font-variant-numeric: tabular-nums; line-height: 1; }
+  .credit-score .lbl { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+  .credit-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .credit-stat-item {
+    padding: 10px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .credit-stat-item .n { font-size: 18px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .credit-stat-item .l { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .credit-tip { font-size: 11.5px; color: var(--text-2); line-height: 1.7; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #bbf7d0; }
+
+  /* 我的违规 */
+  .my-violation {
+    background: linear-gradient(135deg, #fef9e7, #fef3c7);
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .my-violation h4 { font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 12px; }
+  .my-violation .empty { text-align: center; color: #16a34a; padding: 12px 0; font-size: 13px; }
+  .my-violation .empty .ico { font-size: 30px; margin-bottom: 6px; }
+
+  .info-list { display: flex; flex-direction: column; gap: 10px; }
+  .info-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .info-row .ico { width: 28px; height: 28px; background: #fff; border: 1px solid var(--border); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .info-row .label { color: var(--text-3); font-size: 12px; min-width: 60px; }
+  .info-row .value { color: var(--text); font-weight: 500; flex: 1; font-size: 12.5px; }
+  .info-row .value.mono { font-family: ui-monospace, monospace; font-size: 12px; }
+
+  .notice-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid var(--warning); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e293b; color: #fff;
+    padding: 10px 22px; border-radius: 9px;
+    font-size: 13.5px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.28);
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .violation-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#" class="active">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">读者服务</a>
+    <span class="sep">›</span>
+    <a href="#">帮助中心</a>
+    <span class="sep">›</span>
+    <span class="current">借阅规则与违规说明</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="tag">📖 借阅规则 · 违规处理</span>
+    <h1>借阅规则与违规说明</h1>
+    <p class="desc">为了维护良好的借阅秩序，保障全体读者的合法权益，图书馆制定了完善的借阅规则与违规处理办法。请仔细阅读，了解您的权利与义务，做一个守信的读者。</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="n">5</div><div class="l">规则章节</div></div>
+      <div class="hero-stat"><div class="n">4 级</div><div class="l">违规等级</div></div>
+      <div class="hero-stat"><div class="n">95 分</div><div class="l">信用满分</div></div>
+      <div class="hero-stat"><div class="n">8,520</div><div class="l">守信读者</div></div>
+      <div class="hero-stat"><div class="n">12</div><div class="l">本月违规人次</div></div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 分类导航 -->
+      <div class="cat-tabs">
+        <span class="active">📋 借阅权限</span>
+        <span>📅 借期规则</span>
+        <span>⚠ 违规类型</span>
+        <span>💰 违规处理</span>
+        <span>🔄 申诉流程</span>
+        <span>📜 信用体系</span>
+      </div>
+
+      <!-- 借阅权限表 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>一、借阅权限（按读者类型）</h3>
+          <span style="font-size:12.5px;color:var(--text-3);">数据截至 2025-12</span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table class="rule-table">
+            <thead>
+              <tr>
+                <th>读者类型</th>
+                <th>总借阅量</th>
+                <th>单册借期</th>
+                <th>续借次数</th>
+                <th>预约数</th>
+                <th>预存款</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="user-type">🎓 本科生</span></td>
+                <td><span class="num">10</span> 册</td>
+                <td><span class="num">30</span> 天</td>
+                <td><span class="num">2</span> 次 /册</td>
+                <td><span class="num">3</span> 册</td>
+                <td><span class="num">¥100</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-type">👨‍🎓 研究生</span></td>
+                <td><span class="num">15</span> 册</td>
+                <td><span class="num">60</span> 天</td>
+                <td><span class="num">2</span> 次 / 册</td>
+                <td><span class="num">5</span> 册</td>
+                <td><span class="num">¥200</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-type">👨‍🏫 教职工</span></td>
+                <td><span class="num">30</span> 册</td>
+                <td><span class="num">90</span> 天</td>
+                <td><span class="num">3</span> 次 / 册</td>
+                <td><span class="num">10</span> 册</td>
+                <td><span class="num">¥500</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-type">🌟 访问学者</span></td>
+                <td><span class="num">10</span> 册</td>
+                <td><span class="num">30</span> 天</td>
+                <td><span class="num">1</span> 次 / 册</td>
+                <td><span class="num">2</span> 册</td>
+                <td><span class="num">¥200</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-type">🎖 校友</span></td>
+                <td><span class="num">5</span> 册</td>
+                <td><span class="num">30</span> 天</td>
+                <td><span class="num">1</span> 次 / 册</td>
+                <td><span class="num">2</span> 册</td>
+                <td><span class="num">¥100</span></td>
+              </tr>
+              <tr>
+                <td><span class="user-type">📖 校外读者</span></td>
+                <td><span class="num">3</span> 册</td>
+                <td><span class="num">14</span> 天</td>
+                <td><span class="num">0</span> 次 / 册</td>
+                <td><span class="num">0</span> 册</td>
+                <td><span class="num">¥500</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 违规类型 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>二、违规类型与等级</h3>
+          <a class="more">查看具体案例 ›</a>
+        </div>
+        <div class="card-body">
+          <div class="violation-grid">
+
+            <div class="violation-card">
+              <div class="top">
+                <span class="ico">📅</span>
+                <span class="name">逾期未还</span>
+                <span class="level lv1">轻微</span>
+              </div>
+              <div class="desc">超过应还日期仍未归还，且未办理续借手续的。</div>
+              <div class="punish">每逾期 1 天扣 <b>1 分</b>，连续逾期 7 天转入"严重逾期"处理。</div>
+            </div>
+
+            <div class="violation-card">
+              <div class="top">
+                <span class="ico">📭</span>
+                <span class="name">未签到</span>
+                <span class="level lv1">轻微</span>
+              </div>
+              <div class="desc">座位 / 研修室预约后未在规定时间内签到且未取消。</div>
+              <div class="punish">每次扣 <b>5 分</b>，连续 3 次暂停预约 7 天。</div>
+            </div>
+
+            <div class="violation-card level2">
+              <div class="top">
+                <span class="ico">📕</span>
+                <span class="name">图书污损</span>
+                <span class="level lv2">一般</span>
+              </div>
+              <div class="desc">在图书上涂写、划线、撕页、浸泡、严重弯折等损坏行为。</div>
+              <div class="punish">按图书原价 <b>1-3 倍</b>赔偿，扣 <b>10 分</b>。</div>
+            </div>
+
+            <div class="violation-card level2">
+              <div class="top">
+                <span class="ico">📖</span>
+                <span class="name">图书遗失</span>
+                <span class="level lv2">一般</span>
+              </div>
+              <div class="desc">借阅期间遗失图书未及时报告。</div>
+              <div class="punish">按图书原价 <b>3 倍</b>赔偿（含加工费），扣 <b>15 分</b>，并停止借阅 30 天。</div>
+            </div>
+
+            <div class="violation-card level3">
+              <div class="top">
+                <span class="ico">⏰</span>
+                <span class="name">逾期 30 天</span>
+                <span class="level lv3">严重</span>
+              </div>
+              <div class="desc">超过应还日期 30 天仍未归还，且未主动联系说明情况。</div>
+              <div class="punish">暂停借阅权限 <b>60 天</b>，扣 <b>20 分</b>，全校通报。</div>
+            </div>
+
+            <div class="violation-card level3">
+              <div class="top">
+                <span class="ico">📊</span>
+                <span class="name">批量下载</span>
+                <span class="level lv3">严重</span>
+              </div>
+              <div class="desc">使用脚本工具批量下载电子资源，违反数据库使用协议。</div>
+              <div class="punish">冻结账号 <b>30-90 天</b>，扣 <b>30 分</b>，情节严重者取消访问权限。</div>
+            </div>
+
+            <div class="violation-card level4">
+              <div class="top">
+                <span class="ico">🚫</span>
+                <span class="name">账号外借</span>
+                <span class="level lv4">特别严重</span>
+              </div>
+              <div class="desc">将个人读者证 / 校园账号出借、出租给非授权人员使用。</div>
+              <div class="punish">永久冻结借阅权限，扣 <b>50 分</b>，全校通报，纳入档案。</div>
+            </div>
+
+            <div class="violation-card level4">
+              <div class="top">
+                <span class="ico">🔪</span>
+                <span class="name">撕毁/偷窃</span>
+                <span class="level lv4">特别严重</span>
+              </div>
+              <div class="desc">蓄意撕毁、偷窃馆藏图书或设备，情节严重。</div>
+              <div class="punish">永久取消借阅权限，原价 <b>5-10 倍</b>赔偿，移交学校保卫处处理。</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 处罚流程 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>三、违规处理流程</h3>
+        </div>
+        <div class="card-body">
+          <div class="flow-diagram">
+            <b>① 系统检测</b>：借阅系统每日自动检测逾期、未签到等违规行为，记录到读者档案。<br>
+            <b>② 通知提醒</b>：违规行为产生后 24 小时内，通过<b>站内信 + 短信</b>推送提醒，告知违规事项与申诉途径。<br>
+            <b>③ 申诉窗口</b>：读者可在 <span class="hl">3 个工作日内</span>通过系统提交申诉，提供证明材料。<br>
+            <b>④ 馆员审核</b>：流通部馆员 1 个工作日内审核申诉，必要时联系读者面谈。<br>
+            <b>⑤ 申诉成立</b>：撤销违规记录，恢复信用分；<b>申诉不成立</b>：执行处罚，更新档案。<br>
+            <b>⑥ 处罚执行</b>：自动暂停借阅 / 预约权限，更新信用分，必要时全校通报。<br>
+            <b>⑦ 申诉复核</b>：对审核结果仍有异议，可在 <span class="hl">7 个工作日内</span>向馆长办公室申请复核。
+          </div>
+        </div>
+      </div>
+
+      <!-- 信用体系 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>四、信用分体系</h3>
+        </div>
+        <div class="card-body">
+          <table class="rule-table">
+            <thead>
+              <tr>
+                <th>信用分等级</th>
+                <th>分值区间</th>
+                <th>权益</th>
+                <th>限制</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="user-type" style="background:linear-gradient(135deg,#d1fae5,#6ee7b7);color:#047857;">⭐ 优秀</span></td>
+                <td><span class="num">95 - 100</span></td>
+                <td>全部权益 + 优先预约</td>
+                <td>无</td>
+              </tr>
+              <tr>
+                <td><span class="user-type" style="background:linear-gradient(135deg,#dbeafe,#93c5fd);color:#1d4ed8;">✓ 良好</span></td>
+                <td><span class="num">80 - 94</span></td>
+                <td>全部正常权益</td>
+                <td>无</td>
+              </tr>
+              <tr>
+                <td><span class="user-type" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309;">⚠ 一般</span></td>
+                <td><span class="num">60 - 79</span></td>
+                <td>可正常借阅</td>
+                <td>不可预约热门时段</td>
+              </tr>
+              <tr>
+                <td><span class="user-type" style="background:linear-gradient(135deg,#fed7aa,#fb923c);color:#c2410c;">⚠ 较差</span></td>
+                <td><span class="num">40 - 59</span></td>
+                <td>借阅量减半</td>
+                <td>借期缩短至 15 天</td>
+              </tr>
+              <tr>
+                <td><span class="user-type" style="background:linear-gradient(135deg,#fecaca,#fca5a5);color:#b91c1c;">🚫 失信</span></td>
+                <td><span class="num">0 - 39</span></td>
+                <td>仅限馆内阅览</td>
+                <td>暂停借阅 + 预约</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:14px;padding:12px 16px;background:linear-gradient(135deg,#ecf5ff,#f0f9ff);border-left:3px solid var(--sky);border-radius:8px;font-size:13px;color:var(--text-2);line-height:1.7;">
+            💡 <b style="color:var(--primary);">信用恢复：</b>信用分低于 80 分的读者，每<b>按时履约 10 次</b>可恢复 <b style="color:#16a34a;">+5 分</b>；连续 90 天无任何违规自动恢复 <b style="color:#16a34a;">+10 分</b>；积极参加图书馆志愿服务可获额外加分。
+          </div>
+        </div>
+      </div>
+
+      <!-- 续借规则 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>五、续借与预约规则</h3>
+        </div>
+        <div class="card-body">
+          <table class="rule-table">
+            <thead>
+              <tr>
+                <th>服务</th>
+                <th>规则</th>
+                <th>注意事项</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>续借</b></td>
+                <td>在到期日前 <span class="num">3 天</span> 内办理；每次续借延长<span class="num">30</span> 天；本科生最多 <span class="num">2</span> 次，研究生 <span class="num">2</span> 次</td>
+                <td>逾期或有欠费时不可续借；被预约的图书不可续借</td>
+              </tr>
+              <tr>
+                <td><b>预约</b></td>
+                <td>在 OPAC 中预约"已借出"图书；到馆后 <span class="num">3 天</span> 内借阅，过期自动取消</td>
+                <td>每人同时预约不超过3 册；违约取书扣 <b>2 分</b></td>
+              </tr>
+              <tr>
+                <td><b>通借通还</b></td>
+                <td>可在任一校区分馆借还；通借通还图书借期统一 <span class="num">30</span> 天</td>
+                <td>通借通还图书不享受续借</td>
+              </tr>
+              <tr>
+                <td><b>馆际互借</b></td>
+                <td>外馆图书借期 <span class="num">30</span> 天；每人每学期最多 <span class="num">5</span> 册</td>
+                <td>需持身份证办理，逾期按 0.5 元 / 天收费</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 我的信用 -->
+      <div class="credit-card">
+        <h4>我的信用分</h4>
+        <div class="credit-score">
+          <div class="num">95</div>
+          <div class="lbl">⭐ 优秀 · 全部权益可用</div>
+        </div>
+        <div class="credit-stats">
+          <div class="credit-stat-item"><div class="n" style="color:#16a34a;">13</div><div class="l">按时履约</div></div>
+          <div class="credit-stat-item"><div class="n" style="color:#d97706;">1</div><div class="l">轻微违规</div></div>
+          <div class="credit-stat-item"><div class="n" style="color:#dc2626;">0</div><div class="l">严重违规</div></div>
+          <div class="credit-stat-item"><div class="n">0</div><div class="l">欠费</div></div>
+        </div>
+        <div class="credit-tip">
+          💡 <b>信用分说明：</b>单次未签到 / 暂离超时 / 未签离扣5 分；图书遗失扣 15 分；连续 3 次轻微违规暂停预约 7 天；信用分 &lt; 80 不可预约热门时段。
+        </div>
+      </div>
+
+      <!-- 我的违规 -->
+      <div class="my-violation">
+        <h4>📋 我的违规记录</h4>
+        <div class="empty">
+          <div class="ico">✨</div>
+          <div><b>暂无违规记录</b></div>
+          <div style="font-size:11.5px;color:#92400e;margin-top:4px;">继续保持，做守信读者！</div>
+        </div>
+      </div>
+
+      <!-- 快捷入口 -->
+      <div class="side-card">
+        <h4>🔗 快捷入口</h4>
+        <div class="info-list">
+          <a class="info-row" style="text-decoration:none;color:inherit;">
+            <div class="ico">📖</div>
+            <span class="label">查询借阅</span>
+            <span class="value">我的借阅记录</span>
+          </a>
+          <a class="info-row" style="text-decoration:none;color:inherit;">
+            <div class="ico">📋</div>
+            <span class="label">违规查询</span>
+            <span class="value">历史违规明细</span>
+          </a>
+          <a class="info-row" style="text-decoration:none;color:inherit;">
+            <div class="ico">✉️</div>
+            <span class="label">申诉提交</span>
+            <span class="value">在线申诉入口</span>
+          </a>
+          <a class="info-row" style="text-decoration:none;color:inherit;">
+            <div class="ico">💰</div>
+            <span class="label">欠费查询</span>
+            <span class="value">待缴费用明细</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 联系咨询 -->
+      <div class="side-card">
+        <h4>📞 联系咨询</h4>
+        <div class="info-list">
+          <div class="info-row"><div class="ico">📞</div><span class="label">流通部</span><span class="value mono">0000-1234570</span></div>
+          <div class="info-row"><div class="ico">📧</div><span class="label">咨询邮箱</span><span class="value" style="font-size:12px;">borrow@xihang.edu.cn</span></div>
+          <div class="info-row"><div class="ico">⏰</div><span class="label">服务时间</span><span class="value">工作日 8:00-22:00</span></div>
+          <div class="info-row"><div class="ico">📍</div><span class="label">现场咨询</span><span class="value" style="font-size:12.5px;">总馆 1F 服务台</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 借阅规则自 <b>2025年9月1日</b> 起施行，最终解释权归图书馆所有。如对本规则有疑问，可拨打 <b>0000-1234570</b> 或通过 <b>意见反馈</b> 页面留言。读者在首次借阅前需在系统中<b>确认知晓</b> 本规则后方可办理借阅手续。
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => el.classList.remove('show'), 2000);
+  }
+</script>
+
+</body>
+</html>

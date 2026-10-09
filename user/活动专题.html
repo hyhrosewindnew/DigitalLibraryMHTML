@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活动专题 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* Hero 活动专题 */
+  .act-hero {
+    position: relative;
+    background: linear-gradient(135deg, #6d28d9 0%, #a855f7 50%, #ec4899 100%);
+    border-radius: 18px;
+    padding: 36px 40px;
+    color: #fff;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(168,85,247,0.18);
+  }
+  .act-hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .act-hero::after { content: ''; position: absolute; bottom: -100px; right: 240px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .act-hero .tag { display: inline-block; padding: 5px 14px; background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; font-size: 12.5px; margin-bottom: 14px; position: relative; z-index: 1; }
+  .act-hero h1 { font-size: 36px; font-weight: 700; margin-bottom: 10px; position: relative; z-index: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.18); }
+  .act-hero .desc { font-size: 15px; opacity: 0.95; line-height: 1.7; max-width: 760px; margin-bottom: 22px; position: relative; z-index: 1; }
+  .act-hero-stats { display: flex; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .ahs { background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 12px 18px; }
+  .ahs .n { font-size: 22px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .ahs .l { font-size: 12px; opacity: .92; margin-top: 2px; }
+
+  /* 主体 */
+  .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .card-head { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-head h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .card-head h3 .dot { width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .card-head .more { font-size: 13px; color: var(--text-3); }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 22px; }
+
+  /* 状态 Tab */
+  .status-tabs {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 6px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .status-tabs span {
+    padding: 9px 16px;
+    font-size: 13.5px;
+    color: var(--text-2);
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: .2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .status-tabs span:hover { color: var(--primary); background: rgba(74,158,255,0.08); }
+  .status-tabs span.active { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; box-shadow: 0 4px 12px rgba(74,158,255,0.3); }
+  .status-tabs span .count { font-size: 11px; background: var(--bg-page); color: var(--text-3); padding: 1px 7px; border-radius: 8px; }
+  .status-tabs span.active .count { background: rgba(255,255,255,0.25); color: #fff; }
+
+  /* 活动列表 */
+  .act-list { display: flex; flex-direction: column; }
+  .act-item {
+    display: flex; gap: 18px;
+    padding: 18px 22px;
+    border-bottom: 1px dashed var(--border);
+    cursor: pointer;
+    transition: .2s;
+    align-items: center;
+  }
+  .act-item:last-child { border-bottom: none; }
+  .act-item:hover { background: #fafcff; }
+
+  /* 海报 */
+  .poster {
+    width: 130px; height: 170px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(13,59,102,0.18);
+    cursor: pointer;
+  }
+  .poster svg { width: 100%; height: 100%; display: block; }
+
+  .info { flex: 1; min-width: 0; }
+  .info .l1 {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .info .name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .info .name:hover { color: var(--primary); }
+  .info .desc {
+    font-size: 13px; color: var(--text-2); line-height: 1.65;
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    margin-bottom: 10px;
+  }
+  .info .meta {
+    font-size: 12px; color: var(--text-3);
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+  }
+  .info .meta b { color: var(--text-2); font-weight: 500; }
+  .info .meta span { display: flex; align-items: center; gap: 4px; }
+
+  .act-stats {
+    flex-shrink: 0;
+    text-align: center;
+    display: flex; flex-direction: column;
+    gap: 6px;
+    min-width: 100px;
+  }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat-lbl { font-size: 11.5px; color: var(--text-3); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    line-height: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .tag-purple { background: #f2ebff; color: #7c3aed; }
+  .tag-blue { background: #e8f1ff; color: #1d6ee0; }
+  .tag-cyan { background: #e0f7f6; color: #0d8f8a; }
+  .tag-orange { background: #fff2e3; color: #c26a05; }
+  .tag-green { background: #e6f7ee; color: #15803d; }
+  .tag-pink { background: #fce7f3; color: #be185d; }
+  .tag-ongoing { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+  .tag-upcoming { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; }
+  .tag-ended { background: #f1f5f9; color: #64748b; }
+  .tag-hot { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #b91c1c; }
+
+  /* 分页 */
+  .pagination { padding: 14px 22px; border-top: 1px solid var(--border); background: #fafcff; display: flex; align-items: center; justify-content: space-between; }
+  .pagination .info { font-size: 12.5px; color: var(--text-3); }
+  .pagination .info b { color: var(--text); }
+  .page-controls { display: flex; gap: 6px; align-items: center; }
+  .page-btn { min-width: 32px; height: 32px; padding: 0 10px; border: 1px solid var(--border); background: #fff; color: var(--text-2); border-radius: 6px; font-size: 12.5px; cursor: pointer; transition: .15s; font-family: inherit; }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--sky); color: var(--sky); }
+  .page-btn.active { background: var(--sky); border-color: var(--sky); color: #fff; }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* 我的报名 */
+  .my-act {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .my-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .my-stat { background: rgba(255,255,255,0.7); border-radius: 8px; padding: 10px; text-align: center; }
+  .my-stat .n { font-size: 20px; font-weight: 700; color: #7c3aed; font-variant-numeric: tabular-nums; }
+  .my-stat .l { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  .my-list { display: flex; flex-direction: column; gap: 8px; }
+  .my-act-item {
+    display: flex; gap: 10px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    align-items: center;
+  }
+  .my-act-item .ico {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .my-act-item .info { flex: 1; min-width: 0; }
+  .my-act-item .name { font-size: 12.5px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .my-act-item .time { font-size: 11px; color: var(--text-3); margin-top: 2px; font-family: ui-monospace, monospace; }
+  .my-act-item .badge { font-size: 10.5px; padding: 1px 6px; border-radius: 8px; background: #f3e8ff; color: #7c3aed; flex-shrink: 0; }
+
+  /* 通知 */
+  .notice-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid var(--warning); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .act-item { flex-wrap: wrap; }
+    .act-stats { width: 100%; flex-direction: row; justify-content: space-around; padding-top: 10px; border-top: 1px dashed var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#" class="active">公告/资讯</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="公告列表页.html">校园公告</a>
+    <span class="sep">›</span>
+    <span class="current">活动专题</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero 专题 -->
+  <div class="act-hero">
+    <span class="tag">🎉 校园活动专题</span>
+    <h1>读书月 · 名师讲堂 · 文化沙龙</h1>
+    <p class="desc">图书馆每月举办丰富的主题活动，涵盖读书分享、讲座沙龙、竞赛评比、志愿服务等多个维度。参与活动可获第二课堂学分、纪念品及读书积分，优秀参与者更有机会成为"信航读者大使"。</p>
+    <div class="act-hero-stats">
+      <div class="ahs"><div class="n">28</div><div class="l">本年活动</div></div>
+      <div class="ahs"><div class="n">8</div><div class="l">进行中</div></div>
+      <div class="ahs"><div class="n">1,560</div><div class="l">累计报名</div></div>
+      <div class="ahs"><div class="n">12,300</div><div class="l">参与人次</div></div>
+      <div class="ahs"><div class="n">85</div><div class="l">志愿者</div></div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 状态 Tabs -->
+      <div class="status-tabs">
+        <span class="active">📋 全部活动 <span class="count">12</span></span>
+        <span>🔥 进行中 <span class="count">3</span></span>
+        <span>📅 即将开始 <span class="count">5</span></span>
+        <span>✅ 已结束 <span class="count">4</span></span>
+        <span>🎯 我的报名 <span class="count">2</span></span>
+      </div>
+
+      <!-- 活动列表 -->
+      <div class="card">
+
+        <div class="act-list">
+
+          <!-- 活动 1 - 进行中 -->
+          <div class="act-item" onclick="location.href='活动详情页.html'">
+            <div class="poster">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="p1g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+                <rect width="130" height="170" fill="url(#p1g)"/>
+                <circle cx="65" cy="55" r="22" fill="#fff" opacity="0.95"/>
+                <path d="M55 75 L55 95 L75 95 L75 75 M50 105 L80 105" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">书香校园</text>
+                <text x="65" y="142" text-anchor="middle" fill="#fff" font-size="11" opacity="0.9">秋季读书月</text>
+                <rect x="0" y="155" width="130" height="15" fill="#6d28d9"/>
+                <text x="65" y="166" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">2025.10-11</text>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-ongoing">🔥 进行中</span>
+                <span class="tag tag-hot">热门</span>
+                <span class="tag tag-purple">校园活动</span>
+              </div>
+              <div class="name">"书香校园·秋季读书月"系列活动</div>
+              <div class="desc">本届读书月涵盖读书分享会、经典诵读大赛、名师导读讲座、书评征文、图书漂流、馆藏寻宝共 6 项子活动，欢迎同学们积极报名参与，丰富课余生活。</div>
+              <div class="meta">
+                <span>📅 <b>2025-10-08 至 2025-11-08</b></span>
+                <span>📍 总馆一楼报告厅</span>
+                <span>👤 主办 · 图书馆联合校团委</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num">456</div>
+              <div class="stat-lbl">已报名</div>
+              <button style="padding:6px 16px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border:none;border-radius:14px;font-size:12px;cursor:pointer;font-weight:500;margin-top:4px;">立即报名</button>
+            </div>
+          </div>
+
+          <!-- 活动 2 - 进行中 -->
+          <div class="act-item">
+            <div class="poster">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="p2g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient></defs>
+                <rect width="130" height="170" fill="url(#p2g)"/>
+                <g transform="translate(65,55)" stroke="#fff" stroke-width="3" fill="none">
+                  <rect x="-15" y="-12" width="30" height="24" rx="2"/>
+                  <line x1="-10" y1="-5" x2="10" y2="-5"/>
+                  <line x1="-10" y1="0" x2="10" y2="0"/>
+                  <line x1="-10" y1="5" x2="5" y2="5"/>
+                </g>
+                <text x="65" y="105" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">名师讲堂</text>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">航空发动机</text>
+                <text x="65" y="140" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">前沿技术</text>
+                <rect x="0" y="155" width="130" height="15" fill="#b91c1c"/>
+                <text x="65" y="166" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">每周三 19:00</text>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-ongoing">🔥 进行中</span>
+                <span class="tag tag-orange">学术讲座</span>
+              </div>
+              <div class="name">"航空大讲堂"系列名师讲座</div>
+              <div class="desc">邀请航空领域知名专家、教授，围绕航空发动机、无人机、飞机制造等行业前沿话题，每周三晚 19:00 在总馆一楼报告厅开讲，第二课堂记0.5 学分。</div>
+              <div class="meta">
+                <span>📅 <b>2025-10-15 至 2025-12-31</b></span>
+                <span>📍 总馆 1F 报告厅</span>
+                <span>👤 主办 · 图书馆</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num">328</div>
+              <div class="stat-lbl">已报名</div>
+              <button style="padding:6px 16px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border:none;border-radius:14px;font-size:12px;cursor:pointer;font-weight:500;margin-top:4px;">立即报名</button>
+            </div>
+          </div>
+
+          <!-- 活动 3 - 即将开始 -->
+          <div class="act-item">
+            <div class="poster">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="p3g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0d3b66"/><stop offset="100%" stop-color="#4a9eff"/></linearGradient></defs>
+                <rect width="130" height="170" fill="url(#p3g)"/>
+                <g transform="translate(65,55)" fill="none" stroke="#fff" stroke-width="3">
+                  <path d="M-20,15 L0,-12 L20,15 M-15,-5 L15,-5"/>
+                  <circle r="3" fill="#fff"/>
+                </g>
+                <text x="65" y="105" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">文化沙龙</text>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">读者见面会</text>
+                <text x="65" y="140" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">· 三体</text>
+                <rect x="0" y="155" width="130" height="15" fill="#1e3a8a"/>
+                <text x="65" y="166" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">10-2614:00</text>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-upcoming">📅 即将开始</span>
+                <span class="tag tag-blue">文化沙龙</span>
+              </div>
+              <div class="name">科幻文学沙龙·《三体》读者见面会</div>
+              <div class="desc">邀请科幻文学研究学者与读者面对面交流，深度解读《三体》系列作品背后的科学逻辑与文学价值。现场设有签售环节及精美纪念品赠送。</div>
+              <div class="meta">
+                <span>📅 <b>2025-10-26 14:00-17:00</b></span>
+                <span>📍 总馆 2F 多媒体研讨间</span>
+                <span>👤 主讲 · 张教授</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num">86</div>
+              <div class="stat-lbl">已报名 / 50 席</div>
+              <button style="padding:6px 16px;background:rgba(245,158,11,0.12);color:#d97706;border:1px solid #fde68a;border-radius:14px;font-size:12px;cursor:pointer;font-weight:500;margin-top:4px;">候补报名</button>
+            </div>
+          </div>
+
+          <!-- 活动 4 - 即将开始 -->
+          <div class="act-item">
+            <div class="poster">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="p4g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#16a34a"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs>
+                <rect width="130" height="170" fill="url(#p4g)"/>
+                <g transform="translate(65,55)" fill="#fff" stroke="#fff" stroke-width="1.5">
+                  <circle r="20" fill="none" stroke-width="2.5"/>
+                  <path d="M0,-12 L8,8 L-8,8 Z" fill="#fff"/>
+                </g>
+                <text x="65" y="105" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">志愿者</text>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">招募</text>
+                <rect x="0" y="155" width="130" height="15" fill="#047857"/>
+                <text x="65" y="166" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">招 30 名</text>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-upcoming">📅 即将开始</span>
+                <span class="tag tag-green">志愿者招募</span>
+                <span class="tag tag-hot">急缺</span>
+              </div>
+              <div class="name">2025 秋季图书馆志愿者招募</div>
+              <div class="desc">招募图书整理、读者引导、活动执行志愿者共 30 名，服务时长可计入第二课堂，表现优秀者颁发"信航志愿者"证书。</div>
+              <div class="meta">
+                <span>📅 <b>报名截止 2025-10-30</b></span>
+                <span>📍 总馆各楼层</span>
+                <span>👤 主办 · 读者协会</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num">22</div>
+              <div class="stat-lbl">已报名 / 30 名</div>
+              <button style="padding:6px 16px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border:none;border-radius:14px;font-size:12px;cursor:pointer;font-weight:500;margin-top:4px;">立即报名</button>
+            </div>
+          </div>
+
+          <!-- 活动 5 - 即将开始 -->
+          <div class="act-item">
+            <div class="poster">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="p5g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0891b2"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs>
+                <rect width="130" height="170" fill="url(#p5g)"/>
+                <g transform="translate(65,55)" stroke="#fff" stroke-width="3" fill="none">
+                  <path d="M-18,-12 L-18,15 L18,15 L18,-12 L-18,-12"/>
+                  <line x1="-12" y1="-6" x2="12" y2="-6"/>
+                  <line x1="-12" y1="3" x2="12" y2="3"/>
+                </g>
+                <text x="65" y="105" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">数据库</text>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">培训</text>
+                <text x="65" y="140" text-anchor="middle" fill="#fff" font-size="10" opacity="0.9">· 知网</text>
+                <rect x="0" y="155" width="130" height="15" fill="#0e7490"/>
+                <text x="65" y="166" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">11-02 14:00</text>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-upcoming">📅 即将开始</span>
+                <span class="tag tag-cyan">信息素养</span>
+              </div>
+              <div class="name">学术资源检索技能培训（知网专场）</div>
+              <div class="desc">面向全院师生的数据库使用培训，涵盖 CNKI 文献检索、高级检索语法、文献管理、写作辅助等功能实操，可获信息素养学分。</div>
+              <div class="meta">
+                <span>📅 <b>2025-11-02 14:00-16:30</b></span>
+                <span>📍 总馆 2F 电子阅览室</span>
+                <span>👤 主讲 · 数据库培训师</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num">154</div>
+              <div class="stat-lbl">已报名 / 60 席</div>
+              <button style="padding:6px 16px;background:rgba(245,158,11,0.12);color:#d97706;border:1px solid #fde68a;border-radius:14px;font-size:12px;cursor:pointer;font-weight:500;margin-top:4px;">候补报名</button>
+            </div>
+          </div>
+
+          <!-- 活动 6 - 已结束 -->
+          <div class="act-item">
+            <div class="poster" style="opacity:.55;">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <rect width="130" height="170" fill="#64748b"/>
+                <g transform="translate(65,55)" stroke="#fff" stroke-width="3" fill="none">
+                  <circle r="22"/>
+                  <line x1="-8" y1="-8" x2="8" y2="8"/>
+                </g>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">已结束</text>
+                <rect x="0" y="155" width="130" height="15" fill="#475569"/>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-ended">✅ 已结束</span>
+                <span class="tag tag-purple">竞赛评比</span>
+              </div>
+              <div class="name" style="text-decoration:line-through;opacity:.7;">"我是讲书人"短视频大赛</div>
+              <div class="desc">以"我最喜欢的一本书"为主题录制 3 分钟短视频，获奖作品将在图书馆公众号展播。本次共收到 218 件作品，20 件获奖。</div>
+              <div class="meta">
+                <span>📅 <b>2025-09-01 至 09-20</b></span>
+                <span>👥 218 参与 · 20获奖</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num" style="color:var(--text-3);">218</div>
+              <div class="stat-lbl">参与人次</div>
+              <button style="padding:6px 16px;background:#fff;color:var(--text-2);border:1px solid var(--border);border-radius:14px;font-size:12px;cursor:pointer;margin-top:4px;">查看结果</button>
+            </div>
+          </div>
+
+          <!-- 活动 7 - 已结束 -->
+          <div class="act-item">
+            <div class="poster" style="opacity:.55;">
+              <svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+                <rect width="130" height="170" fill="#64748b"/>
+                <g transform="translate(65,55)" stroke="#fff" stroke-width="3" fill="none">
+                  <rect x="-20" y="-15" width="40" height="30"/>
+                  <line x1="-12" y1="-8" x2="12" y2="-8"/>
+                  <line x1="-12" y1="0" x2="12" y2="0"/>
+                  <line x1="-12" y1="8" x2="5" y2="8"/>
+                </g>
+                <text x="65" y="125" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">已结束</text>
+                <rect x="0" y="155" width="130" height="15" fill="#475569"/>
+              </svg>
+            </div>
+            <div class="info">
+              <div class="l1">
+                <span class="tag tag-ended">✅ 已结束</span>
+                <span class="tag tag-blue">新生教育</span>
+              </div>
+              <div class="name" style="text-decoration:line-through;opacity:.7;">2025 级新生入馆教育</div>
+              <div class="desc">面向2025 级新生的入馆教育课程，已完成线上学习和测试的新生 3,560 人，第二课堂学分 0.2 分已全部发放。</div>
+              <div class="meta">
+                <span>📅 <b>2025-09-01 至 09-30</b></span>
+                <span>👥 3,560 人参与</span>
+              </div>
+            </div>
+            <div class="act-stats">
+              <div class="stat-num" style="color:var(--text-3);">3,560</div>
+              <div class="stat-lbl">参与人次</div>
+              <button style="padding:6px 16px;background:#fff;color:var(--text-2);border:1px solid var(--border);border-radius:14px;font-size:12px;cursor:pointer;margin-top:4px;">查看证书</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination">
+          <div class="info">显示第 <b>1</b> - <b>7</b> 条，共 <b>12</b> 场活动</div>
+          <div class="page-controls">
+            <button class="page-btn" disabled>‹ 上一页</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">下一页 ›</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 我的报名 -->
+      <div class="my-act">
+        <h4 style="font-size:15px;color:#7c3aed;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;">🎯 我的报名</h4>
+        <div class="my-stat-grid">
+          <div class="my-stat">
+            <div class="n">2</div>
+            <div class="l">已报名</div>
+          </div>
+          <div class="my-stat">
+            <div class="n">1</div>
+            <div class="l">进行中</div>
+          </div>
+        </div>
+        <div class="my-list">
+          <div class="my-act-item">
+            <div class="ico" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">📚</div>
+            <div class="info">
+              <div class="name">秋季读书月</div>
+              <div class="time">10-08 至 11-08</div>
+            </div>
+            <span class="badge">进行中</span>
+          </div>
+          <div class="my-act-item">
+            <div class="ico" style="background:linear-gradient(135deg,#0d3b66,#4a9eff);">🎭</div>
+            <div class="info">
+              <div class="name">科幻文学沙龙</div>
+              <div class="time">10-26 14:00</div>
+            </div>
+            <span class="badge">已报名</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 活动分类 -->
+      <div class="side-card">
+        <h4>活动分类</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-page);border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(124,58,237,0.08)';this.style.color='#7c3aed';" onmouseout="this.style.background='var(--bg-page)';this.style.color='var(--text-2)';">
+            <span>🎓 名师讲堂</span>
+            <span style="font-size:11.5px;color:var(--text-3);">3 场</span>
+          </a>
+          <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-page);border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(124,58,237,0.08)';this.style.color='#7c3aed';" onmouseout="this.style.background='var(--bg-page)';this.style.color='var(--text-2)';">
+            <span>📚 读书分享</span>
+            <span style="font-size:11.5px;color:var(--text-3);">4 场</span>
+          </a>
+          <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-page);border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(124,58,237,0.08)';this.style.color='#7c3aed';" onmouseout="this.style.background='var(--bg-page)';this.style.color='var(--text-2)';">
+            <span>🎭 文化沙龙</span>
+            <span style="font-size:11.5px;color:var(--text-3);">2 场</span>
+          </a>
+          <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-page);border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(124,58,237,0.08)';this.style.color='#7c3aed';" onmouseout="this.style.background='var(--bg-page)';this.style.color='var(--text-2)';">
+            <span>🏆 竞赛评比</span>
+            <span style="font-size:11.5px;color:var(--text-3);">2 场</span>
+          </a>
+          <a style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg-page);border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(124,58,237,0.08)';this.style.color='#7c3aed';" onmouseout="this.style.background='var(--bg-page)';this.style.color='var(--text-2)';">
+            <span>🤝 志愿服务</span>
+            <span style="font-size:11.5px;color:var(--text-3);">1 场</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 联系 -->
+      <div class="side-card">
+        <h4>活动咨询</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-page);border-radius:8px;">
+            <span style="color:var(--text-3);">📞 活动热线</span>
+            <span style="font-family:ui-monospace,monospace;font-weight:500;">0000-1234568</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-page);border-radius:8px;">
+            <span style="color:var(--text-3);">📧 报名邮箱</span>
+            <span style="font-size:12.5px;">act@xihang.edu.cn</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-page);border-radius:8px;">
+            <span style="color:var(--text-3);">📍 现场报名</span>
+            <span style="font-size:12.5px;">总馆 1F 服务台</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 所有活动均支持 <b>线上报名</b>，报名成功后请准时参加。如临时有事不能到场，请至少提前 24 小时取消报名，把名额让给其他同学。活动奖励将自动累加到您的 <b>第二课堂学分</b> 与 <b>读书积分</b>。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

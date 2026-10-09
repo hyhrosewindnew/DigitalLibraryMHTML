@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的预约记录 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    --max-w: 1440px;
+  }
+  /* 顶部 / 头部 / 面包屑（同款） */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; align-items: center; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* ===== 新增：空间预约下拉菜单 ===== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before,
+  .nav-item-dropdown.active > a::before { opacity: 1; }
+  .nav-item-dropdown.active > a {
+    color: var(--primary);
+    background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%);
+  }
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease; z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important; align-items: center; gap: 12px;
+    padding: 10px 12px !important; font-size: 13.5px !important;
+    color: var(--text) !important; background: transparent !important;
+    border-radius: 10px; transition: .15s; line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ===== 下拉菜单结束 ===== */
+
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部统计 */
+  .stats-overview { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .stat-card .ico {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff;
+  }
+  .stat-card.c1 .ico { background: linear-gradient(135deg, var(--sky), #0d3b66); }
+  .stat-card.c2 .ico { background: linear-gradient(135deg, #10b981, #047857); }
+  .stat-card.c3 .ico { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .stat-card.c4 .ico { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .stat-card.c5 .ico { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+  .stat-card .num { font-size: 26px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat-card .lbl { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+
+  /* 主区 */
+  .layout { display: grid; grid-template-columns: 1fr 320px; gap: 18px; }
+
+  /* 左侧 - 记录列表 */
+  .main-content { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .content-tabs { display: flex; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fafcff, #fff); }
+  .content-tabs span {
+    padding: 14px 22px; font-size: 14px; color: var(--text-2);
+    cursor: pointer; position: relative; transition: .15s; font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .content-tabs span:hover { color: var(--primary); }
+  .content-tabs span.active { color: var(--primary); font-weight: 600; border-bottom: 2px solid var(--sky); }
+  .content-tabs span .count { font-size: 11px; background: var(--bg-page); color: var(--text-3); padding: 1px 7px; border-radius: 8px; }
+  .content-tabs span.active .count { background: rgba(74,158,255,0.12); color: var(--primary); }
+
+  /* 筛选条 */
+  .content-filters {
+    padding: 14px 22px; border-bottom: 1px solid var(--border-light);
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .content-filters .search-box { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
+  .content-filters .search-box input {
+    width: 100%; height: 34px; padding: 0 12px 0 32px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--text); outline: none; font-family: inherit;
+  }
+  .content-filters .search-box input:focus { border-color: var(--sky); }
+  .content-filters .search-box .ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 14px; }
+  .filter-chip-select {
+    height: 34px; padding: 0 28px 0 10px; border: 1px solid var(--border);
+    border-radius: 8px; background: #fff; font-size: 12.5px; color: var(--text);
+    cursor: pointer; outline: none; font-family: inherit; min-width: 110px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .filter-chip-select:focus { border-color: var(--sky); }
+
+  /* 记录卡片列表 */
+  .record-list { display: flex; flex-direction: column; }
+  .record-item {
+    display: flex; gap: 16px; padding: 18px 22px; border-bottom: 1px solid var(--border-light);
+    transition: .2s; align-items: center;
+  }
+  .record-item:last-child { border-bottom: none; }
+  .record-item:hover { background: #fafcff; }
+
+  .record-type {
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex-shrink: 0; color: #fff; font-size: 11px; font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .record-type.seat { background: linear-gradient(135deg, #4a9eff, #0d3b66); }
+  .record-type.room { background: linear-gradient(135deg, #10b981, #047857); }
+  .record-type .ico { font-size: 22px; line-height: 1; }
+  .record-type .lbl { font-size: 10px; opacity: .85; margin-top: 2px; }
+
+  .record-main { flex: 1; min-width: 0; }
+  .record-main .l1 {
+    font-size: 15px; color: var(--text); font-weight: 600;
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .record-main .l1 .pill {
+    font-size: 11px; padding: 2px 9px; border-radius: 11px; font-weight: 500;
+  }
+  .pill.pending { background: rgba(245,158,11,0.12); color: #d97706; }
+  .pill.inuse { background: rgba(22,197,94,0.12); color: #16a34a; }
+  .pill.temp { background: rgba(67,56,202,0.12); color: #4338ca; }
+  .pill.supervising { background: rgba(124,58,237,0.12); color: #7c3aed; }
+  .pill.completed { background: rgba(14,165,233,0.12); color: #075985; }
+  .pill.cancelled { background: rgba(107,114,128,0.12); color: #6b7280; }
+  .pill.noshow { background: rgba(220,38,38,0.12); color: #b91c1c; }
+  .pill.overdue { background: rgba(161,18,18,0.12); color: #a11212; }
+  .pill.minnotreach { background: rgba(180,107,0,0.12); color: #b46b00; }
+  .pill::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 5px; }
+
+  .record-main .l2 {
+    font-size: 12.5px; color: var(--text-2);
+    display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 4px;
+  }
+  .record-main .l2 span { display: flex; align-items: center; gap: 4px; }
+  .record-main .l2 b { color: var(--text); font-weight: 500; }
+  .record-main .l3 { font-size: 12px; color: var(--text-3); }
+  .record-main .l3 .hl { color: var(--warning); font-weight: 500; }
+  .record-main .l3 .hl-good { color: var(--success); font-weight: 500; }
+  .record-main .l3 .hl-bad { color: var(--error); font-weight: 500; }
+
+  .record-actions { display: flex; flex-direction: column; gap: 6px; }
+  .record-actions button {
+    padding: 6px 16px; font-size: 12.5px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; border: 1px solid; transition: .15s; min-width: 100px;
+  }
+  .btn-checkin-mini { background: rgba(22,197,94,0.1); color: #16a34a; border-color: rgba(22,197,94,0.3); }
+  .btn-checkin-mini:hover { background: rgba(22,197,94,0.2); }
+  .btn-cancel-mini { background: rgba(220,38,38,0.08); color: #dc2626; border-color: rgba(220,38,38,0.2); }
+  .btn-cancel-mini:hover { background: rgba(220,38,38,0.15); }
+  .btn-detail-mini { background: #fff; color: var(--sky); border-color: var(--sky); }
+  .btn-detail-mini:hover { background: rgba(74,158,255,0.06); }
+  .btn-restore-mini { background: rgba(22,197,94,0.1); color: #16a34a; border-color: rgba(22,197,94,0.3); }
+  .btn-restore-mini:hover { background: rgba(22,197,94,0.2); }
+  .btn-disabled { background: #f5f5f5; color: #a3a3a3; border-color: #d4d4d4; cursor: not-allowed; }
+
+  /* 右侧 - 我的卡 + 统计 */
+  .side-content { display: flex; flex-direction: column; gap: 16px; }
+
+  /* 快捷操作 */
+  .quick-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .quick-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .quick-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quick-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 8px; background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: .2s; font-size: 12px; color: var(--text-2);
+  }
+  .quick-btn:hover { transform: translateY(-2px); border-color: var(--sky); color: var(--primary); background: linear-gradient(135deg, #eff6ff, #f0f9ff); }
+  .quick-btn .ico { font-size: 22px; }
+
+  /* 信用 */
+  .credit-card {
+    background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+    border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px;
+  }
+  .credit-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .credit-card h4::before { content: '🛡'; }
+  .credit-score { text-align: center; padding: 12px 0; }
+  .credit-score .num { font-size: 36px; font-weight: 700; color: var(--success); font-variant-numeric: tabular-nums; line-height: 1; }
+  .credit-score .lbl { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+  .credit-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .credit-stat-item { padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px; text-align: center; }
+  .credit-stat-item .n { font-size: 18px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .credit-stat-item .l { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .credit-tip { font-size: 12px; color: var(--text-2); line-height: 1.7; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+
+  /* 状态说明 */
+  .status-help-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .status-help-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .status-help-card h4::before { content: '📖'; }
+  .status-list { display: flex; flex-direction: column; gap: 8px; }
+  .status-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); }
+  .status-item .lbl { color: var(--text-3); width: 80px; flex-shrink: 0; }
+  .status-item .desc { color: var(--text-2); }
+
+  /* 提示 */
+  .notice-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
+  }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  /* 分页 */
+  .pagination {
+    padding: 14px 22px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; background: #fafcff;
+  }
+  .pagination .info { font-size: 12.5px; color: var(--text-3); }
+  .pagination .info b { color: var(--text); }
+  .page-controls { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 32px; height: 32px; padding: 0 10px; border: 1px solid var(--border);
+    background: #fff; color: var(--text-2); border-radius: 6px; font-size: 12.5px;
+    cursor: pointer; transition: .15s; font-family: inherit;
+  }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--sky); color: var(--sky); }
+  .page-btn.active { background: var(--sky); border-color: var(--sky); color: #fff; }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .page-ellipsis { color: var(--text-3); padding: 0 4px; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 20px; font-size: 13.5px; border-left: 3px solid var(--success); animation: slideDown .2s ease; white-space: nowrap; }
+  .toast.error { border-left-color: var(--error); }
+  .toast.warn { border-left-color: var(--warning); }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+  /* 弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .mask.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: pop .2s ease; overflow: hidden; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h3 { font-size: 16px; font-weight: 600; }
+  .modal-close { width: 30px; height: 30px; border-radius: 6px; background: transparent; border: none; cursor: pointer; color: var(--text-3); font-size: 18px; }
+  .modal-close:hover { background: var(--bg-page); color: var(--text); }
+  .modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+  .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #fafcff; }
+  .timeline { position: relative; padding-left: 18px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+  .timeline-item { position: relative; padding-bottom: 12px; font-size: 13px; color: var(--text); }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-item::before { content: ''; position: absolute; left: -18px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--border); }
+  .timeline-item.active::before { background: var(--sky); border-color: var(--sky); box-shadow: 0 0 0 3px rgba(74,158,255,0.18); }
+  .timeline-item .ti-time { font-size: 11.5px; color: var(--text-3); font-family: ui-monospace, monospace; margin-top: 2px; }
+  .btn-action { padding: 9px 22px; border: none; border-radius: 8px; background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .btn-ghost { padding: 9px 18px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text-2); font-weight: 500; font-size: 13.5px; cursor: pointer; }
+  .btn-ghost:hover { border-color: var(--sky); color: var(--sky); }
+
+  @media (max-width: 1240px) {
+    .stats-overview { grid-template-columns: repeat(3, 1fr); }
+    .layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="馆藏检索.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+
+      <!-- ① 空间预约改为下拉菜单（原 <a href="#" class="active">空间预约</a>） -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" class="active" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+      <!-- 下拉菜单结束 -->
+
+      <a href="个人中心.html">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="我的预约记录.html">空间预约</a>  <!-- ② 原来 href="seat-reservation.html" 改成我的预约记录.html -->
+    <span class="sep">›</span>
+    <span class="current">我的预约记录</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部统计 -->
+  <div class="stats-overview">
+    <div class="stat-card c1">
+      <div class="ico">🪑</div>
+      <div>
+        <div class="num">9</div>
+        <div class="lbl">座位预约（含 1 待签到）</div>
+      </div>
+    </div>
+    <div class="stat-card c2">
+      <div class="ico">🏠</div>
+      <div>
+        <div class="num">7</div>
+        <div class="lbl">研修室预约（含 1 进行中）</div>
+      </div>
+    </div>
+    <div class="stat-card c3">
+      <div class="ico">⏰</div>
+      <div>
+        <div class="num">2</div>
+        <div class="lbl">待签到（30 分钟内）</div>
+      </div>
+    </div>
+    <div class="stat-card c4">
+      <div class="ico">✅</div>
+      <div>
+        <div class="num">13</div>
+        <div class="lbl">累计已完成</div>
+      </div>
+    </div>
+    <div class="stat-card c5">
+      <div class="ico">⚠</div>
+      <div>
+        <div class="num">1</div>
+        <div class="lbl">累计违约</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- 左侧 - 记录列表 -->
+    <main class="main-content">
+      <div class="content-tabs">
+        <span class="active" onclick="switchTab('all', this)">📋 全部 <span class="count">16</span></span>
+        <span onclick="switchTab('seat', this)">🪑 座位预约 <span class="count">9</span></span>
+        <span onclick="switchTab('room', this)">🏠 研修室预约 <span class="count">7</span></span>
+        <span onclick="switchTab('pending', this)">⏰ 待签到 <span class="count">2</span></span>
+        <span onclick="switchTab('completed', this)">✅ 已完成 <span class="count">13</span></span>
+        <span onclick="switchTab('cancelled', this)">❌ 已取消/违约 <span class="count">1</span></span>
+      </div>
+
+      <!-- 筛选 -->
+      <div class="content-filters">
+        <div class="search-box">
+          <span class="ico">🔍</span>
+          <input type="text" placeholder="搜索记录ID / 座位号 / 研修室 / 用途...">
+        </div>
+        <select class="filter-chip-select">
+          <option>所有日期</option>
+          <option>今天</option>
+          <option>明天</option>
+          <option>本周</option>
+          <option>本月</option>
+        </select>
+        <select class="filter-chip-select">
+          <option>所有类型</option>
+          <option>个人预约</option>
+          <option>小组预约</option>
+          <option>学术活动</option>
+        </select>
+        <select class="filter-chip-select">
+          <option>所有状态</option>
+          <option>待签到</option>
+          <option>使用中</option>
+          <option>已完成</option>
+        </select>
+      </div>
+
+      <!-- 记录列表 -->
+      <div class="record-list">
+
+        <!-- 记录 1 - 待签到 -->
+        <div class="record-item">
+          <div class="record-type seat">
+            <div class="ico">🪑</div>
+            <div class="lbl">座位</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">座位 <b>A-102</b> <span class="pill pending">待签到</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 2F / 自习区 A</b></span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>🕒 16:00 - 20:00（4h）</span>
+            </div>
+            <div class="l3">记录ID #R24040901 · 创建于 12-09 13:42 · 签到剩余 <span class="hl">18 分钟</span></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-checkin-mini" onclick="toast('签到成功，进入「使用中」', '')">📲 签到</button>
+            <button class="btn-cancel-mini" onclick="toast('已取消预约', 'warn')">取消</button>
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+          </div>
+        </div>
+
+        <!-- 记录 2 - 使用中 -->
+        <div class="record-item">
+          <div class="record-type seat">
+            <div class="ico">🪑</div>
+            <div class="lbl">座位</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">座位 <b>B-215</b> <span class="pill inuse">使用中</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 2F / 自习区 B</b></span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>🕒 10:00 - 14:00（4h）</span>
+            </div>
+            <div class="l3">记录ID #R24040902 · 创建于 12-09 09:25 · 已使用 <span class="hl-good">1h 22m</span> · 剩余 2h 38m</div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+            <button class="btn-restore-mini" onclick="toast('已签退，座位已释放', '')">签退</button>
+          </div>
+        </div>
+
+        <!-- 记录 3 - 研修室进行中 -->
+        <div class="record-item">
+          <div class="record-type room">
+            <div class="ico">🏠</div>
+            <div class="lbl">研修室</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">多媒体研讨间 A <span class="pill inuse">使用中</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 2F / 多媒体区</b>（YJS-2F-201）</span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>🕒 14:00 - 18:00（4h）</span>
+            </div>
+            <div class="l3">记录ID #R2025040901 · 用途：<b>本科毕设答辩</b> · 共同预约人 <b>4 人</b> · 已使用 <span class="hl-good">1h 05m</span></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+            <button class="btn-cancel-mini" onclick="toast('已临时离开，保留 30 分钟', 'warn')">📍 暂离</button>
+            <button class="btn-restore-mini" onclick="toast('已签退，研修室已释放', '')">签退</button>
+          </div>
+        </div>
+
+        <!-- 记录 4 - 暂离中 -->
+        <div class="record-item">
+          <div class="record-type seat">
+            <div class="ico">🪑</div>
+            <div class="lbl">座位</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">座位 <b>A-078</b> <span class="pill temp">暂离中</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 2F / 自习区 A</b></span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>🕒 12:00 - 16:00（4h）</span>
+            </div>
+            <div class="l3">记录ID #R24040903 · 创建于 12-09 11:55 · 暂离剩余 <span class="hl">08:32</span> · 超时未回将记违约</div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-restore-mini" onclick="toast('已恢复使用', '')">✓ 回来</button>
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+          </div>
+        </div>
+
+        <!-- 记录 5 - 待签到（明天） -->
+        <div class="record-item">
+          <div class="record-type room">
+            <div class="ico">🏠</div>
+            <div class="lbl">研修室</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">多媒体研讨间 B <span class="pill pending">待签到</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 2F / 多媒体区</b>（YJS-2F-202）</span>
+              <span>📅 <b>明天 12-10</b></span>
+              <span>🕒 10:00 - 12:00（2h）</span>
+            </div>
+            <div class="l3">记录ID #R2025041002 · 用途：<b>毕业论文讨论</b> · 共同预约人 <b>3 人</b> · 待明日 10:00 签到</div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+            <button class="btn-cancel-mini" onclick="toast('已取消预约', 'warn')">取消</button>
+          </div>
+        </div>
+
+        <!-- 记录 6 - 已完成 -->
+        <div class="record-item">
+          <div class="record-type seat">
+            <div class="ico">🪑</div>
+            <div class="lbl">座位</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">座位 <b>C-088</b> <span class="pill completed">已完成</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 3F / 电子阅览区</b></span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>�� 08:00 - 10:00（2h）</span>
+            </div>
+            <div class="l3">记录ID #R24040912 · 12-09 08:02 签到 → 10:00 签退 · 按时归还 · <span class="hl-good">无违约</span></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+            <button class="btn-disabled" disabled>已归档</button>
+          </div>
+        </div>
+
+        <!-- 记录 7 - 已取消 -->
+        <div class="record-item">
+          <div class="record-type seat">
+            <div class="ico">��</div>
+            <div class="lbl">座位</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">座位 <b>A-156</b> <span class="pill cancelled">已取消</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 2F / 自习区 A</b></span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>🕒 10:00 - 12:00（2h）</span>
+            </div>
+            <div class="l3">记录ID #R24040905 · 创建于 12-09 08:30 · 用户主动取消 08:42 · <span class="hl-bad">信用分 -5</span></div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+            <button class="btn-restore-mini" onclick="toast('已重新启用', '')">重新预约</button>
+          </div>
+        </div>
+
+        <!-- 记录 8 - 监督中 -->
+        <div class="record-item">
+          <div class="record-type seat">
+            <div class="ico">🪑</div>
+            <div class="lbl">座位</div>
+          </div>
+          <div class="record-main">
+            <div class="l1">座位 <b>C-032</b> <span class="pill supervising">被监督中</span></div>
+            <div class="l2">
+              <span>📍 <b>总馆 / 3F / 电子阅览区</b></span>
+              <span>📅 <b>今天 12-09</b></span>
+              <span>🕒 16:00 - 20:00（4h）</span>
+            </div>
+            <div class="l3">记录ID #R24040904 · 邻座发起监督 · 需 <span class="hl">8 分钟内返回</span>扫码自证，否则记违约</div>
+          </div>
+          <div class="record-actions">
+            <button class="btn-restore-mini" onclick="toast('已确认返回，恢复使用', '')">已返回</button>
+            <button class="btn-cancel-mini" onclick="toast('已超时清退，座位释放', 'warn')">超时清退</button>
+            <button class="btn-detail-mini" onclick="openDetail()">详情</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination">
+        <div class="info">显示第 <b>1</b> - <b>8</b> 条，共 <b>16</b> 条记录</div>
+        <div class="page-controls">
+          <button class="page-btn" disabled>‹ 上一页</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span class="page-ellipsis">···</span>
+          <button class="page-btn">下一页 ›</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 右侧 -->
+    <aside class="side-content">
+
+      <!-- 快捷操作 -->
+      <div class="quick-card">
+        <h4>快捷操作</h4>
+        <div class="quick-grid">
+          <div class="quick-btn" onclick="location.href='seat-reservation.html'">
+            <div class="ico">🪑</div>
+            <span>预约座位</span>
+          </div>
+          <div class="quick-btn" onclick="location.href='room-reservation.html'">
+            <div class="ico">🏠</div>
+            <span>预约研修室</span>
+          </div>
+          <div class="quick-btn" onclick="toast('正在跳转历史记录...', '')">
+            <div class="ico">📜</div>
+            <span>历史记录</span>
+          </div>
+          <div class="quick-btn" onclick="toast('正在跳转违约查询...', '')">
+            <div class="ico">📋</div>
+            <span>违约查询</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 信用 -->
+      <div class="credit-card">
+        <h4>我的信用分</h4>
+        <div class="credit-score">
+          <div class="num">95</div>
+          <div class="lbl">信用分满分 100 · 信用良好</div>
+        </div>
+        <div class="credit-stats">
+          <div class="credit-stat-item">
+            <div class="n" style="color: #16a34a;">13</div>
+            <div class="l">按时履约</div>
+          </div>
+          <div class="credit-stat-item">
+            <div class="n" style="color: #dc2626;">1</div>
+            <div class="l">累计违约</div>
+          </div>
+          <div class="credit-stat-item">
+            <div class="n" style="color: #f59e0b;">2</div>
+            <div class="l">取消预约</div>
+          </div>
+          <div class="credit-stat-item">
+            <div class="n">0</div>
+            <div class="l">未签离</div>
+          </div>
+        </div>
+        <div class="credit-tip">
+          💡 <b>信用分说明：</b>单次未签到 / 暂离超时 / 未签离扣 5 分；连续 3 次违约暂停预约 7 天；信用分 < 80 不可预约热门时段。
+        </div>
+      </div>
+
+      <!-- 状态说明 -->
+      <div class="status-help-card">
+        <h4>状态说明</h4>
+        <div class="status-list">
+          <div class="status-item"><span class="pill pending">待签到</span><span class="desc">已预约，15-30 分钟内需签到</span></div>
+          <div class="status-item"><span class="pill inuse">使用中</span><span class="desc">正常签到，计时开始</span></div>
+          <div class="status-item"><span class="pill temp">暂离中</span><span class="desc">临时离开，保留 30 分钟</span></div>
+          <div class="status-item"><span class="pill supervising">被监督中</span><span class="desc">被举报无人，等待自证</span></div>
+          <div class="status-item"><span class="pill completed">已完成</span><span class="desc">正常签退，流程闭环</span></div>
+          <div class="status-item"><span class="pill noshow">未签到</span><span class="desc">超时未签到，记违约</span></div>
+          <div class="status-item"><span class="pill overdue">逾期未签退</span><span class="desc">用完未签退，记违约</span></div>
+          <div class="status-item"><span class="pill cancelled">已取消</span><span class="desc">预约终止，归档</span></div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">⏰</span>
+    <div class="text">
+      <b>温馨提醒：</b> 您有 <b>2 条</b> 预约待签到，其中座位 <b>A-102</b> 将在 <b>18 分钟</b> 后自动取消；研修室 <b>多媒体研讨间 B</b> 明天 10:00 开始。请合理安排时间，避免违约。
+    </div>
+  </div>
+
+</div>
+
+<!-- 详情弹窗 -->
+<div class="mask" id="detailMask">
+  <div class="modal" style="width: 720px;">
+    <div class="modal-header">
+      <h3>📄 预约详情 · 座位 A-102</h3>
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background: linear-gradient(135deg, #fafcff, #f5f9ff); border-radius: 10px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px;">
+        <div><div style="font-size: 11.5px; color: var(--text-3);">记录ID</div><div style="font-size: 13.5px; font-family: ui-monospace, monospace;">#R24040901</div></div>
+        <div><div style="font-size: 11.5px; color: var(--text-3);">创建时间</div><div style="font-size: 13.5px;">2025-12-09 13:42</div></div>
+        <div><div style="font-size: 11.5px; color: var(--text-3);">座位号</div><div style="font-size: 13.5px; font-weight: 600;">A-102</div></div>
+        <div><div style="font-size: 11.5px; color: var(--text-3);">位置</div><div style="font-size: 13.5px;">总馆 / 2F / 自习区 A</div></div>
+        <div><div style="font-size: 11.5px; color: var(--text-3);">预约时段</div><div style="font-size: 13.5px;">12-09 16:00 - 20:00（4h）</div></div>
+        <div><div style="font-size: 11.5px; color: var(--text-3);">状态</div><div style="font-size: 13.5px;"><span class="pill pending">待签到</span></div></div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item active">
+          <div>预约创建</div>
+          <div class="ti-time">2025-12-09 13:42</div>
+        </div>
+        <div class="timeline-item">
+          <div>读者签到（待执行）</div>
+          <div class="ti-time">预计 2025-12-09 16:00 - 16:30</div>
+        </div>
+        <div class="timeline-item">
+          <div>读者签退 / 自动取消</div>
+          <div class="ti-time">预计 2025-12-09 20:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeDetail()">关闭</button>
+      <button class="btn-action" onclick="toast('签到成功', ''); closeDetail();">📲 立即签到</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  // ===== 新增：当前页高亮 + 触屏 click =====
+  (function(){
+    const sp = document.getElementById('navSpace');
+    if (!sp) return;
+    const here = location.pathname.split('/').pop();
+    if (['座位预约.html','研修室预约.html','我的预约记录.html'].includes(here)) sp.classList.add('active');
+    sp.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) { e.preventDefault(); sp.classList.toggle('open'); }
+    });
+    document.addEventListener('click', e => { if (!sp.contains(e.target)) sp.classList.remove('open'); });
+  })();
+
+  function toast(msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = '.25s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-8px)';
+      setTimeout(() => el.remove(), 250);
+    }, 2200);
+  }
+  function switchTab(key, el) {
+    document.querySelectorAll('.content-tabs span').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function openDetail() { document.getElementById('detailMask').classList.add('show'); }
+  function closeDetail() { document.getElementById('detailMask').classList.remove('show'); }
+</script>
+
+</body>
+</html>

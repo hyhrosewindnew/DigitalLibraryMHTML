@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高级检索 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --max-w: 1440px;
+  }
+
+  /* 顶部栏 / 头部 / 面包屑（与首页同款） */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 16px rgba(74,158,255,0.3); }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 2px 10px rgba(139,92,246,0.35); }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); transition: .2s; }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 28px 30px 60px; }
+
+  /* 高级检索头部 */
+  .adv-hero {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px; padding: 30px 36px; color: #fff;
+    position: relative; overflow: hidden; margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.15);
+  }
+  .adv-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 40%),
+      radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.1) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .adv-hero-content { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; }
+  .adv-hero h2 { font-size: 24px; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .adv-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; }
+  .adv-hero p b { color: var(--gold); font-weight: 600; }
+  .adv-hero-stats { display: flex; gap: 24px; padding: 14px 22px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; backdrop-filter: blur(10px); }
+  .adv-hero-stat { text-align: center; }
+  .adv-hero-stat .num { font-size: 22px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .adv-hero-stat .lbl { font-size: 11px; opacity: .85; margin-top: 2px; }
+
+  /* 主表单 */
+  .adv-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .adv-tabs {
+    display: flex; gap: 0; padding: 0 12px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .adv-tabs span {
+    padding: 16px 24px; font-size: 14.5px; color: var(--text-2);
+    cursor: pointer; position: relative; font-weight: 500;
+    transition: .2s; border-bottom: 2px solid transparent;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .adv-tabs span:hover { color: var(--primary); }
+  .adv-tabs span.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--sky); }
+
+  .adv-form { padding: 28px 32px; }
+
+  /* 字段行 */
+  .field-row {
+    display: grid; grid-template-columns: 100px 1fr auto; gap: 14px;
+    align-items: center; padding: 14px 0; border-bottom: 1px dashed var(--border);
+  }
+  .field-row:last-child { border-bottom: none; }
+  .field-row .label {
+    font-size: 13.5px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field-row .label .req { color: var(--error); }
+  .field-row .label .opt { color: var(--text-3); font-weight: normal; font-size: 11px; }
+  .field-row .label .help { cursor: help; color: var(--text-3); font-size: 14px; }
+  .field-row .input-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .field-input {
+    flex: 1; min-width: 0; height: 38px; padding: 0 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: #fff; font-size: 13.5px; outline: none; color: var(--text);
+    font-family: inherit; transition: .2s;
+  }
+  .field-input:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(74,158,255,0.12); }
+  .field-input.mono { font-family: "SF Mono", Consolas, monospace; }
+  .field-input::placeholder { color: var(--text-3); }
+
+  .field-op {
+    width: 90px; height: 38px; padding: 0 10px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: #fff; font-size: 13px; color: var(--text);
+    cursor: pointer; outline: none; font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 26px;
+  }
+  .field-op:focus { border-color: var(--sky); }
+  .field-op.and { color: var(--success); font-weight: 600; background: rgba(34,197,94,0.06); }
+  .field-op.or { color: var(--accent); font-weight: 600; background: rgba(245,158,11,0.06); }
+  .field-op.not { color: var(--error); font-weight: 600; background: rgba(239,68,68,0.06); }
+
+  .field-row .remove {
+    width: 32px; height: 32px; border-radius: 6px;
+    border: 1px solid var(--border); background: #fff; color: var(--text-3);
+    cursor: pointer; transition: .2s; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .field-row .remove:hover { border-color: var(--error); color: var(--error); background: var(--error); background: rgba(239,68,68,0.06); }
+  .field-row .remove:disabled { opacity: .3; cursor: not-allowed; }
+
+  /* 复合检索行 */
+  .row-block {
+    grid-column: 1 / -1; margin-top: 4px;
+  }
+  .row-block .row-add {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(74,158,255,0.04), rgba(13,59,102,0.02));
+    border: 1px dashed var(--border); border-radius: 8px;
+    cursor: pointer; transition: .2s; color: var(--primary); font-size: 13px;
+  }
+  .row-block .row-add:hover { background: rgba(74,158,255,0.08); border-color: var(--sky); }
+
+  /* 分类专属 */
+  .field-row .cls-input { font-family: "SF Mono", Consolas, monospace; }
+  .cls-suggest {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; width: 100%;
+  }
+  .cls-suggest span {
+    padding: 4px 10px; background: #f0f9ff; color: #1d4ed8;
+    border-radius: 12px; font-size: 12px; cursor: pointer; font-family: "SF Mono", Consolas, monospace;
+    transition: .2s; border: 1px solid transparent;
+  }
+  .cls-suggest span:hover { background: var(--sky); color: #fff; }
+  .cls-suggest span b { font-weight: 600; }
+
+  /* 主题词标签 */
+  .subject-input-wrap {
+    flex: 1; display: flex; flex-wrap: wrap; gap: 6px;
+    min-height: 38px; padding: 5px 8px; border: 1px solid var(--border);
+    border-radius: 8px; background: #fff; align-items: center;
+  }
+  .subject-input-wrap:focus-within { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(74,158,255,0.12); }
+  .subject-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; background: linear-gradient(135deg, #f0f9ff, #ecf5ff);
+    color: #1d4ed8; border-radius: 12px; font-size: 12.5px;
+    border: 1px solid #d0e3ff;
+  }
+  .subject-tag .x { cursor: pointer; opacity: .5; font-size: 14px; }
+  .subject-tag .x:hover { opacity: 1; color: var(--error); }
+  .subject-input {
+    flex: 1; min-width: 120px; border: none; outline: none; font-size: 13.5px;
+    padding: 4px 6px; background: transparent;
+  }
+  .subject-suggest {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; width: 100%;
+  }
+  .subject-suggest .quick {
+    font-size: 11.5px; color: var(--text-3);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .subject-suggest .quick a {
+    padding: 2px 8px; background: var(--bg-page); color: var(--text-2);
+    border-radius: 10px; transition: .2s;
+  }
+  .subject-suggest .quick a:hover { background: var(--sky); color: #fff; }
+
+  /* 复本状态 */
+  .status-group { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .status-chip {
+    padding: 7px 16px; border: 1px solid var(--border);
+    background: #fff; border-radius: 18px; font-size: 13px;
+    color: var(--text-2); cursor: pointer; transition: .2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .status-chip:hover { border-color: var(--sky); color: var(--sky); }
+  .status-chip.active {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(74,158,255,0.25);
+  }
+  .status-chip::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; opacity: .7;
+  }
+
+  /* 馆藏地 */
+  .loc-group { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .loc-chip {
+    padding: 6px 12px 6px 10px; border: 1px solid var(--border);
+    background: #fff; border-radius: 16px; font-size: 12.5px;
+    color: var(--text-2); cursor: pointer; transition: .2s;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .loc-chip .area-code {
+    font-family: "SF Mono", Consolas, monospace;
+    background: #ecf5ff; color: #1d4ed8;
+    padding: 1px 6px; border-radius: 4px; font-size: 11.5px;
+  }
+  .loc-chip:hover { border-color: var(--sky); color: var(--sky); }
+  .loc-chip.active {
+    background: rgba(74,158,255,0.08); border-color: var(--sky); color: var(--primary);
+  }
+  .loc-chip.active .area-code { background: var(--sky); color: #fff; }
+
+  /* 底部按钮 */
+  .adv-form-footer {
+    margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  }
+  .adv-form-footer .left { display: flex; gap: 10px; }
+  .adv-form-footer .right { display: flex; gap: 10px; }
+  .btn-add {
+    background: #fff; color: var(--primary); border: 1px dashed var(--primary);
+    padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: .2s;
+  }
+  .btn-add:hover { background: rgba(74,158,255,0.06); }
+  .btn-reset {
+    background: #fff; color: var(--text-2); border: 1px solid var(--border);
+    padding: 10px 20px; border-radius: 8px; font-size: 13.5px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: .2s;
+  }
+  .btn-reset:hover { border-color: var(--warning); color: var(--warning); }
+  .btn-save {
+    background: #fff; color: var(--text-2); border: 1px solid var(--border);
+    padding: 10px 20px; border-radius: 8px; font-size: 13.5px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: .2s;
+  }
+  .btn-save:hover { border-color: var(--sky); color: var(--sky); }
+  .btn-search {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    color: #fff; border: none; padding: 11px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 6px 14px rgba(74,158,255,0.3); transition: .2s;
+  }
+  .btn-search:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(74,158,255,0.45); }
+
+  /* 检索表达式 */
+  .expr-card {
+    margin-top: 18px; background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .expr-head {
+    padding: 14px 22px; border-bottom: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .expr-head h4 { font-size: 14.5px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .expr-head h4::before { content: '🔎'; font-size: 16px; }
+  .expr-body { padding: 18px 22px; }
+  .expr-code {
+    padding: 14px 18px; background: #1e293b; color: #a5f3fc;
+    border-radius: 8px; font-family: "SF Mono", Consolas, monospace;
+    font-size: 13px; line-height: 1.8; word-break: break-all;
+    border: 1px solid #334155;
+  }
+  .expr-code .kw { color: #fcd34d; }
+  .expr-code .op { color: #fca5a5; }
+  .expr-code .val { color: #a5f3fc; }
+  .expr-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .expr-tag {
+    padding: 4px 10px; background: rgba(74,158,255,0.08); color: var(--primary);
+    border-radius: 12px; font-size: 12px;
+  }
+  .expr-tag b { font-weight: 600; }
+
+  /* 历史与热门 */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  .info-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .info-card h4 {
+    font-size: 15px; color: var(--text); font-weight: 600;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+  }
+  .info-card h4::before { content: ''; width: 3px; height: 14px; background: var(--sky); border-radius: 2px; }
+  .history-list { display: flex; flex-direction: column; gap: 4px; }
+  .history-list li {
+    display: flex; align-items: center; gap: 10px; padding: 10px 8px;
+    border-radius: 8px; font-size: 13px; color: var(--text); transition: .15s; cursor: pointer;
+  }
+  .history-list li:hover { background: var(--bg-page); }
+  .history-list li .time { color: var(--text-3); font-size: 11.5px; min-width: 50px; font-family: "SF Mono", Consolas, monospace; }
+  .history-list li .kw { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .history-list li .kw b { color: var(--primary); }
+  .history-list li .hits { font-size: 11.5px; color: var(--text-3); }
+  .history-list li .x { color: var(--text-3); font-size: 14px; cursor: pointer; }
+  .history-list li .x:hover { color: var(--error); }
+
+  .hot-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hot-list a {
+    padding: 6px 14px; background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    color: var(--text-2); border-radius: 14px; font-size: 12.5px;
+    border: 1px solid var(--border); transition: .2s; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .hot-list a:hover { background: var(--sky); color: #fff; border-color: var(--sky); }
+  .hot-list a .rank { font-family: "SF Mono", Consolas, monospace; color: var(--accent); font-weight: 700; }
+  .hot-list a:hover .rank { color: #fff; }
+  .hot-list a .rank.top { color: var(--error); }
+
+  /* 帮助 */
+  .help-card {
+    margin-top: 18px; background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fde68a; border-radius: 12px; padding: 18px 22px;
+  }
+  .help-card h4 { font-size: 14.5px; color: #92400e; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .help-card ul { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px; font-size: 12.5px; color: #78350f; line-height: 1.7; }
+  .help-card ul li { padding-left: 16px; position: relative; }
+  .help-card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--accent); font-weight: 700; }
+  .help-card code {
+    background: rgba(146,64,14,0.1); color: #92400e; padding: 1px 6px;
+    border-radius: 4px; font-family: "SF Mono", Consolas, monospace; font-size: 12px;
+  }
+
+  @media (max-width: 1240px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .adv-hero-content { grid-template-columns: 1fr; }
+    .adv-hero-stats { display: none; }
+    .field-row { grid-template-columns: 90px 1fr; }
+    .field-row .remove { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html" class="active">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">馆藏检索</a>
+    <span class="sep">›</span>
+    <span class="current">高级检索</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="adv-hero">
+    <div class="adv-hero-content">
+      <div>
+        <h2>⚙ 高级检索 · 精准定位您的资源</h2>
+        <p>支持 <b>ISBN / 主题词 / 中图法分类号 / 作者 / 出版社</b> 等多字段组合检索，可使用 <b>AND / OR / NOT</b> 逻辑算符构建复杂检索表达式。系统已建立 <b>86 万册</b> 馆藏元数据索引，响应毫秒级。</p>
+      </div>
+      <div class="adv-hero-stats">
+        <div class="adv-hero-stat"><div class="num">86万</div><div class="lbl">馆藏元数据</div></div>
+        <div class="adv-hero-stat"><div class="num">12万</div><div class="lbl">主题词表</div></div>
+        <div class="adv-hero-stat"><div class="num">2.4万</div><div class="lbl">分类条目</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主表单 -->
+  <div class="adv-card">
+
+    <div class="adv-tabs">
+      <span class="active">📚 馆藏书目</span>
+      <span>📖 电子图书</span>
+      <span>📰 期刊论文</span>
+      <span>🎓 学位论文</span>
+      <span>🎬 多媒体</span>
+    </div>
+
+    <div class="adv-form">
+
+      <!-- 字段 1：标题 -->
+      <div class="field-row">
+        <div class="label">题　名<span class="opt">（可选）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <input type="text" class="field-input" value="航空发动机" placeholder="请输入书名或篇名，支持模糊匹配">
+        </div>
+        <button class="remove" disabled>×</button>
+      </div>
+
+      <!-- 字段 2：作者 -->
+      <div class="field-row">
+        <div class="label">作　者<span class="opt">（可选）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <input type="text" class="field-input" value="刘永泉" placeholder="作者姓名，支持模糊匹配">
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 字段 3：ISBN -->
+      <div class="field-row">
+        <div class="label">ISBN<span class="opt">（精确）</span> <span class="help" title="支持ISBN-10/13，校验通过后自动格式化">ⓘ</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <input type="text" class="field-input mono" value="978-7-5124-1234-5" placeholder="978-7-xxxx-xxxx-x">
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 字段 4：主题词 -->
+      <div class="field-row">
+        <div class="label">主 题 词<span class="opt">（推荐）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <div class="subject-input-wrap">
+            <span class="subject-tag">航空发动机 <span class="x">×</span></span>
+            <span class="subject-tag">结构设计 <span class="x">×</span></span>
+            <input type="text" class="subject-input" placeholder="输入后按回车添加主题词...">
+          </div>
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <div style="grid-column: 1 / -1; padding-left: 114px; margin-top: -8px;">
+        <div class="subject-suggest">
+          <span class="quick">📌 推荐主题词：</span>
+          <a>压气机</a>
+          <a>涡轮</a>
+          <a>燃烧室</a>
+          <a>进气道</a>
+          <a>控制系统</a>
+          <a>故障诊断</a>
+          <a>性能仿真</a>
+          <a>气动设计</a>
+        </div>
+      </div>
+
+      <!-- 字段 5：中图分类号 -->
+      <div class="field-row">
+        <div class="label">中图分类号<span class="opt">（中图法）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <input type="text" class="field-input mono cls-input" value="V233" placeholder="如 V233 / I247.5 / H31">
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <div style="grid-column: 1 / -1; padding-left: 114px; margin-top: -8px;">
+        <div class="cls-suggest">
+          <span onclick="document.querySelectorAll('.cls-input').forEach(i=>i.value='V')">V 航空、航天</span>
+          <span onclick="..."><b>V2</b> 航空</span>
+          <span onclick="..."><b>V23</b> 航空发动机</span>
+          <span onclick="..."><b>V233</b> 发动机类型</span>
+          <span onclick="..."><b>V235</b> 发动机零部件</span>
+          <span onclick="..."><b>V24</b> 航空仪表</span>
+          <span onclick="..."><b>V267</b> 飞机维修</span>
+          <span onclick="..."><b>V279</b> 无人驾驶</span>
+        </div>
+      </div>
+
+      <!-- 字段 6：出版社 -->
+      <div class="field-row">
+        <div class="label">出版社<span class="opt">（可选）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <input type="text" class="field-input" placeholder="如：机械工业出版社">
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 字段 7：出版时间 -->
+      <div class="field-row">
+        <div class="label">出版时间<span class="opt">（范围）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <input type="number" class="field-input" style="max-width:140px;" value="2018" placeholder="起始年">
+          <span style="color: var(--text-3);">—</span>
+          <input type="number" class="field-input" style="max-width:140px;" value="2025" placeholder="截止年">
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 字段 8：馆藏地 -->
+      <div class="field-row">
+        <div class="label">馆藏地<span class="opt">（多选）</span></div>
+        <div class="loc-group">
+          <div class="loc-chip active"><span class="area-code">I</span>区 文学区</div>
+          <div class="loc-chip"><span class="area-code">A</span>区 中文图书借阅区</div>
+          <div class="loc-chip"><span class="area-code">B</span>区 外文图书借阅区</div>
+          <div class="loc-chip"><span class="area-code">H</span>区 英语学习区</div>
+          <div class="loc-chip"><span class="area-code">O</span>区 物理学区</div>
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 字段 9：复本状态 -->
+      <div class="field-row">
+        <div class="label">复本状态<span class="opt">（多选）</span></div>
+        <div class="status-group">
+          <div class="status-chip active">在架可借</div>
+          <div class="status-chip">部分在架</div>
+          <div class="status-chip">已借完</div>
+          <div class="status-chip">仅供阅览</div>
+          <div class="status-chip">全部馆藏</div>
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 字段 10：语种 -->
+      <div class="field-row">
+        <div class="label">语　种<span class="opt">（多选）</span></div>
+        <div class="input-group">
+          <select class="field-op and">
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="not">NOT</option>
+          </select>
+          <div class="status-group" style="flex: 1;">
+            <div class="status-chip active">中文</div>
+            <div class="status-chip">英文</div>
+            <div class="status-chip">日文</div>
+            <div class="status-chip">其他</div>
+          </div>
+        </div>
+        <button class="remove">×</button>
+      </div>
+
+      <!-- 添加字段 -->
+      <div class="row-block">
+        <div class="row-add">
+          <span>＋</span> 添加检索字段（丛书号 / 索书号 / 页数 / 装帧 / 定价范围 ...）
+        </div>
+      </div>
+
+      <!-- 排序 -->
+      <div class="field-row" style="border-top: 1px solid var(--border); margin-top: 14px; padding-top: 22px;">
+        <div class="label">排 序 方 式</div>
+        <div class="input-group">
+          <select class="field-op" style="width: 140px;">
+            <option>相关度</option>
+            <option>出版年 ↓</option>
+            <option>借阅次数 ↓</option>
+            <option>读者评分 ↓</option>
+            <option>索书号 ↑</option>
+          </select>
+          <span style="color: var(--text-3);">每页显示</span>
+          <select class="field-op" style="width: 80px;">
+            <option>10</option>
+            <option selected>20</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+          <span style="color: var(--text-3);">条</span>
+        </div>
+        <button class="remove" disabled>×</button>
+      </div>
+
+      <!-- 底部按钮 -->
+      <div class="adv-form-footer">
+        <div class="left">
+          <button class="btn-add">＋ 添加字段</button>
+          <button class="btn-save">⭐ 收藏检索式</button>
+        </div>
+        <div class="right">
+          <button class="btn-reset">↻ 全部重置</button>
+          <button class="btn-search" onclick="location.href='search-results.html'">🔍 开始检索</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 检索表达式预览 -->
+  <div class="expr-card">
+    <div class="expr-head">
+      <h4>当前检索表达式</h4>
+      <button style="background: #fff; border: 1px solid var(--border); color: var(--text-2); padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;">📋 复制表达式</button>
+    </div>
+    <div class="expr-body">
+      <div class="expr-code">
+        <span class="kw">title</span>=<span class="val">"航空发动机"</span> <span class="op">AND</span> <span class="kw">author</span>=<span class="val">"刘永泉"</span> <span class="op">AND</span> <span class="kw">isbn</span>=<span class="val">"9787512412345"</span> <span class="op">AND</span> <span class="kw">subject</span> <span class="op">IN</span> <span class="val">["航空发动机", "结构设计"]</span> <span class="op">AND</span> <span class="kw">cls</span>=<span class="val">"V233*"</span> <span class="op">AND</span> <span class="kw">location</span> <span class="op">IN</span> <span class="val">["I"]</span> <span class="op">AND</span> <span class="kw">status</span>=<span class="val">"available"</span> <span class="op">AND</span> <span class="kw">lang</span>=<span class="val">"zh"</span>
+      </div>
+      <div class="expr-tags">
+        <span class="expr-tag">检索项：<b>9</b></span>
+        <span class="expr-tag">逻辑算符：<b>AND</b> × 8</span>
+        <span class="expr-tag">预计结果：<b style="color: var(--success);">~ 18</b> 条</span>
+        <span class="expr-tag">预计耗时：<b>&lt; 0.1s</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 检索历史 & 热门 -->
+  <div class="grid-2">
+    <div class="info-card">
+      <h4>🕘 我的检索历史</h4>
+      <ul class="history-list">
+        <li>
+          <span class="time">12-25 14:32</span>
+          <span class="kw">ISBN=<b>978-7-5124-1234-5</b> 主题词=<b>航空发动机</b></span>
+          <span class="hits">3 条</span>
+          <span class="x">×</span>
+        </li>
+        <li>
+          <span class="time">12-24 09:15</span>
+          <span class="kw">题名=<b>无人机</b> AND 分类号=<b>V279*</b></span>
+          <span class="hits">42 条</span>
+          <span class="x">×</span>
+        </li>
+        <li>
+          <span class="time">12-23 16:48</span>
+          <span class="kw">作者=<b>余华</b> NOT 语种=<b>英文</b></span>
+          <span class="hits">18 条</span>
+          <span class="x">×</span>
+        </li>
+        <li>
+          <span class="time">12-22 11:20</span>
+          <span class="kw">主题词=<b>数控车床</b> AND 出版年=<b>2019-2023</b></span>
+          <span class="hits">26 条</span>
+          <span class="x">×</span>
+        </li>
+        <li>
+          <span class="time">12-21 15:02</span>
+          <span class="kw">题名=<b>Python</b> AND 馆藏地=<b>O区</b> AND 复本=<b>在架</b></span>
+          <span class="hits">12 条</span>
+          <span class="x">×</span>
+        </li>
+        <li>
+          <span class="time">12-20 10:45</span>
+          <span class="kw">分类号=<b>I247.5</b> AND 评分 ≥ <b>4.5</b></span>
+          <span class="hits">86 条</span>
+          <span class="x">×</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h4>🔥 热门检索词</h4>
+      <div class="hot-list">
+        <a><span class="rank top">1</span> 航空发动机</a>
+        <a><span class="rank top">2</span> 无人机</a>
+        <a><span class="rank top">3</span> Python</a>
+        <a><span class="rank">4</span> 数控车床</a>
+        <a><span class="rank">5</span> 空乘礼仪</a>
+        <a><span class="rank">6</span> 飞机维修</a>
+        <a><span class="rank">7</span> 考研英语</a>
+        <a><span class="rank">8</span> 高等数学</a>
+        <a><span class="rank">9</span> 大学物理</a>
+        <a><span class="rank">10</span> 三体</a>
+        <a>毛泽东思想</a>
+        <a>机械设计基础</a>
+        <a>电路分析</a>
+        <a>人工智能</a>
+        <a>数控技术</a>
+        <a>线性代数</a>
+        <a>航空材料</a>
+        <a>飞行原理</a>
+        <a>民航概论</a>
+        <a>中国近代史</a>
+      </div>
+
+      <h4 style="margin-top: 22px;">📂 中图法分类导览</h4>
+      <div class="hot-list" style="font-size: 12.5px;">
+        <a><b>A</b> 马列毛邓</a>
+        <a><b>B</b> 哲学宗教</a>
+        <a><b>F</b> 经济</a>
+        <a><b>G</b> 文教体育</a>
+        <a><b>H</b> 语言文字</a>
+        <a><b>I</b> 文学</a>
+        <a><b>K</b> 历史地理</a>
+        <a><b>O</b> 数理化</a>
+        <a><b>T</b> 工业技术</a>
+        <a><b>U</b> 交通运输</a>
+        <a><b>V</b> 航空航天</a>
+        <a><b>Z</b> 综合性</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 检索语法帮助 -->
+  <div class="help-card">
+    <h4>💡 高级检索语法提示</h4>
+    <ul>
+      <li>使用 <code>AND / OR / NOT</code> 连接多个检索字段，<b>AND</b> 表示同时满足，<b>OR</b> 表示任一满足，<b>NOT</b> 表示排除</li>
+      <li>分类号支持 <code>前缀通配</code>，如输入 <code>V233</code> 将匹配 V233 / V233.1 / V233.91 等所有子类</li>
+      <li>主题词支持 <code>多标签</code> 输入，按回车确认；多个主题词之间默认 <b>AND</b> 关系</li>
+      <li>ISBN 输入 10 位或 13 位数字均可，系统自动 <code>校验位验证</code> 并格式化为 <code>978-x-xxxx-xxxx-x</code></li>
+      <li>馆藏地、复本状态、语种支持 <code>多选</code>；未选则视为"全部"</li>
+      <li>字段名支持简写：<code>ti</code>=题名，<code>au</code>=作者，<code>su</code>=主题词，<code>isbn</code>=ISBN，<code>cls</code>=分类号，<code>pb</code>=出版社，<code>yr</code>=出版年</li>
+      <li>如需更精细的字段限定，可在表达式中直接输入 <code>字段:值</code>，例如 <code>title:航空 AND au:刘 AND yr:&gt;2018</code></li>
+      <li>检索式支持 <code>收藏</code>，登录后在"读者服务 → 我的检索式"中可一键调用</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  // 状态 chip 切换
+  document.querySelectorAll('.status-chip, .loc-chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('active'));
+  });
+  // 主题词 tag 移除
+  document.querySelectorAll('.subject-tag .x').forEach(x => {
+    x.addEventListener('click', e => e.target.closest('.subject-tag').remove());
+  });
+  // 主题词输入
+  const subInput = document.querySelector('.subject-input');
+  if (subInput) {
+    subInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && subInput.value.trim()) {
+        e.preventDefault();
+        const tag = document.createElement('span');
+        tag.className = 'subject-tag';
+        tag.innerHTML = subInput.value.trim() + ' <span class="x">×</span>';
+        tag.querySelector('.x').addEventListener('click', () => tag.remove());
+        subInput.parentElement.insertBefore(tag, subInput);
+        subInput.value = '';
+      }
+    });
+  }
+  // 分类号推荐
+  document.querySelectorAll('.cls-suggest span').forEach(s => {
+    s.addEventListener('click', () => {
+      const m = s.textContent.match(/[A-Z][\w.]*/);
+      if (m) document.querySelector('.cls-input').value = m[0];
+    });
+  });
+  // 推荐主题词点击
+  document.querySelectorAll('.subject-suggest .quick a').forEach(a => {
+    a.addEventListener('click', () => {
+      const tag = document.createElement('span');
+      tag.className = 'subject-tag';
+      tag.innerHTML = a.textContent + ' <span class="x">×</span>';
+      tag.querySelector('.x').addEventListener('click', () => tag.remove());
+      subInput.parentElement.insertBefore(tag, subInput);
+    });
+  });
+  // 字段删除
+  document.querySelectorAll('.field-row .remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!btn.disabled) btn.closest('.field-row').remove();
+    });
+  });
+  // 检索历史
+  document.querySelectorAll('.history-list .x').forEach(x => {
+    x.addEventListener('click', e => e.target.closest('li').remove());
+  });
+  // 表达式复制
+  document.querySelector('.expr-head button').addEventListener('click', () => {
+    const text = document.querySelector('.expr-code').innerText;
+    navigator.clipboard?.writeText(text);
+  });
+</script>
+
+</body>
+</html>

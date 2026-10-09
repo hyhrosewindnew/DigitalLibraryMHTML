@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的收藏 - 信阳航空职业学院 · 数字图书馆</title>
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  button, input, select { font-family: inherit; }
+
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --max-w: 1440px;
+  }
+
+  /* ========= 外壳（与首页保持一致）========= */
+  .top-bar {
+    background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%);
+    color: #fff;
+    font-size: 13px;
+    padding: 8px 0;
+    width: 100%;
+  }
+  .top-bar-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+
+  .header {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(13,59,102,0.06);
+    position: sticky; top: 0; z-index: 100;
+    width: 100%;
+  }
+  .header-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 30px;
+    height: 80px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    border-radius: 12px;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 6px 16px rgba(74,158,255,0.3);
+  }
+  .logo .text h1 {
+    font-size: 21px; color: var(--primary);
+    margin-bottom: 3px; font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .logo .text p {
+    font-size: 11px; color: var(--text-3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .nav { display: flex; gap: 8px; }
+  .nav a {
+    font-size: 15px; color: var(--text);
+    padding: 10px 18px; position: relative;
+    transition: .25s; font-weight: 500;
+    border-radius: 8px;
+  }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active {
+    color: var(--primary);
+    background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%);
+  }
+  .nav a.active::after {
+    content: '';
+    position: absolute; bottom: 4px; left: 50%;
+    transform: translateX(-50%);
+    width: 24px; height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%);
+    border-radius: 2px;
+  }
+
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn {
+    position: relative;
+    background: var(--bg-page);
+    border: none;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 18px;
+    transition: .2s;
+  }
+  .notif-btn:hover {
+    background: rgba(74,158,255,0.15);
+    transform: scale(1.05);
+  }
+  .notif-btn .badge {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+
+  /* 我的收藏按钮（当前页） */
+  .favorite-btn {
+    position: relative;
+    background: rgba(74,158,255,0.12);
+    border: none;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--gold);
+    font-size: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+  }
+  .favorite-btn:hover {
+    background: rgba(74,158,255,0.2);
+    transform: scale(1.05);
+  }
+  .favorite-btn .favorite-badge {
+    position: absolute;
+    top: 2px; right: 0;
+    min-width: 15px; height: 15px;
+    padding: 0 4px;
+    background: var(--accent);
+    border: 2px solid #fff;
+    border-radius: 9px;
+    color: #fff;
+    font-size: 9px;
+    line-height: 11px;
+    text-align: center;
+  }
+
+  .avatar-wrap {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    padding: 4px 10px 4px 4px;
+    border-radius: 30px;
+    transition: .2s;
+  }
+  .avatar-wrap:hover { background: var(--bg-page); }
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 15px;
+    box-shadow: 0 2px 10px rgba(139,92,246,0.35);
+  }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  /* ========= 主体内容 ========= */
+  .container {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 24px 30px 60px;
+  }
+
+  /* 面包屑 */
+  .breadcrumb {
+    padding: 4px 0 18px;
+    color: var(--text-3);
+    font-size: 13px;
+  }
+  .breadcrumb a { color: var(--text-2); transition: .2s; }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  /* 页面标题 */
+  .page-title {
+    margin-bottom: 22px;
+  }
+  .page-title h2 {
+    font-size: 24px;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .page-title p {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  /* 概览 */
+  .summary-card {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px;
+    padding: 24px 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 35%),
+      radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.1) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .summary-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .summary-item {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 14px 18px;
+    backdrop-filter: blur(10px);
+  }
+  .summary-item .num {
+    font-size: 26px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #fff 0%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .summary-item .label {
+    font-size: 12.5px;
+    opacity: .9;
+    margin-top: 4px;
+  }
+
+  /* 通用面板 */
+  .panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .panel-tabs {
+    display: flex;
+    gap: 4px;
+  }
+  .panel-tabs span {
+    padding: 8px 16px;
+    font-size: 13.5px;
+    color: var(--text-2);
+    cursor: pointer;
+    border-radius: 18px;
+    background: var(--bg-page);
+    transition: .25s;
+    font-weight: 500;
+  }
+  .panel-tabs span.active {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(74,158,255,0.25);
+  }
+  .panel-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .panel-action {
+    padding: 7px 12px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .panel-action:hover {
+    border-color: var(--sky);
+    color: var(--sky);
+  }
+  .panel-action.danger:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+  .panel-body { padding: 18px 22px; }
+
+  /* 工具条：搜索 + 排序 */
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border-light);
+    background: #fafcff;
+  }
+  .toolbar-left, .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .toolbar-search {
+    width: 240px;
+    height: 34px;
+    padding: 0 12px 0 32px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23909399' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+    font-size: 12.5px;
+    color: var(--text);
+    outline: none;
+    transition: .2s;
+  }
+  .toolbar-search:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(74,158,255,0.12);
+  }
+  .toolbar-select {
+    height: 34px;
+    padding: 0 28px 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E") no-repeat right 10px center;
+    font-size: 12.5px;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    transition: .2s;
+    appearance: none;
+  }
+  .toolbar-select:focus { border-color: var(--sky); }
+
+  /* 图书卡片（列表视图）*/
+  .fav-list { display: flex; flex-direction: column; }
+  .fav-item {
+    display: grid;
+    grid-template-columns: 32px 80px 1fr auto;
+    gap: 16px;
+    padding: 16px 22px;
+    border-bottom: 1px dashed var(--border-light);
+    align-items: center;
+    transition: .2s;
+  }
+  .fav-item:last-child { border-bottom: none; }
+  .fav-item:hover { background: #fafcff; }
+
+  .fav-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fav-check input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--sky);
+    cursor: pointer;
+  }
+
+  .fav-cover {
+    width: 64px;
+    height: 86px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f0f1f3;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+  .fav-cover svg { width: 100%; height: 100%; display: block; }
+
+  .fav-info { min-width: 0; }
+  .fav-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .fav-title:hover { color: var(--primary); }
+  .fav-meta {
+    font-size: 12px;
+    color: var(--text-3);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .fav-meta b { color: var(--text-2); font-weight: 500; }
+  .fav-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fav-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--bg-page);
+    color: var(--text-2);
+  }
+  .fav-tag.cat {
+    background: #ecf3fe;
+    color: #2c6eb0;
+    font-weight: 500;
+  }
+  .fav-tag.callno {
+    background: #f5f3ff;
+    color: #7c3aed;
+    font-family: "SF Mono", Consolas, monospace;
+  }
+  .fav-tag.status {
+    background: #f0f9eb;
+    color: #16a34a;
+    font-weight: 500;
+  }
+
+  .fav-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .fav-btn {
+    padding: 7px 14px;
+    font-size: 12.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: .2s;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+  .fav-btn:hover {
+    border-color: var(--sky);
+    color: var(--sky);
+  }
+  .fav-btn.primary {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-color: transparent;
+  }
+  .fav-btn.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(74,158,255,0.3);
+    color: #fff;
+  }
+  .fav-btn.danger:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+
+  .fav-time {
+    font-size: 11.5px;
+    color: var(--text-3);
+    font-family: Consolas, monospace;
+    margin-right: 6px;
+  }
+
+  /* 资源卡片（数据库 / 电子资源） */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .resource-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: .25s;
+    position: relative;
+  }
+  .resource-item:hover {
+    border-color: var(--sky);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(13,59,102,0.08);
+  }
+  .resource-logo {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    font-family: Georgia, serif;
+  }
+  .resource-info { min-width: 0; flex: 1; }
+  .resource-info h4 {
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .resource-info p {
+    font-size: 11.5px;
+    color: var(--text-3);
+  }
+  .resource-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-3);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+  }
+  .resource-remove:hover {
+    background: #fff1f0;
+    color: #ef4444;
+  }
+
+  /* 检索式 */
+  .query-list { display: flex; flex-direction: column; }
+  .query-item {
+    padding: 16px 22px;
+    border-bottom: 1px dashed var(--border-light);
+    transition: .2s;
+  }
+  .query-item:last-child { border-bottom: none; }
+  .query-item:hover { background: #fafcff; }
+  .query-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .query-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .query-meta {
+    font-size: 11.5px;
+    color: var(--text-3);
+    font-family: Consolas, monospace;
+  }
+  .query-expr {
+    padding: 10px 14px;
+    background: #f5f7fa;
+    border-radius: 6px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 10px;
+    word-break: break-all;
+  }
+  .query-expr .kw { color: var(--primary); font-weight: 600; }
+  .query-expr .op { color: #ef4444; font-weight: 600; }
+  .query-expr .val { color: var(--text); }
+  .query-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* 空状态 */
+  .empty-state {
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .empty-state .ico {
+    font-size: 50px;
+    opacity: .3;
+    margin-bottom: 14px;
+  }
+  .empty-state h4 {
+    color: var(--text-2);
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .empty-state p {
+    color: var(--text-3);
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .empty-state .btn {
+    display: inline-block;
+    padding: 9px 22px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: .2s;
+  }
+  .empty-state .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(74,158,255,0.3);
+  }
+
+  /* 批量操作栏 */
+  .batch-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #ecf5ff, #f0f9ff);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .batch-bar.show { display: flex; }
+  .batch-bar .info b {
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .batch-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .batch-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 6px;
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: .2s;
+  }
+  .batch-btn:hover {
+    border-color: var(--sky);
+    color: var(--sky);
+  }
+  .batch-btn.danger:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+
+  /* 推荐 */
+  .suggest-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .suggest-card h4 {
+    color: #92400e;
+    font-size: 14.5px;
+    margin-bottom: 4px;
+  }
+  .suggest-card p {
+    color: #78350f;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .suggest-card .btn {
+    padding: 9px 18px;
+    background: #d97706;
+    color: #fff;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .suggest-card .btn:hover {
+    background: #b45309;
+  }
+
+  @media (max-width: 1240px) {
+    .resource-grid { grid-template-columns: repeat(2, 1fr); }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========= 外壳 ========= -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="馆藏检索.html">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
+      <a class="favorite-btn" href="我的收藏.html" title="我的收藏">★<span class="favorite-badge">8</span></a>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ========= 主体 ========= -->
+<div class="container">
+
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <span class="current">我的收藏</span>
+  </div>
+
+  <div class="page-title">
+    <h2>★ 我的收藏</h2>
+    <p>集中管理您收藏的图书、电子资源、检索式与专题书架。</p>
+  </div>
+
+  <!-- 概览 -->
+  <div class="summary-card">
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="num">5</div>
+        <div class="label">图书收藏</div>
+      </div>
+      <div class="summary-item">
+        <div class="num">2</div>
+        <div class="label">电子资源</div>
+      </div>
+      <div class="summary-item">
+        <div class="num">1</div>
+        <div class="label">检索式</div>
+      </div>
+      <div class="summary-item">
+        <div class="num">0</div>
+        <div class="label">专题书架</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主面板 -->
+  <div class="panel">
+
+    <div class="panel-head">
+      <div class="panel-tabs">
+        <span class="active" data-tab="book">📚 图书 <small style="opacity:.6;">5</small></span>
+        <span data-tab="resource">📖 电子资源 <small style="opacity:.6;">2</small></span>
+        <span data-tab="query">🔍 检索式 <small style="opacity:.6;">1</small></span>
+        <span data-tab="topic">🏷️ 专题书架 <small style="opacity:.6;">0</small></span>
+      </div>
+      <div class="panel-actions">
+        <button class="panel-action">📤 导出</button>
+        <button class="panel-action danger">🗑 批量管理</button>
+      </div>
+    </div>
+
+    <!-- 图书收藏 -->
+    <div class="tab-pane" data-pane="book">
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <input class="toolbar-search" type="text" placeholder="在收藏中搜索书名 / 作者 / ISBN">
+          <select class="toolbar-select">
+            <option>全部状态</option>
+            <option>在架可借</option>
+            <option>已借出</option>
+            <option>仅供阅览</option>
+          </select>
+          <select class="toolbar-select">
+            <option>全部分类</option>
+            <option>V 航空、航天</option>
+            <option>T 工业技术</option>
+            <option>I 文学</option>
+            <option>H 语言、文字</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <span style="font-size:12.5px;color:var(--text-3);">排序：</span>
+          <select class="toolbar-select">
+            <option>收藏时间 ↓</option>
+            <option>收藏时间 ↑</option>
+            <option>书名 A→Z</option>
+            <option>借阅次数 ↓</option>
+            <option>评分 ↓</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 批量操作栏 -->
+      <div class="batch-bar" id="batchBar">
+        <div class="info">已选择 <b id="selectedCount">0</b> 项</div>
+        <div class="batch-actions">
+          <button class="batch-btn" id="cancelSelect">取消选择</button>
+          <button class="batch-btn">📖 批量借阅</button>
+          <button class="batch-btn danger" id="batchRemove">🗑 取消收藏</button>
+        </div>
+      </div>
+
+      <div class="fav-list" id="bookList">
+
+        <!-- 1. 航空发动机结构与系统 -->
+        <div class="fav-item" data-id="1">
+          <label class="fav-check">
+            <input type="checkbox" class="item-check">
+          </label>
+          <div class="fav-cover">
+            <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="fc1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a9eff"/><stop offset="100%" stop-color="#0a2d52"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#fc1)"/>
+              <g transform="translate(150,140)" stroke="#fff" stroke-width="3" fill="none" opacity="0.95">
+                <circle r="22"/><circle r="6" fill="#fff"/>
+                <path d="M0,0 L0,-50 A18,18 0 0,1 14,-42 L8,-22 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L42,-30 A18,18 0 0,1 48,-10 L24,-6 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L50,0 A18,18 0 0,1 42,14 L22,8 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L30,42 A18,18 0 0,1 10,48 L6,24 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L-30,42 A18,18 0 0,1 -48,10 L-22,6 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L-50,0 A18,18 0 0,1 -42,-14 L-22,-8 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L-42,-30 A18,18 0 0,1 -10,-48 L-6,-24 Z" fill="#fff" opacity="0.85"/>
+                <path d="M0,0 L0,-50 A18,18 0 0,0 -14,-42 L-8,-22 Z" fill="#fff" opacity="0.85"/>
+              </g>
+              <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.7"/>
+              <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">航空发动机</text>
+              <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">结构与系统</text>
+              <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">刘永泉 · 编著</text>
+            </svg>
+          </div>
+          <div class="fav-info">
+            <div class="fav-title">航空发动机结构与系统（第二版）</div>
+            <div class="fav-meta">
+              <span><b>作者：</b>刘永泉</span>
+              <span><b>出版社：</b>北京航空航天大学出版社</span>
+              <span><b>出版年：</b>2021</span>
+            </div>
+            <div class="fav-tags">
+              <span class="fav-tag cat"><b>V233</b> 航空发动机</span>
+              <span class="fav-tag callno">V233/L-2</span>
+              <span class="fav-tag status">在架 5/6</span>
+              <span class="fav-tag">★ 4.9</span>
+            </div>
+          </div>
+          <div class="fav-actions">
+            <span class="fav-time">12-25 收藏</span>
+            <button class="fav-btn primary">借阅</button>
+            <button class="fav-btn">查看</button>
+            <button class="fav-btn danger" data-action="remove">取消</button>
+          </div>
+        </div>
+
+        <!-- 2. 无人机设计与控制 -->
+        <div class="fav-item" data-id="2">
+          <label class="fav-check">
+            <input type="checkbox" class="item-check">
+          </label>
+          <div class="fav-cover">
+            <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="fc2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#fc2)"/>
+              <g transform="translate(150,140)" stroke="#fff" stroke-width="2.5" fill="none">
+                <rect x="-6" y="-12" width="12" height="24" rx="2" fill="#fff"/>
+                <line x1="-6" y1="-6" x2="-40" y2="-22"/>
+                <line x1="6" y1="-6" x2="40" y2="-22"/>
+                <line x1="-6" y1="6" x2="-40" y2="22"/>
+                <line x1="6" y1="6" x2="40" y2="22"/>
+              </g>
+              <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+              <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">无人机</text>
+              <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">设计与控制</text>
+              <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">全权 · 编著</text>
+            </svg>
+          </div>
+          <div class="fav-info">
+            <div class="fav-title">无人机设计与控制——基于MATLAB仿真</div>
+            <div class="fav-meta">
+              <span><b>作者：</b>全权 / 戴训华</span>
+              <span><b>出版社：</b>电子工业出版社</span>
+              <span><b>出版年：</b>2023</span>
+            </div>
+            <div class="fav-tags">
+              <span class="fav-tag cat"><b>V279</b> 无人驾驶</span>
+              <span class="fav-tag callno">V279/Q-1</span>
+              <span class="fav-tag status">在架 2/5</span>
+              <span class="fav-tag">★ 4.8</span>
+            </div>
+          </div>
+          <div class="fav-actions">
+            <span class="fav-time">12-24 收藏</span>
+            <button class="fav-btn primary">借阅</button>
+            <button class="fav-btn">查看</button>
+            <button class="fav-btn danger" data-action="remove">取消</button>
+          </div>
+        </div>
+
+        <!-- 3. 数控车床编程与操作 -->
+        <div class="fav-item" data-id="3">
+          <label class="fav-check">
+            <input type="checkbox" class="item-check">
+          </label>
+          <div class="fav-cover">
+            <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="fc3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#064e3b"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#fc3)"/>
+              <g transform="translate(150,140)" fill="#fff" opacity="0.95">
+                <path d="M0,-50 L8,-48 L12,-42 L20,-44 L24,-36 L20,-28 L24,-22 L28,-20 L26,-12 L18,-10 L18,-2 L22,4 L18,10 L10,8 L4,14 L8,22 L0,26 L-8,22 L-14,26 L-20,22 L-16,14 L-22,10 L-30,12 L-34,4 L-30,-4 L-34,-12 L-28,-20 L-22,-22 L-24,-28 L-16,-32 L-10,-28 L-4,-34 L0,-40 Z"/>
+                <circle r="12" fill="#10b981"/>
+              </g>
+              <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+              <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">数控车床</text>
+              <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">编程与操作</text>
+              <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">陈洪涛 · 编著</text>
+            </svg>
+          </div>
+          <div class="fav-info">
+            <div class="fav-title">数控车床编程与操作实训教程</div>
+            <div class="fav-meta">
+              <span><b>作者：</b>陈洪涛</span>
+              <span><b>出版社：</b>机械工业出版社</span>
+              <span><b>出版年：</b>2020</span>
+            </div>
+            <div class="fav-tags">
+              <span class="fav-tag cat"><b>TG519</b> 车床加工</span>
+              <span class="fav-tag callno">TG519/C-1</span>
+              <span class="fav-tag" style="background:#fff3e0;color:#d97706;">已借完</span>
+              <span class="fav-tag">★ 4.6</span>
+            </div>
+          </div>
+          <div class="fav-actions">
+            <span class="fav-time">12-23 收藏</span>
+            <button class="fav-btn">预约</button>
+            <button class="fav-btn">查看</button>
+            <button class="fav-btn danger" data-action="remove">取消</button>
+          </div>
+        </div>
+
+        <!-- 4. Python编程 -->
+        <div class="fav-item" data-id="4">
+          <label class="fav-check">
+            <input type="checkbox" class="item-check">
+          </label>
+          <div class="fav-cover">
+            <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="fc4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#5b21b6"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#fc4)"/>
+              <g transform="translate(150,140)" fill="#fff" opacity="0.95">
+                <path d="M-30,-30 Q-30,-50 -10,-50 L10,-50 Q30,-50 30,-30 L30,-10 Q30,5 15,5 L-15,5 Q-30,5 -30,20 L-30,40 Q-30,55 -15,55 L15,55" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>
+              </g>
+              <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.8"/>
+              <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="serif">Python编程</text>
+              <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="18" font-weight="600" font-family="serif">从入门到实践</text>
+              <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">埃里克·马瑟斯</text>
+            </svg>
+          </div>
+          <div class="fav-info">
+            <div class="fav-title">Python编程从入门到实践</div>
+            <div class="fav-meta">
+              <span><b>作者：</b>埃里克·马瑟斯</span>
+              <span><b>出版社：</b>人民邮电出版社</span>
+              <span><b>出版年：</b>2020</span>
+            </div>
+            <div class="fav-tags">
+              <span class="fav-tag cat"><b>TP311</b> 程序设计</span>
+              <span class="fav-tag callno">TP311/M-3</span>
+              <span class="fav-tag status">在架 4/5</span>
+              <span class="fav-tag">★ 4.9</span>
+            </div>
+          </div>
+          <div class="fav-actions">
+            <span class="fav-time">12-22 收藏</span>
+            <button class="fav-btn primary">借阅</button>
+            <button class="fav-btn">查看</button>
+            <button class="fav-btn danger" data-action="remove">取消</button>
+          </div>
+        </div>
+
+        <!-- 5. 空气动力学基础 -->
+        <div class="fav-item" data-id="5">
+          <label class="fav-check">
+            <input type="checkbox" class="item-check">
+          </label>
+          <div class="fav-cover">
+            <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="fc5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0c4a6e"/></linearGradient></defs>
+              <rect width="300" height="400" fill="url(#fc5)"/>
+              <g transform="translate(150,140)" stroke="#fff" stroke-width="2" fill="none" opacity="0.95">
+                <path d="M-60,-20 Q-30,-25 0,-15 Q30,-5 60,-15" stroke-dasharray="4,3"/>
+                <path d="M-60,20 Q-30,25 0,15 Q30,5 60,15" stroke-dasharray="4,3"/>
+                <path d="M-50,0 Q-20,-12 20,-8 Q40,-3 50,0 Q40,3 20,5 Q-20,8 -50,0 Z" fill="#fff" opacity="0.85"/>
+              </g>
+              <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+              <text x="150" y="265" text-anchor="middle" fill="#fff" font-size="26" font-weight="700" font-family="serif">空气动力学</text>
+              <text x="150" y="295" text-anchor="middle" fill="#fff" font-size="18" font-weight="500" font-family="serif">基础教程</text>
+              <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">安德森 · 编著</text>
+            </svg>
+          </div>
+          <div class="fav-info">
+            <div class="fav-title">空气动力学基础（第六版）（英文影印版）</div>
+            <div class="fav-meta">
+              <span><b>作者：</b>John D. Anderson</span>
+              <span><b>出版社：</b>McGraw-Hill Education</span>
+              <span><b>出版年：</b>2017</span>
+            </div>
+            <div class="fav-tags">
+              <span class="fav-tag cat"><b>V211</b> 空气动力学</span>
+              <span class="fav-tag callno">V211/A-6</span>
+              <span class="fav-tag status">在架 3/4</span>
+              <span class="fav-tag">★ 4.8</span>
+            </div>
+          </div>
+          <div class="fav-actions">
+            <span class="fav-time">12-20 收藏</span>
+            <button class="fav-btn primary">借阅</button>
+            <button class="fav-btn">查看</button>
+            <button class="fav-btn danger" data-action="remove">取消</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 电子资源 -->
+    <div class="tab-pane" data-pane="resource" style="display:none;">
+      <div class="panel-body">
+        <div class="resource-grid">
+
+          <div class="resource-item">
+            <button class="resource-remove" title="取消收藏">×</button>
+            <div class="resource-logo">CN</div>
+            <div class="resource-info">
+              <h4>中国知网 CNKI</h4>
+              <p>期刊 · 学位论文 · 会议</p>
+              <p style="margin-top:3px;color:var(--accent);font-size:11px;">收藏于 12-21</p>
+            </div>
+          </div>
+
+          <div class="resource-item">
+            <button class="resource-remove" title="取消收藏">×</button>
+            <div class="resource-logo" style="background:linear-gradient(135deg,#f4a261,#f59e0b);">超</div>
+            <div class="resource-info">
+              <h4>超星电子书</h4>
+              <p>中文电子图书 · 130万册</p>
+              <p style="margin-top:3px;color:var(--accent);font-size:11px;">收藏于 12-18</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 检索式 -->
+    <div class="tab-pane" data-pane="query" style="display:none;">
+      <div class="query-list">
+
+        <div class="query-item">
+          <div class="query-top">
+            <div class="query-name">📌 航空发动机检索</div>
+            <div class="query-meta">收藏于 12-25 · 最近使用 12-25</div>
+          </div>
+          <div class="query-expr">
+            <span class="kw">title</span>=<span class="val">"航空发动机"</span> <span class="op">AND</span> <span class="kw">author</span>=<span class="val">"刘永泉"</span> <span class="op">AND</span> <span class="kw">isbn</span>=<span class="val">"9787512412345"</span>
+          </div>
+          <div class="query-actions">
+            <button class="fav-btn primary">🔍 重新检索</button>
+            <button class="fav-btn">编辑</button>
+            <button class="fav-btn danger">删除</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 专题书架 -->
+    <div class="tab-pane" data-pane="topic" style="display:none;">
+      <div class="empty-state">
+        <div class="ico">🏷️</div>
+        <h4>暂无收藏的专题书架</h4>
+        <p>您可以前往馆藏检索页面收藏感兴趣的专题书架</p>
+        <a class="btn" href="馆藏检索.html">前往馆藏检索</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 推荐 -->
+  <div class="suggest-card">
+    <div>
+      <h4>📚 没有找到您想收藏的内容？</h4>
+      <p>前往馆藏检索查找图书，或联系学科馆员推荐资源。也可以提交图书荐购，告诉我们您想要的书。</p>
+    </div>
+    <a class="btn" href="图书荐购.html">提交荐购</a>
+  </div>
+
+</div>
+
+<footer style="background:linear-gradient(135deg,#0a2d52,#0d3b66);color:#b0b8c8;padding:24px 0;margin-top:40px;text-align:center;font-size:12.5px;">
+  <div style="max-width:var(--max-w);margin:0 auto;padding:0 30px;">
+    © 2025 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </div>
+</footer>
+
+<script>
+  // ========= Tab 切换 =========
+  const tabs = document.querySelectorAll('.panel-tabs span');
+  const panes = document.querySelectorAll('.tab-pane');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      panes.forEach(p => {
+        p.style.display = p.dataset.pane === target ? '' : 'none';
+      });
+    });
+  });
+
+  // ========= 选中数量 =========
+  const checks = document.querySelectorAll('.item-check');
+  const batchBar = document.getElementById('batchBar');
+  const selectedCount = document.getElementById('selectedCount');
+
+  function updateBatch() {
+    const count = document.querySelectorAll('.item-check:checked').length;
+    selectedCount.textContent = count;
+    batchBar.classList.toggle('show', count > 0);
+  }
+
+  checks.forEach(c => c.addEventListener('change', updateBatch));
+
+  // ========= 取消选择 =========
+  document.getElementById('cancelSelect').addEventListener('click', () => {
+    checks.forEach(c => { c.checked = false; });
+    updateBatch();
+  });
+
+  // ========= 单条取消收藏 =========
+  document.querySelectorAll('[data-action="remove"]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const item = this.closest('.fav-item');
+      const name = item.querySelector('.fav-title').textContent.trim();
+
+      if (confirm(`确定要取消收藏「${name}」吗？`)) {
+        item.style.transition = 'all .25s';
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+
+        setTimeout(() => {
+          item.remove();
+          updateBatch();
+        }, 250);
+      }
+    });
+  });
+
+  // ========= 批量取消 =========
+  document.getElementById('batchRemove').addEventListener('click', () => {
+    const count = document.querySelectorAll('.item-check:checked').length;
+    if (count === 0) return;
+
+    if (confirm(`确定要取消收藏选中的 ${count} 项吗？`)) {
+      document.querySelectorAll('.item-check:checked').forEach(c => {
+        const item = c.closest('.fav-item');
+        item.style.transition = 'all .25s';
+        item.style.opacity = '0';
+        setTimeout(() => item.remove(), 250);
+      });
+
+      setTimeout(updateBatch, 260);
+    }
+  });
+
+  // ========= 资源卡片取消收藏 =========
+  document.querySelectorAll('.resource-remove').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const item = this.closest('.resource-item');
+      const name = item.querySelector('h4').textContent.trim();
+
+      if (confirm(`确定要取消收藏「${name}」吗？`)) {
+        item.style.transition = 'all .25s';
+        item.style.opacity = '0';
+        item.style.transform = 'scale(.95)';
+        setTimeout(() => item.remove(), 250);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

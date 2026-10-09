@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消息中心 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #fff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    --purple: #7c3aed;
+    --max-w: 1440px;
+  }
+  /* 顶部 / 头部 / 面包屑 - 与首页同款 */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部 */
+  .msg-hero {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px; padding: 30px 36px; color: #fff; margin-bottom: 22px;
+    position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(13,59,102,0.15);
+  }
+  .msg-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .msg-hero-content { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; }
+  .msg-hero h2 { font-size: 24px; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .msg-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; max-width: 720px; }
+  .msg-hero p b { color: var(--gold); font-weight: 600; }
+  .msg-hero-stats { display: flex; gap: 18px; }
+  .msg-hero-stat { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 16px 22px; backdrop-filter: blur(10px); min-width: 130px; text-align: center; }
+  .msg-hero-stat .num { font-size: 28px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1; }
+  .msg-hero-stat .lbl { font-size: 12px; opacity: .9; margin-top: 6px; }
+
+  /* 主区布局 */
+  .msg-layout { display: grid; grid-template-columns: 240px 1fr; gap: 18px; }
+
+  /* 左侧分类 */
+  .msg-sidebar { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; height: fit-content; }
+  .sidebar-section { padding: 14px 16px; border-bottom: 1px solid var(--border-light); }
+  .sidebar-section:last-child { border-bottom: none; }
+  .sidebar-title { font-size: 12.5px; color: var(--text-3); font-weight: 600; margin-bottom: 10px; letter-spacing: .3px; display: flex; align-items: center; gap: 5px; }
+  .sidebar-title::before { content: ''; width: 3px; height: 12px; background: var(--primary); border-radius: 2px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    color: var(--text-2); font-size: 13px; transition: .15s; margin-bottom: 4px; user-select: none;
+  }
+  .sidebar-item:last-child { margin-bottom: 0; }
+  .sidebar-item:hover { background: var(--bg-page); color: var(--text); }
+  .sidebar-item.active { background: linear-gradient(135deg, #eff6ff, #f0f9ff); color: var(--primary); font-weight: 600; box-shadow: 0 0 0 1px rgba(74,158,255,0.15); }
+  .sidebar-item .si-icon { font-size: 14px; }
+  .sidebar-item .si-cnt { margin-left: auto; font-size: 11px; padding: 1px 7px; background: var(--bg-page); color: var(--text-3); border-radius: 8px; min-width: 18px; text-align: center; }
+  .sidebar-item.active .si-cnt { background: rgba(74,158,255,0.18); color: var(--primary); }
+  .sidebar-item.unread .si-cnt { background: var(--error); color: #fff; }
+  .sidebar-item.unread.active .si-cnt { background: var(--error); color: #fff; }
+
+  .sidebar-divider { height: 1px; background: var(--border-light); margin: 4px 0; }
+
+  .sidebar-actions { display: flex; flex-direction: column; gap: 8px; }
+  .sidebar-action {
+    padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
+    display: flex; align-items: center; gap: 6px; transition: .15s; color: var(--text-2);
+  }
+  .sidebar-action:hover { background: var(--bg-page); color: var(--text); }
+
+  /* 右侧消息列表 */
+  .msg-main { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .msg-toolbar { padding: 14px 20px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: linear-gradient(180deg, #fafcff, #fff); }
+  .toolbar-left { display: flex; align-items: center; gap: 8px; }
+  .toolbar-right { display: flex; align-items: center; gap: 6px; }
+  .toolbar-search { position: relative; }
+  .toolbar-search input { width: 260px; height: 34px; padding: 0 12px 0 32px; border: 1px solid var(--border); background: #fff; border-radius: 8px; font-size: 13px; color: var(--text); outline: none; font-family: inherit; transition: .15s; }
+  .toolbar-search input:focus { border-color: var(--sky); }
+  .toolbar-search .ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 13px; }
+  .toolbar-select {
+    height: 34px; padding: 0 28px 0 10px; border: 1px solid var(--border); background: #fff; color: var(--text);
+    border-radius: 8px; font-size: 12.5px; cursor: pointer; outline: none; font-family: inherit; min-width: 110px;
+    appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .toolbar-select:focus { border-color: var(--sky); }
+  .btn-tool {
+    height: 34px; padding: 0 14px; border: 1px solid var(--border); background: #fff; color: var(--text-2);
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: .15s; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-tool:hover { border-color: var(--sky); color: var(--sky); }
+  .btn-tool:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-tool.primary { background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff; border-color: transparent; }
+
+  /* 消息列表 */
+  .msg-list { display: flex; flex-direction: column; }
+  .msg-item {
+    display: flex; gap: 14px; padding: 18px 20px; border-bottom: 1px solid var(--border-light);
+    transition: .15s; cursor: pointer; align-items: flex-start; position: relative;
+  }
+  .msg-item:last-child { border-bottom: none; }
+  .msg-item:hover { background: #fafcff; }
+  .msg-item.unread { background: linear-gradient(90deg, #eff6ff 0%, transparent 30%); }
+  .msg-item.unread:hover { background: linear-gradient(90deg, #dbeafe 0%, #f0f9ff 100%); }
+  .msg-item.unread::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--error);
+  }
+
+  .msg-type-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff;
+  }
+  .msg-type-icon.t1 { background: linear-gradient(135deg, #4a9eff, #0d3b66); }
+  .msg-type-icon.t2 { background: linear-gradient(135deg, #16a34a, #059669); }
+  .msg-type-icon.t3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .msg-type-icon.t4 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .msg-type-icon.t5 { background: linear-gradient(135deg, #0891b2, #0e7490); }
+  .msg-type-icon.t6 { background: linear-gradient(135deg, #059669, #16a34a); }
+
+  .msg-main-content { flex: 1; min-width: 0; }
+  .msg-main-content .row1 { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+  .msg-main-content .type-tag {
+    display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px;
+    font-size: 11.5px; font-weight: 500;
+  }
+  .msg-main-content .type-tag.t1 { background: rgba(74,158,255,0.1); color: #2563eb; }
+  .msg-main-content .type-tag.t2 { background: rgba(22,197,94,0.1); color: #16a34a; }
+  .msg-main-content .type-tag.t3 { background: rgba(245,158,11,0.1); color: #d97706; }
+  .msg-main-content .type-tag.t4 { background: rgba(124,58,237,0.1); color: #7c3aed; }
+  .msg-main-content .type-tag.t5 { background: rgba(8,145,178,0.1); color: #0891b2; }
+  .msg-main-content .type-tag.t6 { background: rgba(22,197,94,0.1); color: #059669; }
+  .msg-main-content .time { font-size: 12px; color: var(--text-3); }
+  .msg-main-content .time b { color: var(--text-2); font-weight: 500; }
+  .msg-main-content .title { font-size: 14.5px; color: var(--text); font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .msg-item.unread .msg-main-content .title { color: var(--primary); }
+  .msg-main-content .preview {
+    font-size: 12.5px; color: var(--text-3); line-height: 1.6;
+    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .msg-main-content .channels { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .msg-main-content .ch {
+    font-size: 11px; padding: 1px 6px; background: var(--bg-page); color: var(--text-3); border-radius: 4px;
+  }
+  .msg-main-content .ch.on { background: rgba(74,158,255,0.1); color: var(--info); }
+
+  .msg-actions { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+  .msg-action {
+    font-size: 12.5px; color: var(--text-2); cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: .15s;
+  }
+  .msg-action:hover { background: var(--bg-page); color: var(--primary); }
+  .unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--error); margin-top: 8px; }
+
+  /* 底部 */
+  .pager {
+    padding: 14px 22px; border-top: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-2); background: #fafcff;
+  }
+  .pager .pg-info b { color: var(--text); font-weight: 600; }
+  .pager .pg-btns { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 30px; height: 30px; padding: 0 10px; border: 1px solid var(--border); background: #fff;
+    border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text); transition: .15s; font-family: inherit;
+  }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--sky); color: var(--sky); }
+  .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; cursor: default; }
+  .page-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .page-ellipsis { padding: 0 4px; color: var(--text-3); }
+
+  /* 空 */
+  .empty-state { padding: 80px 20px; text-align: center; color: var(--text-3); font-size: 13.5px; }
+  .empty-state .big { font-size: 56px; margin-bottom: 14px; opacity: .5; }
+
+  /* 提示 */
+  .tip-card { margin-top: 18px; padding: 16px 20px; background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-left: 3px solid var(--info); border-radius: 10px; font-size: 13px; color: #1e40af; line-height: 1.8; }
+  .tip-card b { color: #1d4ed8; }
+  .tip-card ul { margin: 6px 0 0 20px; }
+
+  /* 弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .mask.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: pop .2s ease; overflow: hidden; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 600; }
+  .modal-close { width: 30px; height: 30px; border-radius: 6px; background: transparent; border: none; cursor: pointer; color: var(--text-3); font-size: 18px; }
+  .modal-close:hover { background: var(--bg-page); color: var(--text); }
+  .modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+  .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #fafcff; }
+
+  .msg-detail-hero { display: flex; gap: 14px; align-items: center; padding: 16px; background: linear-gradient(135deg, #fafcff, #f0f9ff); border: 1px solid #bfdbfe; border-radius: 10px; margin-bottom: 18px; }
+  .msg-detail-content { font-size: 13.5px; line-height: 1.9; color: var(--text); white-space: pre-wrap; padding: 14px 16px; background: #f8fafc; border-radius: 8px; }
+  .msg-detail-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 16px; font-size: 12.5px; }
+  .msg-detail-info .di-item { display: flex; gap: 6px; }
+  .msg-detail-info .di-item .label { color: var(--text-3); }
+  .msg-detail-info .di-item .value { color: var(--text); font-weight: 500; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast { background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 20px; font-size: 13.5px; border-left: 3px solid var(--success); animation: slideDown .2s ease; white-space: nowrap; color: var(--text); }
+  .toast.error { border-left-color: var(--error); }
+  .toast.warn { border-left-color: var(--warning); }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 1240px) {
+    .msg-hero-content { grid-template-columns: 1fr; }
+    .msg-layout { grid-template-columns: 1fr; }
+    .msg-sidebar { display: flex; flex-wrap: wrap; }
+    .sidebar-section { border-right: 1px solid var(--border-light); border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="search-results.html">馆藏检索</a>
+      <a href="e-resources.html">电子资源</a>
+      <a href="seat-reservation.html">空间预约</a>
+      <a href="#" class="active">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">读者服务</a>
+    <span class="sep">›</span>
+    <span class="current">消息中心</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部 -->
+  <div class="msg-hero">
+    <div class="msg-hero-content">
+      <div>
+        <h2>🔔 消息中心 · 重要通知一站式触达</h2>
+        <p>实时接收图书馆的 <b>借阅提醒</b>、<b>预约到馆</b>、<b>逾期通知</b>、<b>活动邀请</b>、<b>系统通知</b>。支持 <b>站内信 / 邮件 / 短信 / 微信</b> 多渠道推送，可设置免打扰时段。</p>
+      </div>
+      <div class="msg-hero-stats">
+        <div class="msg-hero-stat"><div class="num">3</div><div class="lbl">未读消息</div></div>
+        <div class="msg-hero-stat"><div class="num">8</div><div class="lbl">本月消息</div></div>
+        <div class="msg-hero-stat"><div class="num">156</div><div class="lbl">历史消息</div></div>
+        <div class="msg-hero-stat"><div class="num">4</div><div class="lbl">接收渠道</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主区 -->
+  <div class="msg-layout">
+
+    <!-- 左侧分类 -->
+    <aside class="msg-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">消息分类</div>
+        <div class="sidebar-item active unread" onclick="filterMsg('all', this)">
+          <span class="si-icon">📥</span><span>全部消息</span><span class="si-cnt">8</span>
+        </div>
+        <div class="sidebar-item unread" onclick="filterMsg('borrow', this)">
+          <span class="si-icon">📖</span><span>借阅提醒</span><span class="si-cnt">1</span>
+        </div>
+        <div class="sidebar-item unread" onclick="filterMsg('reserve', this)">
+          <span class="si-icon">📅</span><span>预约到馆</span><span class="si-cnt">1</span>
+        </div>
+        <div class="sidebar-item" onclick="filterMsg('overdue', this)">
+          <span class="si-icon">⏰</span><span>逾期通知</span><span class="si-cnt">1</span>
+        </div>
+        <div class="sidebar-item" onclick="filterMsg('activity', this)">
+          <span class="si-icon">🎉</span><span>活动提醒</span><span class="si-cnt">2</span>
+        </div>
+        <div class="sidebar-item" onclick="filterMsg('audit', this)">
+          <span class="si-icon">✅</span><span>审核结果</span><span class="si-cnt">1</span>
+        </div>
+        <div class="sidebar-item unread" onclick="filterMsg('system', this)">
+          <span class="si-icon">📢</span><span>系统通知</span><span class="si-cnt">1</span>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">快速筛选</div>
+        <div class="sidebar-item unread" onclick="filterMsg('unread', this)">
+          <span class="si-icon">🔴</span><span>未读消息</span><span class="si-cnt">3</span>
+        </div>
+        <div class="sidebar-item" onclick="filterMsg('star', this)">
+          <span class="si-icon">⭐</span><span>已收藏</span><span class="si-cnt">0</span>
+        </div>
+        <div class="sidebar-item" onclick="filterMsg('system', this)">
+          <span class="si-icon">📜</span><span>已读消息</span><span class="si-cnt">5</span>
+        </div>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-item" onclick="filterMsg('trash', this)">
+          <span class="si-icon">🗑️</span><span>回收站</span>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">偏好设置</div>
+        <div class="sidebar-action" onclick="toast('打开推送设置', '')">⚙️ 推送设置</div>
+        <div class="sidebar-action" onclick="toast('打开免打扰时段', '')">🌙 免打扰时段</div>
+        <div class="sidebar-action" onclick="toast('打开消息订阅管理', '')">📋 消息订阅</div>
+      </div>
+    </aside>
+
+    <!-- 右侧消息列表 -->
+    <main class="msg-main">
+      <div class="msg-toolbar">
+        <div class="toolbar-left">
+          <div class="toolbar-search">
+            <span class="ico">🔍</span>
+            <input type="text" placeholder="搜索消息标题 / 内容 / 发送方">
+          </div>
+          <select class="toolbar-select">
+            <option>全部类型</option>
+            <option>借阅提醒</option>
+            <option>预约到馆</option>
+            <option>逾期通知</option>
+            <option>审核结果</option>
+            <option>活动提醒</option>
+            <option>系统通知</option>
+          </select>
+          <select class="toolbar-select">
+            <option>全部时间</option>
+            <option>今天</option>
+            <option>近 7 天</option>
+            <option>近 30 天</option>
+          </select>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn-tool" onclick="toast('已全部标为已读', '')">✓ 全部已读</button>
+          <button class="btn-tool primary" onclick="toast('打开消息设置', '')">⚙️ 推送设置</button>
+        </div>
+      </div>
+
+      <div class="msg-list" id="msgList">
+
+        <div class="msg-item unread" onclick="openDetail(1)">
+          <div class="msg-type-icon t1">📖</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t1">借阅提醒</span>
+              <span class="time"><b>10:42</b> · 今天</span>
+            </div>
+            <div class="title">您的图书《计算机网络：自顶向下方法》即将到期</div>
+            <div class="preview">陈思远 同学，您借阅的《计算机网络：自顶向下方法》将于 2025-12-30 到期，请及时归还或办理续借，以免产生逾期费用。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch">📧 邮件</span>
+              <span class="ch">📱 短信</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">📋 续借</span>
+            <span class="msg-action">📖 查看</span>
+            <span class="unread-dot"></span>
+          </div>
+        </div>
+
+        <div class="msg-item unread" onclick="openDetail(2)">
+          <div class="msg-type-icon t1">📖</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t1">借阅提醒</span>
+              <span class="time"><b>昨天 16:20</b></span>
+            </div>
+            <div class="title">您预约的图书《百年孤独》已到馆</div>
+            <div class="preview">陈思远 同学，您预约的《百年孤独》已到馆，请携带校园卡于 3 日内到 总馆 / 2F / 中文图书借阅区 取书，逾期预约将自动取消。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch on">📧 邮件</span>
+              <span class="ch on">📱 短信</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">📋 借书</span>
+            <span class="msg-action">📖 查看</span>
+            <span class="unread-dot"></span>
+          </div>
+        </div>
+
+        <div class="msg-item unread" onclick="openDetail(3)">
+          <div class="msg-type-icon t6">📢</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t6">系统通知</span>
+              <span class="time"><b>前天 09:00</b></span>
+            </div>
+            <div class="title">关于 2026 年元旦假期开馆时间调整</div>
+            <div class="preview">各位读者：1月1日—1月3日全馆闭馆，数字图书馆线上服务正常；1月4日（周日）正常开放（08:00-22:00）；1月5日起恢复常规开馆时间。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch on">📱 微信</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">📅 查看详情</span>
+            <span class="unread-dot"></span>
+          </div>
+        </div>
+
+        <div class="msg-item" onclick="openDetail(4)">
+          <div class="msg-type-icon t3">⏰</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t3">逾期通知</span>
+              <span class="time"><b>3 天前</b></span>
+            </div>
+            <div class="title">图书逾期提醒：请尽快归还并缴纳滞纳金</div>
+            <div class="preview">陈思远 同学，您借阅的《人类简史：从动物到上帝》已逾期 4 天，请尽快归还并到一楼服务台处理滞纳金，否则将影响您的借阅信用分。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch on">📧 邮件</span>
+              <span class="ch on">📱 短信</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">💰 缴费</span>
+            <span class="msg-action">📖 查看</span>
+          </div>
+        </div>
+
+        <div class="msg-item" onclick="openDetail(5)">
+          <div class="msg-type-icon t4">✅</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t4">审核结果</span>
+              <span class="time"><b>5 天前</b></span>
+            </div>
+            <div class="title">文献传递申请已通过审核</div>
+            <div class="preview">陈思远 老师，您提交的文献传递申请已通过审核，请登录系统下载全文，链接 7 日内有效。如有疑问请联系学科馆员。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch on">📧 邮件</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">📥 下载</span>
+            <span class="msg-action">📖 查看</span>
+          </div>
+        </div>
+
+        <div class="msg-item" onclick="openDetail(6)">
+          <div class="msg-type-icon t5">🎉</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t5">活动提醒</span>
+              <span class="time"><b>12-15 14:30</b></span>
+            </div>
+            <div class="title">"书香校园·秋季读书月"系列活动启动</div>
+            <div class="preview">各位读者："书香校园·秋季读书月"系列活动现已开启报名，包含读书分享会、经典诵读大赛、信息素养讲座等 6 项活动，欢迎踊跃参与。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch on">📱 微信</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">📝 报名</span>
+            <span class="msg-action">📖 查看</span>
+          </div>
+        </div>
+
+        <div class="msg-item" onclick="openDetail(7)">
+          <div class="msg-type-icon t5">🎉</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t5">活动提醒</span>
+              <span class="time"><b>12-08 09:30</b></span>
+            </div>
+            <div class="title">"信息素养大赛"报名启动通知</div>
+            <div class="preview">各位同学：第十二届校园信息素养大赛现已启动报名，主题"信息素养与数字学术"，设一等奖 1 名 / 二等奖 3 名 / 三等奖 6 名，奖金丰厚，欢迎组队报名！</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+              <span class="ch">📧 邮件</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">📝 报名</span>
+            <span class="msg-action">📖 查看</span>
+          </div>
+        </div>
+
+        <div class="msg-item" onclick="openDetail(8)">
+          <div class="msg-type-icon t6">📢</div>
+          <div class="msg-main-content">
+            <div class="row1">
+              <span class="type-tag t6">系统通知</span>
+              <span class="time"><b>12-01 18:00</b></span>
+            </div>
+            <div class="title">2025 年数据库试用通过通知</div>
+            <div class="preview">各位读者：经图书馆评估，2025 年数据库试用项目"中国知网研学平台"已通过评估，正式纳入本馆数字资源体系，欢迎使用。</div>
+            <div class="channels">
+              <span class="ch on">📨 站内信</span>
+            </div>
+          </div>
+          <div class="msg-actions">
+            <span class="msg-action">🌐 访问</span>
+            <span class="msg-action">📖 查看</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 分页 -->
+      <div class="pager">
+        <div class="pg-info">共 <b>8</b> 条 / 当前 <b>1</b> - <b>8</b> 条 · 未读 <b>3</b> 条</div>
+        <div class="pg-btns">
+          <button class="page-btn" disabled>‹ 上一页</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn" disabled>下一页 ›</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 提示 -->
+  <div class="tip-card">
+    💡 <b style="color: #1d4ed8;">温馨提示：</b>
+    <ul>
+      <li>可在 <b>⚙️ 推送设置</b> 中关闭不感兴趣的类型（如已毕业不需要活动提醒），建议保留 <b>借阅提醒 + 逾期通知</b></li>
+      <li>支持 <b>免打扰时段</b>（如 22:00 - 08:00 仅紧急消息推送），避免夜间打扰</li>
+      <li>重要通知建议 <b>同时启用 站内信 + 微信 + 短信</b> 三渠道，确保不漏看</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- 详情弹窗 -->
+<div class="mask" id="detailMask">
+  <div class="modal" style="width: 700px;">
+    <div class="modal-header">
+      <span>📄 消息详情</span>
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn-tool" onclick="toast('已删除', 'error')">🗑️ 删除</button>
+      <button class="btn-tool" onclick="toast('已收藏', '')">⭐ 收藏</button>
+      <button class="btn-tool primary" onclick="closeDetail()">✓ 已读</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  function toast(msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = '.25s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-8px)';
+      setTimeout(() => el.remove(), 250);
+    }, 2200);
+  }
+
+  function filterMsg(key, el) {
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    const labels = {
+      all: '全部消息', borrow: '借阅提醒', reserve: '预约到馆', overdue: '逾期通知',
+      activity: '活动提醒', audit: '审核结果', system: '系统通知',
+      unread: '未读消息', star: '已收藏', trash: '回收站'
+    };
+    toast(`筛选：${labels[key] || key}`, '');
+  }
+
+  function openDetail(id) {
+    const messages = {
+      1: { type: 't1', typeText: '借阅提醒', title: '您的图书《计算机网络：自顶向下方法》即将到期', time: '今天 10:42',
+           content: '陈思远 同学，您好：\n\n您借阅的《计算机网络：自顶向下方法》将于 2025-12-30 到期，请及时归还或办理续借，以免产生逾期费用。\n\n如需续借，请登录系统或到馆办理。\n\n图书馆', ch: ['站内信', '邮件', '短信'], chSent: [1, 0, 0] },
+      2: { type: 't1', typeText: '借阅提醒', title: '您预约的图书《百年孤独》已到馆', time: '昨天 16:20',
+           content: '陈思远 同学，您好：\n\n您预约的《百年孤独》已到馆，请携带校园卡于 3 日内到 总馆 / 2F / 中文图书借阅区 取书。\n\n逾期预约将自动取消，并扣 3 信用分。\n\n图书馆', ch: ['站内信', '邮件', '短信'], chSent: [1, 1, 1] },
+      3: { type: 't6', typeText: '系统通知', title: '关于 2026 年元旦假期开馆时间调整', time: '前天 09:00',
+           content: '各位读者：\n\n1月1日—1月3日 全馆闭馆，数字图书馆线上服务正常；\n1月4日（周日）正常开放（08:00-22:00）；\n1月5日起 恢复常规开馆时间。\n\n如有问题请咨询 0376-1234-5678。\n\n图书馆', ch: ['站内信', '微信'], chSent: [1, 1] }
+    };
+    const m = messages[id] || messages[1];
+
+    let chHtml = '';
+    m.ch.forEach((c, i) => {
+      chHtml += `<span class="ch" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 12px; font-size: 12px; background: ${m.chSent[i] ? 'rgba(22,197,94,0.1)' : '#f8fafc'}; color: ${m.chSent[i] ? '#047857' : '#9ca3af'}; border: 1px solid ${m.chSent[i] ? '#a7f3d0' : '#eef2f7'}">
+        ${m.chSent[i] ? '✓' : '⏱'} ${c} ${m.chSent[i] ? '已送达' : '未送达'}
+      </span>`;
+    });
+
+    document.getElementById('detailBody').innerHTML = `
+      <div class="msg-detail-hero">
+        <div class="msg-type-icon ${m.type}" style="width: 48px; height: 48px; font-size: 22px;">📄</div>
+        <div style="flex: 1;">
+          <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+            <span class="type-tag ${m.type}">${m.typeText}</span>
+            <span style="font-size: 12px; color: var(--text-3);">${m.time}</span>
+          </div>
+          <div style="font-size: 17px; font-weight: 600; color: var(--text);">${m.title}</div>
+        </div>
+      </div>
+
+      <div class="msg-detail-info">
+        <div class="di-item"><span class="label">📨 消息类型：</span><span class="value">${m.typeText}</span></div>
+        <div class="di-item"><span class="label">🕒 发送时间：</span><span class="value">${m.time}</span></div>
+        <div class="di-item"><span class="label">📡 推送渠道：</span><span class="value">${m.ch.join(' / ')}</span></div>
+        <div class="di-item"><span class="label">📬 送达情况：</span><span class="value">${m.chSent.filter(s => s === 1).length} / ${m.ch.length} 渠道</span></div>
+      </div>
+
+      <div style="font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 8px; padding-left: 8px; border-left: 3px solid var(--primary);">📝 消息内容</div>
+      <div class="msg-detail-content">${m.content}</div>
+
+      <div style="font-size: 13.5px; font-weight: 600; color: var(--text); margin: 16px 0 10px; padding-left: 8px; border-left: 3px solid var(--primary);">📡 推送渠道详情</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">${chHtml}</div>
+    `;
+    document.getElementById('detailMask').classList.add('show');
+  }
+
+  function closeDetail() {
+    document.getElementById('detailMask').classList.remove('show');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分馆详情 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --max-w: 1440px;
+  }
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部 Hero */
+  .loc-hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 18px;
+    padding: 32px 36px;
+    color: #fff;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.18);
+  }
+  .loc-hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 280px; height: 280px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .loc-hero::after { content: ''; position: absolute; bottom: -100px; right: 300px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .loc-hero .head-row { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; position: relative; z-index: 1; }
+  .loc-hero .big-ico {
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+  }
+  .loc-hero h1 { font-size: 32px; font-weight: 700; text-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+  .loc-hero .code {
+    display: inline-block; margin-left: 8px;
+    padding: 2px 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 6px;
+    font-family: ui-monospace, monospace;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  .loc-hero .open-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-left: 14px; padding: 4px 12px;
+    background: rgba(34,197,94,0.25);
+    border: 1px solid rgba(34,197,94,0.4);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+  .loc-hero .open-status::before {
+    content: ''; width: 7px; height: 7px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.4);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.4); } 50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); } }
+  .loc-hero .desc { font-size: 15px; opacity: 0.92; line-height: 1.7; margin-bottom: 22px; max-width: 720px; position: relative; z-index: 1; }
+  .loc-hero-stats { display: flex; gap: 18px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .lhs { background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 12px 18px; min-width: 120px; }
+  .lhs .n { font-size: 24px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .lhs .l { font-size: 12px; opacity: .9; margin-top: 2px; }
+
+  /* 主体 */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .card-head h3 .dot { width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .card-head .more { font-size: 13px; color: var(--text-3); }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 22px; }
+
+  /* 楼层网格 */
+  .floor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .floor-card {
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid #e8eef8;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .floor-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--sky));
+    transform: scaleX(0); transform-origin: left;
+    transition: .35s;
+  }
+  .floor-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(13,59,102,0.12); }
+  .floor-card:hover::before { transform: scaleX(1); }
+  .floor-card .top {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .floor-card .big-code {
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(74,158,255,0.3);
+  }
+  .floor-card.f1 .big-code { background: linear-gradient(135deg, #4a9eff, #0d3b66); }
+  .floor-card.f2 .big-code { background: linear-gradient(135deg, #10b981, #047857); }
+  .floor-card.f3 .big-code { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .floor-card.f4 .big-code { background: linear-gradient(135deg, #a855f7, #6d28d9); }
+  .floor-card .info { flex: 1; }
+  .floor-card .info .name { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .floor-card .info .use { font-size: 12.5px; color: var(--text-3); }
+  .floor-card .info .code {
+    font-family: ui-monospace, monospace; font-size: 11.5px;
+    color: var(--text-3); background: #fff; padding: 1px 6px; border-radius: 4px;
+    border: 1px solid var(--border); display: inline-block; margin-top: 4px;
+  }
+  .floor-card .bottom { display: flex; gap: 12px; font-size: 12px; color: var(--text-2); flex-wrap: wrap; }
+  .floor-card .bottom span { display: inline-flex; align-items: center; gap: 4px; }
+  .floor-card .bottom b { color: var(--primary); font-weight: 700; }
+
+  /* 馆员 */
+  .staff-list { display: flex; flex-direction: column; gap: 10px; }
+  .staff-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-page);
+    border-radius: 10px;
+  }
+  .staff-item .av {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a9eff, #0d3b66);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .staff-item .info { flex: 1; }
+  .staff-item .info .name { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .staff-item .info .post { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .staff-item .info .phone { font-size: 11.5px; color: var(--text-2); font-family: ui-monospace, monospace; margin-top: 2px; }
+  .staff-item .tag { font-size: 11px; padding: 2px 8px; background: rgba(74,158,255,0.12); color: var(--primary); border-radius: 10px; }
+
+  /* 馆藏亮点 */
+  .feature-list { display: flex; flex-direction: column; gap: 10px; }
+  .feature-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #fafcff, #f0f9ff);
+    border-left: 3px solid var(--sky);
+    border-radius: 8px;
+  }
+  .feature-item .ico { font-size: 20px; }
+  .feature-item .text { flex: 1; }
+  .feature-item .t { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .feature-item .d { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+  /* 馆藏统计 */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .stat-box {
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid #e8eef8;
+  }
+  .stat-box .n { font-size: 22px; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .stat-box .l { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+  .stat-box.green .n { color: #16a34a; }
+  .stat-box.orange .n { color: #d97706; }
+  .stat-box.purple .n { color: #7c3aed; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  .info-list { display: flex; flex-direction: column; gap: 10px; }
+  .info-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .info-row .ico { width: 28px; height: 28px; background: #fff; border: 1px solid var(--border); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .info-row .label { color: var(--text-3); font-size: 12px; min-width: 56px; }
+  .info-row .value { color: var(--text); font-weight: 500; flex: 1; }
+  .info-row .value.mono { font-family: ui-monospace, monospace; font-size: 12.5px; }
+
+  /* 分馆列表 */
+  .branch-list { display: flex; flex-direction: column; gap: 8px; }
+  .branch-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-page);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .branch-item:hover { background: rgba(74,158,255,0.08); }
+  .branch-item.current { background: linear-gradient(135deg, #eff6ff, #f0f9ff); border: 1px solid #bfdbfe; }
+  .branch-item .ico {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #4a9eff, #0d3b66);
+    color: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .branch-item .info { flex: 1; }
+  .branch-item .info .name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .branch-item .info .code { font-size: 11.5px; color: var(--text-3); font-family: ui-monospace, monospace; }
+  .branch-item .badge { font-size: 10.5px; padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
+  .badge-on { background: #ecfdf5; color: #059669; }
+  .badge-off { background: #f1f5f9; color: #64748b; }
+
+  /* 提示 */
+  .notice-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
+  }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .floor-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="馆藏导览.html" class="active">馆藏导览</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="馆藏导览.html">馆藏导览</a>
+    <span class="sep">›</span>
+    <a href="分馆列表.html">分馆列表</a>
+    <span class="sep">›</span>
+    <span class="current">总馆</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部 Hero -->
+  <div class="loc-hero">
+    <div class="head-row">
+      <div class="big-ico">🏛️</div>
+      <div>
+        <h1>总馆 <span class="code">ZG</span> <span class="open-status">开放中</span></h1>
+      </div>
+    </div>
+    <p class="desc">信阳航空职业学院图书馆总馆，位于中心校区核心位置，是全校规模最大、馆藏最丰富、设施最完善的综合性图书馆。设有中文图书借阅区、外文书库、电子阅览室、期刊阅览区、古籍特藏室、自习区等多元功能空间。</p>
+    <div class="loc-hero-stats">
+      <div class="lhs"><div class="n">4</div><div class="l">楼层</div></div>
+      <div class="lhs"><div class="n">10</div><div class="l">区域</div></div>
+      <div class="lhs"><div class="n">6,100 ㎡</div><div class="l">总面积</div></div>
+      <div class="lhs"><div class="n">86 万</div><div class="l">纸质馆藏</div></div>
+      <div class="lhs"><div class="n">230 万</div><div class="l">电子图书</div></div>
+      <div class="lhs"><div class="n">98%</div><div class="l">读者满意度</div></div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 馆藏统计 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>馆藏统计</h3>
+          <span style="font-size:12px;color:var(--text-3);">截至 2025-12-25</span>
+        </div>
+        <div class="card-body">
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="n">86 万</div>
+              <div class="l">纸质图书（册）</div>
+            </div>
+            <div class="stat-box green">
+              <div class="n">230 万</div>
+              <div class="l">电子图书（册）</div>
+            </div>
+            <div class="stat-box orange">
+              <div class="n">800+</div>
+              <div class="l">中外文期刊</div>
+            </div>
+            <div class="stat-box purple">
+              <div class="n">16</div>
+              <div class="l">数据库</div>
+            </div>
+            <div class="stat-box">
+              <div class="n">6,100</div>
+              <div class="l">总面积（㎡）</div>
+            </div>
+            <div class="stat-box green">
+              <div class="n">2,200+</div>
+              <div class="l">总座位数</div>
+            </div>
+            <div class="stat-box orange">
+              <div class="n">8 间</div>
+              <div class="l">研修室</div>
+            </div>
+            <div class="stat-box purple">
+              <div class="n">12,000+</div>
+              <div class="l">日均到馆人次</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 楼层导览 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>楼层分布 · 一图速览</h3>
+          <a class="more">查看完整馆藏地图 ›</a>
+        </div>
+        <div class="card-body">
+          <div class="floor-grid">
+
+            <div class="floor-card f1">
+              <div class="top">
+                <div class="big-code">1F</div>
+                <div class="info">
+                  <div class="name">一层</div>
+                  <div class="use">中文图书借阅区</div>
+                  <div class="code">ZG-1F</div>
+                </div>
+              </div>
+              <div class="bottom">
+                <span>📐 2000 ㎡</span>
+                <span>📚 <b>8 万</b> 册</span>
+                <span>🪑 <b>200</b> 座</span>
+                <span>👤 张丽</span>
+              </div>
+            </div>
+
+            <div class="floor-card f2">
+              <div class="top">
+                <div class="big-code">2F</div>
+                <div class="info">
+                  <div class="name">二层</div>
+                  <div class="use">外文书库 + 电子阅览室</div>
+                  <div class="code">ZG-2F</div>
+                </div>
+              </div>
+              <div class="bottom">
+                <span>📐 1800 ㎡</span>
+                <span>📚 <b>6 万</b> 册</span>
+                <span>🖥️ <b>60</b> 机位</span>
+                <span>👤 王强</span>
+              </div>
+            </div>
+
+            <div class="floor-card f3">
+              <div class="top">
+                <div class="big-code">3F</div>
+                <div class="info">
+                  <div class="name">三层</div>
+                  <div class="use">期刊阅览区 + 自习区</div>
+                  <div class="code">ZG-3F</div>
+                </div>
+              </div>
+              <div class="bottom">
+                <span>📐 1500 ㎡</span>
+                <span>📚 <b>800</b> 期刊</span>
+                <span>🪑 <b>400</b> 座</span>
+                <span>👤 李敏</span>
+              </div>
+            </div>
+
+            <div class="floor-card f4">
+              <div class="top">
+                <div class="big-code">4F</div>
+                <div class="info">
+                  <div class="name">四层</div>
+                  <div class="use">古籍特藏室</div>
+                  <div class="code">ZG-4F</div>
+                </div>
+              </div>
+              <div class="bottom">
+                <span>📐 800 ㎡</span>
+                <span>📚 <b>2 万</b> 册</span>
+                <span>👤 陈静</span>
+                <span style="color:var(--warning);">⚠ 需预约</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 馆员团队 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>馆员团队</h3>
+          <a class="more">查看全部 12 位馆员 ›</a>
+        </div>
+        <div class="card-body">
+          <div class="staff-list">
+            <div class="staff-item">
+              <div class="av">张</div>
+              <div class="info">
+                <div class="name">张丽 <span class="tag">馆长</span></div>
+                <div class="post">总服务台 / 一层主管</div>
+                <div class="phone">📞 010-88880001</div>
+              </div>
+            </div>
+            <div class="staff-item">
+              <div class="av" style="background:linear-gradient(135deg,#10b981,#047857);">王</div>
+              <div class="info">
+                <div class="name">王强 <span class="tag">采编部</span></div>
+                <div class="post">二层外文书库主管</div>
+                <div class="phone">📞 010-88880002</div>
+              </div>
+            </div>
+            <div class="staff-item">
+              <div class="av" style="background:linear-gradient(135deg,#f59e0b,#d97706);">李</div>
+              <div class="info">
+                <div class="name">李敏 <span class="tag">流通部</span></div>
+                <div class="post">三层期刊阅览区主管</div>
+                <div class="phone">📞 010-88880003</div>
+              </div>
+            </div>
+            <div class="staff-item">
+              <div class="av" style="background:linear-gradient(135deg,#a855f7,#6d28d9);">陈</div>
+              <div class="info">
+                <div class="name">陈静 <span class="tag">特藏部</span></div>
+                <div class="post">四层古籍特藏室主管</div>
+                <div class="phone">📞 010-88880004</div>
+              </div>
+            </div>
+            <div class="staff-item">
+              <div class="av" style="background:linear-gradient(135deg,#ec4899,#be185d);">赵</div>
+              <div class="info">
+                <div class="name">赵磊 <span class="tag">技术部</span></div>
+                <div class="post">电子阅览室 / 设备维护</div>
+                <div class="phone">📞 010-88880005</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 馆藏亮点 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>馆藏亮点 · 特色服务</h3>
+        </div>
+        <div class="card-body">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="ico">✈</div>
+              <div class="text">
+                <div class="t">航空特色专题书架</div>
+                <div class="d">集中收藏航空发动机、无人机、飞机制造、空中乘务等专业书籍 8000+ 册，是我院教学科研核心文献保障。</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="ico">🥇</div>
+              <div class="text">
+                <div class="t">考研自习专区</div>
+                <div class="d">三层自习区设有 200 个考研专座，需提前在线预约，配备独立照明、电源、网络，专供考研学子使用。</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="ico">📜</div>
+              <div class="text">
+                <div class="t">古籍特藏室</div>
+                <div class="d">收藏明清以来古籍善本、地方志 2 万余册，需提前 1 个工作日预约，仅限馆内阅览，禁止外借。</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="ico">🎧</div>
+              <div class="text">
+                <div class="t">VR 沉浸式阅览室</div>
+                <div class="d">配备 6 台 VR 设备，可沉浸式阅读 3D 电子书、虚拟参观敦煌莫高窟等数字展览，体验全新阅读方式。</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="ico">🤝</div>
+              <div class="text">
+                <div class="t">学科馆员一对一</div>
+                <div class="d">12 位学科馆员为各学院师生提供文献检索、课题跟踪、查新查引等专业咨询服务，可在线预约。</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="ico">📱</div>
+              <div class="text">
+                <div class="t">24h 自助借还</div>
+                <div class="d">一层入口处配备 4 台自助借还机，7×24 小时可扫码借书、还书、查询，最快 30 秒完成。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 分馆信息 -->
+      <div class="side-card">
+        <h4>分馆信息</h4>
+        <div class="info-list">
+          <div class="info-row">
+            <div class="ico">🏛️</div>
+            <span class="label">馆藏地</span>
+            <span class="value">总馆</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">🔢</div>
+            <span class="label">馆藏代码</span>
+            <span class="value mono">ZG</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📍</div>
+            <span class="label">地　　址</span>
+            <span class="value" style="font-size:12.5px;">中心校区图书馆</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📞</div>
+            <span class="label">总服务台</span>
+            <span class="value mono">010-88880001</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📧</div>
+            <span class="label">服务邮箱</span>
+            <span class="value" style="font-size:12.5px;">lib@xihang.edu.cn</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">🕒</div>
+            <span class="label">开放时间</span>
+            <span class="value">08:30 - 21:30</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 其他分馆 -->
+      <div class="side-card">
+        <h4>其他分馆 <span style="font-size:12px;color:var(--text-3);font-weight:400;margin-left:4px;">（3 个停用）</span></h4>
+        <div class="branch-list">
+          <div class="branch-item">
+            <div class="ico" style="background:linear-gradient(135deg,#94a3b8,#475569);">🏛</div>
+            <div class="info">
+              <div class="name">南区分馆</div>
+              <div class="code">NQ · 南校区</div>
+            </div>
+            <span class="badge badge-off">停用</span>
+          </div>
+          <div class="branch-item">
+            <div class="ico" style="background:linear-gradient(135deg,#94a3b8,#475569);">🏛</div>
+            <div class="info">
+              <div class="name">东校区分馆</div>
+              <div class="code">DQ · 东校区</div>
+            </div>
+            <span class="badge badge-off">停用</span>
+          </div>
+          <div class="branch-item">
+            <div class="ico" style="background:linear-gradient(135deg,#94a3b8,#475569);">🏛</div>
+            <div class="info">
+              <div class="name">医学分馆</div>
+              <div class="code">YX · 医学部</div>
+            </div>
+            <span class="badge badge-off">停用</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px dashed var(--border);border-radius:8px;font-size:11.5px;color:var(--text-3);line-height:1.6;">
+          💡 <b>说明：</b>南区分馆、东校区分馆、医学分馆当前为停用状态，馆藏资源可通过馆际互借获取，恢复开放时间请关注公告。
+        </div>
+      </div>
+
+      <!-- 服务速达 -->
+      <div class="side-card">
+        <h4>服务速达</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button style="padding:10px 8px;background:linear-gradient(135deg,#fafcff,#f0f9ff);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-2);">📚 馆藏检索</button>
+          <button style="padding:10px 8px;background:linear-gradient(135deg,#fafcff,#f0f9ff);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-2);">💡 图书荐购</button>
+          <button style="padding:10px 8px;background:linear-gradient(135deg,#fafcff,#f0f9ff);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-2);">📅 空间预约</button>
+          <button style="padding:10px 8px;background:linear-gradient(135deg,#fafcff,#f0f9ff);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text-2);">📖 我的借阅</button>
+        </div>
+      </div>
+
+      <!-- 联系咨询 -->
+      <div class="side-card">
+        <h4>联系咨询</h4>
+        <div class="info-list">
+          <div class="info-row">
+            <div class="ico">📞</div>
+            <span class="label">总服务台</span>
+            <span class="value mono">010-88880001</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📧</div>
+            <span class="label">读者邮箱</span>
+            <span class="value" style="font-size:12px;">lib@xihang.edu.cn</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">💬</div>
+            <span class="label">在线咨询</span>
+            <span class="value" style="font-size:12.5px;color:var(--primary);">点击咨询 ›</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📋</div>
+            <span class="label">官方 QQ 群</span>
+            <span class="value mono">12345678</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 总馆共 <b>4 层</b>，一楼主要为借阅服务，二楼含外文/电子阅览，三楼为期刊与自习区，四楼为古籍特藏。位置编码格式：<b>总馆-楼层-区域-排-层-格</b>，例如 <b>ZG-1F-A-01-1-5</b> 即 1F A 区第 1 排第 1 层第 5 格。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

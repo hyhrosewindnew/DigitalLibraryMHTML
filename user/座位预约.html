@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>座位预约 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    --trial: #f59e0b;
+    --max-w: 1440px;
+  }
+  /* 顶部栏 / 头部 / 面包屑（与首页同款） */
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 16px rgba(74,158,255,0.3); }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; align-items: center; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%); border-radius: 2px; }
+
+  /* ===== 新增：空间预约下拉菜单 ===== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before,
+  .nav-item-dropdown.active > a::before { opacity: 1; }
+  .nav-item-dropdown.active > a {
+    color: var(--primary);
+    background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%);
+  }
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease; z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important; align-items: center; gap: 12px;
+    padding: 10px 12px !important; font-size: 13.5px !important;
+    color: var(--text) !important; background: transparent !important;
+    border-radius: 10px; transition: .15s; line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky)); color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ===== 下拉菜单结束 ===== */
+
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; box-shadow: 0 2px 10px rgba(139,92,246,0.35); }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); transition: .2s; }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部概览 */
+  .seat-hero {
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 14px; padding: 30px 36px; color: #fff;
+    position: relative; overflow: hidden; margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.15);
+  }
+  .seat-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 40%),
+                      radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.1) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .seat-hero-content { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; }
+  .seat-hero h2 { font-size: 24px; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .seat-hero p { font-size: 13.5px; opacity: .9; line-height: 1.7; max-width: 720px; }
+  .seat-hero p b { color: var(--gold); font-weight: 600; }
+  .seat-hero-stats { display: flex; gap: 18px; }
+  .seat-hero-stat {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px; padding: 16px 22px; backdrop-filter: blur(10px); min-width: 130px; text-align: center;
+  }
+  .seat-hero-stat .num { font-size: 28px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1; }
+  .seat-hero-stat .lbl { font-size: 12px; opacity: .9; margin-top: 6px; }
+
+  /* 楼层选择 */
+  .floor-tabs {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .floor-tabs-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .floor-tabs-title { font-size: 15px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .floor-tabs-title::before { content: ''; width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .floor-date-switcher { display: flex; align-items: center; gap: 6px; }
+  .floor-date-switcher span { font-size: 13px; color: var(--text-2); margin-right: 6px; }
+  .date-tab {
+    padding: 6px 14px; border: 1px solid var(--border);
+    border-radius: 7px; background: #fff; cursor: pointer; font-size: 12.5px; color: var(--text-2);
+    transition: .15s; line-height: 1.35; text-align: center; user-select: none; font-family: inherit;
+  }
+  .date-tab:hover { border-color: var(--sky); color: var(--sky); background: rgba(74,158,255,0.06); }
+  .date-tab.active { background: var(--sky); border-color: var(--sky); color: #fff; box-shadow: 0 2px 8px rgba(74,158,255,0.28); }
+  .date-tab .dt-d { display: block; font-size: 10.5px; opacity: .85; margin-top: 2px; }
+
+  .floor-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .floor-card {
+    background: linear-gradient(135deg, #fafcff 0%, #f5f9ff 100%);
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+    cursor: pointer; transition: .25s; position: relative; overflow: hidden;
+  }
+  .floor-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--floor-color, var(--sky));
+    transform: scaleX(.4); transform-origin: left; transition: .3s;
+  }
+  .floor-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,59,102,0.08); border-color: var(--sky); }
+  .floor-card:hover::before { transform: scaleX(1); }
+  .floor-card.active { border-color: var(--sky); box-shadow: 0 4px 12px rgba(74,158,255,0.18); background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%); }
+  .floor-card.active::before { transform: scaleX(1); }
+  .floor-card .f-ico {
+    width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #fff; margin-bottom: 10px;
+    background: var(--floor-color, var(--sky));
+  }
+  .floor-card .f-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .floor-card .f-loc { font-size: 12px; color: var(--text-3); }
+  .floor-card .f-stat { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11.5px; }
+  .floor-card .f-stat .l { color: var(--text-3); }
+  .floor-card .f-stat .v { color: var(--success); font-weight: 600; }
+  .floor-card .f-stat .v.busy { color: var(--warning); }
+
+  /* 楼层平面图（核心选座区） */
+  .seat-map-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .seat-map-head {
+    padding: 16px 22px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    background: linear-gradient(180deg, #fafcff, #fff);
+  }
+  .seat-map-title { font-size: 15px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .seat-map-title::before { content: '🪑'; font-size: 18px; }
+  .seat-map-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); }
+  .seat-map-meta b { color: var(--primary); font-weight: 700; }
+  .seat-legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--text-2); }
+  .seat-legend .lg { display: inline-flex; align-items: center; gap: 4px; }
+  .seat-legend .lg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1px solid; }
+  .seat-legend .lg-free { background: #f0fdf4; border-color: #86efac; }
+  .seat-legend .lg-mine { background: #dbeafe; border-color: #3b82f6; }
+  .seat-legend .lg-occupied { background: #fee2e2; border-color: #fca5a5; }
+  .seat-legend .lg-temp { background: #fef3c7; border-color: #fde68a; }
+  .seat-legend .lg-selected { background: var(--sky); border-color: var(--sky); }
+  .seat-legend .lg-facility { background: #e0f2fe; border-color: #7dd3fc; border-style: dashed; }
+
+  /* 工具条 */
+  .seat-tools {
+    padding: 14px 22px; border-top: 1px solid var(--border-light);
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: #fafcff;
+  }
+  .slot-select-group { display: flex; align-items: center; gap: 8px; }
+  .slot-select-group .lbl { font-size: 13px; color: var(--text-2); font-weight: 500; }
+  .slot-select {
+    height: 34px; padding: 0 32px 0 12px; border: 1px solid var(--border);
+    border-radius: 8px; background: #fff; font-size: 13px; color: var(--text);
+    cursor: pointer; outline: none; font-family: inherit; min-width: 180px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .slot-select:focus { border-color: var(--sky); }
+  .duration-pills { display: flex; gap: 6px; }
+  .duration-pill {
+    padding: 7px 14px; border: 1px solid var(--border);
+    border-radius: 18px; background: #fff; font-size: 12.5px; color: var(--text-2);
+    cursor: pointer; transition: .15s; font-family: inherit;
+  }
+  .duration-pill:hover { border-color: var(--sky); color: var(--sky); }
+  .duration-pill.active { background: var(--sky); color: #fff; border-color: var(--sky); }
+  .auto-zoom { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+  .zoom-btn {
+    width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+    background: #fff; color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600; transition: .15s; font-family: inherit;
+  }
+  .zoom-btn:hover { border-color: var(--sky); color: var(--sky); }
+  .zoom-display { min-width: 50px; text-align: center; font-size: 12.5px; color: var(--text-2); font-variant-numeric: tabular-nums; padding: 0 4px; }
+
+  /* 平面图主区 */
+  .seat-canvas-area {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf3 100%);
+    background-image:
+      linear-gradient(45deg, #e0e4ea 25%, transparent 25%),
+      linear-gradient(-45deg, #e0e4ea 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e0e4ea 75%),
+      linear-gradient(-45deg, transparent 75%, #e0e4ea 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, 10px 0px;
+    padding: 24px; overflow: auto; min-height: 460px;
+  }
+  .seat-canvas {
+    display: grid; grid-template-columns: repeat(12, 56px);
+    grid-auto-rows: 56px; gap: 6px; width: max-content; margin: 0 auto;
+  }
+  .seat-cell { background: rgba(255,255,255,0.6); border-radius: 6px; pointer-events: none; }
+  .seat {
+    border-radius: 6px; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 2px; cursor: pointer; transition: all .15s; user-select: none;
+    padding: 2px 4px; text-align: center; font-size: 10.5px; line-height: 1.15; border: 1.5px solid;
+    position: relative;
+  }
+  .seat .seat-icon { font-size: 17px; line-height: 1; }
+  .seat .seat-no { font-size: 10.5px; font-weight: 600; }
+  .seat:hover { transform: scale(1.05); z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+  .seat.free { background: #f0fdf4; border-color: #86efac; color: #166534; }
+  .seat.free:hover { background: #dcfce7; border-color: #4ade80; }
+  .seat.mine { background: #dbeafe; border-color: #3b82f6; color: #1e40af; cursor: default; }
+  .seat.occupied { background: #fee2e2; border-color: #fca5a5; color: #991b1b; cursor: not-allowed; opacity: .85; }
+  .seat.occupied::after { content: '✕'; position: absolute; top: 1px; right: 3px; font-size: 9px; color: #991b1b; }
+  .seat.temp { background: #fef3c7; border-color: #fde68a; color: #92400e; cursor: not-allowed; }
+  .seat.selected {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    border-color: var(--primary); color: #fff;
+    transform: scale(1.1); box-shadow: 0 6px 18px rgba(74,158,255,0.5);
+  }
+  .seat.selected .seat-no { color: #fff; }
+  .seat.selected::after { content: '✓'; position: absolute; top: -3px; right: -3px; width: 18px; height: 18px; background: var(--success); color: #fff; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+  .seat.facility {
+    background: #e0f2fe; border: 1.5px dashed #7dd3fc; color: #0369a1;
+    cursor: default; font-size: 11px; font-weight: 500;
+  }
+  .seat.facility:hover { transform: none; box-shadow: none; }
+  .seat.disabled { background: #f5f5f5; border-color: #d4d4d4; color: #a3a3a3; cursor: not-allowed; }
+  .seat.disabled::after { content: '��'; position: absolute; top: 1px; right: 2px; font-size: 9px; }
+  .seat-nav {
+    position: absolute; top: 6px; right: 6px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(241,245,249,0.95));
+    color: var(--text-2); font-size: 9px; padding: 1px 4px; border-radius: 3px;
+    font-family: ui-monospace, monospace;
+  }
+
+  /* 提示 */
+  .seat-tips {
+    margin: 16px 22px; padding: 12px 16px;
+    background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+    border-left: 3px solid var(--sky); border-radius: 8px;
+    font-size: 12.5px; color: #1e40af; line-height: 1.7;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .seat-tips b { color: var(--primary); }
+
+  /* 已选信息条 */
+  .selected-bar {
+    display: none; margin: 16px 22px 0;
+    padding: 14px 18px; background: linear-gradient(135deg, #ecfdf5, #f0f9ff);
+    border: 1px solid #bbf7d0; border-radius: 10px;
+    align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .selected-bar.show { display: flex; }
+  .selected-bar .s-ico {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .selected-bar .s-info { flex: 1; font-size: 13.5px; color: var(--text); }
+  .selected-bar .s-info b { color: var(--primary); font-weight: 700; }
+  .selected-bar .s-info .small { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .btn-action {
+    padding: 9px 22px; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; font-weight: 600; font-size: 13.5px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    box-shadow: 0 4px 10px rgba(74,158,255,0.3); transition: .2s;
+  }
+  .btn-action:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(74,158,255,0.45); }
+  .btn-action:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; transform: none; }
+  .btn-ghost {
+    padding: 9px 18px; border: 1px solid var(--border); border-radius: 8px;
+    background: #fff; color: var(--text-2); font-weight: 500; font-size: 13.5px; cursor: pointer; transition: .2s;
+  }
+  .btn-ghost:hover { border-color: var(--sky); color: var(--sky); }
+
+  /* 我的预约 */
+  .my-reservation-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 24px; margin-top: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .my-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .my-head h3 { font-size: 17px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .my-head h3::before { content: ''; width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .my-tabs { display: flex; gap: 6px; }
+  .my-tab {
+    padding: 6px 14px; border-radius: 16px; background: var(--bg-page);
+    font-size: 12.5px; color: var(--text-2); cursor: pointer; transition: .15s;
+  }
+  .my-tab.active { background: var(--sky); color: #fff; }
+
+  .my-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .my-card {
+    padding: 14px 16px; border: 1px solid var(--border);
+    border-radius: 10px; display: flex; gap: 14px; align-items: center;
+    transition: .2s; background: #fff;
+  }
+  .my-card:hover { border-color: var(--sky); box-shadow: 0 4px 12px rgba(74,158,255,0.1); }
+  .my-card .seat-no-big {
+    width: 56px; height: 56px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; box-shadow: 0 4px 10px rgba(74,158,255,0.3);
+    flex-shrink: 0;
+  }
+  .my-card .info { flex: 1; min-width: 0; }
+  .my-card .info .l1 { font-size: 13.5px; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .my-card .info .l1 .status-pill { font-size: 11px; padding: 1px 8px; border-radius: 10px; font-weight: 500; }
+  .status-pill.pending { background: rgba(245,158,11,0.12); color: #d97706; }
+  .status-pill.inuse { background: rgba(22,197,94,0.12); color: #16a34a; }
+  .status-pill.completed { background: rgba(14,165,233,0.12); color: #075985; }
+  .status-pill.cancelled { background: rgba(107,114,128,0.12); color: #6b7280; }
+  .my-card .info .l2 { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+  .my-card .info .l3 { font-size: 11.5px; color: var(--text-3); margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+  .my-card .info .l3 .cd-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 4px #22c55e; }
+  .my-card .actions { display: flex; flex-direction: column; gap: 6px; }
+  .my-card .actions button {
+    padding: 6px 14px; font-size: 12.5px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; border: none; transition: .15s;
+  }
+  .btn-cancel { background: rgba(220,38,38,0.08); color: #dc2626; }
+  .btn-cancel:hover { background: rgba(220,38,38,0.15); }
+  .btn-checkin { background: rgba(22,197,94,0.1); color: #16a34a; }
+  .btn-checkin:hover { background: rgba(22,197,94,0.18); }
+  .btn-detail { background: #fff; color: var(--sky); border: 1px solid var(--sky); }
+  .btn-detail:hover { background: rgba(74,158,255,0.06); }
+
+  /* 帮助 */
+  .seat-help-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 22px; }
+  .seat-help-item {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 16px; text-align: center; transition: .25s; cursor: pointer;
+  }
+  .seat-help-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13,59,102,0.08); border-color: var(--sky); }
+  .seat-help-item .ico {
+    width: 44px; height: 44px; margin: 0 auto 10px;
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(13,59,102,0.04));
+    color: var(--primary); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .seat-help-item .name { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .seat-help-item .desc { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+
+  /* 弹窗 */
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .mask.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: pop .2s ease; overflow: hidden; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal.sm { width: 480px; }
+  .modal-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h3 { font-size: 16px; font-weight: 600; }
+  .modal-close { width: 30px; height: 30px; border-radius: 6px; background: transparent; border: none; cursor: pointer; color: var(--text-3); font-size: 18px; }
+  .modal-close:hover { background: var(--bg-page); color: var(--text); }
+  .modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+  .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #fafcff; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin-bottom: 16px; padding: 14px; background: linear-gradient(135deg, #fafcff, #f5f9ff); border-radius: 10px; }
+  .summary-item { display: flex; flex-direction: column; gap: 3px; }
+  .summary-item .label { font-size: 11.5px; color: var(--text-3); }
+  .summary-item .value { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .summary-item .value.mono { font-family: ui-monospace, monospace; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast {
+    background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border-radius: 8px;
+    padding: 10px 20px; font-size: 13.5px; border-left: 3px solid var(--success);
+    animation: slideDown .2s ease; white-space: nowrap; color: var(--text);
+  }
+  .toast.error { border-left-color: var(--error); }
+  .toast.warn { border-left-color: var(--warning); }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 1240px) {
+    .seat-hero-content { grid-template-columns: 1fr; }
+    .floor-grid { grid-template-columns: repeat(2, 1fr); }
+    .seat-help-grid { grid-template-columns: repeat(2, 1fr); }
+    .my-list { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="馆藏检索.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+
+      <!-- ① 空间预约改为下拉菜单（原 <a href="#" class="active">空间预约</a>） -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" class="active" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+      <!-- 下拉菜单结束 -->
+
+      <a href="个人中心.html">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="座位预约.html">空间预约</a>  <!-- ② 原来 href="#" 改成座位预约.html -->
+    <span class="sep">›</span>
+    <span class="current">座位预约</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部数据概览 -->
+  <div class="seat-hero">
+    <div class="seat-hero-content">
+      <div>
+        <h2>🪑 座位预约 · 实时选座</h2>
+        <p>本馆共开放 <b>1280 个</b> 座位，分布于 <b>6 个区域</b>。可选预约未来 <b>7 天内</b> 的座位，每次最长 <b>4 小时</b>。已预约 <b>142</b> 张，今日剩余空闲 <b>1,138</b> 个。</p>
+      </div>
+      <div class="seat-hero-stats">
+        <div class="seat-hero-stat"><div class="num">1280</div><div class="lbl">总座位数</div></div>
+        <div class="seat-hero-stat"><div class="num">1,138</div><div class="lbl">今日空闲</div></div>
+        <div class="seat-hero-stat"><div class="num">142</div><div class="lbl">今日已约</div></div>
+        <div class="seat-hero-stat"><div class="num">7天</div><div class="lbl">可预约范围</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 楼层区域选择 -->
+  <div class="floor-tabs">
+    <div class="floor-tabs-head">
+      <div class="floor-tabs-title">选择楼层与区域</div>
+      <div class="floor-date-switcher">
+        <span>预约日期：</span>
+        <button class="date-tab active" onclick="setDate(0, this)">今天<span class="dt-d">12-09 周二</span></button>
+        <button class="date-tab" onclick="setDate(1, this)">明天<span class="dt-d">12-10 周三</span></button>
+        <button class="date-tab" onclick="setDate(2, this)">后天<span class="dt-d">12-11 周四</span></button>
+        <button class="date-tab" onclick="setDate(3, this)">12-12<span class="dt-d">周五</span></button>
+        <button class="date-tab" onclick="setDate(4, this)">12-13<span class="dt-d">周六</span></button>
+        <button class="date-tab" onclick="setDate(5, this)">12-14<span class="dt-d">周日</span></button>
+        <button class="date-tab" onclick="setDate(6, this)">12-15<span class="dt-d">周一</span></button>
+      </div>
+    </div>
+    <div class="floor-grid">
+      <div class="floor-card active" style="--floor-color: #4a9eff;" onclick="selectArea('a1', this)" data-floors='["2F", "自习区A", "总馆"]'>
+        <div class="f-ico">📖</div>
+        <div class="f-name">2F · 自习区 A</div>
+        <div class="f-loc">总馆 · 文学区</div>
+        <div class="f-stat">
+          <span class="l">空闲</span>
+          <span class="v">128 / 156</span>
+        </div>
+      </div>
+      <div class="floor-card" style="--floor-color: #10b981;" onclick="selectArea('a2', this)" data-floors='["2F", "自习区B", "总馆"]'>
+        <div class="f-ico">📚</div>
+        <div class="f-name">2F · 自习区 B</div>
+        <div class="f-loc">总馆 · 文学区</div>
+        <div class="f-stat">
+          <span class="l">空闲</span>
+          <span class="v">68 / 96</span>
+        </div>
+      </div>
+      <div class="floor-card" style="--floor-color: #a855f7;" onclick="selectArea('a3', this)" data-floors='["2F", "电子阅览区", "总馆"]'>
+        <div class="f-ico">💻</div>
+        <div class="f-name">2F · 电子阅览区</div>
+        <div class="f-loc">总馆 · 电子阅览</div>
+        <div class="f-stat">
+          <span class="l">空闲</span>
+          <span class="v busy">42 / 96</span>
+        </div>
+      </div>
+      <div class="floor-card" style="--floor-color: #f59e0b;" onclick="selectArea('a4', this)" data-floors='["3F", "研习区", "总馆"]'>
+        <div class="f-ico">📜</div>
+        <div class="f-name">3F · 研习区</div>
+        <div class="f-loc">总馆 · 古籍特藏</div>
+        <div class="f-stat">
+          <span class="l">空闲</span>
+          <span class="v">38 / 60</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 楼层平面图选座区 -->
+  <div class="seat-map-card">
+    <div class="seat-map-head">
+      <div>
+        <div class="seat-map-title">总馆 · 2F · 自习区 A · 实时选座</div>
+        <div class="seat-map-meta" style="margin-top: 4px;">
+          共 <b>156</b> 个座位 · 空闲 <b style="color: var(--success);">128</b> · 已约 <b style="color: var(--warning);">22</b> · 维护 <b style="color: var(--text-3);">6</b>
+        </div>
+      </div>
+      <div class="seat-legend">
+        <span class="lg"><i class="lg-free"></i>空闲</span>
+        <span class="lg"><i class="lg-mine"></i>我的预约</span>
+        <span class="lg"><i class="lg-occupied"></i>已被占用</span>
+        <span class="lg"><i class="lg-temp"></i>暂离保留</span>
+        <span class="lg"><i class="lg-selected"></i>已选中</span>
+        <span class="lg"><i class="lg-facility"></i>设施</span>
+      </div>
+    </div>
+
+    <!-- 工具条 -->
+    <div class="seat-tools">
+      <div class="slot-select-group">
+        <span class="lbl">预约时段：</span>
+        <select class="slot-select" id="slotSel" onchange="onSlotChange()">
+          <option value="0">上午一 (08:00 - 10:00)</option>
+          <option value="1">上午二 (10:00 - 12:00)</option>
+          <option value="2">中午 (12:00 - 14:00)</option>
+          <option value="3">下午一 (14:00 - 16:00)</option>
+          <option value="4" selected>下午二 (16:00 - 18:00)</option>
+          <option value="5">晚上一 (18:00 - 20:00)</option>
+          <option value="6">晚上二 (20:00 - 22:00)</option>
+        </select>
+      </div>
+      <div class="slot-select-group">
+        <span class="lbl">预约时长：</span>
+        <div class="duration-pills">
+          <button class="duration-pill" data-dur="1" onclick="setDuration(1, this)">1 时段 (2h)</button>
+          <button class="duration-pill active" data-dur="2" onclick="setDuration(2, this)">2 时段 (4h)</button>
+        </div>
+      </div>
+      <div class="auto-zoom">
+        <button class="zoom-btn" onclick="zoomOut()">−</button>
+        <span class="zoom-display" id="zoomDisplay">100%</span>
+        <button class="zoom-btn" onclick="zoomIn()">+</button>
+      </div>
+    </div>
+
+    <!-- 平面图 -->
+    <div class="seat-canvas-area" id="canvasArea">
+      <div class="seat-canvas" id="seatCanvas" style="transform: scale(1); transform-origin: top center;"></div>
+    </div>
+
+    <!-- 提示 -->
+    <div class="seat-tips">
+      💡 <b>选座规则：</b> 单次预约最多 <b>4 小时</b>（2 个时段），离场前请务必"签退"释放座位，否则记一次违约；连续 3 次违约将暂停预约权限 7 天。
+    </div>
+
+    <!-- 已选信息条 -->
+    <div class="selected-bar" id="selectedBar">
+      <div class="s-ico">✓</div>
+      <div class="s-info">
+        <b>已选座位：<span id="seatNo">A-102</span></b>
+        <div class="small">
+          📍 <span id="seatLoc">2F · 自习区 A</span> · 🕒 <span id="seatTime">16:00 - 20:00 (4h)</span> · 📅 <span id="seatDate">2025-12-09</span>
+        </div>
+      </div>
+      <button class="btn-ghost" onclick="clearSelection()">重新选座</button>
+      <button class="btn-action" onclick="confirmBooking()">📖 确认预约</button>
+    </div>
+  </div>
+
+  <!-- 我的预约 -->
+  <div class="my-reservation-card">
+    <div class="my-head">
+      <h3>我的座位预约</h3>
+      <div class="my-tabs">
+        <span class="my-tab active">进行中 (1)</span>
+        <span>已完成 (8)</span>
+        <span>全部 (9)</span>
+      </div>
+    </div>
+
+    <div class="my-list">
+      <div class="my-card">
+        <div class="seat-no-big">A-102</div>
+        <div class="info">
+          <div class="l1">总馆 · 2F · 自习区 A <span class="status-pill pending">待签到</span></div>
+          <div class="l2">📅 2025-12-09 · 🕒 16:00 - 20:00（4 小时）</div>
+          <div class="l3"><span class="cd-dot"></span>签到剩余 <b style="color: #d97706">18 分钟</b>（预约生效后 15~30 分钟内）</div>
+        </div>
+        <div class="actions">
+          <button class="btn-checkin" onclick="toast('已为您签到，进入「使用中」', '')">📲 立即签到</button>
+          <button class="btn-cancel" onclick="toast('已取消预约，座位已释放', 'warn')">取消</button>
+        </div>
+      </div>
+
+      <div class="my-card">
+        <div class="seat-no-big">B-215</div>
+        <div class="info">
+          <div class="l1">总馆 · 2F · 自习区 B <span class="status-pill inuse">使用中</span></div>
+          <div class="l2">📅 2025-12-09 · 🕒 14:00 - 18:00（4 小时）</div>
+          <div class="l3"><span class="cd-dot"></span>已使用 <b style="color: #16a34a">1h 22m</b> · 剩余 2h 38m</div>
+        </div>
+        <div class="actions">
+          <button class="btn-detail" onclick="toast('查看座位详情', 'warn')">查看详情</button>
+          <button class="btn-cancel" onclick="toast('已临时离开，保留 30 分钟', 'warn')">📍 暂离</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 帮助区 -->
+  <div class="seat-help-grid">
+    <div class="seat-help-item">
+      <div class="ico">🕒</div>
+      <div class="name">预约时段</div>
+      <div class="desc">每日 7 个预约时段（08:00-22:00），单次最长 4 小时</div>
+    </div>
+    <div class="seat-help-item">
+      <div class="ico">📱</div>
+      <div class="name">扫码签到</div>
+      <div class="desc">到馆后扫描座位二维码，15-30 分钟内完成签到</div>
+    </div>
+    <div class="seat-help-item">
+      <div class="ico">⏰</div>
+      <div class="name">暂离功能</div>
+      <div class="desc">临时离开可点"暂离"，座位保留 30 分钟</div>
+    </div>
+    <div class="seat-help-item">
+      <div class="ico">📋</div>
+      <div class="name">违约规则</div>
+      <div class="desc">未签到 / 暂离超时 / 未签退均记 1 次违约</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 预约确认弹窗 -->
+<div class="mask" id="confirmMask">
+  <div class="modal sm">
+    <div class="modal-header">
+      <h3>📖 确认预约</h3>
+      <button class="modal-close" onclick="closeConfirm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="summary-grid" id="confirmBody">
+        <!-- 动态填充 -->
+      </div>
+      <div style="background: linear-gradient(135deg, #f0f9ff, #ecfdf5); border-radius: 8px; padding: 12px 14px; font-size: 12.5px; color: #1e40af; line-height: 1.7;">
+        💡 预约成功后，<b>15-30 分钟内</b> 须扫码签到，否则系统自动取消并记 1 次违约。如临时有事，请提前在「我的预约」中取消。
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeConfirm()">取消</button>
+      <button class="btn-action" onclick="submitBooking()">✓ 提交预约</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  // ===== 新增：当前页高亮 + 触屏 click =====
+  (function(){
+    const sp = document.getElementById('navSpace');
+    if (!sp) return;
+    const here = location.pathname.split('/').pop();
+    if (['座位预约.html','研修室预约.html','我的预约记录.html'].includes(here)) sp.classList.add('active');
+    sp.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) { e.preventDefault(); sp.classList.toggle('open'); }
+    });
+    document.addEventListener('click', e => { if (!sp.contains(e.target)) sp.classList.remove('open'); });
+  })();
+
+  let currentDate = '2025-12-09';
+  let currentArea = 'a1';
+  let currentSlot = 4;
+  let currentDuration = 2;
+  let selectedSeat = null;
+  let zoomLevel = 1;
+
+  function toast(msg, type) {
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (type ? ' ' + type : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = '.25s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-8px)';
+      setTimeout(() => el.remove(), 250);
+    }, 2200);
+  }
+
+  function setDate(days, el) {
+    document.querySelectorAll('.date-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const d = new Date('2025-12-09');
+    d.setDate(d.getDate() + days);
+    currentDate = d.toISOString().substr(0, 10);
+    renderSeats();
+    document.getElementById('seatDate') && (document.getElementById('seatDate').textContent = currentDate);
+  }
+
+  function selectArea(areaId, el) {
+    document.querySelectorAll('.floor-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentArea = areaId;
+    const f = el.dataset.floors;
+    const areaName = el.querySelector('.f-name').textContent;
+    const total = areaName.match(/(\d+)\s*\/\s*(\d+)/);
+    document.querySelector('.seat-map-title').textContent = `总馆 · ${f[0]} · ${f[1]} · 实时选座`;
+    selectedSeat = null;
+    document.getElementById('selectedBar').classList.remove('show');
+    renderSeats();
+  }
+
+  function onSlotChange() {
+    currentSlot = parseInt(document.getElementById('slotSel').value);
+  }
+
+  function setDuration(d, el) {
+    document.querySelectorAll('.duration-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    currentDuration = d;
+  }
+
+  function zoomIn() { zoomLevel = Math.min(1.5, zoomLevel + 0.1); applyZoom(); }
+  function zoomOut() { zoomLevel = Math.max(0.7, zoomLevel - 0.1); applyZoom(); }
+  function applyZoom() {
+    const c = document.getElementById('seatCanvas');
+    c.style.transform = `scale(${zoomLevel})`;
+    document.getElementById('zoomDisplay').textContent = Math.round(zoomLevel * 100) + '%';
+  }
+
+  function renderSeats() {
+    const canvas = document.getElementById('seatCanvas');
+    const seats = [];
+    const facilities = [];
+    const mySeats = ['A-015', 'A-022'];
+
+    // 顶部设施行
+    facilities.push({ x: 2, y: 1, type: 'door', label: '🚪入口' });
+    facilities.push({ x: 6, y: 1, type: 'service', label: '📋服务台' });
+    facilities.push({ x: 10, y: 1, type: 'water', label: '💧饮水机' });
+
+    // 座位排布 12 列 × 13 行 = 156 座
+    let seatIdx = 0;
+    const occupied = new Set();
+    // 模拟一些已占用座位
+    if (currentSlot <= 4) {
+      occupied.add('A-018'); occupied.add('A-022'); occupied.add('A-045'); occupied.add('A-067');
+      occupied.add('A-089'); occupied.add('A-102'); occupied.add('A-115'); occupied.add('A-128');
+    } else {
+      occupied.add('A-035'); occupied.add('A-078');
+    }
+    const disabled = new Set(['A-001', 'A-156']);
+
+    for (let r = 2; r <= 14; r++) {
+      for (let c = 1; c <= 12; c++) {
+        seatIdx++;
+        const seatNo = 'A-' + String(seatIdx).padStart(3, '0');
+        seats.push({ x: c, y: r, no: seatNo, status: disabled.has(seatNo) ? 'disabled' : occupied.has(seatNo) ? 'occupied' : 'free' });
+      }
+    }
+
+    // 渲染
+    let html = '';
+    // 设施
+    facilities.forEach(f => {
+      html += `<div class="seat facility" style="grid-column: ${f.x}; grid-row: ${f.y};">${f.label}</div>`;
+    });
+    // 座位
+    seats.forEach(s => {
+      let cls = s.status;
+      if (mySeats.includes(s.no) && s.status === 'free') cls = 'mine';
+      if (selectedSeat && selectedSeat.no === s.no) cls = 'selected';
+      html += `<div class="seat ${cls}" style="grid-column: ${s.x}; grid-row: ${s.y};" data-no="${s.no}" data-status="${s.status}" onclick="onSeatClick(this)">
+        <span class="seat-icon">${getSeatIcon(s.status)}</span>
+        <span class="seat-no">${s.no.replace('A-', '')}</span>
+      </div>`;
+    });
+
+    canvas.innerHTML = html;
+  }
+
+  function getSeatIcon(status) {
+    if (status === 'occupied') return '🔒';
+    if (status === 'disabled') return '🚫';
+    if (status === 'temp') return '⏸';
+    return '🪑';
+  }
+
+  function onSeatClick(el) {
+    const no = el.dataset.no;
+    const status = el.dataset.status;
+    if (status === 'occupied') {
+      toast(`座位 ${no} 已被预约`, 'error');
+      return;
+    }
+    if (status === 'disabled') {
+      toast(`座位 ${no} 已停用，无法选择`, 'error');
+      return;
+    }
+    selectedSeat = { no: no, status: status };
+    document.getElementById('seatNo').textContent = no;
+    const slotText = getSlotText();
+    const durText = currentDuration === 1 ? '(2h)' : '(4h)';
+    document.getElementById('seatTime').textContent = slotText + ' ' + durText;
+    document.getElementById('seatLoc').textContent = '总馆 · 2F · 自习区 A';
+    document.getElementById('seatDate').textContent = currentDate;
+    document.getElementById('selectedBar').classList.add('show');
+    renderSeats();
+  }
+
+  function getSlotText() {
+    const slots = ['08:00 - 10:00', '10:00 - 12:00', '12:00 - 14:00', '14:00 - 16:00', '16:00 - 18:00', '18:00 - 20:00', '20:00 - 22:00'];
+    return slots[currentSlot];
+  }
+
+  function clearSelection() {
+    selectedSeat = null;
+    document.getElementById('selectedBar').classList.remove('show');
+    renderSeats();
+  }
+
+  function confirmBooking() {
+    if (!selectedSeat) {
+      toast('请先选择座位', 'error');
+      return;
+    }
+    const slotText = getSlotText();
+    const durText = currentDuration === 2 ? '4 小时' : '2 小时';
+    document.getElementById('confirmBody').innerHTML = `
+      <div class="summary-item"><span class="label">座位号</span><span class="value mono">${selectedSeat.no}</span></div>
+      <div class="summary-item"><span class="label">位置</span><span class="value">总馆 · 2F · 自习区 A</span></div>
+      <div class="summary-item"><span class="label">预约日期</span><span class="value mono">${currentDate}</span></div>
+      <div class="summary-item"><span class="label">预约时段</span><span class="value mono">${slotText}</span></div>
+      <div class="summary-item"><span class="label">预约时长</span><span class="value">${durText}</span></div>
+      <div class="summary-item"><span class="label">读者</span><span class="value">陈思远（2022010301）</span></div>
+    `;
+    document.getElementById('confirmMask').classList.add('show');
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirmMask').classList.remove('show');
+  }
+
+  function submitBooking() {
+    closeConfirm();
+    toast(`✓ 预约成功！座位 ${selectedSeat.no} 已为您保留，请于 15-30 分钟内扫码签到`, '');
+    selectedSeat = null;
+    document.getElementById('selectedBar').classList.remove('show');
+    renderSeats();
+  }
+
+  // 初始化
+  renderSeats();
+</script>
+
+</body>
+</html>

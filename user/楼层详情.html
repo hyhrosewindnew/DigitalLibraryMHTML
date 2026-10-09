@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>楼层详情 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --max-w: 1440px;
+  }
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部 Hero */
+  .floor-hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 18px;
+    padding: 32px 36px;
+    color: #fff;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.18);
+  }
+  .floor-hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 240px; height: 240px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .floor-hero::after { content: ''; position: absolute; bottom: -80px; right: 240px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .floor-hero .crumb {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 14px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    font-size: 12.5px;
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+  .floor-hero .crumb .code { font-family: ui-monospace, monospace; background: rgba(255,255,255,0.2); padding: 1px 7px; border-radius: 4px; margin-left: 4px; }
+  .floor-hero h1 { font-size: 34px; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+  .floor-hero .use { font-size: 16px; opacity: 0.92; line-height: 1.7; margin-bottom: 20px; max-width: 720px; position: relative; z-index: 1; }
+  .floor-hero-stats { display: flex; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .fhs { background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 12px 18px; }
+  .fhs .n { font-size: 24px; font-weight: 700; line-height: 1.1; }
+  .fhs .l { font-size: 12px; opacity: .9; margin-top: 2px; }
+
+  /* 楼层快速导航 */
+  .floor-nav-bar {
+    display: flex; gap: 10px; align-items: center;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 18px;
+    overflow-x: auto;
+  }
+  .floor-nav-bar .label { font-size: 13px; color: var(--text-3); flex-shrink: 0; }
+  .floor-nav-bar .items { display: flex; gap: 6px; }
+  .floor-nav-bar a {
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text-2);
+    background: var(--bg-page);
+    border-radius: 18px;
+    white-space: nowrap;
+    font-weight: 500;
+    transition: .2s;
+  }
+  .floor-nav-bar a:hover { background: rgba(74,158,255,0.12); color: var(--primary); }
+  .floor-nav-bar a.current {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(74,158,255,0.3);
+  }
+
+  /* 主体 */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .card-head h3 .dot { width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .card-head .more { font-size: 13px; color: var(--text-3); }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 22px; }
+
+  /* 区域分组 */
+  .area-group { padding: 18px 0; border-bottom: 1px dashed var(--border); }
+  .area-group:last-child { border-bottom: none; padding-bottom: 0; }
+  .area-group:first-child { padding-top: 0; }
+  .area-group-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .area-group-head .code-badge {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--sky), var(--primary));
+    color: #fff;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(74,158,255,0.3);
+  }
+  .area-group-head .info { flex: 1; }
+  .area-group-head .info .name { font-size: 16px; font-weight: 600; color: var(--text); }
+  .area-group-head .info .meta { font-size: 12px; color: var(--text-3); margin-top: 2px; display: flex; gap: 12px; }
+  .area-group-head .info .meta b { color: var(--text-2); font-weight: 500; }
+  .area-group-head .stats { display: flex; gap: 16px; font-size: 12px; color: var(--text-2); }
+  .area-group-head .stats span b { color: var(--primary); font-weight: 700; }
+
+  /* 书架排展示 */
+  .row-list { display: flex; flex-direction: column; gap: 10px; }
+  .row-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid #e8eef8;
+    border-radius: 10px;
+    transition: .2s;
+  }
+  .row-item:hover { background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-color: var(--sky); transform: translateX(2px); }
+  .row-item .row-code {
+    width: 38px; height: 38px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+  .row-item .row-info { flex: 1; }
+  .row-item .row-info .name { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .row-item .row-info .loc { font-size: 11.5px; color: var(--text-3); margin-top: 2px; font-family: ui-monospace, monospace; }
+  .row-item .shelf-count { font-size: 12.5px; color: var(--text-2); }
+  .row-item .shelf-count b { color: var(--primary); font-weight: 700; }
+
+  /* 联系人 / 服务 */
+  .info-list { display: flex; flex-direction: column; gap: 12px; }
+  .info-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .info-row .ico { width: 30px; height: 30px; background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .info-row .label { color: var(--text-3); font-size: 12px; min-width: 60px; }
+  .info-row .value { color: var(--text); font-weight: 500; flex: 1; }
+  .info-row .value.mono { font-family: ui-monospace, monospace; font-size: 13px; }
+
+  /* 平面示意图 */
+  .plan-card { background: linear-gradient(135deg, #fafcff, #f5f9ff); }
+  .plan-svg-wrap { padding: 20px; }
+  .plan-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; padding: 0 22px 18px; }
+  .plan-legend .item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
+  .plan-legend .dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* 热门图书 */
+  .book-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .book-row { display: flex; gap: 10px; padding: 10px; background: var(--bg-page); border-radius: 10px; }
+  .book-row .cover {
+    width: 44px; height: 60px; flex-shrink: 0;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 18px; font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .book-row .info { flex: 1; min-width: 0; }
+  .book-row .info .t { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .book-row .info .a { font-size: 11.5px; color: var(--text-3); margin-bottom: 3px; }
+  .book-row .info .s { font-size: 11px; color: var(--accent); }
+  .book-row .info .s b { color: var(--primary); font-weight: 600; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* 时段 */
+  .slot-list { display: flex; flex-direction: column; gap: 8px; }
+  .slot-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 12.5px;
+  }
+  .slot-item .name { color: var(--text); font-weight: 500; }
+  .slot-item .time { color: var(--text-2); font-family: ui-monospace, monospace; }
+  .slot-item.disabled { opacity: .55; }
+  .slot-item.disabled .name { text-decoration: line-through; }
+
+  /* 提示 */
+  .notice-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
+  }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .book-list { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="馆藏导览.html">馆藏导览</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="馆藏导览.html">馆藏导览</a>
+    <span class="sep">›</span>
+    <a href="分馆列表.html">总馆</a>
+    <span class="sep">›</span>
+    <span class="current">一层</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部 Hero -->
+  <div class="floor-hero">
+    <div class="crumb">
+      📍 总馆 › 楼层 <span class="code">ZG-1F</span>
+    </div>
+    <h1>一层</h1>
+    <p class="use">中文图书借阅区 · 2000 ㎡ · 馆藏纸质图书约 8 万册，覆盖文学、社科、自然科学等全学科，是图书馆最核心、最热门的借阅区域。</p>
+    <div class="floor-hero-stats">
+      <div class="fhs"><div class="n">3</div><div class="l">区域</div></div>
+      <div class="fhs"><div class="n">15</div><div class="l">排</div></div>
+      <div class="fhs"><div class="n">52</div><div class="l">书架</div></div>
+      <div class="fhs"><div class="n">8 万</div><div class="l">馆藏册数</div></div>
+      <div class="fhs"><div class="n">08:00</div><div class="l">开放时间</div></div>
+    </div>
+  </div>
+
+  <!-- 楼层快速导航 -->
+  <div class="floor-nav-bar">
+    <span class="label">🏢 总馆楼层</span>
+    <div class="items">
+      <a href="楼层详情.html" class="current">1F · 一层</a>
+      <a href="楼层详情.html">2F · 二层</a>
+      <a href="楼层详情.html">3F · 三层</a>
+      <a href="楼层详情.html">4F · 四层</a>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 区域分布 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>区域分布 · 书架详情</h3>
+          <a class="more">馆员 · 联系方式 ›</a>
+        </div>
+        <div class="card-body">
+
+          <!-- 区域 A -->
+          <div class="area-group">
+            <div class="area-group-head">
+              <div class="code-badge">A</div>
+              <div class="info">
+                <div class="name">中文图书借阅区</div>
+                <div class="meta">
+                  <span><b>类型</b> 借阅区</span>
+                  <span><b>面积</b> 800 ㎡</span>
+                  <span><b>容量</b> 200 人</span>
+                </div>
+              </div>
+              <div class="stats">
+                <span><b>5</b> 排</span>
+                <span><b>12</b> 书架</span>
+                <span>位置：<b>一楼西侧</b></span>
+              </div>
+            </div>
+            <div class="row-list">
+              <div class="row-item">
+                <div class="row-code">01</div>
+                <div class="row-info">
+                  <div class="name">第 1 排 · 文学类（I）</div>
+                  <div class="loc">ZG-1F-A-01</div>
+                </div>
+                <div class="shelf-count">共 <b>4</b> 个书架</div>
+              </div>
+              <div class="row-item">
+                <div class="row-code">02</div>
+                <div class="row-info">
+                  <div class="name">第 2 排 · 文学类（I）</div>
+                  <div class="loc">ZG-1F-A-02</div>
+                </div>
+                <div class="shelf-count">共 <b>4</b> 个书架</div>
+              </div>
+              <div class="row-item">
+                <div class="row-code">03</div>
+                <div class="row-info">
+                  <div class="name">第 3 排 · 社会科学（C/K）</div>
+                  <div class="loc">ZG-1F-A-03</div>
+                </div>
+                <div class="shelf-count">共 <b>2</b> 个书架</div>
+              </div>
+              <div class="row-item">
+                <div class="row-code">04</div>
+                <div class="row-info">
+                  <div class="name">第 4 排 · 工具书 / 字典</div>
+                  <div class="loc">ZG-1F-A-04</div>
+                </div>
+                <div class="shelf-count">共 <b>1</b> 个书架</div>
+              </div>
+              <div class="row-item">
+                <div class="row-code">05</div>
+                <div class="row-info">
+                  <div class="name">第 5 排 · 综合类（Z）</div>
+                  <div class="loc">ZG-1F-A-05</div>
+                </div>
+                <div class="shelf-count">共 <b>1</b> 个书架</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 区域 B -->
+          <div class="area-group">
+            <div class="area-group-head">
+              <div class="code-badge" style="background: linear-gradient(135deg, #10b981, #047857);">B</div>
+              <div class="info">
+                <div class="name">外文图书借阅区</div>
+                <div class="meta">
+                  <span><b>类型</b> 借阅区</span>
+                  <span><b>面积</b> 600 ㎡</span>
+                  <span><b>容量</b> 150 人</span>
+                </div>
+              </div>
+              <div class="stats">
+                <span><b>3</b> 排</span>
+                <span><b>9</b> 书架</span>
+                <span>位置：<b>一楼东侧</b></span>
+              </div>
+            </div>
+            <div class="row-list">
+              <div class="row-item">
+                <div class="row-code">01</div>
+                <div class="row-info">
+                  <div class="name">第 1 排 · 英语原版</div>
+                  <div class="loc">ZG-1F-B-01</div>
+                </div>
+                <div class="shelf-count">共 <b>3</b> 个书架</div>
+              </div>
+              <div class="row-item">
+                <div class="row-code">02</div>
+                <div class="row-info">
+                  <div class="name">第 2 排 · 日韩语</div>
+                  <div class="loc">ZG-1F-B-02</div>
+                </div>
+                <div class="shelf-count">共 <b>3</b> 个书架</div>
+              </div>
+              <div class="row-item">
+                <div class="row-code">03</div>
+                <div class="row-info">
+                  <div class="name">第 3 排 · 小语种 / 工具书</div>
+                  <div class="loc">ZG-1F-B-03</div>
+                </div>
+                <div class="shelf-count">共 <b>3</b> 个书架</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 区域 C -->
+          <div class="area-group">
+            <div class="area-group-head">
+              <div class="code-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706);">C</div>
+              <div class="info">
+                <div class="name">总服务台</div>
+                <div class="meta">
+                  <span><b>类型</b> 服务台</span>
+                  <span><b>面积</b> 80 ㎡</span>
+                  <span><b>容量</b> 10 人</span>
+                </div>
+              </div>
+              <div class="stats">
+                <span>位置：<b>一楼中央</b></span>
+              </div>
+            </div>
+            <div class="row-list">
+              <div class="row-item">
+                <div class="row-code">服</div>
+                <div class="row-info">
+                  <div class="name">总服务台 · 借还书办理 / 咨询</div>
+                  <div class="loc">ZG-1F-C</div>
+                </div>
+                <div class="shelf-count" style="color: var(--success);">📍 当前所在</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 楼层平面示意图 -->
+      <div class="card plan-card">
+        <div class="card-head">
+          <h3><span class="dot"></span>楼层平面示意图</h3>
+          <span style="font-size:12px;color:var(--text-3);">仅供参考，实际以现场为准</span>
+        </div>
+        <div class="plan-svg-wrap">
+          <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;border-radius:8px;background:#fff;">
+            <!-- 边框 -->
+            <rect x="10" y="10" width="780" height="300" fill="none" stroke="#cbd5e1" stroke-width="2" rx="6"/>
+            <!-- 区域 A 文学 -->
+            <rect x="30" y="30" width="450" height="180" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="6"/>
+            <text x="255" y="60" text-anchor="middle" fill="#1d4ed8" font-size="20" font-weight="700" font-family="serif">A · 中文图书借阅区</text>
+            <text x="255" y="80" text-anchor="middle" fill="#3b82f6" font-size="11">800 ㎡ · 5 排 · 12 书架</text>
+            <!-- 排 01-05 -->
+            <g font-family="ui-monospace, monospace" font-size="11" fill="#1e40af" font-weight="600">
+              <rect x="50" y="100" width="80" height="90" fill="#bfdbfe" stroke="#60a5fa" rx="3"/><text x="90" y="150" text-anchor="middle">01</text>
+              <rect x="140" y="100" width="80" height="90" fill="#bfdbfe" stroke="#60a5fa" rx="3"/><text x="180" y="150" text-anchor="middle">02</text>
+              <rect x="230" y="100" width="80" height="90" fill="#bfdbfe" stroke="#60a5fa" rx="3"/><text x="270" y="150" text-anchor="middle">03</text>
+              <rect x="320" y="100" width="80" height="90" fill="#bfdbfe" stroke="#60a5fa" rx="3"/><text x="360" y="150" text-anchor="middle">04</text>
+              <rect x="410" y="100" width="60" height="90" fill="#bfdbfe" stroke="#60a5fa" rx="3"/><text x="440" y="150" text-anchor="middle">05</text>
+            </g>
+            <!-- 区域 C 总服务台 -->
+            <rect x="30" y="230" width="450" height="60" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="6"/>
+            <text x="255" y="265" text-anchor="middle" fill="#c2410c" font-size="16" font-weight="700" font-family="serif">C · 总服务台</text>
+            <!-- 区域 B 外文 -->
+            <rect x="500" y="30" width="270" height="260" fill="#d1fae5" stroke="#10b981" stroke-width="2" rx="6"/>
+            <text x="635" y="60" text-anchor="middle" fill="#047857" font-size="18" font-weight="700" font-family="serif">B · 外文图书借阅区</text>
+            <text x="635" y="78" text-anchor="middle" fill="#059669" font-size="11">600 ㎡ · 3 排 · 9 书架</text>
+            <g font-family="ui-monospace, monospace" font-size="11" fill="#065f46" font-weight="600">
+              <rect x="520" y="100" width="230" height="55" fill="#a7f3d0" stroke="#34d399" rx="3"/><text x="635" y="132" text-anchor="middle">01 · 英语原版（3 书架）</text>
+              <rect x="520" y="165" width="230" height="55" fill="#a7f3d0" stroke="#34d399" rx="3"/><text x="635" y="197" text-anchor="middle">02 · 日韩语（3 书架）</text>
+              <rect x="520" y="230" width="230" height="50" fill="#a7f3d0" stroke="#34d399" rx="3"/><text x="635" y="260" text-anchor="middle">03 · 小语种 / 工具书（3 书架）</text>
+            </g>
+            <!-- 入口 -->
+            <path d="M 400 300 L 400 320" stroke="#dc2626" stroke-width="3"/>
+            <text x="400" y="335" text-anchor="middle" fill="#dc2626" font-size="12" font-weight="600">▼ 主入口</text>
+          </svg>
+          <div class="plan-legend">
+            <div class="item"><div class="dot" style="background:#3b82f6;"></div>中文图书借阅区</div>
+            <div class="item"><div class="dot" style="background:#10b981;"></div>外文图书借阅区</div>
+            <div class="item"><div class="dot" style="background:#f59e0b;"></div>总服务台</div>
+            <div class="item"><div class="dot" style="background:#dc2626;"></div>出入口</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 楼层热门图书 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>本层热门图书</h3>
+          <a class="more">查看全部 ›</a>
+        </div>
+        <div class="card-body">
+          <div class="book-list">
+            <div class="book-row">
+              <div class="cover" style="background: linear-gradient(135deg, #ef4444, #991b1b);">📕</div>
+              <div class="info">
+                <div class="t">活着</div>
+                <div class="a">余华 · 作家出版社</div>
+                <div class="s">⭐ 4.8 · 本层借阅 <b>28</b> 次</div>
+              </div>
+            </div>
+            <div class="book-row">
+              <div class="cover" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">📘</div>
+              <div class="info">
+                <div class="t">百年孤独</div>
+                <div class="a">加西亚·马尔克斯 · 上海人民</div>
+                <div class="s">⭐ 4.9 · 本层借阅 <b>23</b> 次</div>
+              </div>
+            </div>
+            <div class="book-row">
+              <div class="cover" style="background: linear-gradient(135deg, #a855f7, #6d28d9);">📗</div>
+              <div class="info">
+                <div class="t">三体（套装全 3 册）</div>
+                <div class="a">刘慈欣 · 重庆出版社</div>
+                <div class="s">⭐ 4.9 · 本层借阅 <b>21</b> 次</div>
+              </div>
+            </div>
+            <div class="book-row">
+              <div class="cover" style="background: linear-gradient(135deg, #f59e0b, #b45309);">📙</div>
+              <div class="info">
+                <div class="t">围城</div>
+                <div class="a">钱钟书 · 人民文学出版社</div>
+                <div class="s">⭐ 4.7 · 本层借阅 <b>18</b> 次</div>
+              </div>
+            </div>
+            <div class="book-row">
+              <div class="cover" style="background: linear-gradient(135deg, #10b981, #047857);">📕</div>
+              <div class="info">
+                <div class="t">乡土中国</div>
+                <div class="a">费孝通 · 商务印书馆</div>
+                <div class="s">⭐ 4.6 · 本层借阅 <b>15</b> 次</div>
+              </div>
+            </div>
+            <div class="book-row">
+              <div class="cover" style="background: linear-gradient(135deg, #8b5cf6, #5b21b6);">📓</div>
+              <div class="info">
+                <div class="t">Python 编程：从入门到实践</div>
+                <div class="a">Eric Matthes · 人民邮电</div>
+                <div class="s">⭐ 4.9 · 本层借阅 <b>12</b> 次</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 楼层信息 -->
+      <div class="side-card">
+        <h4>楼层信息</h4>
+        <div class="info-list">
+          <div class="info-row">
+            <div class="ico">🏢</div>
+            <span class="label">所属馆藏</span>
+            <span class="value">总馆</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">🔢</div>
+            <span class="label">楼层代码</span>
+            <span class="value mono">ZG-1F</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📐</div>
+            <span class="label">楼层面积</span>
+            <span class="value">2000 ㎡</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">🕒</div>
+            <span class="label">开放时间</span>
+            <span class="value">08:00 - 22:00</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">🪑</div>
+            <span class="label">自习座位</span>
+            <span class="value">200 个</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 馆员信息 -->
+      <div class="side-card">
+        <h4>楼层馆员</h4>
+        <div class="info-list">
+          <div class="info-row">
+            <div class="ico" style="background:linear-gradient(135deg,#4a9eff,#0d3b66);color:#fff;">👤</div>
+            <span class="label">负责人</span>
+            <span class="value">张丽</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📞</div>
+            <span class="label">联系电话</span>
+            <span class="value mono">010-88880001</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">📧</div>
+            <span class="label">服务邮箱</span>
+            <span class="value" style="font-size:12.5px;">zg1f@xihang.edu.cn</span>
+          </div>
+          <div class="info-row">
+            <div class="ico">🕐</div>
+            <span class="label">服务时间</span>
+            <span class="value">周一至周日 8:00-22:00</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;">
+          <button style="width:100%;padding:9px 0;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;">💬 在线咨询馆员</button>
+        </div>
+      </div>
+
+      <!-- 预约时段 -->
+      <div class="side-card">
+        <h4>预约时段（自习/研讨）</h4>
+        <div class="slot-list">
+          <div class="slot-item"><span class="name">上午一</span><span class="time">08:00 - 10:00</span></div>
+          <div class="slot-item"><span class="name">上午二</span><span class="time">10:00 - 12:00</span></div>
+          <div class="slot-item"><span class="name">中午</span><span class="time">12:00 - 14:00</span></div>
+          <div class="slot-item"><span class="name">下午一</span><span class="time">14:00 - 16:00</span></div>
+          <div class="slot-item"><span class="name">下午二</span><span class="time">16:00 - 18:00</span></div>
+          <div class="slot-item"><span class="name">晚上一</span><span class="time">18:00 - 20:00</span></div>
+          <div class="slot-item"><span class="name">晚上二</span><span class="time">20:00 - 22:00</span></div>
+        </div>
+        <div style="margin-top:14px;">
+          <button style="width:100%;padding:9px 0;background:#fff;border:1px solid var(--sky);color:var(--primary);border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;">📅 立即预约本层座位</button>
+        </div>
+      </div>
+
+      <!-- 楼层公告 -->
+      <div class="side-card">
+        <h4>本层公告</h4>
+        <div style="background:linear-gradient(135deg,#ecf5ff,#f0f9ff);border-left:3px solid var(--sky);padding:12px;border-radius:8px;margin-bottom:10px;">
+          <div style="font-size:12px;color:var(--text-3);margin-bottom:4px;">2025-12-20</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">一层 A 区第 3 排书架调整中，临时改至 B 区借阅，请周知。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border-left:3px solid var(--warning);padding:12px;border-radius:8px;">
+          <div style="font-size:12px;color:var(--text-3);margin-bottom:4px;">2025-12-15</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">期末复习季延长开放至 23:00，欢迎预约。</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">💡</span>
+    <div class="text">
+      <b>温馨提示：</b> 借阅图书请到 <b>C 区总服务台</b> 办理；本层配有自助借还机（位于 A 区入口处），支持 24 小时扫码借还。位置编码如 <b>ZG-1F-A-01-1-5</b>，表示 1F / A 区 / 第 1 排 / 第 1 层 / 第 5 格。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

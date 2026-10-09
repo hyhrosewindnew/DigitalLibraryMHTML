@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>荐购记录查询 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --border-light: #eef2f7;
+    --success: #16a34a;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* 顶部统计 */
+  .stats-overview { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .stat-card .ico { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; }
+  .stat-card.c1 .ico { background: linear-gradient(135deg, var(--sky), #0d3b66); }
+  .stat-card.c2 .ico { background: linear-gradient(135deg, #10b981, #047857); }
+  .stat-card.c3 .ico { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .stat-card.c4 .ico { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .stat-card.c5 .ico { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+  .stat-card .num { font-size: 26px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat-card .lbl { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+
+  /* 主区 */
+  .layout { display: grid; grid-template-columns: 1fr 320px; gap: 18px; }
+
+  .main-content { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .content-tabs { display: flex; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fafcff, #fff); flex-wrap: wrap; }
+  .content-tabs span {
+    padding: 14px 22px; font-size: 14px; color: var(--text-2);
+    cursor: pointer; position: relative; transition: .15s; font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .content-tabs span:hover { color: var(--primary); }
+  .content-tabs span.active { color: var(--primary); font-weight: 600; border-bottom: 2px solid var(--sky); }
+  .content-tabs span .count { font-size: 11px; background: var(--bg-page); color: var(--text-3); padding: 1px 7px; border-radius: 8px; }
+  .content-tabs span.active .count { background: rgba(74,158,255,0.12); color: var(--primary); }
+
+  .content-filters {
+    padding: 14px 22px; border-bottom: 1px solid var(--border-light);
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .content-filters .search-box { position: relative; flex: 1; min-width: 220px; max-width: 340px; }
+  .content-filters .search-box input {
+    width: 100%; height: 34px; padding: 0 12px 0 32px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--text); outline: none; font-family: inherit;
+  }
+  .content-filters .search-box input:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(74,158,255,0.12); }
+  .content-filters .search-box .ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 14px; }
+  .filter-chip-select {
+    height: 34px; padding: 0 28px 0 10px; border: 1px solid var(--border);
+    border-radius: 8px; background: #fff; font-size: 12.5px; color: var(--text);
+    cursor: pointer; outline: none; font-family: inherit; min-width: 110px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .filter-chip-select:focus { border-color: var(--sky); }
+
+  /* 表格 */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+  thead th {
+    text-align: left; font-size: 12px; font-weight: 600; color: var(--text-3);
+    letter-spacing: .3px; padding: 12px 16px; background: #f8fafc;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 22px; }
+  tbody td {
+    padding: 14px 16px; border-bottom: 1px solid var(--border-light);
+    vertical-align: middle; font-size: 13px; color: var(--text);
+  }
+  tbody td:first-child { padding-left: 22px; }
+  tbody tr:hover { background: #fafcff; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .rec-id { font-family: "SF Mono", Consolas, monospace; font-size: 12px; color: var(--text-3); }
+
+  .book-cell { display: flex; gap: 11px; align-items: center; }
+  .book-cover {
+    width: 38px; height: 52px; border-radius: 4px; flex-shrink: 0;
+    background: linear-gradient(135deg, #475569, #1e293b);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px; font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+  }
+  .book-cover.green { background: linear-gradient(135deg, #10b981, #047857); }
+  .book-cover.blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+  .book-cover.purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+  .book-cover.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+  .book-cover.red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+  .book-cover.gray { background: linear-gradient(135deg, #94a3b8, #475569); }
+  .book-info .title { font-weight: 600; color: var(--text); font-size: 13.5px; line-height: 1.4; margin-bottom: 3px; }
+  .book-info .meta { font-size: 11.5px; color: var(--text-3); }
+  .book-info .meta .isbn { font-family: "SF Mono", Consolas, monospace; letter-spacing: .3px; }
+
+  .reason-cell {
+    font-size: 12px; color: var(--text-2); line-height: 1.6;
+    max-width: 280px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .time-cell { display: flex; flex-direction: column; gap: 2px; }
+  .time-cell .d { font-size: 12.5px; color: var(--text); font-weight: 500; }
+  .time-cell .t { font-size: 11.5px; color: var(--text-3); font-family: ui-monospace, monospace; }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-page);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--sky));
+    border-radius: 3px;
+  }
+  .progress-text {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 11px; border-radius: 20px;
+    font-size: 12px; font-weight: 500; white-space: nowrap;
+  }
+  .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .s-draft { background: #f0f2f5; color: #6b7280; }
+  .s-pending { background: #fff8e5; color: #9b6f00; }
+  .s-reviewing { background: #e8f0fe; color: #1d5fd6; }
+  .s-approved { background: #e8f7ee; color: #12894f; }
+  .s-rejected { background: #ffe9e9; color: #b91c1c; }
+  .s-ordered { background: #f0e7ff; color: #7c3aed; }
+  .s-arrived { background: #e0f2fe; color: #075985; }
+  .s-cataloged { background: #dbeafe; color: #1e40af; }
+  .s-onshelf { background: #d1fae5; color: #047857; }
+  .s-duplicate { background: #fee2e2; color: #991b1b; }
+
+  .ops { white-space: nowrap; }
+  .ops a {
+    color: var(--sky); font-size: 12.5px;
+    margin-right: 12px; cursor: pointer;
+  }
+  .ops a:last-child { margin-right: 0; }
+  .ops a:hover { text-decoration: underline; }
+  .ops a.danger { color: #dc2626; }
+  .ops a.warn { color: #d97706; }
+  .ops a.disabled { color: #c3ccdb; cursor: not-allowed; }
+  .ops a.disabled:hover { text-decoration: none; }
+
+  .pagination {
+    padding: 14px 22px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; background: #fafcff;
+  }
+  .pagination .info { font-size: 12.5px; color: var(--text-3); }
+  .pagination .info b { color: var(--text); }
+  .page-controls { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 32px; height: 32px; padding: 0 10px; border: 1px solid var(--border);
+    background: #fff; color: var(--text-2); border-radius: 6px; font-size: 12.5px;
+    cursor: pointer; transition: .15s; font-family: inherit;
+  }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--sky); color: var(--sky); }
+  .page-btn.active { background: var(--sky); border-color: var(--sky); color: #fff; }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .page-ellipsis { color: var(--text-3); padding: 0 4px; }
+
+  /* 右侧 */
+  .side-content { display: flex; flex-direction: column; gap: 16px; }
+
+  .summary-card {
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(13,59,102,0.18);
+  }
+  .summary-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .summary-card h4 { font-size: 15px; margin-bottom: 16px; position: relative; z-index: 1; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; position: relative; z-index: 1; }
+  .summary-item { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 14px; }
+  .summary-item .n { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .summary-item .l { font-size: 11.5px; opacity: .85; margin-top: 2px; }
+
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  /* 状态说明 */
+  .status-list { display: flex; flex-direction: column; gap: 9px; }
+  .status-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); }
+  .status-item .lbl { color: var(--text-3); width: 76px; flex-shrink: 0; }
+
+  /* 流程图 */
+  .flow {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    line-height: 2;
+    color: var(--text-2);
+  }
+  .flow b { color: var(--primary); }
+  .flow .hl { background: #fef3c7; padding: 1px 5px; border-radius: 3px; color: #92400e; font-weight: 600; }
+
+  /* 提示 */
+  .notice-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
+  }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  @media (max-width: 1240px) {
+    .stats-overview { grid-template-columns: repeat(3, 1fr); }
+    .layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#" class="active">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">捐赠/荐购</a>
+    <span class="sep">›</span>
+    <span class="current">荐购记录查询</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部统计 -->
+  <div class="stats-overview">
+    <div class="stat-card c1">
+      <div class="ico">📋</div>
+      <div>
+        <div class="num">12</div>
+        <div class="lbl">累计荐购</div>
+      </div>
+    </div>
+    <div class="stat-card c2">
+      <div class="ico">✅</div>
+      <div>
+        <div class="num">8</div>
+        <div class="lbl">已通过</div>
+      </div>
+    </div>
+    <div class="stat-card c3">
+      <div class="ico">⏰</div>
+      <div>
+        <div class="num">2</div>
+        <div class="lbl">审核中</div>
+      </div>
+    </div>
+    <div class="stat-card c4">
+      <div class="ico">📚</div>
+      <div>
+        <div class="num">5</div>
+        <div class="lbl">已上架</div>
+      </div>
+    </div>
+    <div class="stat-card c5">
+      <div class="ico">❌</div>
+      <div>
+        <div class="num">1</div>
+        <div class="lbl">已驳回</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- 左侧 - 记录列表 -->
+    <main class="main-content">
+      <div class="content-tabs">
+        <span class="active">📋 全部 <span class="count">12</span></span>
+        <span>⏰ 审核中 <span class="count">2</span></span>
+        <span>✅ 已批准 <span class="count">3</span></span>
+        <span>🛒 已采购 <span class="count">2</span></span>
+        <span>📚 已上架 <span class="count">5</span></span>
+        <span>❌ 已驳回 <span class="count">1</span></span>
+      </div>
+
+      <!-- 筛选 -->
+      <div class="content-filters">
+        <div class="search-box">
+          <span class="ico">🔍</span>
+          <input type="text" placeholder="搜索订单号 / ISBN / 书名 / 作者...">
+        </div>
+        <select class="filter-chip-select">
+          <option>所有日期</option>
+          <option>今天</option>
+          <option>本周</option>
+          <option>本月</option>
+          <option>最近 30 天</option>
+        </select>
+        <select class="filter-chip-select">
+          <option>所有来源</option>
+          <option>读者推荐</option>
+          <option>馆员推荐</option>
+          <option>馆际互借</option>
+          <option>数据库筛选</option>
+        </select>
+        <select class="filter-chip-select">
+          <option>所有状态</option>
+          <option>草稿</option>
+          <option>待审核</option>
+          <option>审核中</option>
+          <option>已批准</option>
+          <option>已采购</option>
+          <option>已到馆</option>
+          <option>已编目</option>
+          <option>已上架</option>
+          <option>已驳回</option>
+        </select>
+      </div>
+
+      <!-- 表格 -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:120px">订单号</th>
+              <th style="width:280px">图书信息</th>
+              <th>推荐理由</th>
+              <th style="width:90px">来源</th>
+              <th style="width:120px">提交时间</th>
+              <th style="width:120px">处理进度</th>
+              <th style="width:100px">状态</th>
+              <th style="width:160px">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="rec-id">#PO2025040902</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover blue">📖</div>
+                  <div class="book-info">
+                    <div class="title">深入理解计算机系统</div>
+                    <div class="meta">Randal E. Bryant<br><span class="isbn">ISBN 978-7-111-54493-7</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">计算机学院核心课程《计算机系统基础》指定教材，馆藏 5 册已全部借空，候补 28 人</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">读者推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-12-08</div>
+                  <div class="t">14:32</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:25%"></div></div>
+                <div class="progress-text">2/8 已完成</div>
+              </td>
+              <td><span class="status s-reviewing">审核中</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a class="disabled">编辑</a>
+                  <a class="disabled">撤回</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040901</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover green">📖</div>
+                  <div class="book-info">
+                    <div class="title">Python 编程：从入门到实践</div>
+                    <div class="meta">Eric Matthes<br><span class="isbn">ISBN 978-7-115-61234-5</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">Python 入门经典，馆藏第 2 版借空率 98%，适合新生导论课使用</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">读者推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-12-05</div>
+                  <div class="t">09:15</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:62%"></div></div>
+                <div class="progress-text">5/8 已完成</div>
+              </td>
+              <td><span class="status s-ordered">已采购</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a class="warn">催办</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040803</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover purple">📖</div>
+                  <div class="book-info">
+                    <div class="title">航空发动机结构与系统</div>
+                    <div class="meta">刘永泉<br><span class="isbn">ISBN 978-7-118-12345-6</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">航空工程学院核心专业课教材，馆藏 3 册预约等待最长 23 天</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">馆员推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-11-28</div>
+                  <div class="t">10:42</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:50%"></div></div>
+                <div class="progress-text">4/8 已完成</div>
+              </td>
+              <td><span class="status s-approved">已批准</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a class="disabled">编辑</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040802</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover orange">📖</div>
+                  <div class="book-info">
+                    <div class="title">空气动力学基础</div>
+                    <div class="meta">John D. Anderson<br><span class="isbn">ISBN 978-7-03-045678-9</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">飞行原理课程教材，原版为英文影印版，馆藏 1 册需扩充</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">馆员推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-11-25</div>
+                  <div class="t">16:08</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:75%"></div></div>
+                <div class="progress-text">6/8 已完成</div>
+              </td>
+              <td><span class="status s-arrived">已到馆</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040801</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover">📖</div>
+                  <div class="book-info">
+                    <div class="title">乡土中国</div>
+                    <div class="meta">费孝通<br><span class="isbn">ISBN 978-7-100-98765-4</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">社会学必读经典，馆藏 3 册全部借空，建议加复本</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">读者推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-11-20</div>
+                  <div class="t">11:30</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:100%"></div></div>
+                <div class="progress-text">8/8 已完成</div>
+              </td>
+              <td><span class="status s-onshelf">已上架</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a>借阅</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040702</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover green">📖</div>
+                  <div class="book-info">
+                    <div class="title">百年孤独</div>
+                    <div class="meta">加西亚·马尔克斯<br><span class="isbn">ISBN 978-7-208-16234-5</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">读者反复推荐书目，借阅预约等待最长 23 天，建议增加复本</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">读者推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-11-15</div>
+                  <div class="t">13:25</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:100%"></div></div>
+                <div class="progress-text">8/8 已完成</div>
+              </td>
+              <td><span class="status s-onshelf">已上架</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a>借阅</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040701</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover purple">📖</div>
+                  <div class="book-info">
+                    <div class="title">三体（套装全3册）</div>
+                    <div class="meta">刘慈欣<br><span class="isbn">ISBN 978-7-5399-8901-2</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">科幻经典，馆藏 1 套 3 册借空率 98%，候补读者 42 人，需加复本</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">馆员推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-11-10</div>
+                  <div class="t">15:50</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:87%"></div></div>
+                <div class="progress-text">7/8 已完成</div>
+              </td>
+              <td><span class="status s-cataloged">已编目</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040501</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover red">📖</div>
+                  <div class="book-info">
+                    <div class="title">算法导论（原书第3版）</div>
+                    <div class="meta">Thomas H. Cormen<br><span class="isbn">ISBN 978-7-111-40701-1</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">计算机学院核心课参考，馆藏 5 册状态良好，读者误重提交</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">读者推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-11-02</div>
+                  <div class="t">09:20</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:12%;background:#94a3b8"></div></div>
+                <div class="progress-text">已归档</div>
+              </td>
+              <td><span class="status s-duplicate">重复采购</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a class="danger">删除</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040101</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover gray">📖</div>
+                  <div class="book-info">
+                    <div class="title">活着</div>
+                    <div class="meta">余华<br><span class="isbn">ISBN 978-7-5063-6543-7</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">中国当代文学经典，馆藏 4 册，预约等待 12 天，需补货</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">读者推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-10-28</div>
+                  <div class="t">14:15</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:12%;background:#dc2626"></div></div>
+                <div class="progress-text">已终止</div>
+              </td>
+              <td><span class="status s-rejected">已驳回</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a>查看原因</a>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="rec-id">#PO2025040102</span></td>
+              <td>
+                <div class="book-cell">
+                  <div class="book-cover blue">📖</div>
+                  <div class="book-info">
+                    <div class="title">围城</div>
+                    <div class="meta">钱钟书<br><span class="isbn">ISBN 978-7-02-000220-7</span></div>
+                  </div>
+                </div>
+              </td>
+              <td><div class="reason-cell">年度中文文学补充计划，馆藏 1 册封面破损已下架</div></td>
+              <td><span style="font-size:12px;color:var(--text-2);">馆员推荐</span></td>
+              <td>
+                <div class="time-cell">
+                  <div class="d">2025-10-20</div>
+                  <div class="t">10:08</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar"><div class="fill" style="width:25%"></div></div>
+                <div class="progress-text">2/8 已完成</div>
+              </td>
+              <td><span class="status s-pending">待审核</span></td>
+              <td>
+                <div class="ops">
+                  <a>详情</a>
+                  <a>编辑</a>
+                  <a class="danger">删除</a>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination">
+        <div class="info">显示第 <b>1</b> - <b>10</b> 条，共 <b>12</b> 条记录</div>
+        <div class="page-controls">
+          <button class="page-btn" disabled>‹ 上一页</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">下一页 ›</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 右侧 -->
+    <aside class="side-content">
+
+      <!-- 汇总卡 -->
+      <div class="summary-card">
+        <h4>📊 我的荐购汇总</h4>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="n">12</div>
+            <div class="l">累计提交</div>
+          </div>
+          <div class="summary-item">
+            <div class="n">66.7%</div>
+            <div class="l">通过率</div>
+          </div>
+          <div class="summary-item">
+            <div class="n">5</div>
+            <div class="l">已上架</div>
+          </div>
+          <div class="summary-item">
+            <div class="n">7</div>
+            <div class="l">流通中</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 流程说明 -->
+      <div class="side-card">
+        <h4>处理流程</h4>
+        <div class="flow">
+          <b>草稿</b> → [提交待审] → <span class="hl">待审核</span> → [开始审核] → <span class="hl">审核中</span><br>
+          → [批准/驳回] → <b>已批准 / 已驳回</b><br>
+          → 下单 → <b>已采购</b> → 物流 → <b>已到馆</b><br>
+          → <b>已编目</b> → <b>已上架</b>（⭐ 闭环）
+        </div>
+      </div>
+
+      <!-- 状态说明 -->
+      <div class="side-card">
+        <h4>10 种状态说明</h4>
+        <div class="status-list">
+          <div class="status-item"><span class="status s-draft">草稿</span><span class="lbl">未提交</span></div>
+          <div class="status-item"><span class="status s-pending">待审核</span><span class="lbl">已提交，排队中</span></div>
+          <div class="status-item"><span class="status s-reviewing">审核中</span><span class="lbl">审核员已认领</span></div>
+          <div class="status-item"><span class="status s-approved">已批准</span><span class="lbl">可下单采购</span></div>
+          <div class="status-item"><span class="status s-rejected">已驳回</span><span class="lbl">审核未通过</span></div>
+          <div class="status-item"><span class="status s-ordered">已采购</span><span class="lbl">订单已发供应商</span></div>
+          <div class="status-item"><span class="status s-arrived">已到馆</span><span class="lbl">送货签收</span></div>
+          <div class="status-item"><span class="status s-cataloged">已编目</span><span class="lbl">已分配索书号</span></div>
+          <div class="status-item"><span class="status s-onshelf">已上架</span><span class="lbl">读者可借</span></div>
+          <div class="status-item"><span class="status s-duplicate">重复采购</span><span class="lbl">查重命中</span></div>
+        </div>
+      </div>
+
+      <!-- 联系方式 -->
+      <div class="side-card">
+        <h4>遇到问题？</h4>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.9;">
+          <p>📞 采编部：<b style="color:var(--text);">0000-1234567</b></p>
+          <p>📧 邮箱：<b style="color:var(--text);">acq@xihang.edu.cn</b></p>
+          <p>🕒 服务时间：周一至周五 8:00-17:00</p>
+          <p style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:12px;color:var(--text-3);">
+            如对审核结果有疑问，可点击订单详情中的"申诉"按钮联系馆员。
+          </p>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">⏰</span>
+    <div class="text">
+      <b>温馨提示：</b> 您有 <b>2 条</b> 荐购正在审核中，<b>《深入理解计算机系统》</b> 预计 3 个工作日内完成审核，<b>《围城》</b> 等待审核员认领。审核结果将通过站内信第一时间通知您。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

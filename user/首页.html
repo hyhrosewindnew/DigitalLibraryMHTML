@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+
+  :root {
+    --primary: #0d3b66;
+    --primary-light: #1a5a96;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar {
+    background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%);
+    color: #fff; font-size: 13px; padding: 8px 0; width: 100%;
+  }
+  .top-bar-inner {
+    max-width: var(--max-w); margin: 0 auto; padding: 0 30px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .top-bar a { margin-left: 14px; color: #fff; transition: .2s; }
+  .top-bar a:hover { color: var(--gold); }
+
+  .header {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(13,59,102,0.06);
+    position: sticky; top: 0; z-index: 100; width: 100%;
+  }
+  .header-inner {
+    max-width: var(--max-w); margin: 0 auto; padding: 0 30px;
+    height: 80px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    border-radius: 12px; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 16px rgba(74,158,255,0.3);
+    position: relative; overflow: hidden;
+  }
+  .logo .icon::after {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%); }
+    100% { transform: translateX(100%) translateY(100%); }
+  }
+  .logo .text h1 {
+    font-size: 21px; color: var(--primary);
+    margin-bottom: 3px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .logo .text p {
+    font-size: 11px; color: var(--text-3);
+    letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500;
+  }
+
+  .nav { display: flex; gap: 8px; align-items: center; }
+  .nav a {
+    font-size: 15px; color: var(--text);
+    padding: 10px 18px; position: relative;
+    transition: .25s; font-weight: 500; border-radius: 8px;
+  }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active {
+    color: var(--primary);
+    background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%);
+  }
+  .nav a.active::after {
+    content: ''; position: absolute; bottom: 4px; left: 50%;
+    transform: translateX(-50%);
+    width: 24px; height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%);
+    border-radius: 2px;
+  }
+
+  /* ============== 空间预约下拉 ============== */
+  .nav-item-dropdown { position: relative; }
+  .nav-item-dropdown > a { display: inline-block; }
+  /* hover 圆点 */
+  .nav-item-dropdown > a::before {
+    content: ''; position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--sky); opacity: 0; transition: .25s;
+  }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav-item-dropdown:hover > a::before { opacity: 1; }
+
+  .dropdown-menu {
+    position: absolute; top: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    min-width: 240px; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
+    padding: 6px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: all .2s ease;
+    z-index: 200;
+  }
+  .dropdown-menu::before {
+    content: ''; position: absolute; top: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px; height: 12px;
+    background: #fff; border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .nav-item-dropdown:hover .dropdown-menu,
+  .nav-item-dropdown.open .dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .dropdown-menu a {
+    display: flex !important;
+    align-items: center; gap: 12px;
+    padding: 10px 12px !important;
+    font-size: 13.5px !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    border-radius: 10px;
+    transition: .15s;
+    line-height: 1.4;
+  }
+  .dropdown-menu a:hover {
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
+    color: var(--primary) !important;
+  }
+  .dropdown-menu a .dd-ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
+    color: var(--primary); flex-shrink: 0;
+  }
+  .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
+  .dropdown-menu a:hover .dd-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+  }
+  .dropdown-menu a .dd-text { flex: 1; }
+  .dropdown-menu a .dd-text .dd-name { font-weight: 600; }
+  .dropdown-menu a .dd-text .dd-desc { font-size: 11.5px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .dropdown-menu a .dd-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(245,158,11,0.15); color: #d97706; font-weight: 500;
+  }
+  .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
+  /* ============== 下拉结束 ============== */
+
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn {
+    position: relative; background: var(--bg-page); border: none;
+    width: 40px; height: 40px; border-radius: 50%;
+    cursor: pointer; color: var(--primary); transition: .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .notif-btn:hover { background: rgba(74,158,255,0.15); transform: scale(1.05); }
+  .notif-btn .badge {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px; background: var(--accent);
+    border-radius: 50%; border: 2px solid #fff;
+  }
+  .favorite-btn {
+    position: relative; background: var(--bg-page); border: none;
+    width: 40px; height: 40px; border-radius: 50%;
+    cursor: pointer; color: var(--primary);
+    display: flex; align-items: center; justify-content: center; transition: .2s;
+  }
+  .favorite-btn:hover { background: rgba(74,158,255,0.15); color: var(--gold); transform: scale(1.05); }
+  .favorite-btn .favorite-badge {
+    position: absolute; top: 2px; right: 0;
+    min-width: 15px; height: 15px; padding: 0 4px;
+    background: var(--accent); border: 2px solid #fff; border-radius: 9px;
+    color: #fff; font-size: 9px; line-height: 11px; text-align: center;
+  }
+  .avatar-wrap {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; padding: 4px 10px 4px 4px;
+    border-radius: 30px; transition: .2s;
+  }
+  .avatar-wrap:hover { background: var(--bg-page); }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 15px;
+    box-shadow: 0 2px 10px rgba(139,92,246,0.35);
+    position: relative; overflow: hidden;
+  }
+  .avatar::after {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+  }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .hero {
+    position: relative; min-height: 420px;
+    background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+    overflow: hidden; display: flex; align-items: center; width: 100%;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 35%),
+      radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.1) 0, transparent 30%),
+      radial-gradient(ellipse at 60% 80%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.05) 30.5%, rgba(255,255,255,0.05) 31%, transparent 31.5%),
+      linear-gradient(105deg, transparent 50%, rgba(255,255,255,0.04) 50.3%, rgba(255,255,255,0.04) 50.6%, transparent 51%);
+    pointer-events: none;
+  }
+  .cloud {
+    position: absolute; background: rgba(255,255,255,0.08);
+    border-radius: 50%; filter: blur(20px);
+  }
+  .cloud.c1 { width: 280px; height: 80px; top: 20%; left: 5%; animation: float 18s infinite; }
+  .cloud.c2 { width: 200px; height: 60px; top: 60%; left: 30%; animation: float 22s infinite; }
+  .cloud.c3 { width: 320px; height: 90px; top: 40%; right: 10%; animation: float 20s infinite; }
+  @keyframes float {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(40px) translateY(-20px); }
+  }
+  .plane {
+    position: absolute;
+    color: rgba(255,255,255,0.85);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .plane.p2 { width: 20px; height: 20px; opacity: .65; }
+  .plane.p1 { top: 25%; right: 18%; animation: flyPath1 14s infinite linear; }
+  .plane.p2 { top: 70%; right: 38%; animation: flyPath2 18s infinite linear; }
+  @keyframes flyPath1 {
+    0% { transform: translateX(-200px) translateY(0) rotate(-15deg); }
+    50% { transform: translateX(50px) translateY(-30px) rotate(-15deg); }
+    100% { transform: translateX(300px) translateY(-60px) rotate(-15deg); }
+  }
+  @keyframes flyPath2 {
+    0% { transform: translateX(-150px) translateY(0) rotate(10deg); }
+    100% { transform: translateX(250px) translateY(20px) rotate(10deg); }
+  }
+
+  .hero-inner {
+    max-width: var(--max-w); margin: 0 auto; padding: 0 30px;
+    position: relative; z-index: 2; width: 100%;
+    display: grid; grid-template-columns: 1fr 380px;
+    gap: 60px; align-items: center;
+  }
+  .hero-text { color: #fff; }
+  .hero-text .tagline {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 16px;
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 30px;
+    font-size: 13px; margin-bottom: 16px; letter-spacing: 1px;
+  }
+  .hero-text h1 {
+    font-size: 46px; font-weight: 700; line-height: 1.15;
+    margin-bottom: 12px; text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .hero-text h1 .accent {
+    background: linear-gradient(90deg, var(--gold) 0%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-text .sub {
+    font-size: 16px; line-height: 1.7; opacity: 0.92;
+    margin-bottom: 26px; max-width: 540px;
+  }
+  .hero-stats { display: flex; gap: 28px; }
+  .hero-stat {
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18); border-radius: 12px;
+    padding: 14px 20px;
+  }
+  .hero-stat .num {
+    font-size: 28px; font-weight: 700;
+    background: linear-gradient(90deg, #fff 0%, var(--gold) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-stat .label { font-size: 12px; opacity: .9; margin-top: 2px; }
+
+  .search-card {
+    background: rgba(255,255,255,0.96); backdrop-filter: blur(20px);
+    border-radius: 20px; padding: 26px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+  .search-card h3 {
+    font-size: 17px; color: var(--primary);
+    margin-bottom: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .search-tabs {
+    display: flex; gap: 4px; margin-bottom: 14px;
+    background: rgba(13,59,102,0.05); padding: 4px; border-radius: 10px;
+  }
+  .search-tabs span {
+    flex: 1; text-align: center; padding: 8px 0; font-size: 13px;
+    border-radius: 7px; cursor: pointer;
+    color: var(--text-2); transition: .2s; font-weight: 500;
+  }
+  .search-tabs span.active {
+    background: #fff; color: var(--primary); font-weight: 600;
+    box-shadow: 0 2px 8px rgba(13,59,102,0.1);
+  }
+  .search-box {
+    display: flex; align-items: center;
+    background: var(--bg-page); border: 2px solid transparent;
+    border-radius: 12px; padding: 0 14px; transition: .2s;
+  }
+  .search-box:focus-within {
+    border-color: var(--sky); background: #fff;
+    box-shadow: 0 0 0 4px rgba(74,158,255,0.15);
+  }
+  .search-box input {
+    flex: 1; border: none; outline: none;
+    padding: 14px 0; font-size: 14px; background: transparent;
+  }
+  .search-box button {
+    border: none; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+    color: #fff; padding: 10px 20px; border-radius: 8px;
+    font-weight: 600; cursor: pointer; font-size: 13px; transition: .2s;
+  }
+  .search-box button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(74,158,255,0.35); }
+  .search-tips {
+    margin-top: 12px; font-size: 12.5px; color: var(--text-3);
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  }
+  .search-tips a {
+    padding: 3px 10px; background: rgba(74,158,255,0.1);
+    border-radius: 12px; color: var(--primary); transition: .2s;
+  }
+  .search-tips a:hover { background: var(--sky); color: #fff; }
+
+  .main-wrap {
+    background: linear-gradient(180deg, #f2f3f5 0%, #e8edf5 50%, #f2f3f5 100%);
+    padding: 28px 0 0; width: 100%;
+    position: relative;
+  }
+  .main-wrap::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(74,158,255,0.06) 0, transparent 30%),
+      radial-gradient(circle at 80% 60%, rgba(255,200,87,0.05) 0, transparent 30%),
+      radial-gradient(circle at 50% 90%, rgba(139,92,246,0.04) 0, transparent 30%);
+    pointer-events: none;
+  }
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; }
+
+  .ico {
+    display: inline-block; vertical-align: middle; flex-shrink: 0;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .ico-sm { stroke-width: 2; }
+  .logo .icon .ico    { width: 26px; height: 26px; }
+  .notif-btn .ico     { width: 18px; height: 18px; }
+  .favorite-btn .ico  { width: 18px; height: 18px; }
+  .tagline .ico       { width: 14px; height: 14px; }
+  .plane .ico         { width: 100%; height: 100%; }
+  .search-card h3 .ico{ width: 18px; height: 18px; }
+  .stat-card .icon .ico { width: 24px; height: 24px; }
+  .q-ico .ico         { width: 22px; height: 22px; }
+  .section-head h3 .icon-fly .ico { width: 14px; height: 14px; }
+  .f-ico .ico         { width: 26px; height: 26px; }
+  .f-area .ico, .f-phone .ico, .f-desc .ico {
+    width: 11px; height: 11px; margin-right: 2px;
+  }
+  .f-manager .ico     { width: 13px; height: 13px; margin-right: 4px; }
+  .branches-note .left .ico-wrap {
+    width: 30px; height: 30px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+ color: var(--primary);
+  }
+  .branches-note .left .ico-wrap .ico { width: 16px; height: 16px; }
+  .space-card .name .ico { width: 14px; height: 14px; margin-right: 4px; }
+  .footer .social .ico { width: 16px; height: 16px; }
+  .footer-col li .ico  { width: 13px; height: 13px; margin-right: 4px; }
+  .rating .stars       { font-variant-emoji: text; letter-spacing: 1px; color: var(--accent); }
+
+  .stats-section {
+    margin-top: -50px; position: relative; z-index: 3; padding-bottom: 32px;
+  }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+  }
+  .stat-card {
+    background: #fff;
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    padding: 22px 24px;
+    box-shadow: 0 6px 20px rgba(13,59,102,0.08);
+    position: relative; overflow: hidden; transition: .3s;
+    cursor: pointer; border: 1px solid var(--border);
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--sky));
+    transform: scaleX(0); transform-origin: left; transition: transform .35s;
+  }
+  .stat-card::after {
+    content: ''; position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(74,158,255,0.1) 0, transparent 70%);
+    border-radius: 50%;
+  }
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(13,59,102,0.18);
+  }
+  .stat-card:hover::before { transform: scaleX(1); }
+  .stat-card .icon {
+    width: 48px; height: 48px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(13,59,102,0.2);
+  }
+  .stat-card.c1 .icon { background: linear-gradient(135deg, #4a9eff, #2563eb); }
+  .stat-card.c2 .icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .stat-card.c3 .icon { background: linear-gradient(135deg, #10b981, #059669); }
+  .stat-card.c4 .icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .stat-card .num {
+    font-size: 30px; font-weight: 800;
+    color: var(--primary);
+    font-family: "SF Mono", "Consolas", monospace;
+    line-height: 1.1; letter-spacing: 1px;
+  }
+  .stat-card .num .total { font-size: 16px; color: var(--text-3); font-weight: 500; }
+  .stat-card .label { font-size: 13px; color: var(--text-3); margin-top: 4px; }
+  .stat-card .extra {
+    margin-top: 10px;
+    font-size: 11.5px; color: var(--accent); font-weight: 500;
+    padding-top: 8px; border-top: 1px dashed var(--border);
+  }
+  .stat-card .progress {
+    margin-top: 8px; height: 4px; background: var(--bg-page);
+    border-radius: 2px; overflow: hidden;
+  }
+  .stat-card .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky), var(--primary));
+    border-radius: 2px;
+  }
+  .stat-card.c1 .progress-fill { width: 30%; }
+  .stat-card.c2 .progress-fill { width: 60%; background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .stat-card.c3 .progress-fill { width: 12%; background: linear-gradient(90deg, #10b981, #059669); }
+  .stat-card.c4 .progress-fill { width: 0%; }
+
+  .section-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    box-shadow: 0 4px 16px rgba(13,59,102,0.06);
+    overflow: hidden; position: relative;
+  }
+  .section-head {
+    padding: 16px 22px;
+    border-bottom: 1px dashed var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(90deg, rgba(74,158,255,0.04) 0%, transparent 100%);
+  }
+  .section-head h3 {
+    font-size: 16px; color: var(--primary);
+    font-weight: 700; display: flex; align-items: center; gap: 10px;
+    letter-spacing: 0.5px;
+  }
+  .section-head h3 .dot {
+    width: 4px; height: 16px;
+    background: linear-gradient(180deg, var(--primary), var(--sky));
+    border-radius: 2px; box-shadow: 0 0 6px rgba(74,158,255,0.5);
+  }
+  .section-head h3 .icon-fly {
+    display: inline-flex; align-items: center;
+    color: var(--sky);
+  }
+  .section-head .more {
+    font-size: 13px; color: var(--text-3); transition: .2s;
+    padding: 4px 12px; border: 1px solid var(--border); border-radius: 12px;
+  }
+  .section-head .more:hover { color: var(--primary); border-color: var(--sky); background: rgba(74,158,255,0.06); }
+  .section-body { padding: 22px; }
+
+  .quick-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+  }
+  .quick-item {
+    background: linear-gradient(135deg, #fff 0%, #f7faff 100%);
+    border: 1px solid rgba(74,158,255,0.15);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    padding: 18px 10px; text-align: center;
+    cursor: pointer; transition: .3s; position: relative; overflow: hidden;
+  }
+  .quick-item:nth-child(odd)  { transform: translateY(-3px) rotate(-0.6deg); }
+  .quick-item:nth-child(even) { transform: translateY(3px) rotate(0.6deg); }
+  .quick-item:nth-child(3n)   { transform: translateY(0) rotate(1deg); }
+  .quick-item::before {
+    content: ''; position: absolute; top: -40%; right: -40%;
+    width: 70px; height: 70px;
+    background: radial-gradient(circle, rgba(74,158,255,0.2) 0, transparent 70%);
+    border-radius: 50%;
+  }
+  .quick-item::after {
+    content: ''; position: absolute; left: 8px; top: 8px;
+    width: 6px; height: 6px;
+    border-left: 1px solid rgba(74,158,255,0.3);
+    border-top: 1px solid rgba(74,158,255,0.3);
+  }
+  .quick-item:hover {
+    transform: translateY(-6px) rotate(0);
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 100%);
+    border-color: transparent;
+    box-shadow: 0 12px 28px rgba(13,59,102,0.25);
+  }
+  .quick-item:hover .q-ico { background: rgba(255,255,255,0.2); color: var(--gold); }
+  .quick-item:hover .q-name,
+  .quick-item:hover .q-sub { color: #fff; }
+  .quick-item:hover::after { border-color: var(--gold); }
+  .quick-item .q-ico {
+    width: 44px; height: 44px; margin: 0 auto 10px;
+    background: rgba(74,158,255,0.12); color: var(--primary);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    transition: .3s;
+  }
+  .quick-item .q-name {
+    font-size: 13px; font-weight: 600;
+    color: var(--primary); transition: .3s;
+  }
+  .quick-item .q-sub {
+    font-size: 10.5px; color: var(--text-3);
+    margin-top: 3px; transition: .3s;
+  }
+
+  .main-grid {
+    display: grid; grid-template-columns: 1fr 340px;
+    gap: 20px; margin-top: 24px;
+  }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .book-tabs {
+    display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .book-tabs span {
+    padding: 7px 14px; font-size: 13px;
+    color: var(--text-2); cursor: pointer;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: .25s; font-weight: 500;
+    position: relative;
+  }
+  .book-tabs span:hover {
+    color: var(--primary);
+    background: rgba(74,158,255,0.08);
+    border-color: var(--sky);
+  }
+  .book-tabs span.active {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(74,158,255,0.3);
+    border-color: transparent;
+  }
+
+  .book-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
+  }
+  .book-item { cursor: pointer; transition: .3s; position: relative; }
+  .book-item:nth-child(odd)  { transform: translateY(-3px); }
+  .book-item:nth-child(even) { transform: translateY(2px); }
+  .book-cover {
+    aspect-ratio: 3/4;
+    border-radius: 6px 2px 6px 2px;
+    box-shadow:
+      -2px 0 0 -1px rgba(0,0,0,0.15),
+      -4px 0 8px rgba(0,0,0,0.2),
+      4px 4px 12px rgba(0,0,0,0.15);
+    position: relative; transition: .3s; overflow: hidden; background: #f0f1f3;
+  }
+  .book-cover svg { width: 100%; height: 100%; display: block; }
+  .book-cover::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 5px; height: 100%;
+    background: rgba(0,0,0,0.22); z-index: 2; pointer-events: none;
+  }
+  .book-cover::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 2px; height: 100%;
+    background: rgba(255,255,255,0.22); z-index: 2; pointer-events: none;
+  }
+  .book-item:hover .book-cover {
+    transform: translateY(-6px) rotate(-1.5deg);
+    box-shadow:
+      -2px 0 0 -1px rgba(0,0,0,0.18),
+      -8px 0 18px rgba(0,0,0,0.3),
+      8px 12px 24px rgba(0,0,0,0.25);
+  }
+  .book-item .name {
+    margin-top: 10px; font-size: 13px; font-weight: 500; line-height: 1.4;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    color: var(--text); min-height: 36px;
+  }
+  .book-item .author { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+  .book-item .rating {
+    display: flex; align-items: center; gap: 3px;
+    margin-top: 4px; font-size: 11px;
+    font-family: "SF Mono", "Consolas", monospace;
+  }
+
+  .db-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  }
+  .db-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    padding: 14px 6px; text-align: center;
+    cursor: pointer; transition: .25s; position: relative; overflow: hidden;
+  }
+  .db-item::before {
+    content: ''; position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(74,158,255,0.08), transparent);
+    transition: left .5s;
+  }
+  .db-item:hover::before { left: 100%; }
+  .db-item:hover {
+    border-color: var(--sky);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(74,158,255,0.15);
+  }
+  .db-item .db-logo {
+    width: 40px; height: 40px; margin: 0 auto 6px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    font-family: Georgia, serif;
+    box-shadow: 0 3px 8px rgba(13,59,102,0.2);
+  }
+  .db-item.db2 .db-logo { background: linear-gradient(135deg, #f4a261, #f59e0b); }
+  .db-item.db3 .db-logo { background: linear-gradient(135deg, #10b981, #059669); }
+  .db-item.db4 .db-logo { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .db-item.db5 .db-logo { background: linear-gradient(135deg, #ec4899, #be185d); }
+  .db-item.db6 .db-logo { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+  .db-item.db7 .db-logo { background: linear-gradient(135deg, #f43f5e, #be123c); }
+  .db-item.db8 .db-logo { background: linear-gradient(135deg, #6366f1, #4338ca); }
+  .db-item .db-cn { font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .db-item .db-en { font-size: 10px; color: var(--text-3); margin-top: 2px; font-family: "SF Mono", monospace; letter-spacing: 0.5px; }
+  .db-item .tag-new {
+    position: absolute; top: 4px; right: -4px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff; font-size: 10px;
+    padding: 2px 7px; border-radius: 8px 0 0 8px; font-weight: 600;
+  }
+
+  .notice-list { list-style: none; }
+  .notice-list li {
+    position: relative;
+    padding: 11px 0 11px 22px;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px; transition: .2s; cursor: pointer;
+  }
+  .notice-list li:last-child { border-bottom: none; }
+  .notice-list li::before {
+    content: ''; position: absolute; left: 4px; top: 17px;
+    width: 7px; height: 7px;
+    transform: rotate(45deg);
+    background: var(--border);
+    transition: .2s;
+  }
+  .notice-list li:hover::before {
+    background: var(--sky);
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(74,158,255,0.2);
+  }
+  .notice-list li:hover .title { color: var(--primary); }
+  .notice-list .tag {
+    display: inline-block;
+    padding: 1px 9px; border-radius: 4px 8px 4px 8px;
+    font-size: 10.5px; margin-right: 8px;
+    font-weight: 600; line-height: 16px; vertical-align: 1px;
+  }
+  .tag-important { background: #fef0f0; color: #b91c1c; }
+  .tag-activity  { background: #f0f9eb; color: #16a34a; }
+  .tag-notice    { background: #ecf5ff; color: #2563eb; }
+  .tag-resource  { background: #f5f3ff; color: #7c3aed; }
+  .notice-list .title {
+    color: var(--text); font-weight: 500;
+    overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; max-width: 100%;
+  }
+  .notice-list .date {
+    display: block; font-size: 11px; color: var(--text-3); margin-top: 4px;
+    font-family: "SF Mono", "Consolas", monospace;
+  }
+
+  .open-card {
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    padding: 20px 22px; color: #fff;
+    position: relative; overflow: hidden;
+  }
+  .open-card::before {
+    content: ''; position: absolute;
+    top: -30px; right: -30px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(255,200,87,0.15) 0, transparent 70%);
+    border-radius: 50%;
+  }
+  .open-card::after {
+    content: ''; position: absolute;
+    bottom: -40px; left: -40px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0, transparent 70%);
+    border-radius: 50%;
+  }
+  .open-card .status-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .open-card .pulse-dot {
+    width: 10px; height: 10px;
+    background: #22c55e; border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(34,197,94,0.3);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(34,197,94,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  }
+  .open-card .status-text { font-size: 14px; font-weight: 600; }
+  .open-card .countdown { display: flex; gap: 8px; }
+  .cd-item {
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    padding: 10px; text-align: center; flex: 1;
+  }
+  .cd-item .num {
+    font-size: 22px; font-weight: 800;
+    font-family: "SF Mono", "Consolas", monospace;
+    color: var(--gold);
+  }
+  .cd-item .label { font-size: 11px; opacity: .9; margin-top: 2px; }
+  .open-card .hours-list {
+    margin-top: 14px;
+    background: rgba(0,0,0,0.18);
+    border-left: 2px solid var(--gold);
+    padding: 10px 12px;
+    font-size: 12px; line-height: 1.9;
+    border-radius: 0 6px 6px 0;
+  }
+  .open-card .hours-list b { color: var(--gold); font-family: "SF Mono", monospace; }
+
+  .space-card {
+    padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; position: relative; overflow: hidden;
+  }
+  .space-card.sc1 {
+    background: linear-gradient(135deg, #ecf5ff, #f0f9ff);
+    border-left: 3px solid var(--sky);
+    border: 1px solid rgba(74,158,255,0.2);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  }
+  .space-card.sc2 {
+    background: linear-gradient(135deg, #fef3c7, #fffbeb);
+    border-left: 3px solid var(--accent);
+    border: 1px solid rgba(245,158,11,0.25);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  }
+  .space-card .name { font-size: 13px; font-weight: 700; color: var(--primary); display: inline-flex; align-items: center; }
+  .space-card.sc1 .name { color: #1e3a8a; }
+  .space-card.sc2 .name { color: #92400e; }
+  .space-card .sub { font-size: 11.5px; margin-top: 2px; color: var(--text-2); }
+  .space-card .avail { font-size: 11.5px; color: var(--text-2); }
+  .space-card .avail b {
+    font-size: 18px;
+    font-family: "SF Mono", "Consolas", monospace;
+    font-weight: 800;
+  }
+  .space-card.sc1 .avail b { color: #16a34a; }
+  .space-card.sc2 .avail b { color: #d97706; }
+  .space-card .btn {
+    margin-top: 6px; padding: 6px 14px; color: #fff;
+    border: none; font-size: 12px; cursor: pointer; font-weight: 600;
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    transition: .2s;
+    display: inline-block;
+  }
+  .space-card.sc1 .btn { background: linear-gradient(135deg, #0d3b66, #4a9eff); }
+  .space-card.sc2 .btn { background: linear-gradient(135deg, #d97706, #f59e0b); }
+  .space-card .btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+  .floor-head-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 32px 0 6px; gap: 10px; flex-wrap: wrap;
+  }
+  .floor-head-row h3 {
+    font-size: 17px; color: var(--primary);
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; letter-spacing: 0.5px;
+  }
+  .floor-head-row h3 .bar {
+    width: 4px; height: 18px;
+    background: linear-gradient(180deg, #0d3b66, #4a9eff);
+    border-radius: 2px; box-shadow: 0 0 6px rgba(74,158,255,0.5);
+  }
+  .floor-head-row .lib-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    background: linear-gradient(135deg, #ecf5ff, #dbeafe);
+    color: #1d4ed8; font-size: 12.5px; font-weight: 600;
+    border-radius: 20px;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+  .floor-head-row .lib-badge .lib-dot {
+    width: 6px; height: 6px; background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+  }
+  .floor-head-row .more-link {
+    font-size: 13px; color: var(--text-3);
+    cursor: pointer; transition: .2s;
+  }
+  .floor-head-row .more-link:hover { color: var(--primary); }
+
+  .floor-nav {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 22px;
+  }
+  .floor-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    padding: 22px 20px 18px; text-align: center;
+    cursor: pointer; transition: .3s; position: relative; overflow: hidden;
+  }
+  .floor-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--sky));
+    transform: scaleX(0); transform-origin: left; transition: .35s;
+  }
+  .floor-card::after {
+    content: ''; position: absolute; bottom: 0; right: 0;
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, rgba(74,158,255,0.08) 0, transparent 70%);
+    border-radius: 50%;
+  }
+  .floor-card:nth-child(1) { transform: rotate(-0.6deg); }
+  .floor-card:nth-child(2) { transform: rotate(0.4deg) translateY(-4px); }
+  .floor-card:nth-child(3) { transform: rotate(-0.3deg) translateY(2px); }
+  .floor-card:nth-child(4) { transform: rotate(0.5deg) translateY(-2px); }
+  .floor-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 12px 28px rgba(13,59,102,0.15);
+  }
+  .floor-card:hover::before { transform: scaleX(1); }
+  .floor-card .f-ico {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(13,59,102,0.06));
+    color: var(--primary);
+    border-radius: 12px;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: .3s;
+  }
+  .floor-card:hover .f-ico {
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    transform: rotate(-8deg);
+  }
+  .floor-card.f1 .f-ico { background: linear-gradient(135deg, #dbeafe, #93c5fd); color: #1d4ed8; }
+  .floor-card.f2 .f-ico { background: linear-gradient(135deg, #d1fae5, #6ee7b7); color: #047857; }
+  .floor-card.f3 .f-ico { background: linear-gradient(135deg, #fed7aa, #fb923c); color: #c2410c; }
+  .floor-card.f4 .f-ico { background: linear-gradient(135deg, #ede9fe, #c4b5fd); color: #6d28d9; }
+  .floor-card.f1:hover .f-ico { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; }
+  .floor-card.f2:hover .f-ico { background: linear-gradient(135deg, #059669, #047857); color: #fff; }
+  .floor-card.f3:hover .f-ico { background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; }
+  .floor-card.f4:hover .f-ico { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; }
+
+  .floor-card .f-name {
+    font-size: 15px; font-weight: 700; color: var(--primary);
+    line-height: 1.35; min-height: 41px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .floor-card .f-code {
+    display: inline-block; margin-top: 8px;
+    padding: 2px 9px;
+    background: var(--bg-page);
+    color: var(--text-3);
+    font-family: "SF Mono", "Consolas", monospace;
+    font-size: 11px; border-radius: 4px; letter-spacing: 0.5px;
+  }
+  .floor-card .f-area {
+    display: inline-flex; align-items: center; gap: 3px;
+    margin-top: 8px; margin-left: 6px;
+    padding: 2px 10px;
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(13,59,102,0.04));
+    color: var(--primary);
+    font-size: 11.5px; font-weight: 600;
+    border-radius: 12px; vertical-align: middle;
+  }
+  .floor-card .f-desc {
+    font-size: 12px; color: var(--text-3);
+    margin-top: 12px; line-height: 1.6; min-height: 38px;
+  }
+  .floor-card .f-desc .alert-text { color:#d97706; display:inline-flex; align-items:center; gap:2px; }
+  .floor-card .f-manager {
+    margin-top: 12px; padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 11.5px; color: var(--text-2);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .floor-card .f-manager .row {
+    display: inline-flex; align-items: center;
+  }
+  .floor-card .f-phone {
+    display: inline-flex; align-items: center;
+    font-family: "SF Mono", "Consolas", monospace;
+    font-size: 10.5px; color: var(--text-3);
+  }
+
+  .branches-note {
+    margin-top: 18px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px dashed var(--border);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px; font-size: 13px;
+  }
+  .branches-note .left {
+    display: flex; align-items: center; gap: 10px; color: var(--text-2);
+  }
+  .branches-note .left b { color: var(--text); font-weight: 600; }
+  .branches-note .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .branches-note .tag-off {
+    padding: 3px 10px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--text-3);
+    border-radius: 12px;
+    font-size: 11.5px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .branches-note .tag-off::before {
+    content: ''; width: 5px; height: 5px;
+    background: #cbd5e1; border-radius: 50%;
+  }
+
+  .footer {
+    background: linear-gradient(135deg, #0a2d52 0%, #0d3b66 100%);
+    color: #b0b8c8;
+    margin-top: 40px; padding: 44px 0 0;
+    position: relative; width: 100%;
+  }
+  .footer::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--sky), var(--accent), var(--gold));
+  }
+  .footer-inner {
+    max-width: var(--max-w); margin: 0 auto; padding: 0 30px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 32px;
+  }
+  .footer-col h5 {
+    color: #fff; font-size: 15px; margin-bottom: 14px;
+    position: relative; padding-bottom: 8px;
+  }
+  .footer-col h5::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 24px; height: 2px;
+    background: linear-gradient(90deg, var(--sky), transparent);
+  }
+  .footer-col p, .footer-col li { line-height: 2.2; font-size: 13px; display: flex; align-items: center; }
+  .footer-col .school-name {
+    color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 8px;
+  }
+  .footer-col .school-slogan {
+    font-size: 12px; opacity: .8; line-height: 1.7; margin-bottom: 14px;
+    display: block;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-col .social { display: flex; gap: 10px; margin-top: 14px; }
+  .footer-col .social a {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: .25s;
+  }
+  .footer-col .social a:hover {
+    background: var(--sky); color: #fff; transform: translateY(-2px);
+  }
+  .footer-bottom {
+    margin-top: 30px;
+    padding: 16px 30px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    text-align: center; font-size: 12.5px; color: #7a8a9c;
+  }
+
+  @media (max-width: 1240px) {
+    .hero-text h1 { font-size: 36px; }
+    .hero-inner { grid-template-columns: 1fr 340px; gap: 40px; }
+    .book-grid { grid-template-columns: repeat(4, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .main-grid { grid-template-columns: 1fr; }
+    .floor-nav { grid-template-columns: repeat(2, 1fr); }
+    .footer-inner { grid-template-columns: 1fr 1fr 1fr; }
+    .quick-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="#">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z"/></svg>
+      </div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html" class="active">首页</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+
+      <!-- 空间预约下拉（不选中、纯 hover 触发） -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
+          </a>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
+          </a>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
+          </a>
+        </div>
+      </div>
+
+      <a href="读者服务导航.html">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="图书荐购.html">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn" title="消息通知">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="badge"></span>
+      </button>
+      <a class="favorite-btn" href="我的收藏.html" title="我的收藏">
+        <svg class="ico" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="favorite-badge">8</span>
+      </a>
+      <a class="avatar-wrap" href="个人中心.html">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="plane p1">
+    <svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>
+  </div>
+  <div class="plane p2">
+    <svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="tagline">
+        <svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg>
+        飞阅信航 · 启智天路
+      </span>
+      <h1>浩瀚书海 · <span class="accent">一飞即达</span></h1>
+      <p class="sub">汇聚 86 万册纸质图书、230 万册电子书、16 个中外文数据库。一站式检索、扫码借阅、空间预约，让每一次知识探索都像飞行般轻盈。</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">86<span style="font-size:16px;">万</span></div><div class="label">纸质馆藏</div></div>
+        <div class="hero-stat"><div class="num">230<span style="font-size:16px;">万</span></div><div class="label">电子图书</div></div>
+        <div class="hero-stat"><div class="num">16<span style="font-size:16px;">+</span></div><div class="label">数据库</div></div>
+        <div class="hero-stat"><div class="num">98<span style="font-size:16px;">%</span></div><div class="label">读者满意度</div></div>
+      </div>
+    </div>
+
+    <div class="search-card">
+      <h3>
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        一站式知识检索
+      </h3>
+      <div class="search-tabs">
+        <span class="active">馆藏书目</span>
+        <span>电子图书</span>
+        <span>期刊论文</span>
+        <span>学位论文</span>
+        <span>多媒体</span>
+      </div>
+      <div class="search-box">
+        <input type="text" placeholder="书名 / 作者 / ISBN / 关键词">
+        <button>搜索</button>
+      </div>
+      <div class="search-tips">
+        <span style="margin-right:6px;">热搜：</span>
+        <a href="#">航空发动机</a>
+        <a href="#">数控车床</a>
+        <a href="#">无人机</a>
+        <a href="#">空乘礼仪</a>
+        <a href="#">飞机维修</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="main-wrap">
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <a class="stat-card c1" href="我的借阅.html">
+          <div class="icon">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z"/></svg>
+          </div>
+          <div class="num">3 <span class="total">/ 10</span></div>
+          <div class="label">在借图书</div>
+          <div class="progress"><div class="progress-fill"></div></div>
+          <div class="extra">已使用 30%</div>
+        </a>
+        <a class="stat-card c2" href="我的借阅.html">
+          <div class="icon">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="num">2 <span class="total">本</span></div>
+          <div class="label">即将到期（7天内）</div>
+          <div class="progress"><div class="progress-fill"></div></div>
+          <div class="extra">建议尽快归还或续借</div>
+        </a>
+        <a class="stat-card c3" href="我的预约记录.html">
+          <div class="icon">
+            <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg>
+          </div>
+          <div class="num">1 <span class="total">个</span></div>
+          <div class="label">待签到预约</div>
+          <div class="progress"><div class="progress-fill"></div></div>
+          <div class="extra">明天 14:00 生效</div>
+        </a>
+        <a class="stat-card c4" href="违章查询.html">
+          <div class="icon">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-6"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+          </div>
+          <div class="num">¥0.00</div>
+          <div class="label">待缴费用</div>
+          <div class="progress"><div class="progress-fill"></div></div>
+          <div class="extra">保持良好信用</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="main-grid">
+
+      <div class="left-col">
+        <div class="section-card">
+          <div class="section-head">
+            <h3><span class="dot"></span><span class="icon-fly"><svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg></span>飞行航线 · 一键直达</h3>
+            <a class="more" href="#">更多服务 ›</a>
+          </div>
+          <div class="section-body">
+            <div class="quick-grid">
+              <a class="quick-item" href="我的借阅.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z"/></svg></div><div class="q-name">我的借阅</div><div class="q-sub">在借 / 历史</div></a>
+              <a class="quick-item" href="我的收藏.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="q-name">我的收藏</div><div class="q-sub">图书 / 检索式</div></a>
+              <a class="quick-item" href="续借.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/><path d="M21 21v-5h-5"/></svg></div><div class="q-name">续借</div><div class="q-sub">在线办理</div></a>
+              <a class="quick-item" href="我的预约记录.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div class="q-name">我的预约</div><div class="q-sub">座位 / 研修室</div></a>
+              <a class="quick-item" href="图书荐购.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7 2.4 2.4 0 0 1 1 2v.3h6v-.3a2.4 2.4 0 0 1 1-2A7 7 0 0 0 12 2z"/></svg></div><div class="q-name">图书荐购</div><div class="q-sub">您想要的书</div></a>
+              <a class="quick-item" href="消息中心.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></div><div class="q-name">消息中心</div><div class="q-sub">3 条未读</div></a>
+              <a class="quick-item" href="违章查询.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h6"/></svg></div><div class="q-name">违章查询</div><div class="q-sub">信用记录</div></a>
+              <a class="quick-item" href="账户设置.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="m15.5 12.5 1.6 8-5.1-3-5.1 3 1.6-8"/></svg></div><div class="q-name">我的证书</div><div class="q-sub">借阅凭证</div></a>
+              <a class="quick-item" href="账户设置.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="q-name">账户设置</div><div class="q-sub">资料 / 隐私</div></a>
+              <a class="quick-item" href="论文检测.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div><div class="q-name">论文检测</div><div class="q-sub">知网 / 万方</div></a>
+              <a class="quick-item" href="学科服务.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="q-name">学科服务</div><div class="q-sub">学科馆员</div></a>
+              <a class="quick-item" href="在线阅读-航空发动机结构与系统.html"><div class="q-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></div><div class="q-name">航天专题</div><div class="q-sub">学科导览</div></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-head">
+            <h3><span class="dot"></span><span class="icon-fly"><svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg></span>新书速递 · 热门推荐</h3>
+            <a class="more" href="馆藏检索.html">查看全部 ›</a>
+          </div>
+          <div class="section-body">
+            <div class="book-tabs">
+              <span class="active">新书速递</span>
+              <span>借阅排行</span>
+              <span>馆员推荐</span>
+              <span>读者热评</span>
+              <span>学科导览</span>
+            </div>
+            <div class="book-grid">
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a9eff"/><stop offset="100%" stop-color="#0a2d52"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg1)"/>
+                    <g transform="translate(150,140)" stroke="#fff" stroke-width="3" fill="none" opacity="0.95">
+                      <circle r="22"/><circle r="6" fill="#fff"/>
+                      <path d="M0,0 L0,-50 A18,18 0 0,1 14,-42 L8,-22 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L42,-30 A18,18 0 0,1 48,-10 L24,-6 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L50,0 A18,18 0 0,1 42,14 L22,8 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L30,42 A18,18 0 0,1 10,48 L6,24 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L-30,42 A18,18 0 0,1 -48,10 L-22,6 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L-50,0 A18,18 0 0,1 -42,-14 L-22,-8 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L-42,-30 A18,18 0 0,1 -10,-48 L-6,-24 Z" fill="#fff" opacity="0.85"/>
+                      <path d="M0,0 L0,-50 A18,18 0 0,0 -14,-42 L-8,-22 Z" fill="#fff" opacity="0.85"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">航空发动机</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">结构与系统</text>
+                    <text x="150" y="320" text-anchor="middle" fill="#fff" font-size="9" opacity="0.7" letter-spacing="2">AERO ENGINE · STRUCTURE</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">刘永泉 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">航空发动机结构与系统</div>
+                <div class="author">刘永泉</div>
+                <div class="rating"><span class="stars">★★★★★</span> <span>4.9</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg2)"/>
+                    <g transform="translate(150,140)" stroke="#fff" stroke-width="2.5" fill="none">
+                      <rect x="-6" y="-12" width="12" height="24" rx="2" fill="#fff"/>
+                      <line x1="-6" y1="-6" x2="-40" y2="-22"/>
+                      <line x1="6" y1="-6" x2="40" y2="-22"/>
+                      <line x1="-6" y1="6" x2="-40" y2="22"/>
+                      <line x1="6" y1="6" x2="40" y2="22"/>
+                      <ellipse cx="-40" cy="-22" rx="3" ry="18" stroke-width="1.5" opacity="0.7"/>
+                      <ellipse cx="40" cy="-22" rx="3" ry="18" stroke-width="1.5" opacity="0.7"/>
+                      <ellipse cx="-40" cy="22" rx="3" ry="18" stroke-width="1.5" opacity="0.7"/>
+                      <ellipse cx="40" cy="22" rx="3" ry="18" stroke-width="1.5" opacity="0.7"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">无人机</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">设计与控制</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">全权 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">无人机设计与控制</div>
+                <div class="author">全权</div>
+                <div class="rating"><span class="stars">★★★★★</span> <span>4.8</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#064e3b"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg3)"/>
+                    <g transform="translate(150,140)" fill="#fff" opacity="0.95">
+                      <path d="M0,-50 L8,-48 L12,-42 L20,-44 L24,-36 L20,-28 L24,-22 L28,-20 L26,-12 L18,-10 L18,-2 L22,4 L18,10 L10,8 L4,14 L8,22 L0,26 L-8,22 L-14,26 L-20,22 L-16,14 L-22,10 L-30,12 L-34,4 L-30,-4 L-34,-12 L-28,-20 L-22,-22 L-24,-28 L-16,-32 L-10,-28 L-4,-34 L0,-40 Z"/>
+                      <circle r="12" fill="#10b981"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">数控车床</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">编程与操作</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">陈洪涛 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">数控车床编程与操作</div>
+                <div class="author">陈洪涛</div>
+                <div class="rating"><span class="stars">★★★★</span><span class="stars" style="color:#d1d5db">★</span> <span>4.6</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#581c87"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg4)"/>
+                    <g transform="translate(150,140)" fill="#fff">
+                      <ellipse cx="0" cy="-15" rx="40" ry="8"/>
+                      <path d="M-32,-15 Q-32,-30 0,-30 Q32,-30 32,-15 Z"/>
+                      <rect x="-3" y="-30" width="6" height="20"/>
+                      <circle cx="0" cy="-34" r="3"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.8"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">空中乘务</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">礼仪与技能</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">陈敏 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">空中乘务实务（第三版）</div>
+                <div class="author">陈敏</div>
+                <div class="rating"><span class="stars">★★★★★</span> <span>4.9</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#831843"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg5)"/>
+                    <g transform="translate(150,140)" stroke="#fff" stroke-width="3" fill="none">
+                      <path d="M-50,0 L-20,-12 L-5,-8 L0,-18 L5,-8 L20,-12 L50,0 L20,8 L5,12 L0,20 L-5,12 L-20,8 Z" fill="#fff" opacity="0.9"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">飞机结构</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">修理工艺</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">王立春 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">飞机结构修理工艺</div>
+                <div class="author">王立春</div>
+                <div class="rating"><span class="stars">★★★★</span><span class="stars" style="color:#d1d5db">★</span> <span>4.7</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0c4a6e"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg6)"/>
+                    <g transform="translate(150,140)" fill="#fff" font-family="Georgia, serif" font-weight="700">
+                      <text x="-50" y="20" font-size="80" opacity="0.95">A</text>
+                      <text x="10" y="20" font-size="80" opacity="0.55">B</text>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">民航英语</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">口语教程</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">李华 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">民航英语口语教程</div>
+                <div class="author">李华</div>
+                <div class="rating"><span class="stars">★★★★</span><span class="stars" style="color:#d1d5db">★</span> <span>4.5</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#7f1d1d"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg7)"/>
+                    <g transform="translate(150,140)" fill="#fff" opacity="0.95">
+                      <path d="M-70,0 L-30,-18 L-10,-12 L-5,-22 L5,-22 L10,-12 L30,-18 L70,0 L30,10 L10,16 L5,26 L-5,26 L-10,16 L-30,10 Z"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.8"/>
+                    <text x="150" y="265" text-anchor="middle" fill="#fff" font-size="26" font-weight="700" font-family="serif">民航概论</text>
+                    <text x="150" y="295" text-anchor="middle" fill="#fff" font-size="18" font-weight="500" font-family="serif">民用航空</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">王维克 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">民用航空概论</div>
+                <div class="author">王维克</div>
+                <div class="rating"><span class="stars">★★★★</span><span class="stars" style="color:#d1d5db">★</span> <span>4.6</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0c4a6e"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg8)"/>
+                    <g transform="translate(150,140)" stroke="#fff" stroke-width="2" fill="none" opacity="0.95">
+                      <path d="M-60,-20 Q-30,-25 0,-15 Q30,-5 60,-15" stroke-dasharray="4,3"/>
+                      <path d="M-60,20 Q-30,25 0,15 Q30,5 60,15" stroke-dasharray="4,3"/>
+                      <path d="M-50,0 Q-20,-12 20,-8 Q40,-3 50,0 Q40,3 20,5 Q-20,8 -50,0 Z" fill="#fff" opacity="0.85"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="265" text-anchor="middle" fill="#fff" font-size="26" font-weight="700" font-family="serif">空气动力学</text>
+                    <text x="150" y="295" text-anchor="middle" fill="#fff" font-size="18" font-weight="500" font-family="serif">基础教程</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">安德森 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">空气动力学基础</div>
+                <div class="author">安德森</div>
+                <div class="rating"><span class="stars">★★★★★</span> <span>4.8</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg9" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#14b8a6"/><stop offset="100%" stop-color="#134e4a"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg9)"/>
+                    <g transform="translate(150,140)" fill="#fff" opacity="0.95">
+                      <rect x="-5" y="-15" width="10" height="35"/>
+                      <rect x="-18" y="-25" width="36" height="12" rx="2"/>
+                      <rect x="-12" y="-22" width="24" height="6" fill="#14b8a6"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#fff" stroke-width="2" opacity="0.7"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="24" font-weight="700" font-family="serif">机场运行</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="20" font-weight="600" font-family="serif">管理实务</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">张宁 · 编著</text>
+                  </svg>
+                </div>
+                <div class="name">机场运行管理实务</div>
+                <div class="author">张宁</div>
+                <div class="rating"><span class="stars">★★★★</span><span class="stars" style="color:#d1d5db">★</span> <span>4.7</span></div>
+              </div>
+
+              <div class="book-item">
+                <div class="book-cover">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs><linearGradient id="bg10" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#5b21b6"/></linearGradient></defs>
+                    <rect width="300" height="400" fill="url(#bg10)"/>
+                    <g transform="translate(150,140)" fill="#fff" opacity="0.95">
+                      <path d="M-30,-30 Q-30,-50 -10,-50 L10,-50 Q30,-50 30,-30 L30,-10 Q30,5 15,5 L-15,5 Q-30,5 -30,20 L-30,40 Q-30,55 -15,55 L15,55" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    </g>
+                    <line x1="40" y1="220" x2="260" y2="220" stroke="#ffc857" stroke-width="2" opacity="0.8"/>
+                    <text x="150" y="260" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="serif">Python编程</text>
+                    <text x="150" y="290" text-anchor="middle" fill="#fff" font-size="18" font-weight="600" font-family="serif">从入门到实践</text>
+                    <text x="40" y="375" fill="#fff" font-size="10" opacity="0.85">埃里克·马瑟斯</text>
+                  </svg>
+                </div>
+                <div class="name">Python编程从入门到实践</div>
+                <div class="author">埃里克·马瑟斯</div>
+                <div class="rating"><span class="stars">★★★★★</span> <span>4.9</span></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-head">
+            <h3><span class="dot"></span><span class="icon-fly"><svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg></span>电子资源 · 数据库导航</h3>
+            <a class="more" href="电子资源导航.html">全部数据库 ›</a>
+          </div>
+          <div class="section-body">
+            <div class="db-grid">
+              <a class="db-item" href="电子资源导航.html"><div class="db-logo">CN</div><div class="db-cn">中国知网</div><div class="db-en">CNKI</div></a>
+              <a class="db-item db2" href="电子资源导航.html"><div class="db-logo">WF</div><div class="db-cn">万方数据</div><div class="db-en">WanFang</div></a>
+              <a class="db-item db3" href="电子资源导航.html"><div class="db-logo">VP</div><div class="db-cn">维普资讯</div><div class="db-en">VIP</div></a>
+              <a class="db-item db4" href="电子资源导航.html"><div class="db-logo">DX</div><div class="db-cn">读秀学术</div><div class="db-en">Duxiu</div></a>
+              <a class="db-item db5" href="电子资源导航.html"><div class="db-logo">超</div><div class="db-cn">超星电子书</div><div class="db-en">Chaoxing</div></a>
+              <a class="db-item db6" href="电子资源导航.html"><div class="db-logo">BK</div><div class="db-cn">博看期刊</div><div class="db-en">Bokan</div></a>
+              <a class="db-item db7" href="电子资源导航.html"><div class="db-logo">XDF</div><div class="db-cn">新东方多媒体</div><div class="db-en">New Oriental</div><span class="tag-new">试用</span></a>
+              <a class="db-item db8" href="电子资源导航.html"><div class="db-logo">GB</div><div class="db-cn">环球英语</div><div class="db-en">Global English</div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-col">
+        <div class="open-card">
+          <div class="status-row">
+            <div class="pulse-dot"></div>
+            <div class="status-text">开放中 · 距闭馆 05:48</div>
+          </div>
+          <div class="countdown">
+            <div class="cd-item"><div class="num">05</div><div class="label">小时</div></div>
+            <div class="cd-item"><div class="num">48</div><div class="label">分钟</div></div>
+            <div class="cd-item"><div class="num">23</div><div class="label">秒</div></div>
+          </div>
+          <div class="hours-list">
+            <div>周一~周五 <b>08:00 - 22:00</b></div>
+            <div>周六~周日 <b>09:00 - 21:00</b></div>
+            <div>期末复习季 <b>07:30 - 23:00</b></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-head">
+            <h3><span class="dot"></span><span class="icon-fly"><svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg></span>最新公告</h3>
+            <a class="more" href="校园公告.html">全部公告 ›</a>
+          </div>
+          <div class="section-body">
+            <ul class="notice-list">
+              <li><span class="tag tag-important">重要</span><a class="title" href="公告详情.html">关于2026年元旦假期开馆时间调整的通知</a><span class="date">2025-12-25</span></li>
+              <li><span class="tag tag-resource">资源</span><a class="title" href="公告详情.html">航空发动机专题数据库开通试用通知</a><span class="date">2025-12-22</span></li>
+              <li><span class="tag tag-activity">活动</span><a class="title" href="公告详情.html">"蓝天书香"校园阅读节系列活动启动</a><span class="date">2025-12-20</span></li>
+              <li><span class="tag tag-notice">通知</span><a class="title" href="公告详情.html">关于寒假期间研修室预约规则调整</a><span class="date">2025-12-18</span></li>
+              <li><span class="tag tag-notice">通知</span><a class="title" href="公告详情.html">周末自习区延长开放至22点的公告</a><span class="date">2025-12-15</span></li>
+              <li><span class="tag tag-resource">资源</span><a class="title" href="公告详情.html">新到"无人机应用技术"专题书架已上架</a><span class="date">2025-12-12</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-head">
+            <h3><span class="dot"></span><span class="icon-fly"><svg class="ico" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/></svg></span>空间预约</h3>
+            <a class="more" href="座位预约.html">更多 ›</a>
+          </div>
+          <div class="section-body">
+            <div class="space-card sc1">
+              <div>
+                <div class="name">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  二楼自习区
+                </div>
+                <div class="sub">距您最近 · 安静舒适</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="avail">空闲 <b>128</b>/200</div>
+                <a class="btn" href="座位预约.html">立即选座</a>
+              </div>
+            </div>
+            <div class="space-card sc2">
+              <div>
+                <div class="name">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  三楼研讨间
+                </div>
+                <div class="sub">小组讨论 · 设备齐全</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="avail">空闲 <b>3</b>/8 间</div>
+                <a class="btn" href="研修室预约.html">预约研讨间</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="floor-head-row">
+      <h3>
+        <span class="bar"></span>
+        馆藏分布 · 楼层导览
+      </h3>
+      <span class="lib-badge"><span class="lib-dot"></span>总馆 · 当前展示</span>
+      <a class="more-link" href="楼层详情.html">查看完整馆藏地图 ›</a>
+    </div>
+    <p style="font-size:13px; color: var(--text-3); margin-bottom: 8px;">
+      数据与后台 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:Consolas,monospace;color:#475569;">楼层管理</code> 实时同步 · 共 4 层 · 启用中
+    </p>
+
+    <div class="floor-nav">
+      <a class="floor-card f1" href="楼层详情.html">
+        <div class="f-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z"/></svg></div>
+        <div class="f-name">一层 · 中文图书借阅区</div>
+        <span class="f-code">ZG-1F</span>
+        <span class="f-area"><svg class="ico" viewBox="0 0 24 24"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0L2.7 18.7a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/></svg>2000 ㎡</span>
+        <div class="f-desc">中文图书借阅 / 自助借还机<br>读者服务台 · 总出入口</div>
+        <div class="f-manager">
+          <span class="row"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>负责人 · 张丽</span>
+          <span class="f-phone"><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>010-88880001</span>
+        </div>
+      </a>
+
+      <a class="floor-card f2" href="楼层详情.html">
+        <div class="f-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></svg></div>
+        <div class="f-name">二层 · 外文书库</div>
+        <span class="f-code">ZG-2F</span>
+        <span class="f-area"><svg class="ico" viewBox="0 0 24 24"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0L2.7 18.7a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/></svg>1800 ㎡</span>
+        <div class="f-desc">外文原版图书 / 外文期刊<br>语言学习专区</div>
+        <div class="f-manager">
+          <span class="row"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>负责人 · 王强</span>
+          <span class="f-phone"><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>010-88880002</span>
+        </div>
+      </a>
+
+      <a class="floor-card f3" href="楼层详情.html">
+        <div class="f-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg></div>
+        <div class="f-name">三层 · 期刊阅览区</div>
+        <span class="f-code">ZG-3F</span>
+        <span class="f-area"><svg class="ico" viewBox="0 0 24 24"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0L2.7 18.7a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/></svg>1500 ㎡</span>
+        <div class="f-desc">中外文期刊 / 报纸<br><span class="alert-text"><svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>仅限馆内阅览</span></div>
+        <div class="f-manager">
+          <span class="row"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>负责人 · 李敏</span>
+          <span class="f-phone"><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>010-88880003</span>
+        </div>
+      </a>
+
+      <a class="floor-card f4" href="楼层详情.html">
+        <div class="f-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg></div>
+        <div class="f-name">四层 · 古籍特藏室</div>
+        <span class="f-code">ZG-4F</span>
+        <span class="f-area"><svg class="ico" viewBox="0 0 24 24"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0L2.7 18.7a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/></svg>800 ㎡</span>
+        <div class="f-desc">古籍善本 / 特藏文献<br><span class="alert-text"><svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>需提前预约</span></div>
+        <div class="f-manager">
+          <span class="row"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>负责人 · 陈静</span>
+          <span class="f-phone"><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>010-88880004</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="branches-note">
+      <div class="left">
+        <div class="ico-wrap">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M5 22V10l8-6 8 6v12"/><path d="M10 22v-5h4v5"/></svg>
+        </div>
+        <div>
+          <b>其他馆藏地</b> · 共 3 个分馆，<span style="color:#d97706;">当前为停用状态</span>，开放时间请留意公告
+        </div>
+      </div>
+      <div class="tags">
+        <a class="tag-off" href="分馆详情.html">南区分馆</a>
+        <a class="tag-off" href="分馆详情.html">东校区分馆</a>
+        <a class="tag-off" href="分馆详情.html">医学分馆</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="school-name">信阳航空职业学院</div>
+      <div class="school-slogan">图书馆 · 数字图书与知识服务中心<br>"飞阅书海 · 启智天路"</div>
+      <p style="font-size:12.5px;line-height:1.8;opacity:.85;">馆藏纸质图书 86 万册，电子图书 230 万册，订阅中外文期刊 800 余种。设有航空特色专题书架、考研自习专区、VR 沉浸式阅览室等。</p>
+      <div class="social">
+        <a href="#" title="微信公众号"><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></a>
+        <a href="#" title="微博"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></svg></a>
+        <a href="#" title="抖音"><svg class="ico" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg></a>
+        <a href="#" title="QQ群"><svg class="ico" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>快速链接</h5>
+      <ul>
+        <li><a href="馆藏检索.html">馆藏检索 OPAC</a></li>
+        <li><a href="电子资源导航.html">电子资源中心</a></li>
+        <li><a href="座位预约.html">座位预约系统</a></li>
+        <li><a href="研修室预约.html">研修室预约</a></li>
+        <li><a href="图书荐购.html">读者荐购</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>咨询服务</h5>
+      <ul>
+        <li><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>总服务台：0000-1234567</li>
+        <li><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>学科咨询：0000-1234568</li>
+        <li><svg class="ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><a href="mailto:lib@xihang.edu.cn">lib@xihang.edu.cn</a></li>
+        <li><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><a href="意见反馈.html">在线咨询（QQ群）</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>读者服务</h5>
+      <ul>
+        <li><a href="借阅规则与违规说明.html">借阅规则</a></li>
+        <li><a href="违章查询.html">违章处理</a></li>
+        <li><a href="信息素养课程中心.html">读者培训</a></li>
+        <li><a href="信息素养课程中心.html">信息素养课程</a></li>
+        <li><a href="校外访问-VPN-入口.html">校外访问 VPN</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>关注我们</h5>
+      <ul>
+        <li><a href="#">微信公众号</a></li>
+        <li><a href="#">微博</a></li>
+        <li><a href="#">抖音 / B站</a></li>
+        <li><a href="#">图书馆协会</a></li>
+        <li><a href="#">志愿者招募</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2025 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.search-tabs span').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.search-tabs span').forEach(s => s.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.book-tabs span').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.book-tabs span').forEach(s => s.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+
+  /* 空间预约下拉：触屏 click 兼容 */
+  const dropdown = document.getElementById('navSpace');
+  if (dropdown) {
+    dropdown.addEventListener('click', e => {
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const close = new Date(); close.setHours(22, 0, 0, 0);
+    if (now >= close) {
+      document.querySelector('.status-text').textContent = '已闭馆，明日 08:00 开放';
+      return;
+    }
+    const diff = close - now;
+    const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+    const m = String(Math.floor(diff % 3600000 / 60000)).padStart(2, '0');
+    const s = String(Math.floor(diff % 60000 / 1000)).padStart(2, '0');
+    document.querySelectorAll('.cd-item .num')[0].textContent = h;
+    document.querySelectorAll('.cd-item .num')[1].textContent = m;
+    document.querySelectorAll('.cd-item .num')[2].textContent = s;
+    document.querySelector('.status-text').textContent = `开放中 · 距闭馆 ${h}:${m}`;
+  }
+  updateClock(); setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校外访问 / VPN 入口 - 信阳航空职业学院 · 数字图书馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: #f2f3f5;
+    color: #303133;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul, li { list-style: none; }
+  :root {
+    --primary: #0d3b66;
+    --sky: #4a9eff;
+    --accent: #f4a261;
+    --gold: #ffc857;
+    --bg-page: #f2f3f5;
+    --surface: #ffffff;
+    --text: #303133;
+    --text-2: #606266;
+    --text-3: #909399;
+    --border: #e4e7ed;
+    --max-w: 1440px;
+  }
+
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar a { margin-left: 14px; color: #fff; }
+  .top-bar a:hover { color: var(--gold); }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .logo .text h1 { font-size: 20px; color: var(--primary); margin-bottom: 2px; font-weight: 700; }
+  .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
+  .nav { display: flex; gap: 6px; }
+  .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
+  .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .user-area { display: flex; align-items: center; gap: 14px; }
+  .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
+  .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
+  .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+  .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
+  .breadcrumb { max-width: var(--max-w); margin: 0 auto; padding: 14px 30px; font-size: 13px; color: var(--text-3); }
+  .breadcrumb a { color: var(--text-2); }
+  .breadcrumb a:hover { color: var(--primary); }
+  .breadcrumb .sep { margin: 0 8px; }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 24px 30px 60px; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, #0d3b66 0%, #1a5a96 50%, #4a9eff 100%);
+    border-radius: 18px;
+    padding: 36px 40px;
+    color: #fff;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(13,59,102,0.18);
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -80px; right: 200px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .hero .row { position: relative; z-index: 1; display: flex; align-items: center; gap: 22px; }
+  .hero .ico {
+    width: 72px; height: 72px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px;
+    flex-shrink: 0;
+  }
+  .hero h1 { font-size: 32px; font-weight: 700; text-shadow: 0 2px 12px rgba(0,0,0,0.18); margin-bottom: 8px; }
+  .hero .desc { font-size: 15px; opacity: 0.95; line-height: 1.7; max-width: 760px; }
+  .hero .status-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 22px; position: relative; z-index: 1; }
+  .hero-stat {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    padding: 12px 20px;
+  }
+  .hero-stat .n { font-size: 22px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .hero-stat .l { font-size: 11.5px; opacity: .92; margin-top: 2px; }
+
+  /* 主体 */
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+  .left-col > * + * { margin-top: 18px; }
+  .right-col > * + * { margin-top: 18px; }
+
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden; }
+  .card-head { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-head h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .card-head h3 .dot { width: 3px; height: 16px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+  .card-head .more { font-size: 13px; color: var(--text-3); }
+  .card-head .more:hover { color: var(--primary); }
+  .card-body { padding: 22px; }
+
+  /* 登录入口 */
+  .login-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .login-card {
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    background: #fff;
+    transition: .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-card.featured { border-color: var(--sky); box-shadow: 0 8px 24px rgba(74,158,255,0.12); }
+  .login-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--sky), #6366f1);
+  }
+  .login-card .badge-top {
+    position: absolute; top: 14px; right: 14px;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #b91c1c;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .login-card .ico {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin-bottom: 16px;
+  }
+  .login-card .ico.web { background: linear-gradient(135deg, #dbeafe, #93c5fd); color: #1d4ed8; }
+  .login-card .ico.carsi { background: linear-gradient(135deg, #ede9fe, #c4b5fd); color: #6d28d9; }
+  .login-card .name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .login-card .sub { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+  .login-card .desc { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 16px; min-height: 80px; }
+  .login-card .feat-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+  .login-card .feat-list .feat { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); }
+  .login-card .feat-list .feat::before { content: '✓'; color: #16a34a; font-weight: 700; }
+  .login-card .btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .login-card .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(74,158,255,0.35); }
+  .login-card .btn.secondary { background: #fff; color: #6d28d9; border: 1.5px solid #c4b5fd; }
+  .login-card .btn.secondary:hover { background: #f5f3ff; border-color: #8b5cf6; }
+
+  /* 数据库直连 */
+  .db-list { display: flex; flex-direction: column; gap: 10px; }
+  .db-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #fafcff, #f0f9ff);
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    transition: .2s;
+  }
+  .db-item:hover { border-color: var(--sky); transform: translateX(2px); }
+  .db-item .logo {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: Georgia, serif;
+    flex-shrink: 0;
+  }
+  .db-item .logo.green { background: linear-gradient(135deg, #10b981, #047857); }
+  .db-item .logo.purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
+  .db-item .logo.orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+  .db-item .logo.cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+  .db-item .info { flex: 1; }
+  .db-item .name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .db-item .meta { font-size: 11.5px; color: var(--text-3); margin-top: 3px; }
+  .db-item .badge { font-size: 11px; padding: 2px 8px; background: #ecfdf5; color: #15803d; border-radius: 10px; margin-left: 6px; }
+  .db-item .btn {
+    padding: 7px 14px;
+    background: #fff;
+    border: 1px solid var(--sky);
+    color: var(--primary);
+    border-radius: 6px;
+    font-size: 12.5px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  /* 步骤 */
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .step-item {
+    background: linear-gradient(135deg, #fafcff, #f5f9ff);
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    position: relative;
+  }
+  .step-item .num {
+    position: absolute;
+    top: 12px; left: 12px;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, var(--primary), var(--sky));
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .step-item .ico {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #dbeafe, #93c5fd);
+    color: var(--primary);
+    border-radius: 50%;
+    margin: 4px auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .step-item .name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .step-item .desc { font-size: 11.5px; color: var(--text-3); line-height: 1.6; }
+
+  /* FAQ */
+  .faq-list { display: flex; flex-direction: column; gap: 10px; }
+  .faq-item {
+    padding: 14px 16px;
+    background: var(--bg-page);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .faq-item:hover { background: rgba(74,158,255,0.05); }
+  .faq-item .q {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13.5px; font-weight: 600; color: var(--text);
+  }
+  .faq-item .q::before {
+    content: 'Q';
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--sky), var(--primary));
+    color: #fff;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .faq-item .q .arrow { margin-left: auto; color: var(--text-3); transition: .2s; }
+  .faq-item.open .q .arrow { transform: rotate(180deg); }
+  .faq-item .a {
+    display: none;
+    margin-top: 10px;
+    padding-left: 32px;
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.8;
+  }
+  .faq-item .a::before {
+    content: 'A';
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, #16a34a, #059669);
+    color: #fff;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .faq-item.open .a { display: block; }
+
+  /* 右侧 */
+  .side-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .side-card h4 { font-size: 15px; color: var(--text); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .side-card h4::before { content: ''; width: 3px; height: 14px; background: linear-gradient(180deg, var(--primary), var(--sky)); border-radius: 2px; }
+
+  .info-list { display: flex; flex-direction: column; gap: 10px; }
+  .info-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-page);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .info-row .ico { width: 28px; height: 28px; background: #fff; border: 1px solid var(--border); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .info-row .label { color: var(--text-3); font-size: 12px; min-width: 60px; }
+  .info-row .value { color: var(--text); font-weight: 500; flex: 1; font-size: 12.5px; }
+  .info-row .value.mono { font-family: ui-monospace, monospace; font-size: 12px; }
+
+  .status-card {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .status-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .status-row .pulse { width: 10px; height: 10px; background: #16a34a; border-radius: 50%; box-shadow: 0 0 0 4px rgba(22,163,74,0.2); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(22,163,74,0.2); } 50% { box-shadow: 0 0 0 8px rgba(22,163,74,0); } }
+  .status-row .t { font-size: 14px; font-weight: 600; color: #15803d; }
+  .status-list { display: flex; flex-direction: column; gap: 6px; }
+  .status-list .item { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12.5px; color: var(--text-2); border-bottom: 1px dashed #bbf7d0; }
+  .status-list .item:last-child { border-bottom: none; }
+  .status-list .item .n { color: #15803d; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* 提示 */
+  .notice-card {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-left: 3px solid var(--warning); border-radius: 10px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 16px;
+  }
+  .notice-card .ico { font-size: 22px; }
+  .notice-card .text { flex: 1; font-size: 12.5px; color: #92400e; line-height: 1.7; }
+  .notice-card .text b { color: #b45309; }
+
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e293b; color: #fff;
+    padding: 10px 22px; border-radius: 9px;
+    font-size: 13.5px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.28);
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1240px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .login-grid { grid-template-columns: 1fr; }
+    .step-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+    <div>
+      <a href="首页.html">学校首页</a>
+      <a href="#">读者协会</a>
+      <a href="#">志愿服务</a>
+      <a href="#">English</a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="#">馆藏检索</a>
+      <a href="#">电子资源</a>
+      <a href="#">空间预约</a>
+      <a href="#" class="active">读者服务</a>
+      <a href="#">信息素养</a>
+      <a href="#">捐赠/荐购</a>
+    </nav>
+    <div class="user-area">
+      <button class="notif-btn">🔔<span class="badge"></span></button>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="首页.html">首页</a>
+    <span class="sep">›</span>
+    <a href="#">读者服务</a>
+    <span class="sep">›</span>
+    <a href="#">帮助中心</a>
+    <span class="sep">›</span>
+    <span class="current">校外访问 / VPN 入口</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="row">
+      <div class="ico">🌐</div>
+      <div style="flex:1;">
+        <h1>校外访问 / VPN 入口</h1>
+        <p class="desc">在校外（家 / 宿舍 / 出差）访问图书馆电子资源，请使用以下任一方式进行身份认证。所有访问均通过统一身份认证，账号异常时请先在账号中心核查。</p>
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="hero-stat"><div class="n">2</div><div class="l">访问方式</div></div>
+      <div class="hero-stat"><div class="n">16</div><div class="l">数据库直连</div></div>
+      <div class="hero-stat"><div class="n">98.5%</div><div class="l">可用率</div></div>
+      <div class="hero-stat"><div class="n">8,200+</div><div class="l">日访问人次</div></div>
+      <div class="hero-stat"><div class="n">24/7</div><div class="l">在线服务</div></div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 左侧 -->
+    <div class="left-col">
+
+      <!-- 登录入口 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>登录入口 · 任选其一</h3>
+          <span style="font-size:12.5px;color:var(--text-3);">建议优先使用 <b style="color:#1677ff;">WebVPN</b>，覆盖全资源</span>
+        </div>
+        <div class="card-body">
+          <div class="login-grid">
+
+            <div class="login-card featured">
+              <span class="badge-top">★ 推荐</span>
+              <div class="ico web">🌐</div>
+              <div class="name">WebVPN 统一身份认证</div>
+              <div class="sub">WebVPN · 全资源覆盖</div>
+              <div class="desc">通过学校 WebVPN 门户登录后，可访问图书馆全部电子资源，包括 CNKI、万方、维普、读秀、超星等所有数据库。</div>
+              <div class="feat-list">
+                <div class="feat">覆盖全部 16 个数据库</div>
+                <div class="feat">浏览器插件，无需客户端</div>
+                <div class="feat">支持 PC / 手机 / Pad</div>
+                <div class="feat">访问日志可追溯</div>
+              </div>
+              <button class="btn" onclick="openWebVPN()">🚀 立即登录 WebVPN</button>
+            </div>
+
+            <div class="login-card">
+              <div class="ico carsi">🔐</div>
+              <div class="name">CARSI 联邦认证</div>
+              <div class="sub">CARSI · 学术直连</div>
+              <div class="desc">在数据库页面选择"机构登录"，搜索学校名称并通过统一身份认证登录，无需 VPN，适合特定数据库直连访问。</div>
+              <div class="feat-list">
+                <div class="feat">支持 100+ 数据库</div>
+                <div class="feat">无需安装客户端</div>
+                <div class="feat">原网站访问体验</div>
+                <div class="feat">学校身份直接登录</div>
+              </div>
+              <button class="btn secondary" onclick="openCARSI()">🔗 进入 CARSI 登录</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 数据库直连 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>数据库直连 · CARSI 认证</h3>
+          <a class="more">查看全部 16 个数据库 ›</a>
+        </div>
+        <div class="card-body">
+          <div class="db-list">
+            <div class="db-item">
+              <div class="logo">CN</div>
+              <div class="info">
+                <div class="name">中国知网 <span class="badge">已支持</span></div>
+                <div class="meta">CNKI · 期刊论文 / 学位论文 / 会议论文</div>
+              </div>
+              <button class="btn" onclick="toast('正在跳转中国知网...')">直达</button>
+            </div>
+            <div class="db-item">
+              <div class="logo green">WF</div>
+              <div class="info">
+                <div class="name">万方数据 <span class="badge">已支持</span></div>
+                <div class="meta">WanFang · 期刊 / 学位 / 会议 / 专利</div>
+              </div>
+              <button class="btn" onclick="toast('正在跳转万方数据...')">直达</button>
+            </div>
+            <div class="db-item">
+              <div class="logo purple">VP</div>
+              <div class="info">
+                <div class="name">维普资讯 <span class="badge">已支持</span></div>
+                <div class="meta">VIP · 中文科技期刊数据库</div>
+              </div>
+              <button class="btn" onclick="toast('正在跳转维普资讯...')">直达</button>
+            </div>
+            <div class="db-item">
+              <div class="logo orange">超</div>
+              <div class="info">
+                <div class="name">超星电子书 <span class="badge">已支持</span></div>
+                <div class="meta">Chaoxing · 电子图书 / 学术视频</div>
+              </div>
+              <button class="btn" onclick="toast('正在跳转超星...')">直达</button>
+            </div>
+            <div class="db-item">
+              <div class="logo cyan">DX</div>
+              <div class="info">
+                <div class="name">读秀学术搜索 <span class="badge">已支持</span></div>
+                <div class="meta">Duxiu · 学术搜索 / 文献传递</div>
+              </div>
+              <button class="btn" onclick="toast('正在跳转读秀...')">直达</button>
+            </div>
+            <div class="db-item">
+              <div class="logo">BK</div>
+              <div class="info">
+                <div class="name">博看期刊 <span class="badge">已支持</span></div>
+                <div class="meta">Bokan · 期刊 / 杂志</div>
+              </div>
+              <button class="btn" onclick="toast('正在跳转博看期刊...')">直达</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 使用步骤 -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>使用步骤 · WebVPN 为例</h3>
+ </div>
+        <div class="card-body">
+          <div class="step-grid">
+            <div class="step-item">
+              <div class="num">1</div>
+              <div class="ico">🔗</div>
+              <div class="name">打开入口</div>
+              <div class="desc">点击上方"立即登录 WebVPN"按钮</div>
+            </div>
+            <div class="step-item">
+              <div class="num">2</div>
+              <div class="ico">🔐</div>
+              <div class="name">身份认证</div>
+              <div class="desc">使用学号 / 工号 + 统一密码登录</div>
+            </div>
+            <div class="step-item">
+              <div class="num">3</div>
+              <div class="ico">📚</div>
+              <div class="name">访问资源</div>
+              <div class="desc">在校生可访问全部数据库</div>
+            </div>
+            <div class="step-item">
+              <div class="num">4</div>
+              <div class="ico">🚪</div>
+              <div class="name">退出登录</div>
+              <div class="desc">使用完毕请正常退出账号</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="card">
+        <div class="card-head">
+          <h3><span class="dot"></span>常见问题 · FAQ</h3>
+        </div>
+        <div class="card-body">
+          <div class="faq-list">
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+              <div class="q">登录提示"账号或密码错误"怎么办？<span class="arrow">▾</span></div>
+              <div class="a">请先在统一身份认证中心核对账号密码（学校 OA / 教务系统同账号）。如忘记密码，请点击登录页"忘记密码"链接自助重置，或携带证件至<b>网络信息中心（行政楼 305）</b> 重置。</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+              <div class="q">登录成功后还是无法访问数据库？<span class="arrow">▾</span></div>
+              <div class="a">请按顺序排查：① 清除浏览器缓存与 Cookie 重新登录；② 更换 Chrome / Edge 浏览器；③ 关闭浏览器代理插件；④ 确认校园账号状态正常。如仍无法访问，请联系技术热线 <b>0000-1234569</b>。</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+              <div class="q">WebVPN 与 CARSI有什么区别？<span class="arrow">▾</span></div>
+              <div class="a"><b>WebVPN：</b>通用方案，登录后通过校内网关访问所有资源，适合检索、下载等综合场景；<b>CARSI：</b>联邦认证，无需 VPN 直接原站访问，体验更原生，适合特定数据库使用。</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+              <div class="q">毕业生 / 校友还能访问吗？<span class="arrow">▾</span></div>
+              <div class="a">应届毕业生毕业后 1 年内保留访问权限。如已毕业，可办理校友卡（每年 50 元）继续使用部分资源。详情请咨询校友会办公室。</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+              <div class="q">在校内访问需要使用 VPN 吗？<span class="arrow">▾</span></div>
+              <div class="a">不需要。在校内（连接校园网或信航 WiFi）可直接访问所有数据库，无需任何认证。WebVPN / CARSI 仅限校外使用。</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+              <div class="q">下载全文提示"权限不足"怎么办？<span class="arrow">▾</span></div>
+              <div class="a">可能因访问并发数超限（数据库对单 IP 的并发数有限制），请等待 5-10 分钟后重试；如持续报错请联系图书馆技术部处理。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-col">
+
+      <!-- 服务状态 -->
+      <div class="status-card">
+        <div class="status-row">
+          <div class="pulse"></div>
+          <div class="t">🟢 所有服务正常</div>
+        </div>
+        <div class="status-list">
+          <div class="item"><span>WebVPN 网关</span><span class="n">正常</span></div>
+          <div class="item"><span>CARSI 联邦认证</span><span class="n">正常</span></div>
+          <div class="item"><span>CNKI 中国知网</span><span class="n">正常</span></div>
+          <div class="item"><span>万方 / 维普</span><span class="n">正常</span></div>
+          <div class="item"><span>读秀 / 超星</span><span class="n">正常</span></div>
+          <div class="item"><span>上次故障</span><span class="n">15 天前</span></div>
+        </div>
+      </div>
+
+      <!-- 账号信息 -->
+      <div class="side-card">
+        <h4>👤 我的账号</h4>
+        <div class="info-list">
+          <div class="info-row"><div class="ico">🎓</div><span class="label">账号类型</span><span class="value">在校学生</span></div>
+          <div class="info-row"><div class="ico">🆔</div><span class="label">学　号</span><span class="value mono">2022010301</span></div>
+          <div class="info-row"><div class="ico">📚</div><span class="label">院　　系</span><span class="value">计算机科学与技术</span></div>
+          <div class="info-row"><div class="ico">📅</div><span class="label">有效期至</span><span class="value">2026-07-31</span></div>
+          <div class="info-row"><div class="ico">✅</div><span class="label">账号状态</span><span class="value" style="color:#16a34a;">正常</span></div>
+        </div>
+        <div style="margin-top:14px;">
+          <button style="width:100%;padding:9px 0;background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;">修改密码</button>
+        </div>
+      </div>
+
+      <!-- 技术支持 -->
+      <div class="side-card">
+        <h4>📞 技术支持</h4>
+        <div class="info-list">
+          <div class="info-row"><div class="ico">📞</div><span class="label">服务热线</span><span class="value mono">0000-1234569</span></div>
+          <div class="info-row"><div class="ico">📧</div><span class="label">技术支持邮箱</span><span class="value" style="font-size:12px;">tech@xihang.edu.cn</span></div>
+          <div class="info-row"><div class="ico">💬</div><span class="label">在线客服</span><span class="value" style="color:var(--primary);font-size:12.5px;">点击咨询 ›</span></div>
+          <div class="info-row"><div class="ico">⏰</div><span class="label">服务时间</span><span class="value">工作日 8:00-22:00</span></div>
+          <div class="info-row"><div class="ico">📍</div><span class="label">现场支持</span><span class="value" style="font-size:12.5px;">网信中心 305</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 提示 -->
+  <div class="notice-card">
+    <span class="ico">⚠️</span>
+    <div class="text">
+      <b>合规使用提示：</b> 校外访问账号 <b>严禁借给他人使用</b>，一经发现将冻结账号并按违规处理。所有访问行为均被记录，请合规使用。如发现账号异常或被冒用，请立即拨打 <b>0000-1234569</b> 挂失。
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+  function openWebVPN() { toast('正在打开 WebVPN 登录页...'); }
+  function openCARSI() { toast('正在跳转到 CARSI 联邦认证...'); }
+</script>
+
+</body>
+</html>

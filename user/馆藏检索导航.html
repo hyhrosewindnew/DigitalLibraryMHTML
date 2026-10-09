@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>馆藏检索 - 信阳航空职业学院 · 数字图书馆</title>
+
+  <style>
+    /* ============ 重置 ============ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    a { text-decoration: none; color: inherit; }
+    ul, li { list-style: none; }
+    button, input, select { font-family: inherit; }
+    button { border: 0; cursor: pointer; }
+
+    /* ============ 主题变量（与现有页面保持一致） ============ */
+    :root {
+      --primary: #0d3b66;
+      --primary-light: #1a5a96;
+      --sky: #4a9eff;
+      --accent: #f4a261;
+      --gold: #ffc857;
+      --bg-page: #f2f3f5;
+      --surface: #ffffff;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+      --border-light: #eef2f7;
+      --max-w: 1440px;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      color: var(--text);
+      background: var(--bg-page);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ============ 外壳（与现有页面完全一致） ============ */
+    .top-bar {
+      width: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      font-size: 13px;
+      padding: 8px 0;
+    }
+    .top-bar-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-bar a {
+      margin-left: 14px;
+      color: #fff;
+      transition: .2s;
+    }
+    .top-bar a:hover { color: var(--gold); }
+
+    .header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(13,59,102,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 30px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 14px; }
+    .logo .icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+      border-radius: 12px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 6px 16px rgba(74,158,255,0.3);
+    }
+    .logo .text h1 {
+      font-size: 21px;
+      color: var(--primary);
+      margin-bottom: 3px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .logo .text p {
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .nav { display: flex; gap: 8px; }
+    .nav a {
+      font-size: 15px;
+      color: var(--text);
+      padding: 10px 18px;
+      position: relative;
+      transition: .25s;
+      font-weight: 500;
+      border-radius: 8px;
+    }
+    .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+    .nav a.active {
+      color: var(--primary);
+      background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(74,158,255,0.06) 100%);
+    }
+    .nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px; height: 3px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--sky) 100%);
+      border-radius: 2px;
+    }
+    .user-area { display: flex; align-items: center; gap: 14px; }
+    .notif-btn {
+      position: relative;
+      background: var(--bg-page);
+      border: none;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 18px;
+    }
+    .notif-btn .badge {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+    .avatar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 10px 4px 4px;
+      border-radius: 30px;
+    }
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #4a9eff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 15px;
+      box-shadow: 0 2px 10px rgba(139,92,246,0.35);
+    }
+    .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+    /* ============ 主体内容 ============ */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 24px 30px 60px;
+    }
+
+    /* 面包屑 */
+    .breadcrumb {
+      padding: 18px 0 14px;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+    .breadcrumb a { color: var(--text-2); transition: .2s; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb .sep { margin: 0 8px; color: var(--text-3); }
+    .breadcrumb .current { color: var(--text); font-weight: 500; }
+
+    /* 页面标题 */
+    .page-title {
+      margin-bottom: 18px;
+    }
+    .page-title h2 {
+      font-size: 22px;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .page-title p {
+      font-size: 13.5px;
+      color: var(--text-3);
+      line-height: 1.7;
+    }
+
+    /* 检索主框 */
+    .search-card {
+      background: linear-gradient(135deg, #0a2d52 0%, #1a5a96 50%, #4a9eff 100%);
+      border-radius: 14px;
+      padding: 30px 36px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 28px rgba(13,59,102,0.14);
+    }
+    .search-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0, transparent 35%),
+        radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.1) 0, transparent 40%);
+      pointer-events: none;
+    }
+    .search-card h3 {
+      position: relative;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-row {
+      position: relative;
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+    }
+    .search-row select {
+      width: 150px;
+      height: 50px;
+      padding: 0 14px;
+      border: none;
+      border-right: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23909399' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 28px;
+    }
+    .search-row input {
+      flex: 1;
+      min-width: 0;
+      height: 50px;
+      padding: 0 16px;
+      border: none;
+      outline: none;
+      font-size: 14.5px;
+      color: var(--text);
+    }
+    .search-row input::placeholder { color: var(--text-3); }
+    .search-row button {
+      width: 120px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+      color: #fff;
+      font-size: 14.5px;
+      font-weight: 600;
+      transition: .2s;
+    }
+    .search-row button:hover { transform: translateY(-1px); }
+
+    .search-tips {
+      position: relative;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.85);
+    }
+    .search-tips .label { opacity: .85; }
+    .search-tips a {
+      padding: 3px 11px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      transition: .2s;
+    }
+    .search-tips a:hover { background: rgba(255,255,255,0.3); }
+
+    /* 高级检索入口 */
+    .advanced-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .advanced-row .copy {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .advanced-row .icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, rgba(74,158,255,0.12) 0%, rgba(13,59,102,0.05) 100%);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .advanced-row h4 {
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .advanced-row p {
+      font-size: 12.5px;
+      color: var(--text-3);
+      line-height: 1.6;
+    }
+    .advanced-row .btn {
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: .2s;
+      box-shadow: 0 4px 12px rgba(74,158,255,0.25);
+      white-space: nowrap;
+    }
+    .advanced-row .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(74,158,255,0.35); }
+
+    /* 内容区 */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-head h3 {
+      font-size: 15.5px;
+      color: var(--text);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-head h3::before {
+      content: '';
+      width: 3px;
+      height: 15px;
+      background: linear-gradient(180deg, var(--primary), var(--sky));
+      border-radius: 2px;
+    }
+    .panel-head .more {
+      font-size: 12.5px;
+      color: var(--text-3);
+      transition: .2s;
+    }
+    .panel-head .more:hover { color: var(--primary); }
+    .panel-body { padding: 18px 22px; }
+
+    /* 分类浏览 */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .cat-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .cat-item:hover {
+      border-color: var(--sky);
+      background: rgba(74,158,255,0.04);
+      transform: translateY(-1px);
+    }
+    .cat-item .name {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .cat-item .code {
+      width: 28px;
+      height: 28px;
+      background: rgba(74,158,255,0.1);
+      color: var(--primary);
+      border-radius: 6px;
+      font-family: "SF Mono", Consolas, monospace;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cat-item .label { font-size: 13px; color: var(--text); font-weight: 500; }
+    .cat-item .count { font-size: 11px; color: var(--text-3); }
+
+    /* 馆藏地点 */
+    .loc-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px dashed var(--border);
+      cursor: pointer;
+      transition: .2s;
+    }
+    .loc-list li:last-child { border-bottom: 0; }
+    .loc-list li:hover .loc-name { color: var(--primary); }
+    .loc-list .loc-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .loc-list .loc-ico {
+      width: 32px;
+      height: 32px;
+      background: rgba(74,158,255,0.1);
+      color: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .loc-list .loc-meta {
+      font-size: 11.5px;
+      color: var(--text-3);
+    }
+    .loc-list .arrow {
+      color: var(--text-3);
+      font-size: 12px;
+      transition: .2s;
+    }
+    .loc-list li:hover .arrow { color: var(--sky); }
+
+    /* 页脚 */
+    .footer {
+      background: linear-gradient(135deg, #0a2d52 0%, #0d3b66 100%);
+      color: #b0b8c8;
+      margin-top: 40px;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 12.5px;
+    }
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    @media (max-width: 1240px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 外壳（与现有页面一致） ============ -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+      <div>
+        <a href="#">学校首页</a>
+        <a href="#">读者协会</a>
+        <a href="#">志愿服务</a>
+        <a href="#">English</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="首页.html">
+        <div class="icon">📚</div>
+        <div class="text">
+          <h1>信阳航空职业学院</h1>
+          <p>Digital Library · 飞阅书海 · 启智天路</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="首页.html">首页</a>
+        <a href="馆藏检索.html" class="active">馆藏检索</a>
+        <a href="#">电子资源</a>
+        <a href="#">空间预约</a>
+        <a href="#">读者服务</a>
+        <a href="#">信息素养</a>
+        <a href="#">捐赠/荐购</a>
+      </nav>
+      <div class="user-area">
+        <button class="notif-btn" title="消息通知">🔔<span class="badge"></span></button>
+        <div class="avatar-wrap">
+          <div class="avatar">陈</div>
+          <span class="avatar-name">陈思远</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 主体内容 ============ -->
+  <div class="container">
+
+    <div class="breadcrumb">
+      <a href="首页.html">首页</a>
+      <span class="sep">›</span>
+      <span class="current">馆藏检索</span>
+    </div>
+
+    <div class="page-title">
+      <h2>馆藏检索</h2>
+      <p>检索本馆中外文图书及馆藏信息，支持书名、作者、ISBN、主题词和分类号检索。</p>
+    </div>
+
+    <!-- 检索主框 -->
+    <div class="search-card">
+      <h3>🔍 一站式知识检索</h3>
+
+      <form class="search-row" id="searchForm">
+        <select id="fieldSelect">
+          <option value="all">全部字段</option>
+          <option value="title">书名</option>
+          <option value="author">作者</option>
+          <option value="isbn">ISBN</option>
+          <option value="subject">主题词</option>
+          <option value="classify">分类号</option>
+          <option value="publisher">出版社</option>
+        </select>
+
+        <input
+          type="text"
+          id="keywordInput"
+          placeholder="请输入书名 / 作者 / ISBN / 关键词"
+        >
+
+        <button type="submit">检 索</button>
+      </form>
+
+      <div class="search-tips">
+        <span class="label">热门检索：</span>
+        <a href="#" data-keyword="航空发动机">航空发动机</a>
+        <a href="#" data-keyword="无人机">无人机</a>
+        <a href="#" data-keyword="数控车床">数控车床</a>
+        <a href="#" data-keyword="空中乘务">空中乘务</a>
+        <a href="#" data-keyword="民航英语">民航英语</a>
+      </div>
+    </div>
+
+    <!-- 高级检索入口 -->
+    <div class="advanced-row">
+      <div class="copy">
+        <div class="icon">⚙</div>
+        <div>
+          <h4>需要更精确地查找资源？</h4>
+          <p>使用题名、作者、ISBN、出版社、出版年、馆藏状态等条件进行组合检索。</p>
+        </div>
+      </div>
+      <a class="btn" href="高级检索.html">进入高级检索 →</a>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="content-grid">
+
+      <!-- 分类浏览 -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>分类浏览</h3>
+          <a class="more" href="馆藏检索结果.html">查看全部 ›</a>
+        </div>
+        <div class="panel-body">
+          <div class="cat-grid">
+            <a class="cat-item" href="馆藏检索结果.html?keyword=V">
+              <span class="name">
+                <span class="code">V</span>
+                <span class="label">航空、航天</span>
+              </span>
+              <span class="count">6.8万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=T">
+              <span class="name">
+                <span class="code">T</span>
+                <span class="label">工业技术</span>
+              </span>
+              <span class="count">8.6万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=U">
+              <span class="name">
+                <span class="code">U</span>
+                <span class="label">交通运输</span>
+              </span>
+              <span class="count">2.3万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=O">
+              <span class="name">
+                <span class="code">O</span>
+                <span class="label">数理科学</span>
+              </span>
+              <span class="count">6.1万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=I">
+              <span class="name">
+                <span class="code">I</span>
+                <span class="label">文学</span>
+              </span>
+              <span class="count">9.4万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=H">
+              <span class="name">
+                <span class="code">H</span>
+                <span class="label">语言、文字</span>
+              </span>
+              <span class="count">5.7万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=G">
+              <span class="name">
+                <span class="code">G</span>
+                <span class="label">文化、教育</span>
+              </span>
+              <span class="count">4.9万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=F">
+              <span class="name">
+                <span class="code">F</span>
+                <span class="label">经济</span>
+              </span>
+              <span class="count">3.8万册</span>
+            </a>
+
+            <a class="cat-item" href="馆藏检索结果.html?keyword=K">
+              <span class="name">
+                <span class="code">K</span>
+                <span class="label">历史、地理</span>
+              </span>
+              <span class="count">2.6万册</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 馆藏地点 -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>馆藏地点</h3>
+          <span class="more">总馆</span>
+        </div>
+        <div class="panel-body">
+          <ul class="loc-list">
+            <li onclick="searchByLocation('ZG-1F','中文图书')">
+              <span class="loc-name">
+                <span class="loc-ico">📚</span>
+                一层 · 中文图书借阅区
+              </span>
+              <span class="loc-meta">约 3.8 万册 <span class="arrow">›</span></span>
+            </li>
+            <li onclick="searchByLocation('ZG-2F','外文图书')">
+              <span class="loc-name">
+                <span class="loc-ico">🌐</span>
+                二层 · 外文书库
+              </span>
+              <span class="loc-meta">约 2.6 万册 <span class="arrow">›</span></span>
+            </li>
+            <li onclick="searchByLocation('ZG-3F','期刊')">
+              <span class="loc-name">
+                <span class="loc-ico">📰</span>
+                三层 · 期刊阅览区
+              </span>
+              <span class="loc-meta">800余种 <span class="arrow">›</span></span>
+            </li>
+            <li onclick="searchByLocation('ZG-4F','古籍')">
+              <span class="loc-name">
+                <span class="loc-ico">📜</span>
+                四层 · 古籍特藏室
+              </span>
+              <span class="loc-meta">需预约 <span class="arrow">›</span></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      © 2025 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('searchForm');
+    const fieldSelect = document.getElementById('fieldSelect');
+    const keywordInput = document.getElementById('keywordInput');
+
+    // 热门词点击
+    document.querySelectorAll('[data-keyword]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        keywordInput.value = this.dataset.keyword;
+        form.dispatchEvent(new Event('submit'));
+      });
+    });
+
+    // 表单提交
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const keyword = keywordInput.value.trim();
+      if (!keyword) {
+        keywordInput.focus();
+        return;
+      }
+      const params = new URLSearchParams({
+        keyword: keyword,
+        field: fieldSelect.value,
+        fieldName: fieldSelect.options[fieldSelect.selectedIndex].text
+      });
+      window.location.href = '馆藏检索结果.html?' + params.toString();
+    });
+
+    // 按馆藏地点
+    function searchByLocation(location, keyword) {
+      const params = new URLSearchParams({
+        keyword: keyword,
+        field: 'all',
+        location: location
+      });
+      window.location.href = '馆藏检索结果.html?' + params.toString();
+    }
+  </script>
+
+</body>
+</html>
