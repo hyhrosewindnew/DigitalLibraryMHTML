@@ -47,7 +47,6 @@
   --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
   --lib-sidebar-width: 248px;
   --lib-topbar-height: 64px;
-  /* Semantic aliases required by head contract */
   --lib-background: var(--lib-bg);
   --lib-foreground: var(--lib-ink);
   --lib-card: var(--lib-surface);
@@ -77,7 +76,7 @@ html, body {
 .fw-500 { font-weight: 500; }
 .fw-600 { font-weight: 600; }
 .tabular { font-variant-numeric: tabular-nums; }
-    </style>
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
 <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
 <style type="text/tailwindcss">
@@ -106,7 +105,7 @@ html, body {
     td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
     th { @apply whitespace-nowrap; }
   }
-    </style>
+</style>
 <style id="semantic-token-fallback">
       .bg-background { background-color: var(--lib-background); }
       .text-background { color: var(--lib-background); }
@@ -171,7 +170,7 @@ html, body {
       table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
       table tbody tr:last-child { border-bottom: none !important; }
       table thead { border-bottom: 1px solid var(--lib-line) !important; }
-    </style>
+</style>
 <style>
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -187,7 +186,7 @@ html, body {
         mask-position: center;
         background-color: currentColor;
       }
-    </style>
+</style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     /* 参考设计 - 消息通知 */
@@ -389,6 +388,8 @@ html, body {
   .tag-orange { background: #fff2e3; color: #c26a05; }
   .tag-indigo { background: #eceefb; color: #4f56c9; }
   .tag-green  { background: #e6f7ee; color: #15803d; }
+  .tag-gray   { background: #f3f4f6; color: #6b7280; }
+  .tag-red    { background: #fef0f0; color: #e5484d; }
 
   /* 渠道 */
   .channels { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -690,6 +691,15 @@ html, body {
     z-index: 9999;
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* [新增] 用户选择与费用提示 */
+  .user-select-box {
+    display: flex; align-items: center; gap: 10px; margin-top: 8px;
+  }
+  .cost-tip {
+    font-size: 12.5px; color: #c26a05; background: #fff2e3; padding: 6px 12px;
+    border-radius: 6px; margin-top: 8px; display: none; border: 1px solid #ffe0b2;
+  }
   </style>
 </head>
 <body>
@@ -755,6 +765,10 @@ html, body {
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="palette"></i><span>运营管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-banners" data-nav-key="banners" href="banners.html"><i class="h-4 w-4" data-lucide="gallery-horizontal-end"></i><span>首页跑马灯</span></a>
+</div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
@@ -763,9 +777,6 @@ html, body {
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
 </nav>
-
-
-
   </aside>
 
   <!-- 主内容区 -->
@@ -901,6 +912,7 @@ html, body {
                 <th style="min-width:300px">消息标题</th>
                 <th style="width:100px">类型</th>
                 <th style="width:110px">接收对象</th>
+                <th style="width:100px">触发方式</th> <!-- [新增] -->
                 <th style="width:170px">发送渠道</th>
                 <th style="width:100px">状态</th>
                 <th style="width:150px">送达 / 已读</th>
@@ -952,6 +964,11 @@ html, body {
             <option>教职工</option>
             <option>指定用户</option>
           </select>
+          <!-- [新增] 选择指定用户按钮 -->
+          <div class="user-select-box" id="userSelectBox" style="display: none;">
+            <button class="btn btn-default btn-sm" onclick="alert('原型演示：这里会弹出选择读者的弹窗')">选择用户</button>
+            <span class="form-tip" style="margin: 0;">已选 0 人</span>
+          </div>
         </div>
       </div>
 
@@ -963,12 +980,14 @@ html, body {
           <label><input type="checkbox" class="fChannel" value="短信" /> 短信</label>
           <label><input type="checkbox" class="fChannel" value="微信" /> 微信服务号</label>
         </div>
+        <!-- [新增] 短信费用提示 -->
+        <div class="cost-tip" id="costTip">⚠️ 您勾选了「短信」渠道，按当前接收对象（预估 12,480 人），预计将消耗 12,480 条短信（约 124.8 元）。</div>
       </div>
 
       <div class="form-item">
         <label>跳转链接</label>
-        <input class="input" id="fLink" placeholder="选填，如 /reader/borrow 或 https://..." />
-        <div class="form-tip">读者点击消息后将跳转到该地址，留空则仅展示文本内容。</div>
+        <input class="input" id="fLink" placeholder="选填，如填写公告ID /reader/borrow 或 https://..." />
+        <div class="form-tip">填写公告ID会跳转至对应公告详情；填写URL会打开外部网页；留空则仅展示文本内容。</div>
       </div>
 
       <div class="form-item">
@@ -1114,7 +1133,7 @@ html, body {
   </style>
   <script>
 /* =========================================================
- *  常量与数据
+ *  常量与数据（原封不动，仅追加 triggerType 和 fail 字段）
  * ========================================================= */
 const TYPE_CLASS = {
   '借阅提醒': 'tag-blue',
@@ -1140,6 +1159,7 @@ const state = {
       channels: ['站内信', '邮件'],
       status: '已发送', sendTime: '2025-09-26 08:00',
       sent: 32, read: 28, link: '/reader/borrow',
+      triggerType: '自动', fail: 0,
       content: '{{读者姓名}} 同学，您好：\n\n您借阅的《{{图书名称}}》将于 {{应还日期}} 到期，请及时归还或办理续借，以免产生逾期费用。\n\n图书馆'
     },
     {
@@ -1148,6 +1168,7 @@ const state = {
       channels: ['站内信', '短信'],
       status: '已发送', sendTime: '2025-09-25 15:30',
       sent: 18, read: 17, link: '/reader/reserve',
+      triggerType: '自动', fail: 0,
       content: '{{读者姓名}} 同学，您好：\n\n您预约的《{{图书名称}}》已到馆，请携带校园卡于 3 日内到 {{取书地点}} 取书，逾期预约将自动取消。\n\n图书馆'
     },
     {
@@ -1156,6 +1177,7 @@ const state = {
       channels: ['站内信', '邮件', '短信'],
       status: '已发送', sendTime: '2025-09-24 09:15',
       sent: 7, read: 6, link: '/reader/borrow',
+      triggerType: '自动', fail: 0,
       content: '{{读者姓名}} 同学，您好：\n\n您借阅的《{{图书名称}}》已逾期 {{逾期天数}} 天，请尽快归还并到一楼服务台处理滞纳金。\n\n图书馆'
     },
     {
@@ -1164,6 +1186,7 @@ const state = {
       channels: ['站内信', '微信'],
       status: '已发送', sendTime: '2025-09-25 10:35',
       sent: 12480, read: 9124, link: '/notice/1',
+      triggerType: '手动', fail: 0,
       content: '各位读者：\n\n10月1日—10月7日全馆闭馆，数字图书馆线上服务正常；10月8日起恢复 08:00—22:00。\n\n图书馆'
     },
     {
@@ -1172,6 +1195,7 @@ const state = {
       channels: ['站内信'],
       status: '已发送', sendTime: '2025-09-15 09:05',
       sent: 12480, read: 7360, link: '/notice/3',
+      triggerType: '手动', fail: 0,
       content: '各位读者：\n\n“书香校园·秋季读书月”系列活动现已开启报名，包含读书分享会、经典诵读大赛等 6 项活动，欢迎踊跃参与。\n\n图书馆'
     },
     {
@@ -1180,6 +1204,7 @@ const state = {
       channels: ['站内信', '邮件'],
       status: '已发送', sendTime: '2025-09-22 16:40',
       sent: 1, read: 1, link: '/reader/document',
+      triggerType: '自动', fail: 0,
       content: '{{读者姓名}} 老师，您好：\n\n您提交的文献传递申请已通过审核，请登录系统下载全文，链接 7 日内有效。\n\n图书馆'
     },
     {
@@ -1188,6 +1213,7 @@ const state = {
       channels: ['站内信', '微信'],
       status: '发送中', sendTime: '2025-09-28 09:00',
       sent: 8320, read: 1240, link: '/notice/12',
+      triggerType: '手动', fail: 0,
       content: '各位新同学：\n\n完成入馆教育并通过测试后，图书借阅权限已自动开通，可借图书 10 册，借期 30 天。\n\n图书馆'
     },
     {
@@ -1196,6 +1222,7 @@ const state = {
       channels: ['站内信', '邮件'],
       status: '草稿', sendTime: '',
       sent: 0, read: 0, link: '/notice/6',
+      triggerType: '手动', fail: 0,
       content: '（草稿，待补充新版 WebVPN 操作截图后发送）'
     },
     {
@@ -1204,6 +1231,7 @@ const state = {
       channels: ['站内信'],
       status: '已发送', sendTime: '2025-09-20 08:00',
       sent: 46, read: 39, link: '/reader/borrow',
+      triggerType: '自动', fail: 0,
       content: '{{读者姓名}} 同学，您好：\n\n您有 2 本图书将于 {{应还日期}} 到期，请及时办理续借或归还。\n\n图书馆'
     },
     {
@@ -1212,6 +1240,7 @@ const state = {
       channels: ['站内信', '微信'],
       status: '已发送', sendTime: '2025-08-12 10:20',
       sent: 3150, read: 1870, link: '/notice/10',
+      triggerType: '手动', fail: 0,
       content: '各位研究生同学：\n\n知网研学平台现已开通试用，支持文献管理、在线笔记与写作辅助，试用期至 2025年12月31日。\n\n图书馆'
     },
     {
@@ -1220,6 +1249,7 @@ const state = {
       channels: ['站内信'],
       status: '已撤回', sendTime: '2025-08-06 18:00',
       sent: 4100, read: 1560, link: '/notice/11',
+      triggerType: '手动', fail: 0,
       content: '各位读者：\n\n8月7日 07:00—09:00 自助借还机暂停使用，请移步一楼人工服务台办理。（该消息已撤回）'
     },
     {
@@ -1228,6 +1258,7 @@ const state = {
       channels: ['站内信', '邮件'],
       status: '已发送', sendTime: '2025-08-04 14:25',
       sent: 3, read: 3, link: '/reader/document',
+      triggerType: '自动', fail: 0,
       content: '{{读者姓名}} 同学，您好：\n\n您提交的文献传递申请未通过审核，原因：文献超出馆际互借范围。请补充信息后重新提交。\n\n图书馆'
     }
   ],
@@ -1346,6 +1377,7 @@ function rowHtml(m) {
   ops.push(`<button class="op danger" data-action="delete" data-id="${m.id}">删除</button>`);
 
   const sub = (m.content || '').replace(/\n/g, ' ').slice(0, 60);
+  const triggerTag = m.triggerType === '自动' ? '<span class="tag tag-purple">系统自动</span>' : '<span class="tag tag-gray">手动发送</span>';
 
   return `
     <tr>
@@ -1365,6 +1397,7 @@ function rowHtml(m) {
           <div style="font-size:11.5px;color:var(--text-3)">${esc(m.targetDesc)}</div>
         </div>
       </td>
+      <td>${triggerTag}</td> <!-- [新增] -->
       <td>${channelsHtml(m.channels)}</td>
       <td>${statusHtml(m.status)}</td>
       <td>${readCellHtml(m)}</td>
@@ -1385,7 +1418,7 @@ function render() {
   const tbody = $('tableBody');
   if (!rows.length) {
     tbody.innerHTML = `
-      <tr><td colspan="9">
+      <tr><td colspan="10">
         <div class="empty">
           <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
             <path d="M4 4h16v13H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/>
@@ -1458,7 +1491,7 @@ $('confirmOk').addEventListener('click', () => {
 });
 
 /* =========================================================
- *  表单（新建 / 编辑）
+ *  表单（新建 / 编辑）优化
  * ========================================================= */
 function getCheckedChannels() {
   return Array.from(document.querySelectorAll('.fChannel:checked')).map(c => c.value);
@@ -1466,6 +1499,30 @@ function getCheckedChannels() {
 
 function updateContentCount() {
   $('contentCount').textContent = $('fContent').value.length;
+}
+
+// [新增] 接收对象联动
+$('fTarget').addEventListener('change', function() {
+  $('userSelectBox').style.display = this.value === '指定用户' ? 'flex' : 'none';
+});
+
+// [新增] 渠道费用提示联动
+document.querySelectorAll('.fChannel').forEach(ch => {
+  ch.addEventListener('change', updateCostTip);
+});
+
+function updateCostTip() {
+  const channels = getCheckedChannels();
+  const target = $('fTarget').value;
+  const estimate = { '全部读者': 12480, '本科生': 8320, '研究生': 3150, '教职工': 1260, '指定用户': 20 };
+  const count = estimate[target] || 20;
+  
+  if (channels.includes('短信')) {
+    $('costTip').style.display = 'block';
+    $('costTip').textContent = `⚠️ 您勾选了「短信」渠道，按当前接收对象（预估 ${count.toLocaleString()} 人），预计将消耗 ${count.toLocaleString()} 条短信（约 ${(count * 0.01).toFixed(1)} 元）。`;
+  } else {
+    $('costTip').style.display = 'none';
+  }
 }
 
 // 发送时间切换
@@ -1523,6 +1580,10 @@ function openForm(item) {
   const isSent = item && item.status === '已发送';
   $('saveSendBtn').textContent = isSent ? '保存并重新发送' : '保存并发送';
 
+  // 触发联动
+  $('fTarget').dispatchEvent(new Event('change'));
+  updateCostTip();
+
   updateContentCount();
   openMask('formMask');
 }
@@ -1568,7 +1629,7 @@ $('saveDraftBtn').addEventListener('click', () => {
     toast('已保存为草稿');
   } else {
     const newId = state.list.length ? Math.max(...state.list.map(m => m.id)) + 1 : 1;
-    state.list.unshift(Object.assign({ id: newId, status: '草稿', sendTime: '', sent: 0, read: 0 }, data));
+    state.list.unshift(Object.assign({ id: newId, status: '草稿', sendTime: '', sent: 0, read: 0, triggerType: '手动', fail: 0 }, data));
     state.page = 1;
     toast('已保存为草稿');
   }
@@ -1576,40 +1637,51 @@ $('saveDraftBtn').addEventListener('click', () => {
   render();
 });
 
-// 保存并发送
+// 保存并发送（增加二次确认）
 $('saveSendBtn').addEventListener('click', () => {
   const data = collectForm();
   if (!data) return;
 
-  const isTiming = document.querySelector('input[name="fsend"]:checked').value === 'timing';
-  let sendTime = nowStr();
-  let status = '已发送';
-
-  if (isTiming) {
-    const t = $('fSendTime').value;
-    if (!t) { toast('请选择定时发送时间'); return; }
-    sendTime = t.replace('T', ' ');
-    status = '发送中';
-  }
-
-  // 模拟送达量
+  const channels = data.channels;
   const estimate = { '全部读者': 12480, '本科生': 8320, '研究生': 3150, '教职工': 1260, '指定用户': 20 };
-  const sent = status === '已发送' ? (estimate[data.target] || 20) : 0;
-  const read = status === '已发送' ? Math.round(sent * 0.72) : 0;
+  const count = estimate[data.target] || 20;
 
-  if (state.editingId) {
-    const item = state.list.find(m => m.id === state.editingId);
-    Object.assign(item, data, { status, sendTime, sent, read });
-    toast(status === '发送中' ? '已加入定时发送队列' : '消息已发送');
-  } else {
-    const newId = state.list.length ? Math.max(...state.list.map(m => m.id)) + 1 : 1;
-    state.list.unshift(Object.assign({ id: newId, status, sendTime, sent, read }, data));
-    state.page = 1;
-    toast(status === '发送中' ? '已加入定时发送队列' : '消息已发送');
+  let confirmMsg = `确定要发送消息「<b>${esc(data.title)}</b>」吗？<br>`;
+  confirmMsg += `接收对象：${esc(data.targetDesc)}<br>`;
+  confirmMsg += `发送渠道：${channels.join('、')}<br>`;
+  if (channels.includes('短信')) {
+    confirmMsg += `<span style="color:#e5484d">注意：包含短信渠道，预计将发送 ${count.toLocaleString()} 条短信，消耗约 ${(count * 0.01).toFixed(1)} 元。</span>`;
   }
 
-  closeMask('formMask');
-  render();
+  askConfirm(confirmMsg, () => {
+    const isTiming = document.querySelector('input[name="fsend"]:checked').value === 'timing';
+    let sendTime = nowStr();
+    let status = '已发送';
+
+    if (isTiming) {
+      const t = $('fSendTime').value;
+      if (!t) { toast('请选择定时发送时间'); return; }
+      sendTime = t.replace('T', ' ');
+      status = '发送中';
+    }
+
+    const sent = status === '已发送' ? (estimate[data.target] || 20) : 0;
+    const read = status === '已发送' ? Math.round(sent * 0.72) : 0;
+
+    if (state.editingId) {
+      const item = state.list.find(m => m.id === state.editingId);
+      Object.assign(item, data, { status, sendTime, sent, read });
+      toast(status === '发送中' ? '已加入定时发送队列' : '消息已发送');
+    } else {
+      const newId = state.list.length ? Math.max(...state.list.map(m => m.id)) + 1 : 1;
+      state.list.unshift(Object.assign({ id: newId, status, sendTime, sent, read, triggerType: '手动', fail: 0 }, data));
+      state.page = 1;
+      toast(status === '发送中' ? '已加入定时发送队列' : '消息已发送');
+    }
+
+    closeMask('formMask');
+    render();
+  });
 });
 
 /* =========================================================
@@ -1668,6 +1740,8 @@ $('tableBody').addEventListener('click', e => {
       copy.sendTime = '';
       copy.sent = 0;
       copy.read = 0;
+      copy.fail = 0;
+      copy.triggerType = '手动';
       state.list.unshift(copy);
       state.page = 1;
       toast('已复制为新草稿');
@@ -1718,24 +1792,29 @@ $('pager').addEventListener('click', e => {
 });
 
 /* =========================================================
- *  详情弹窗
+ *  详情弹窗（优化展示）
  * ========================================================= */
 function openView(m) {
   const sent = m.sent || 0;
   const read = m.read || 0;
+  const fail = m.fail || 0;
   const rate = sent ? Math.round((read / sent) * 100) : 0;
+
+  const triggerTag = m.triggerType === '自动' ? '<span class="tag tag-purple">系统自动触发</span>' : '<span class="tag tag-gray">管理员手动发送</span>';
 
   // 渠道明细（演示数据，按比例拆分）
   const chRows = m.channels.map((c, i) => {
     const ratio = [1, 0.85, 0.6, 0.4][i] || 0.5;
     const cSent = Math.round(sent * ratio);
     const cRead = Math.round(read * ratio);
+    const cFail = Math.round(fail * ratio);
     const cRate = cSent ? Math.round((cRead / cSent) * 100) : 0;
     return `
       <tr>
         <td>${esc(c)}</td>
         <td>${cSent.toLocaleString()}</td>
         <td>${cRead.toLocaleString()}</td>
+        <td>${cFail > 0 ? `<span style="color:#e5484d">${cFail}</span>` : '0'}</td>
         <td>${cRate}%</td>
       </tr>`;
   }).join('');
@@ -1744,6 +1823,7 @@ function openView(m) {
     <h2 class="view-title">${esc(m.title)}</h2>
     <div class="view-meta">
       <span class="tag ${TYPE_CLASS[m.type] || 'tag-blue'}">${esc(m.type)}</span>
+      ${triggerTag}
       ${statusHtml(m.status)}
       <span>接收对象：${esc(m.targetDesc)}</span>
       <span>发送时间：${m.sendTime || '—'}</span>
@@ -1772,7 +1852,7 @@ function openView(m) {
     <div class="detail-sub-title" style="margin-top:4px">渠道送达明细</div>
     <table class="ch-table">
       <thead>
-        <tr><th>渠道</th><th>送达</th><th>已读</th><th>已读率</th></tr>
+        <tr><th>渠道</th><th>送达</th><th>已读</th><th>失败</th><th>已读率</th></tr>
       </thead>
       <tbody>${chRows}</tbody>
     </table>
@@ -1842,4 +1922,3 @@ render();
   </script>
 </body>
 </html>
-

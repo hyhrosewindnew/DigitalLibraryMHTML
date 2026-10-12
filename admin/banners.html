@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>首页跑马灯 - 信航图书馆 管理后台</title>
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+</style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+</style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* 参考设计 - 首页跑马灯 */
+    body {
+      --primary:#1677ff; --primary-dark:#0e63e6;
+      --border:#eaeef4; --text:#1f2329; --text-2:#5a6474; --text-3:#8b95a5;
+      --bg:#f0f2f5; --radius:8px; --success:#52c41a; --warning:#faad14; --danger:#ff4d4f;
+    }
+    .content { padding: 20px 24px 32px; flex: 1; }
+
+  .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(16, 24, 40, .06); }
+
+  /* ---- 概览统计 ---- */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all .18s;
+  }
+  .stat-card:hover { box-shadow: 0 4px 12px rgba(16,24,40,.1); transform: translateY(-1px); }
+  .stat-card.active { border: 1.5px solid var(--primary); }
+  .stat-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .stat-icon.blue   { background: #e8f1ff; color: #1d6ee0; }
+  .stat-icon.green  { background: #e6f7ee; color: #15803d; }
+  .stat-icon.orange { background: #fff2e3; color: #c26a05; }
+  .stat-icon.gray   { background: #f1f3f7; color: #64748b; }
+  .stat-icon svg { width: 20px; height: 20px; }
+  .stat-meta b { display: block; font-size: 20px; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .stat-meta span { font-size: 12.5px; color: var(--text-3); }
+
+  /* ---- 筛选 ---- */
+  .filter-card { padding: 18px 20px 6px; margin-bottom: 16px; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 16px 20px; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 7px; padding-bottom: 12px; }
+  .field > label { font-size: 12.5px; color: var(--text-2); }
+  .filter-actions { display: flex; gap: 10px; padding-bottom: 12px; margin-left: auto; }
+
+  .input, .select {
+    height: 34px;
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--text-1);
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+    width: 100%;
+  }
+  .input::placeholder { color: #aab3c0; }
+  .input:focus, .select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22,119,255,.12);
+  }
+  .select { appearance: none; cursor: pointer; padding-right: 28px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a5' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  /* ---- 按钮 ---- */
+  .btn {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-default { background: #fff; border-color: #d8dee8; color: var(--text-1); }
+  .btn-default:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+  .btn-danger { background: #fff; border-color: #ffc4c6; color: #e5484d; }
+  .btn-danger:hover:not(:disabled) { background: #fff5f5; border-color: #e5484d; }
+  .btn-sm { height: 30px; padding: 0 12px; font-size: 12.5px; }
+
+  /* ---- 表格卡片 ---- */
+  .table-card { overflow: hidden; }
+  .table-toolbar {
+    display: flex; align-items: center; justify-content: flex-start;
+    padding: 16px 20px; gap: 12px; flex-wrap: wrap;
+  }
+  .toolbar-actions { display: flex; gap: 10px; align-items: center; }
+  .selected-tip {
+    font-size: 12.5px; color: var(--primary); background: #eef5ff;
+    border-radius: 6px; padding: 5px 10px; display: none;
+  }
+  .selected-tip.show { display: inline-block; }
+
+  .table-wrap { overflow-x: auto; }
+  .table { width: 100%; min-width: 1360px; border-collapse: collapse; font-size: 13px; }
+  .table th {
+    background: #f7f9fc; color: var(--text-2); font-weight: 600;
+    font-size: 12.5px; text-align: left; padding: 12px 16px;
+    border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  .table td {
+    padding: 13px 16px; border-bottom: 1px solid #f2f5f9;
+    vertical-align: middle;
+  }
+  .table tbody tr { transition: background .12s; }
+  .table tbody tr:hover { background: #f8faff; }
+  .table tbody tr:last-child td { border-bottom: none; }
+
+  .col-check { width: 46px; }
+  input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
+
+  .cell-title { display: flex; align-items: center; gap: 6px; line-height: 1.4; }
+  .cell-title .link {
+    color: var(--text-1); font-weight: 500; cursor: pointer; transition: color .15s;
+  }
+  .cell-title .link:hover { color: var(--primary); }
+  .muted { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  /* 状态 */
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; white-space: nowrap; }
+  .status i { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .status.active { color: #15803d; }
+  .status.active i { background: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.14); }
+  .status.pending { color: #1d6ee0; }
+  .status.pending i { background: #1677ff; box-shadow: 0 0 0 3px rgba(22,119,255,.14); }
+  .status.expired { color: #64748b; }
+  .status.expired i { background: #94a3b8; }
+  .status.disabled { color: #b45309; }
+  .status.disabled i { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.14); }
+
+  /* 标签 */
+  .tag {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    font-size: 12px; line-height: 20px; white-space: nowrap;
+  }
+  .tag-blue   { background: #e8f1ff; color: #1d6ee0; }
+  .tag-purple { background: #f2ebff; color: #7c3aed; }
+  .tag-cyan   { background: #e0f7f6; color: #0d8f8a; }
+  .tag-orange { background: #fff2e3; color: #c26a05; }
+  .tag-green  { background: #e6f7ee; color: #15803d; }
+  .tag-gray   { background: #f3f4f6; color: #6b7280; }
+
+  /* 终端标签 */
+  .channels { display: flex; flex-wrap: wrap; gap: 4px; }
+  .ch {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 11.5px; line-height: 18px; padding: 0 6px;
+    border-radius: 4px; background: #f2f5fa; color: var(--text-2);
+    border: 1px solid #e6ebf3; white-space: nowrap;
+  }
+  .ch.on { background: #eef5ff; color: #1d6ee0; border-color: #d3e4ff; }
+
+  /* 开关样式 */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 20px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+  .switch input:checked + .slider {
+    background-color: var(--primary);
+  }
+  .switch input:checked + .slider:before {
+    transform: translateX(16px);
+  }
+
+  /* 操作列 */
+  .ops { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+  .op {
+    background: none; border: none; font-family: inherit; font-size: 12.5px;
+    color: var(--primary); padding: 3px 6px; border-radius: 4px;
+    cursor: pointer; transition: background .12s; white-space: nowrap;
+  }
+  .op:hover { background: #eef5ff; }
+  .op.danger { color: #e5484d; }
+  .op.danger:hover { background: #fff1f1; }
+
+  .empty { padding: 56px 0; text-align: center; color: var(--text-3); font-size: 13px; }
+  .empty svg { display: block; margin: 0 auto 12px; opacity: .35; }
+
+  /* ---- 分页 ---- */
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; gap: 16px; flex-wrap: wrap;
+  }
+  .page-info { font-size: 12.5px; color: var(--text-3); }
+  .pager { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 32px; height: 32px; padding: 0 10px;
+    border-radius: 6px; border: 1px solid #e3e8ef;
+    background: #fff; color: #41474f; font-size: 13px;
+    font-family: inherit; cursor: pointer; transition: all .15s;
+  }
+  .page-btn:hover:not(:disabled):not(.active) { border-color: var(--primary); color: var(--primary); }
+  .page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; cursor: default; }
+  .page-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ============ 弹窗 ============ */
+  .modal-mask {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, .45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; opacity: 0; pointer-events: none;
+    transition: opacity .2s; padding: 20px;
+  }
+  .modal-mask.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: #fff; border-radius: 10px;
+    width: 780px; max-width: 100%; max-height: 92vh;
+    display: flex; flex-direction: column;
+    transform: translateY(14px) scale(.985);
+    transition: transform .22s cubic-bezier(.3,.9,.4,1);
+    box-shadow: 0 20px 50px rgba(15,23,42,.25);
+  }
+  .modal-mask.show .modal { transform: none; }
+  .modal-sm { width: 420px; }
+
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px; border-bottom: 1px solid var(--line); flex-shrink: 0;
+  }
+  .modal-head h3 { font-size: 16px; font-weight: 600; }
+  .modal-close {
+    width: 30px; height: 30px; border: none; background: transparent;
+    font-size: 20px; line-height: 1; color: var(--text-3);
+    cursor: pointer; border-radius: 6px; transition: .15s;
+  }
+  .modal-close:hover { background: #f2f5fa; color: var(--text-1); }
+
+  .modal-body { padding: 22px; overflow-y: auto; }
+  .modal-foot {
+    display: flex; justify-content: flex-end; gap: 10px;
+    padding: 14px 22px; border-top: 1px solid var(--line); flex-shrink: 0;
+  }
+
+  /* 表单 */
+  .form-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .form-item:last-child { margin-bottom: 0; }
+  .form-item > label { font-size: 13px; color: #41474f; font-weight: 500; }
+  .form-item > label.req::before { content: '*'; color: #e5484d; margin-right: 4px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-tip { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
+  .textarea {
+    font-size: 13.5px; line-height: 1.7; padding: 10px 14px;
+    resize: vertical; border: 1px solid #d8dee8; border-radius: 6px;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+    font-family: inherit; color: var(--text-1); width: 100%;
+  }
+  .textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,119,255,.12); }
+
+  .radio-group { display: flex; gap: 20px; height: 34px; align-items: center; flex-wrap: wrap; }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #41474f; cursor: pointer; }
+  input[type="radio"] { accent-color: var(--primary); cursor: pointer; }
+
+  .check-group { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; padding-top: 4px; }
+  .check-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #41474f; cursor: pointer; }
+  .check-group input[type="checkbox"] { accent-color: var(--primary); }
+
+  /* 排期选择器 */
+  .range-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .range-bar .input { width: 200px; }
+  .range-bar span { color: var(--text-3); font-size: 12px; }
+
+  .quick-range { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .quick-btn {
+    font-size: 12px; font-family: inherit; padding: 3px 10px;
+    border-radius: 12px; border: 1px solid #d3e4ff;
+    background: #f4f8ff; color: #1d6ee0; cursor: pointer; transition: .15s;
+  }
+  .quick-btn:hover { background: #e6f0ff; border-color: var(--primary); }
+
+  /* 实时预览 */
+  .preview-box {
+    background: linear-gradient(135deg, #f0f5ff 0%, #f5f0ff 100%);
+    border-radius: 12px; padding: 18px;
+    border: 1px dashed #b3d8ff;
+    margin-bottom: 18px;
+  }
+  .preview-label {
+    font-size: 11px; color: #8b95a5; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .preview-phone {
+    background: #fff; border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 2px 8px rgba(16,24,40,.08);
+    border-left: 3px solid #f59e0b;
+  }
+  .preview-horn {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: #fff2e3; color: #c26a05;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .preview-horn svg { width: 15px; height: 15px; }
+  .preview-text {
+    flex: 1; font-size: 13px; color: #1f2329; line-height: 1.4;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .preview-arrow { color: #8b95a5; flex-shrink: 0; }
+
+  /* 详情 */
+  .view-title { font-size: 17px; font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
+  .view-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+    margin: 0 0 16px; padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 12.5px; color: var(--text-3);
+  }
+  .view-content {
+    font-size: 14px; line-height: 1.7; color: #1f2329;
+    background: #f8fafd; border: 1px solid #eef2f7;
+    border-radius: 8px; padding: 14px 16px; margin-bottom: 20px;
+    word-break: break-word;
+  }
+  .info-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .info-item { display: flex; flex-direction: column; gap: 4px; }
+  .info-item .k { font-size: 12px; color: var(--text-3); }
+  .info-item .v { font-size: 13px; color: #41474f; font-weight: 500; word-break: break-all; }
+
+  #confirmText { font-size: 13.5px; color: #41474f; line-height: 1.7; }
+  #confirmText b { color: #e5484d; }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translate(-50%, -18px);
+    background: #1f2937; color: #fff; font-size: 13px;
+    padding: 10px 20px; border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15,23,42,.28);
+    opacity: 0; pointer-events: none; transition: all .25s; z-index: 9999;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  </style>
+</head>
+<body>
+<div id="app-shell">
+<!-- 顶部导航栏 -->
+<header class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b px-6" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-lg text-white" style="background-color: var(--lib-primary);">
+<i class="h-5 w-5" data-lucide="library"></i>
+</div>
+<span class="text-lg font-semibold" style="color: var(--lib-ink);">信航图书馆 管理后台</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors " data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="palette"></i><span>运营管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-banners" data-nav-key="banners" href="banners.html"><i class="h-4 w-4" data-lucide="gallery-horizontal-end"></i><span>首页跑马灯</span></a>
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<!-- 面包屑 (已按要求简化) -->
+<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
+<span class="mx-2">&gt;</span>
+<span style="color: var(--lib-ink); font-weight: 500;">首页跑马灯</span>
+</nav>
+
+<!-- 概览统计（点击可快速筛选） -->
+<section class="stat-row">
+  <div class="stat-card active" data-stat-filter="all">
+    <div class="stat-icon blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 4h16v13H7l-3 3z"/><path d="M8 9h8M8 12.5h5"/></svg>
+    </div>
+    <div class="stat-meta">
+      <b id="statTotal">0</b>
+      <span>跑马灯总数</span>
+    </div>
+  </div>
+  <div class="stat-card" data-stat-filter="active">
+    <div class="stat-icon green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+    </div>
+    <div class="stat-meta">
+      <b id="statActive">0</b>
+      <span>生效中</span>
+    </div>
+  </div>
+  <div class="stat-card" data-stat-filter="pending">
+    <div class="stat-icon orange">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/><path d="M16 4l2 2"/></svg>
+    </div>
+    <div class="stat-meta">
+      <b id="statPending">0</b>
+      <span>待生效</span>
+    </div>
+  </div>
+  <div class="stat-card" data-stat-filter="expired">
+    <div class="stat-icon gray">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>
+    </div>
+    <div class="stat-meta">
+      <b id="statExpired">0</b>
+      <span>已过期 / 已禁用</span>
+    </div>
+  </div>
+</section>
+
+<!-- 筛选 -->
+<section class="card filter-card">
+  <div class="filter-row">
+    <div class="field">
+      <label>跑马灯文案</label>
+      <input class="input" id="kwInput" placeholder="输入文案关键词" style="width:240px" />
+    </div>
+    <div class="field">
+      <label>展示终端</label>
+      <select class="select" id="channelSelect" style="width:150px">
+        <option value="">全部终端</option>
+        <option value="mp">微信小程序</option>
+        <option value="pc">PC用户端</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>状态</label>
+      <select class="select" id="statusSelect" style="width:130px">
+        <option value="">全部状态</option>
+        <option value="active">生效中</option>
+        <option value="pending">待生效</option>
+        <option value="expired">已过期</option>
+        <option value="disabled">已禁用</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>权重范围</label>
+      <select class="select" id="sortSelect" style="width:130px">
+        <option value="">全部权重</option>
+        <option value="high">高（≥10）</option>
+        <option value="mid">中（5-9）</option>
+        <option value="low">低（&lt;5）</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-primary" id="searchBtn">查询</button>
+      <button class="btn btn-default" id="resetBtn">重置</button>
+      <button class="btn btn-default" id="exportBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+        导出
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- 列表 -->
+<section class="card table-card">
+  <div class="table-toolbar">
+    <div class="toolbar-actions">
+      <button class="btn btn-primary" id="addBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        新增跑马灯
+      </button>
+      <button class="btn btn-danger" id="batchDeleteBtn" disabled>批量删除</button>
+      <button class="btn btn-default" id="refreshBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg>
+        刷新
+      </button>
+    </div>
+    <span class="selected-tip" id="selectedTip">已选 0 项</span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="col-check"><input type="checkbox" id="checkAll" /></th>
+          <th style="min-width:280px">跑马灯文案</th>
+          <th style="width:150px">展示终端</th>
+          <th style="width:230px">生效时间</th>
+          <th style="width:170px">跳转配置</th>
+          <th style="width:80px">权重</th>
+          <th style="width:130px">状态</th> <!-- 开关放这 -->
+          <th style="width:110px">是否过期</th> <!-- 新列 -->
+          <th style="width:200px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <div class="page-info" id="pageInfo"></div>
+    <div class="pager" id="pager"></div>
+  </div>
+</section>
+</main>
+
+<!-- ==================== 新增/编辑弹窗 ==================== -->
+<div class="modal-mask" id="formMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="formTitle">新增跑马灯</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- 实时预览 -->
+      <div class="preview-box">
+        <div class="preview-label">📱 小程序首页效果预览</div>
+        <div class="preview-phone">
+          <div class="preview-horn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M3 11l18-5v12L3 14v-3z" fill="currentColor"/>
+              <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="preview-text" id="previewText">请输入跑马灯文案，此处将实时预览效果</div>
+          <svg class="preview-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <label class="req">跑马灯文案</label>
+        <input class="input" id="fText" maxlength="60" placeholder="请输入首页滚动短文案，不超过 60 个字" />
+        <div class="form-tip">建议简洁明了，如：期末复习期间图书馆开放时间延长至 23:00</div>
+      </div>
+
+      <div class="form-item">
+        <label class="req">展示终端</label>
+        <div class="check-group">
+          <label><input type="checkbox" class="fChannel" value="mp" checked /> 微信小程序</label>
+          <label><input type="checkbox" class="fChannel" value="pc" /> PC用户端</label>
+        </div>
+        <div class="form-tip">至少选择一个终端；不同终端可展示不同内容</div>
+      </div>
+
+      <div class="form-item">
+        <label>生效时间</label>
+        <div class="range-bar">
+          <input type="datetime-local" class="input" id="fStartTime" />
+          <span>至</span>
+          <input type="datetime-local" class="input" id="fEndTime" />
+        </div>
+        <div class="quick-range">
+          <button type="button" class="quick-btn" data-range="today">今日</button>
+          <button type="button" class="quick-btn" data-range="week">本周</button>
+          <button type="button" class="quick-btn" data-range="month">本月</button>
+          <button type="button" class="quick-btn" data-range="forever">长期有效</button>
+        </div>
+        <div class="form-tip">留空表示长期有效；到期后系统自动下架</div>
+      </div>
+
+      <div class="form-item">
+        <label>跳转配置</label>
+        <div class="radio-group" style="margin-bottom: 8px;">
+          <label><input type="radio" name="fLinkType" value="none" checked /> 不跳转</label>
+          <label><input type="radio" name="fLinkType" value="detail" /> 跳转公告详情</label>
+          <label><input type="radio" name="fLinkType" value="url" /> 跳转外部链接</label>
+          <label><input type="radio" name="fLinkType" value="route" /> 跳转功能页</label>
+        </div>
+        <div id="linkDetailItem" style="display: none;">
+          <select class="select" id="fLinkDetailId">
+            <option value="">请选择要跳转的公告...</option>
+            <option value="1">关于2025年国庆节期间图书馆开放时间调整的通知</option>
+            <option value="2">数字图书馆移动端 APP v3.2 版本更新公告</option>
+            <option value="3">“书香校园·秋季读书月”系列活动报名开启</option>
+            <option value="4">中国知网（CNKI）数据库访问异常说明</option>
+          </select>
+        </div>
+        <div id="linkUrlItem" style="display: none;">
+          <input class="input" id="fLinkUrl" placeholder="请输入完整 URL，如 https://www.example.com" />
+        </div>
+        <div id="linkRouteItem" style="display: none;">
+          <select class="select" id="fLinkRoute">
+            <option value="">请选择要跳转的功能页...</option>
+            <option value="/pages/borrow/list">我的借阅</option>
+            <option value="/pages/reserve/list">我的预约</option>
+            <option value="/pages/search/index">馆藏检索</option>
+            <option value="/pages/seat/index">座位预约</option>
+            <option value="/pages/room/index">研修室预约</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-item">
+          <label>权重（排序优先级）</label>
+          <input type="number" class="input" id="fSort" value="0" min="0" max="999" />
+          <div class="form-tip">数字越大越靠前，多条同时生效时按此排序</div>
+        </div>
+        <div class="form-item">
+          <label>状态</label>
+          <div class="radio-group">
+            <label><input type="radio" name="fStatus" value="1" checked /> 启用</label>
+            <label><input type="radio" name="fStatus" value="0" /> 禁用</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>取消</button>
+      <button class="btn btn-default" id="saveDraftBtn">存为草稿</button>
+      <button class="btn btn-primary" id="saveBtn">保存并启用</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 详情弹窗 ==================== -->
+<div class="modal-mask" id="viewMask">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>跑马灯详情</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body" id="viewBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 确认弹窗 ==================== -->
+<div class="modal-mask" id="confirmMask">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <h3>操作确认</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmText"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-default" data-close>取消</button>
+      <button class="btn btn-primary" id="confirmOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+<script>lucide.createIcons();</script>
+<style>
+    #app-shell { min-height: 100vh; }
+    #app-sidebar { width: 248px; }
+    #main-content { margin-left: 248px; margin-top: 64px; min-height: calc(100vh - 64px); }
+    .nav-item { color: var(--lib-text-secondary); }
+    .nav-item:hover { background-color: var(--lib-hover); color: var(--lib-text); }
+    .nav-item.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .nav-group summary { list-style: none; }
+  .nav-group summary::-webkit-details-marker { display: none; }
+  .nav-group[open] .nav-chevron { transform: rotate(180deg); }
+  .nav-chevron { transition: transform 0.2s ease; }
+  .nav-group summary:hover { background-color: var(--lib-hover); color: var(--lib-ink); }
+  .nav-group summary.nav-active { background-color: var(--lib-primary-soft); color: var(--lib-primary) !important; }
+  </style>
+  <script>
+/* =========================================================
+ *  常量与数据
+ * ========================================================= */
+const state = {
+  list: [
+    {
+      id: 1,
+      text: '期末复习期间图书馆开放时间延长至 23:00，请同学们相互转告。',
+      channels: ['mp', 'pc'],
+      startTime: '2026-10-01T08:00', endTime: '2026-12-31T23:59',
+      linkType: 'detail', linkDetailId: '1', linkUrl: '', linkRoute: '',
+      sort: 100, status: 1
+    },
+    {
+      id: 2,
+      text: '中国知网（CNKI）数据库访问异常，正在紧急修复中，预计 24 小时内恢复。',
+      channels: ['mp'],
+      startTime: '2026-10-12T08:00', endTime: '2026-10-13T18:00',
+      linkType: 'url', linkDetailId: '', linkUrl: 'https://www.cnki.net', linkRoute: '',
+      sort: 90, status: 1
+    },
+    {
+      id: 3,
+      text: '国庆节期间（10月1日-7日）全馆闭馆，数字图书馆线上服务正常。',
+      channels: ['mp', 'pc'],
+      startTime: '2026-09-25T00:00', endTime: '2026-10-07T23:59',
+      linkType: 'detail', linkDetailId: '4', linkUrl: '', linkRoute: '',
+      sort: 80, status: 1
+    },
+    {
+      id: 4,
+      text: '“秋季读书月”系列活动报名开启，欢迎广大师生踊跃参与！',
+      channels: ['mp', 'pc'],
+      startTime: '2026-09-15T09:00', endTime: '2026-11-08T23:59',
+      linkType: 'detail', linkDetailId: '3', linkUrl: '', linkRoute: '',
+      sort: 60, status: 1
+    },
+    {
+      id: 5,
+      text: '新上线 326 种中外文电子期刊，覆盖人工智能、材料科学等 12 个学科。',
+      channels: ['mp'],
+      startTime: '2026-09-08T10:00', endTime: '2026-10-31T23:59',
+      linkType: 'detail', linkDetailId: '', linkUrl: '', linkRoute: '/pages/search/index',
+      sort: 50, status: 1
+    },
+    {
+      id: 6,
+      text: '图书馆座位预约系统升级维护通知，10月15日凌晨 2:00-4:00 暂停服务。',
+      channels: ['mp'],
+      startTime: '2026-10-14T08:00', endTime: '2026-10-15T08:00',
+      linkType: 'none', linkDetailId: '', linkUrl: '', linkRoute: '',
+      sort: 40, status: 1
+    },
+    {
+      id: 7,
+      text: '新生入馆教育在线课程已开放，请于 9月30日前完成学习。',
+      channels: ['mp'],
+      startTime: '2026-09-01T08:00', endTime: '2026-09-30T23:59',
+      linkType: 'route', linkDetailId: '', linkUrl: '', linkRoute: '/pages/search/index',
+      sort: 30, status: 0
+    },
+    {
+      id: 8,
+      text: '教师节当天（9月10日）到馆可领取精美书签一份，数量有限。',
+      channels: ['mp', 'pc'],
+      startTime: '2026-09-10T00:00', endTime: '2026-09-10T23:59',
+      linkType: 'none', linkDetailId: '', linkUrl: '', linkRoute: '',
+      sort: 20, status: 0
+    },
+    {
+      id: 9,
+      text: '暑期（7月1日-8月31日）线上服务 7×24 小时不间断，线下阅览室每周二、四开放。',
+      channels: ['mp'],
+      startTime: '2026-07-01T08:00', endTime: '2026-08-31T23:59',
+      linkType: 'none', linkDetailId: '', linkUrl: '', linkRoute: '',
+      sort: 10, status: 0
+    },
+    {
+      id: 10,
+      text: '关于暂停超星移动图书馆借阅服务的紧急通知（已恢复）。',
+      channels: ['mp'],
+      startTime: '2026-08-28T20:00', endTime: '2026-08-28T23:00',
+      linkType: 'none', linkDetailId: '', linkUrl: '', linkRoute: '',
+      sort: 5, status: 0
+    }
+  ],
+  page: 1, pageSize: 10,
+  filters: { kw: '', channel: '', status: '', sort: '' },
+  selected: new Set(),
+  editingId: null,
+  confirmAction: null
+};
+
+/* =========================================================
+ *  工具函数
+ * ========================================================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function formatTime(t) {
+  if (!t) return '—';
+  return t.replace('T', ' ').slice(0, 16);
+}
+
+// 状态自动计算
+function getStatus(item) {
+  if (item.status === 0) return { key: 'disabled', label: '已禁用', cls: 'disabled' };
+  const now = Date.now();
+  if (item.startTime && now < new Date(item.startTime).getTime()) {
+    return { key: 'pending', label: '待生效', cls: 'pending' };
+  }
+  if (item.endTime && now > new Date(item.endTime).getTime()) {
+    return { key: 'expired', label: '已过期', cls: 'expired' };
+  }
+  return { key: 'active', label: '生效中', cls: 'active' };
+}
+
+/* =========================================================
+ *  统计概览
+ * ========================================================= */
+function renderStats() {
+  let active = 0, pending = 0, expired = 0;
+  state.list.forEach(item => {
+    const s = getStatus(item).key;
+    if (s === 'active') active++;
+    else if (s === 'pending') pending++;
+    else expired++;
+  });
+  $('statTotal').textContent = state.list.length;
+  $('statActive').textContent = active;
+  $('statPending').textContent = pending;
+  $('statExpired').textContent = expired;
+}
+
+/* =========================================================
+ *  过滤 + 渲染
+ * ========================================================= */
+function getFiltered() {
+  const f = state.filters;
+  return state.list.filter(item => {
+    if (f.kw && !item.text.includes(f.kw)) return false;
+    if (f.channel && !item.channels.includes(f.channel)) return false;
+    if (f.status && getStatus(item).key !== f.status) return false;
+    if (f.sort === 'high' && item.sort < 10) return false;
+    if (f.sort === 'mid' && (item.sort < 5 || item.sort >= 10)) return false;
+    if (f.sort === 'low' && item.sort >= 5) return false;
+    return true;
+  });
+}
+
+function rowHtml(item) {
+  const st = getStatus(item);
+  const channelHtml = item.channels.map(c => 
+    c === 'mp' ? '<span class="tag tag-blue">小程序</span>' : '<span class="tag tag-purple">PC端</span>'
+  ).join(' ');
+
+  let timeHtml = '长期有效';
+  if (item.startTime || item.endTime) {
+    timeHtml = `${formatTime(item.startTime) || '立即'} <br>至 ${formatTime(item.endTime) || '长期'}`;
+  }
+
+  let linkHtml = '<span class="muted">不跳转</span>';
+  if (item.linkType === 'detail') linkHtml = `<span class="tag tag-cyan">公告详情</span>`;
+  else if (item.linkType === 'url') linkHtml = `<span class="tag tag-orange" title="${esc(item.linkUrl)}">外部链接</span>`;
+  else if (item.linkType === 'route') linkHtml = `<span class="tag tag-green" title="${esc(item.linkRoute)}">功能页</span>`;
+
+  const ops = [
+    `<button class="op" data-action="view" data-id="${item.id}">查看</button>`,
+    `<button class="op" data-action="edit" data-id="${item.id}">编辑</button>`,
+    `<button class="op" data-action="copy" data-id="${item.id}">复制</button>`,
+    `<button class="op danger" data-action="delete" data-id="${item.id}">删除</button>`
+  ].join('');
+
+  // 状态列：开关 + 启用/禁用文字
+  const toggleHtml = `
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label class="switch" title="${item.status === 1 ? '点击禁用' : '点击启用'}">
+        <input type="checkbox" class="toggle-switch" data-id="${item.id}" ${item.status === 1 ? 'checked' : ''} />
+        <span class="slider"></span>
+      </label>
+      <span style="font-size:12px; color:${item.status === 1 ? '#15803d' : '#b45309'}">${item.status === 1 ? '启用' : '禁用'}</span>
+    </div>
+  `;
+
+  // 新列：是否过期状态标签
+  const expiryHtml = `<span class="status ${st.cls}"><i></i>${st.label}</span>`;
+
+  return `
+    <tr>
+      <td class="col-check">
+        <input type="checkbox" class="row-check" data-id="${item.id}" ${state.selected.has(item.id) ? 'checked' : ''} />
+      </td>
+      <td>
+        <div class="cell-title">
+          <span class="link" data-action="view" data-id="${item.id}" title="${esc(item.text)}"
+            style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 280px;">
+            ${esc(item.text)}
+          </span>
+        </div>
+      </td>
+      <td><div class="channels">${channelHtml}</div></td>
+      <td class="muted" style="font-size:12.5px;line-height:1.6">${timeHtml}</td>
+      <td>${linkHtml}</td>
+      <td class="muted" style="font-weight:500">${item.sort}</td>
+      <td>${toggleHtml}</td> <!-- 开关放这 -->
+      <td>${expiryHtml}</td> <!-- 新列 -->
+      <td><div class="ops">${ops}</div></td>
+    </tr>`;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const maxPage = Math.max(1, Math.ceil(total / state.pageSize));
+  if (state.page > maxPage) state.page = maxPage;
+
+  const start = (state.page - 1) * state.pageSize;
+  const rows = filtered.slice(start, start + state.pageSize);
+
+  const tbody = $('tableBody');
+  if (!rows.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="9">
+        <div class="empty">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M3 11l18-5v12L3 14v-3z"/>
+          </svg>
+          暂无跑马灯数据，点击「新增跑马灯」创建
+        </div>
+      </td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(rowHtml).join('');
+  }
+
+  const pageIds = rows.map(r => r.id);
+  const allChecked = pageIds.length > 0 && pageIds.every(id => state.selected.has(id));
+  const head = $('checkAll');
+  head.checked = allChecked;
+  head.indeterminate = !allChecked && pageIds.some(id => state.selected.has(id));
+
+  const n = state.selected.size;
+  $('batchDeleteBtn').disabled = n === 0;
+  const tip = $('selectedTip');
+  tip.textContent = `已选 ${n} 项`;
+  tip.classList.toggle('show', n > 0);
+
+  renderPager(maxPage, total);
+  renderStats();
+}
+
+function renderPager(maxPage, total) {
+  const pager = $('pager');
+  let html = `<button class="page-btn" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>上一页</button>`;
+  for (let i = 1; i <= maxPage; i++) {
+    html += `<button class="page-btn ${i === state.page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  html += `<button class="page-btn" data-page="${state.page + 1}" ${state.page === maxPage ? 'disabled' : ''}>下一页</button>`;
+  pager.innerHTML = html;
+  $('pageInfo').textContent = total ? `共 ${total} 条记录，第 ${state.page} / ${maxPage} 页` : '暂无记录';
+}
+
+/* =========================================================
+ *  弹窗控制
+ * ========================================================= */
+function openMask(id) { $(id).classList.add('show'); }
+function closeMask(id) { $(id).classList.remove('show'); }
+
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', e => e.target.closest('.modal-mask').classList.remove('show'));
+});
+document.querySelectorAll('.modal-mask').forEach(mask => {
+  mask.addEventListener('click', e => { if (e.target === mask) mask.classList.remove('show'); });
+});
+
+function askConfirm(html, onOk) {
+  $('confirmText').innerHTML = html;
+  state.confirmAction = onOk;
+  openMask('confirmMask');
+}
+$('confirmOk').addEventListener('click', () => {
+  if (typeof state.confirmAction === 'function') state.confirmAction();
+  state.confirmAction = null;
+  closeMask('confirmMask');
+});
+
+/* =========================================================
+ *  表单
+ * ========================================================= */
+function getCheckedChannels() {
+  return Array.from(document.querySelectorAll('.fChannel:checked')).map(c => c.value);
+}
+
+// 实时预览
+$('fText').addEventListener('input', function() {
+  $('previewText').textContent = this.value || '请输入跑马灯文案，此处将实时预览效果';
+});
+
+// 跳转类型切换
+document.querySelectorAll('input[name="fLinkType"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    $('linkDetailItem').style.display = this.value === 'detail' ? 'block' : 'none';
+    $('linkUrlItem').style.display = this.value === 'url' ? 'block' : 'none';
+    $('linkRouteItem').style.display = this.value === 'route' ? 'block' : 'none';
+  });
+});
+
+// 快捷时间范围
+document.querySelectorAll('.quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const now = new Date();
+    const fmt = d => {
+      const p = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+    };
+    const range = btn.dataset.range;
+    if (range === 'today') {
+      const s = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+      const e = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59);
+      $('fStartTime').value = fmt(s);
+      $('fEndTime').value = fmt(e);
+    } else if (range === 'week') {
+      const day = now.getDay() || 7;
+      const s = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1, 0, 0);
+      const e = new Date(s); e.setDate(s.getDate() + 6); e.setHours(23, 59);
+      $('fStartTime').value = fmt(s);
+      $('fEndTime').value = fmt(e);
+    } else if (range === 'month') {
+      const s = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0);
+      const e = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59);
+      $('fStartTime').value = fmt(s);
+      $('fEndTime').value = fmt(e);
+    } else if (range === 'forever') {
+      $('fStartTime').value = '';
+      $('fEndTime').value = '';
+    }
+  });
+});
+
+function openForm(item) {
+  state.editingId = item ? item.id : null;
+  $('formTitle').textContent = item ? '编辑跑马灯' : '新增跑马灯';
+  $('fText').value = item ? item.text : '';
+  $('previewText').textContent = item ? item.text : '请输入跑马灯文案，此处将实时预览效果';
+
+  const chs = item ? item.channels : ['mp'];
+  document.querySelectorAll('.fChannel').forEach(c => { c.checked = chs.includes(c.value); });
+
+  $('fStartTime').value = item ? (item.startTime || '') : '';
+  $('fEndTime').value = item ? (item.endTime || '') : '';
+  $('fSort').value = item ? item.sort : 0;
+
+  const linkType = item ? (item.linkType || 'none') : 'none';
+  document.querySelectorAll('input[name="fLinkType"]').forEach(r => { r.checked = r.value === linkType; });
+  $('linkDetailItem').style.display = linkType === 'detail' ? 'block' : 'none';
+  $('linkUrlItem').style.display = linkType === 'url' ? 'block' : 'none';
+  $('linkRouteItem').style.display = linkType === 'route' ? 'block' : 'none';
+  if (linkType === 'detail') $('fLinkDetailId').value = item.linkDetailId || '';
+  if (linkType === 'url') $('fLinkUrl').value = item.linkUrl || '';
+  if (linkType === 'route') $('fLinkRoute').value = item.linkRoute || '';
+
+  document.querySelectorAll('input[name="fStatus"]').forEach(r => {
+    r.checked = r.value === String(item ? item.status : 1);
+  });
+
+  openMask('formMask');
+}
+
+function collectForm() {
+  const text = $('fText').value.trim();
+  if (!text) { toast('请输入跑马灯文案'); $('fText').focus(); return null; }
+  const channels = getCheckedChannels();
+  if (!channels.length) { toast('请至少选择一个展示终端'); return null; }
+
+  const startTime = $('fStartTime').value;
+  const endTime = $('fEndTime').value;
+  if (startTime && endTime && new Date(startTime) > new Date(endTime)) {
+    toast('开始时间不能晚于结束时间'); return null;
+  }
+
+  const linkType = document.querySelector('input[name="fLinkType"]:checked').value;
+  if (linkType === 'detail' && !$('fLinkDetailId').value) { toast('请选择要跳转的公告'); return null; }
+  if (linkType === 'url' && !$('fLinkUrl').value.trim()) { toast('请输入外部链接 URL'); $('fLinkUrl').focus(); return null; }
+  if (linkType === 'route' && !$('fLinkRoute').value) { toast('请选择要跳转的功能页'); return null; }
+
+  return {
+    text, channels, startTime, endTime, linkType,
+    linkDetailId: linkType === 'detail' ? $('fLinkDetailId').value : '',
+    linkUrl: linkType === 'url' ? $('fLinkUrl').value.trim() : '',
+    linkRoute: linkType === 'route' ? $('fLinkRoute').value : '',
+    sort: Number($('fSort').value) || 0,
+    status: Number(document.querySelector('input[name="fStatus"]:checked').value)
+  };
+}
+
+// 保存并启用
+$('saveBtn').addEventListener('click', () => {
+  const data = collectForm();
+  if (!data) return;
+  data.status = 1;
+  if (state.editingId) {
+    const item = state.list.find(x => x.id === state.editingId);
+    Object.assign(item, data);
+    toast('跑马灯已保存并启用');
+  } else {
+    const newId = state.list.length ? Math.max(...state.list.map(x => x.id)) + 1 : 1;
+    state.list.unshift({ id: newId, ...data });
+    state.page = 1;
+    toast('新增跑马灯成功');
+  }
+  closeMask('formMask');
+  render();
+});
+
+// 存为草稿（禁用状态）
+$('saveDraftBtn').addEventListener('click', () => {
+  const data = collectForm();
+  if (!data) return;
+  data.status = 0;
+  if (state.editingId) {
+    const item = state.list.find(x => x.id === state.editingId);
+    Object.assign(item, data);
+    toast('已存为草稿');
+  } else {
+    const newId = state.list.length ? Math.max(...state.list.map(x => x.id)) + 1 : 1;
+    state.list.unshift({ id: newId, ...data });
+    state.page = 1;
+    toast('已存为草稿');
+  }
+  closeMask('formMask');
+  render();
+});
+
+/* =========================================================
+ *  表格事件
+ * ========================================================= */
+$('tableBody').addEventListener('click', e => {
+  const el = e.target.closest('[data-action]'); if (!el) return;
+  const id = Number(el.dataset.id);
+  const item = state.list.find(x => x.id === id); if (!item) return;
+  const action = el.dataset.action;
+
+  if (action === 'view') openView(item);
+  else if (action === 'edit') openForm(item);
+  else if (action === 'copy') {
+    const newId = state.list.length ? Math.max(...state.list.map(x => x.id)) + 1 : 1;
+    const copy = JSON.parse(JSON.stringify(item));
+    copy.id = newId;
+    copy.text = item.text + '（副本）';
+    copy.status = 0;
+    copy.startTime = ''; copy.endTime = '';
+    state.list.unshift(copy);
+    state.page = 1;
+    toast('已复制为新草稿');
+    render();
+  }
+  else if (action === 'delete') {
+    askConfirm(`确定要删除跑马灯「<b>${esc(item.text)}</b>」吗？<br>删除后不可恢复。`, () => {
+      state.list = state.list.filter(x => x.id !== id);
+      state.selected.delete(id);
+      toast('删除成功'); render();
+    });
+  }
+});
+
+// 勾选与开关切换
+$('tableBody').addEventListener('change', e => {
+  // 处理跑马灯开关
+  if (e.target.classList.contains('toggle-switch')) {
+    const id = Number(e.target.dataset.id);
+    const item = state.list.find(x => x.id === id);
+    if (item) {
+      item.status = e.target.checked ? 1 : 0;
+      toast(item.status === 1 ? '已启用' : '已禁用');
+      render();
+    }
+    return;
+  }
+  // 处理行勾选
+  if (!e.target.classList.contains('row-check')) return;
+  const id = Number(e.target.dataset.id);
+  e.target.checked ? state.selected.add(id) : state.selected.delete(id);
+  render();
+});
+
+$('checkAll').addEventListener('change', e => {
+  const filtered = getFiltered();
+  const start = (state.page - 1) * state.pageSize;
+  filtered.slice(start, start + state.pageSize).forEach(x => {
+    e.target.checked ? state.selected.add(x.id) : state.selected.delete(x.id);
+  });
+  render();
+});
+
+// 分页
+$('pager').addEventListener('click', e => {
+  const btn = e.target.closest('.page-btn');
+  if (!btn || btn.disabled || btn.classList.contains('active')) return;
+  const p = Number(btn.dataset.page);
+  if (p < 1) return;
+  state.page = p;
+  render();
+});
+
+/* =========================================================
+ *  详情弹窗
+ * ========================================================= */
+function openView(item) {
+  const st = getStatus(item);
+  const channelHtml = item.channels.map(c =>
+    c === 'mp' ? '<span class="tag tag-blue">微信小程序</span>' : '<span class="tag tag-purple">PC 用户端</span>'
+  ).join(' ');
+
+  let linkHtml = '不跳转';
+  if (item.linkType === 'detail') linkHtml = `跳转公告详情（ID: ${esc(item.linkDetailId)}）`;
+  else if (item.linkType === 'url') linkHtml = `跳转外部链接：<span style="color:#1677ff;word-break:break-all">${esc(item.linkUrl)}</span>`;
+  else if (item.linkType === 'route') linkHtml = `跳转功能页：<code>${esc(item.linkRoute)}</code>`;
+
+  $('viewBody').innerHTML = `
+    <div class="preview-box" style="margin-bottom:20px">
+      <div class="preview-label">📱 小程序首页效果预览</div>
+      <div class="preview-phone">
+        <div class="preview-horn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 11l18-5v12L3 14v-3z" fill="currentColor"/>
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="preview-text">${esc(item.text)}</div>
+        <svg class="preview-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <div class="view-meta">
+      <span class="status ${st.cls}"><i></i>${st.label}</span>
+      ${channelHtml}
+      <span>权重：${item.sort}</span>
+    </div>
+
+    <div class="info-list">
+      <div class="info-item">
+        <span class="k">生效开始时间</span>
+        <span class="v">${formatTime(item.startTime) || '立即生效'}</span>
+      </div>
+      <div class="info-item">
+        <span class="k">生效结束时间</span>
+        <span class="v">${formatTime(item.endTime) || '长期有效'}</span>
+      </div>
+      <div class="info-item" style="grid-column: 1 / -1;">
+        <span class="k">跳转配置</span>
+        <span class="v">${linkHtml}</span>
+      </div>
+    </div>
+  `;
+  openMask('viewMask');
+}
+
+/* =========================================================
+ *  筛选 / 工具栏
+ * ========================================================= */
+// 统计卡片快速筛选
+document.querySelectorAll('.stat-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    const f = card.dataset.statFilter;
+    if (f === 'all') { $('statusSelect').value = ''; }
+    else { $('statusSelect').value = f; }
+    $('searchBtn').click();
+  });
+});
+
+$('searchBtn').addEventListener('click', () => {
+  state.filters = {
+    kw: $('kwInput').value.trim(),
+    channel: $('channelSelect').value,
+    status: $('statusSelect').value,
+    sort: $('sortSelect').value
+  };
+  state.page = 1;
+  render();
+});
+
+$('resetBtn').addEventListener('click', () => {
+  $('kwInput').value = '';
+  $('channelSelect').value = '';
+  $('statusSelect').value = '';
+  $('sortSelect').value = '';
+  state.filters = { kw: '', channel: '', status: '', sort: '' };
+  state.page = 1;
+  document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+  document.querySelector('.stat-card[data-stat-filter="all"]').classList.add('active');
+  render();
+  toast('筛选条件已重置');
+});
+
+$('kwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') $('searchBtn').click();
+});
+
+$('addBtn').addEventListener('click', () => openForm(null));
+$('refreshBtn').addEventListener('click', () => { render(); toast('列表已刷新'); });
+$('exportBtn').addEventListener('click', () => {
+  toast(`正在导出 ${getFiltered().length} 条跑马灯记录…`);
+});
+
+$('batchDeleteBtn').addEventListener('click', () => {
+  const n = state.selected.size;
+  if (!n) return;
+  askConfirm(`确定要删除选中的 <b>${n}</b> 条跑马灯吗？<br>删除后不可恢复。`, () => {
+    state.list = state.list.filter(x => !state.selected.has(x.id));
+    state.selected.clear();
+    toast(`已删除 ${n} 条`);
+    render();
+  });
+});
+
+/* =========================================================
+ *  初始化
+ * ========================================================= */
+render();
+  </script>
+</body>
+</html>
