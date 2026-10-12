@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -211,7 +211,7 @@ html, body {
       --success: #10b981;
       --warning: #f59e0b;
     }
-    #main-content { padding: 16px 20px 28px; }
+    #main-content { padding: 12px 20px 20px; }
     /* 面包屑 */
     .breadcrumb-bar {
       display: flex;
@@ -225,11 +225,48 @@ html, body {
     .breadcrumb-bar a:hover { text-decoration: underline; }
     .crumb-sep { color: var(--text-light); font-size: 20px; }
     .crumb-current { color: var(--text); font-size: 24px; font-weight: 500; }
-.content {
+/* -------- 顶部 Tab 切换（与主站 Element 风格对齐） -------- */
+  .tab-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    margin: 0 0 12px;
+    padding: 0;
+    border-bottom: 1px solid var(--lib-line);
+    background: transparent;
+  }
+  .tab-bar::-webkit-scrollbar { height: 0; }
+
+  .tab-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 20px;
+    font-size: 14px;
+    color: var(--lib-ink-2);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color .15s ease;
+  }
+  .tab-item:hover {
+    color: var(--lib-primary);
+  }
+  .tab-item.active {
+    color: var(--lib-primary);
+    font-weight: 500;
+    border-bottom-color: var(--lib-primary);
+  }
+
+  .content {
     flex: 1;
     overflow-y: auto;
-    padding: 0 0 40px;
-    scroll-behavior: smooth;
+    padding: 0 0 16px;
   }
   .content::-webkit-scrollbar { width: 8px; }
   .content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
@@ -239,18 +276,23 @@ html, body {
     width: 100%;
   }
 
-  /* -------- 模块 -------- */
+  /* -------- 模块（Tab 面板） -------- */
   .module {
-    margin-bottom: 34px;
-    scroll-margin-top: 16px;
+    display: none;
+    animation: tabFade .2s ease;
   }
-  .module:last-child { margin-bottom: 0; }
+  .module.active { display: block; }
+
+  @keyframes tabFade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
 
   .module-title {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 14px;
+    margin-bottom: 8px;
   }
   .module-title::before {
     content: '';
@@ -263,15 +305,6 @@ html, body {
     font-size: 16px;
     font-weight: 600;
     letter-spacing: .2px;
-  }
-  .module-title .m-num {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .5px;
-    color: var(--primary);
-    background: var(--primary-light);
-    padding: 2px 8px;
-    border-radius: 999px;
   }
   .module-title .m-desc {
     font-size: 12.5px;
@@ -286,13 +319,13 @@ html, body {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 0 24px;
-    margin-bottom: 14px;
+    padding: 0 18px;
+    margin-bottom: 8px;
   }
   .section:last-child { margin-bottom: 0; }
 
   .section-head {
-    padding: 17px 0 14px;
+    padding: 10px 0 8px;
     border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
@@ -306,14 +339,14 @@ html, body {
   .section-head p {
     font-size: 12.5px;
     color: var(--text-light);
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
   .form-row {
     display: grid;
     grid-template-columns: 170px minmax(0, 1fr);
-    gap: 20px;
-    padding: 15px 0;
+    gap: 14px;
+    padding: 8px 0;
     border-bottom: 1px solid var(--border-light);
     align-items: start;
   }
@@ -331,7 +364,7 @@ html, body {
   .hint {
     font-size: 12px;
     color: var(--text-light);
-    margin-top: 6px;
+    margin-top: 3px;
     line-height: 1.5;
   }
 
@@ -505,7 +538,7 @@ html, body {
 
   /* -------- 表格 -------- */
   .table-wrap {
-    padding: 16px 0;
+    padding: 8px 0;
     overflow-x: auto;
   }
   .table {
@@ -553,15 +586,15 @@ html, body {
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.6;
-    padding: 14px 0 0;
+    padding: 8px 0 0;
   }
   .ip-add-form {
     display: flex;
     gap: 10px;
     align-items: flex-end;
     flex-wrap: wrap;
-    margin: 16px 0;
-    padding: 14px 16px;
+    margin: 10px 0;
+    padding: 10px 12px;
     background: #fafbfc;
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -605,7 +638,7 @@ html, body {
     border-radius: 8px;
     max-height: 300px;
     overflow-y: auto;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
   .ip-empty {
     padding: 40px 20px;
@@ -730,7 +763,7 @@ html, body {
     }
     .menu-item span:not(.ico) { display: none; }
     .topbar-user .name { display: none; }
-    .content { padding: 18px 16px 32px; }
+    .content { padding: 0 0 20px; }
     .form-row {
       grid-template-columns: 1fr;
       gap: 8px;
@@ -740,6 +773,7 @@ html, body {
     .action-bar .tip { display: none; }
     .ip-add-form .form-item { min-width: 100%; }
     .breadcrumb-bar { padding: 0 12px; }
+    .tab-item { padding: 0 14px; }
   }
   </style>
 </head>
@@ -828,11 +862,25 @@ html, body {
 
   <!-- 主内容区 -->
 <main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
-<nav class="mb-4 text-sm" style="color: var(--lib-ink-3);">
+<nav class="mb-3 text-sm" style="color: var(--lib-ink-3);">
 <a class="hover:underline" href="dashboard.html" style="color: var(--lib-primary);">首页</a>
 <span class="mx-2">&gt;</span>
-<span style="color: var(--lib-ink);">系统设置</span>
+<span>系统设置</span>
+<span class="mx-2">&gt;</span>
+<span id="crumbCurrent" style="color: var(--lib-ink);">基本信息</span>
 </nav>
+
+    <!-- 顶部 Tab 切换 -->
+    <nav class="tab-bar" id="tabNav">
+      <span class="tab-item active" data-target="mod-basic">基本信息</span>
+      <span class="tab-item" data-target="mod-borrow">借阅规则</span>
+      <span class="tab-item" data-target="mod-reserve">预约规则</span>
+      <span class="tab-item" data-target="mod-user">用户与权限</span>
+      <span class="tab-item" data-target="mod-notify">通知设置</span>
+      <span class="tab-item" data-target="mod-security">安全设置</span>
+      <span class="tab-item" data-target="mod-backup">数据备份</span>
+      <span class="tab-item" data-target="mod-ui">界面与语言</span>
+    </nav>
 
     <!-- 内容滚动区 -->
     <div class="content" id="content">
@@ -841,9 +889,8 @@ html, body {
         <!-- ============================================================
              01 基本信息
              ============================================================ -->
-        <section class="module" id="mod-basic">
+        <section class="module active" id="mod-basic">
           <div class="module-title">
-            <span class="m-num">01</span>
             <h2>基本信息</h2>
             <span class="m-desc">系统名称、标识与联系方式</span>
           </div>
@@ -946,7 +993,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-borrow">
           <div class="module-title">
-            <span class="m-num">02</span>
             <h2>借阅规则</h2>
             <span class="m-desc">借阅额度、期限与逾期处理</span>
           </div>
@@ -1116,7 +1162,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-reserve">
           <div class="module-title">
-            <span class="m-num">03</span>
             <h2>预约规则</h2>
             <span class="m-desc">图书、座位与研修室预约策略</span>
           </div>
@@ -1342,7 +1387,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-user">
           <div class="module-title">
-            <span class="m-num">04</span>
             <h2>用户与权限</h2>
             <span class="m-desc">读者类型与注册认证策略</span>
           </div>
@@ -1512,7 +1556,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-notify">
           <div class="module-title">
-            <span class="m-num">05</span>
             <h2>通知设置</h2>
             <span class="m-desc">邮件通知与通知事件</span>
           </div>
@@ -1643,7 +1686,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-security">
           <div class="module-title">
-            <span class="m-num">06</span>
             <h2>安全设置</h2>
             <span class="m-desc">密码策略、登录防护与访问控制</span>
           </div>
@@ -1832,7 +1874,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-backup">
           <div class="module-title">
-            <span class="m-num">07</span>
             <h2>数据备份</h2>
             <span class="m-desc">自动备份策略与历史备份记录</span>
           </div>
@@ -1989,7 +2030,6 @@ html, body {
              ============================================================ -->
         <section class="module" id="mod-ui">
           <div class="module-title">
-            <span class="m-num">08</span>
             <h2>界面与语言</h2>
             <span class="m-desc">主题外观与区域格式偏好</span>
           </div>
@@ -2087,22 +2127,24 @@ html, body {
     document.addEventListener('DOMContentLoaded', function () {
       lucide.createIcons();
       const form = document.getElementById('settings-form');
-      const originalValues = {};
-      Array.from(form.elements).forEach(function (el) {
-        if (el.name) originalValues[el.name] = el.value;
-      });
-      form.addEventListener('reset', function () {
-        setTimeout(function () {
-          Object.keys(originalValues).forEach(function (key) {
-            const el = form.elements[key];
-            if (el) el.value = originalValues[key];
-          });
-        }, 0);
-      });
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        alert('设置已保存');
-      });
+      if (form) {
+        const originalValues = {};
+        Array.from(form.elements).forEach(function (el) {
+          if (el.name) originalValues[el.name] = el.value;
+        });
+        form.addEventListener('reset', function () {
+          setTimeout(function () {
+            Object.keys(originalValues).forEach(function (key) {
+              const el = form.elements[key];
+              if (el) el.value = originalValues[key];
+            });
+          }, 0);
+        });
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          alert('设置已保存');
+        });
+      }
       const importBtn = document.querySelector('[data-dom-id="btn-import-cards"]');
       const fileInput = document.getElementById('card-import-file');
       if (importBtn && fileInput) {
@@ -2210,78 +2252,43 @@ html, body {
   </style>
 
   <script>
-/* =========================================================
-     左侧一级导航切换（演示）
-     ========================================================= */
-  document.querySelectorAll('.sidebar .menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.sidebar .menu-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const name = item.querySelector('span:not(.ico)')?.textContent || '';
-      if (name !== '系统设置') {
-        toast(`已切换到「${name}」（演示）`, 'warning');
-      }
-    });
-  });
-
   /* =========================================================
-     顶部二级导航（锚点）—— 点击滚动到对应模块
+     顶部 Tab 切换 —— 点击只显示对应模块
      ========================================================= */
-  const anchorNav = document.getElementById('anchorNav');
+  const tabNav = document.getElementById('tabNav');
   const contentEl = document.getElementById('content');
-  const anchorItems = anchorNav.querySelectorAll('.anchor-item');
+  const tabItems = tabNav.querySelectorAll('.tab-item');
+  const modules = Array.from(document.querySelectorAll('.module'));
+  const crumbCurrent = document.getElementById('crumbCurrent');
 
-  anchorItems.forEach(item => {
+  tabItems.forEach(item => {
     item.addEventListener('click', () => {
-      const targetId = item.dataset.target;
-      const target = document.getElementById(targetId);
-      if (!target) return;
-
-      const targetTop = target.offsetTop - 8;
-      contentEl.scrollTo({ top: targetTop, behavior: 'smooth' });
-      setActiveAnchor(targetId);
+      switchTab(item.dataset.target, item);
     });
   });
 
-  function setActiveAnchor(targetId) {
-    anchorItems.forEach(i => {
-      i.classList.toggle('active', i.dataset.target === targetId);
-    });
-    const activeItem = anchorNav.querySelector('.anchor-item.active');
+  function switchTab(targetId, tabEl) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    tabItems.forEach(i => i.classList.toggle('active', i === tabEl || i.dataset.target === targetId));
+    modules.forEach(m => m.classList.toggle('active', m.id === targetId));
+
+    const label = (tabEl || tabNav.querySelector(`[data-target="${targetId}"]`))
+      ?.textContent?.trim() || '';
+    if (crumbCurrent && label) crumbCurrent.textContent = label;
+
+    contentEl.scrollTop = 0;
+
+    const activeItem = tabNav.querySelector('.tab-item.active');
     if (activeItem) {
-      const navRect = anchorNav.getBoundingClientRect();
+      const navRect = tabNav.getBoundingClientRect();
       const itemRect = activeItem.getBoundingClientRect();
       if (itemRect.left < navRect.left || itemRect.right > navRect.right) {
         activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
   }
-
-  /* =========================================================
-     滚动监听：自动高亮当前模块
-     ========================================================= */
-  const modules = Array.from(document.querySelectorAll('.module'));
-  let scrollTicking = false;
-
-  contentEl.addEventListener('scroll', () => {
-    if (scrollTicking) return;
-    scrollTicking = true;
-    requestAnimationFrame(() => {
-      const scrollTop = contentEl.scrollTop;
-      const offset = 40;
-
-      let current = modules[0];
-      for (const m of modules) {
-        if (m.offsetTop - offset <= scrollTop) {
-          current = m;
-        } else {
-          break;
-        }
-      }
-      if (current) setActiveAnchor(current.id);
-      scrollTicking = false;
-    });
-  });
 
   /* =========================================================
      开关状态文字联动
@@ -2443,7 +2450,7 @@ html, body {
      初始化
      ========================================================= */
   renderIpList();
-  setActiveAnchor('mod-basic');
+  switchTab('mod-basic');
   </script>
 </body>
 </html>
