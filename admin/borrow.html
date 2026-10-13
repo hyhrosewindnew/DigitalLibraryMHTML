@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -376,6 +376,66 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
 .tl-item .tl-tag.green{background:#f0fdf4;color:#16a34a}
 
 .sec-extra{font-size:11.5px;color:var(--text-3);font-weight:400}
+
+/* ============ 借阅详情：标签页 ============ */
+.detail-tabs{
+  display:flex;gap:4px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.detail-tab{
+  position:relative;
+  padding:9px 15px;border:none;background:none;
+  font-family:inherit;font-size:13px;color:var(--text-2);
+  cursor:pointer;white-space:nowrap;
+  border-radius:7px 7px 0 0;
+  transition:color .15s,background-color .15s;
+}
+.detail-tab:hover{color:var(--primary);background:#f8fafc}
+.detail-tab.active{color:var(--primary);font-weight:600}
+.detail-tab.active::after{
+  content:'';position:absolute;left:12px;right:12px;bottom:-1px;height:2px;
+  border-radius:2px;background:var(--primary);
+}
+.detail-panel{display:none}
+.detail-panel.active{display:block;animation:detailFade .18s ease}
+@keyframes detailFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.detail-flow{
+  margin-top:20px;padding-top:16px;
+  border-top:1px solid var(--lib-line);
+}
+.detail-flow .flow-title{
+  font-size:13px;font-weight:600;color:#111827;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px;
+}
+.detail-flow .flow-title::before{
+  content:'';width:3px;height:13px;border-radius:2px;background:var(--primary);
+}
+.detail-flow .flow-title .flow-cnt{
+  font-size:11.5px;font-weight:400;color:var(--text-3);
+}
+
+.loc-card{
+  padding:14px 16px;border:1px solid #bae6fd;border-radius:8px;
+  background:linear-gradient(135deg,#f0f9ff,#fdfdff);
+  font-size:13px;line-height:1.9;
+}
+.loc-card .lc-path{color:#1e3a8a;font-weight:600;margin-bottom:7px}
+.loc-card .lc-code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12.5px;color:#0c4a6e;
+}
+.loc-card .lc-code b{color:#1d4ed8}
+
+/* 图书价格徽标 */
+.price-tag{
+  display:inline-block;padding:2px 10px;border-radius:5px;
+  background:#fef3c7;color:#b45309;font-weight:600;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;font-variant-numeric:tabular-nums;
+}
+/* ================================================== */
 
 /* ===== 统计弹窗专用样式 ===== */
 .stats-summary{background:linear-gradient(135deg,#eff6ff,#f0f9ff);border:1px solid #bfdbfe;border-radius:9px;padding:14px 18px;margin-bottom:18px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
@@ -1169,36 +1229,36 @@ function clearLoc(){
    图书 / 读者 / 借阅数据
    =======================================================*/
 const BOOKS = {
-  'B2023001': {title:'《数据结构与算法分析》', callNo:'TP311.12/W-3', price:59.00, shelfId:1, layer:1, slot:5, copies:5},
-  'B2023002': {title:'《人类简史》',           callNo:'K02/H-1',       price:68.00, shelfId:8, layer:1, slot:3, copies:6},
-  'B2023003': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-7', price:89.00, shelfId:2, layer:1, slot:12, copies:4},
-  'B2023004': {title:'《算法导论》',           callNo:'TP301.6/C-1',   price:128.00,shelfId:5, layer:2, slot:8, copies:3},
-  'B2023005': {title:'《活着》',               callNo:'I247.5/Y-12',   price:45.00, shelfId:11,layer:1, slot:2, copies:8},
-  'B2023006': {title:'《机器学习》',           callNo:'TP181/Z-2',     price:88.00, shelfId:1, layer:3, slot:15,copies:4},
-  'B2023007': {title:'《万历十五年》',         callNo:'K248/H-4',      price:35.00, shelfId:17,layer:2, slot:7, copies:5},
-  'B2023008': {title:'《深入理解计算机系统》', callNo:'TP303/B-1',     price:139.00,shelfId:3, layer:4, slot:11,copies:3},
-  'B2023009': {title:'《百年孤独》',           callNo:'I775.4/M-2',    price:55.00, shelfId:11,layer:2, slot:18,copies:6},
-  'B2023010': {title:'《中国哲学简史》',       callNo:'B2/F-3',        price:39.00, shelfId:18,layer:1, slot:6, copies:5},
-  'B2023011': {title:'《数据库系统概论》',     callNo:'TP311.13/W-9',  price:42.00, shelfId:5, layer:4, slot:14,copies:4},
-  'B2023012': {title:'《经济学原理》',     callNo:'F0/M-6',        price:98.00, shelfId:17,layer:3, slot:9, copies:4},
-  'B2023013': {title:'《月亮与六便士》',       callNo:'I561.4/M-8',    price:39.00, shelfId:12,layer:1, slot:11,copies:6},
-  'B2023014': {title:'《乌合之众》',           callNo:'C912.6/L-2',    price:32.00, shelfId:18,layer:2, slot:4, copies:5},
-  'B2023015': {title:'《操作系统概念》',       callNo:'TP316/S-5',     price:99.00, shelfId:2, layer:3, slot:18,copies:4},
-  'B2023016': {title:'《围城》',               callNo:'I246.4/Q-1',    price:36.00, shelfId:11,layer:3, slot:9, copies:6},
-  'B2023017': {title:'《时间简史》',           callNo:'P159/H-3',      price:45.00, shelfId:17,layer:5, slot:12,copies:5},
-  'B2023018': {title:'《平凡的世界》',         callNo:'I247.5/L-7',    price:108.00,shelfId:12,layer:4, slot:7, copies:6},
-  'B2023019': {title:'《枪炮、病菌与钢铁》',   callNo:'K02/D-5',       price:78.00, shelfId:18,layer:4, slot:3, copies:5},
-  'B2023020': {title:'《社会契约论》',         callNo:'D0/L-4',        price:29.00, shelfId:18,layer:5, slot:15,copies:5},
-  'B2023021': {title:'《编译原理》',           callNo:'TP314/A-2',     price:95.00, shelfId:3, layer:2, slot:19,copies:3},
-  'B2023022': {title:'《国富论》',             callNo:'F091.33/S-1',   price:88.00, shelfId:17,layer:4, slot:11,copies:4},
-  'B2023023': {title:'《三体》',               callNo:'I247.5/L-1',    price:93.00, shelfId:13,layer:2, slot:5, copies:5},
-  'B2023024': {title:'《白夜行》',             callNo:'I313.45/D-1',    price:39.50,shelfId:12,layer:2, slot:16,copies:6},
-  'B2023025': {title:'《新概念英语》',         callNo:'H31/A-1',       price:39.90, shelfId:19,layer:1, slot:8, copies:5},
-  'B2023026': {title:'《高等数学（上册）》',     callNo:'O13/H-2',       price:48.00, shelfId:2,  layer:5, slot:8,  copies:4},
-  'B2023027': {title:'《Python编程：从入门到实践》',callNo:'TP311.561/P-1', price:89.00, shelfId:1, layer:4, slot:2,  copies:5},
-  'B2023028': {title:'《明朝那些事儿》',       callNo:'K248/M-3',      price:35.00, shelfId:17,layer:3, slot:3,  copies:6},
-  'B2023029': {title:'《平凡的世界（全三部）》',callNo:'I247.5/L-8',    price:138.00,shelfId:12,layer:1, slot:20,copies:4},
-  'B2023030': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-8', price:99.00, shelfId:2,  layer:2, slot:3,  copies:3}
+  'B2023001': {title:'《数据结构与算法分析》', callNo:'TP311.12/W-3', isbn:'978-7-111-40701-0', price:59.00, shelfId:1, layer:1, slot:5, copies:5},
+  'B2023002': {title:'《人类简史》',           callNo:'K02/H-1',       isbn:'978-7-5086-4563-6', price:68.00, shelfId:8, layer:1, slot:3, copies:6},
+  'B2023003': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-7', isbn:'978-7-111-59850-7', price:89.00, shelfId:2, layer:1, slot:12, copies:4},
+  'B2023004': {title:'《算法导论》',           callNo:'TP301.6/C-1',   isbn:'978-7-111-40701-1', price:128.00,shelfId:5, layer:2, slot:8, copies:3},
+  'B2023005': {title:'《活着》',               callNo:'I247.5/Y-12',   isbn:'978-7-5063-6543-7', price:45.00, shelfId:11,layer:1, slot:2, copies:8},
+  'B2023006': {title:'《机器学习》',           callNo:'TP181/Z-2',     isbn:'978-7-302-42328-7', price:88.00, shelfId:1, layer:3, slot:15,copies:4},
+  'B2023007': {title:'《万历十五年》',         callNo:'K248/H-4',      isbn:'978-7-101-05252-5', price:35.00, shelfId:17,layer:2, slot:7, copies:5},
+  'B2023008': {title:'《深入理解计算机系统》', callNo:'TP303/B-1',     isbn:'978-7-111-54493-7', price:139.00,shelfId:3, layer:4, slot:11,copies:3},
+  'B2023009': {title:'《百年孤独》',           callNo:'I775.4/M-2',    isbn:'978-7-5442-5399-9', price:55.00, shelfId:11,layer:2, slot:18,copies:6},
+  'B2023010': {title:'《中国哲学简史》',       callNo:'B2/F-3',        isbn:'978-7-301-21569-2', price:39.00, shelfId:18,layer:1, slot:6, copies:5},
+  'B2023011': {title:'《数据库系统概论》',     callNo:'TP311.13/W-9',  isbn:'978-7-04-040664-1', price:42.00, shelfId:5, layer:4, slot:14,copies:4},
+  'B2023012': {title:'《经济学原理》',     callNo:'F0/M-6',        isbn:'978-7-301-25966-1', price:98.00, shelfId:17,layer:3, slot:9, copies:4},
+  'B2023013': {title:'《月亮与六便士》',       callNo:'I561.4/M-8',    isbn:'978-7-5327-7268-3', price:39.00, shelfId:12,layer:1, slot:11,copies:6},
+  'B2023014': {title:'《乌合之众》',           callNo:'C912.6/L-2',    isbn:'978-7-5113-3012-8', price:32.00, shelfId:18,layer:2, slot:4, copies:5},
+  'B2023015': {title:'《操作系统概念》',       callNo:'TP316/S-5',     isbn:'978-7-111-52359-7', price:99.00, shelfId:2, layer:3, slot:18,copies:4},
+  'B2023016': {title:'《围城》',               callNo:'I246.4/Q-1',    isbn:'978-7-02-009000-6', price:36.00, shelfId:11,layer:3, slot:9, copies:6},
+  'B2023017': {title:'《时间简史》',           callNo:'P159/H-3',      isbn:'978-7-5357-3230-9', price:45.00, shelfId:17,layer:5, slot:12,copies:5},
+  'B2023018': {title:'《平凡的世界》',         callNo:'I247.5/L-7',    isbn:'978-7-5302-1605-4', price:108.00,shelfId:12,layer:4, slot:7, copies:6},
+  'B2023019': {title:'《枪炮、病菌与钢铁》',   callNo:'K02/D-5',       isbn:'978-7-5327-7625-5', price:78.00, shelfId:18,layer:4, slot:3, copies:5},
+  'B2023020': {title:'《社会契约论》',         callNo:'D0/L-4',        isbn:'978-7-100-01234-5', price:29.00, shelfId:18,layer:5, slot:15,copies:5},
+  'B2023021': {title:'《编译原理》',           callNo:'TP314/A-2',     isbn:'978-7-111-25121-7', price:95.00, shelfId:3, layer:2, slot:19,copies:3},
+  'B2023022': {title:'《国富论》',             callNo:'F091.33/S-1',   isbn:'978-7-100-05678-9', price:88.00, shelfId:17,layer:4, slot:11,copies:4},
+  'B2023023': {title:'《三体》',               callNo:'I247.5/L-1',    isbn:'978-7-229-03093-3', price:93.00, shelfId:13,layer:2, slot:5, copies:5},
+  'B2023024': {title:'《白夜行》',             callNo:'I313.45/D-1',    isbn:'978-7-5442-6774-8', price:39.50,shelfId:12,layer:2, slot:16,copies:6},
+  'B2023025': {title:'《新概念英语》',         callNo:'H31/A-1',       isbn:'978-7-100-8060-9', price:39.90, shelfId:19,layer:1, slot:8, copies:5},
+  'B2023026': {title:'《高等数学（上册）》',     callNo:'O13/H-2',       isbn:'978-7-04-039663-8', price:48.00, shelfId:2,  layer:5, slot:8,  copies:4},
+  'B2023027': {title:'《Python编程：从入门到实践》',callNo:'TP311.561/P-1', isbn:'978-7-115-54608-1', price:89.00, shelfId:1, layer:4, slot:2,  copies:5},
+  'B2023028': {title:'《明朝那些事儿》',       callNo:'K248/M-3',      isbn:'978-7-5057-3630-2', price:35.00, shelfId:17,layer:3, slot:3,  copies:6},
+  'B2023029': {title:'《平凡的世界（全三部）》',callNo:'I247.5/L-8',    isbn:'978-7-5302-1605-5', price:138.00,shelfId:12,layer:1, slot:20,copies:4},
+  'B2023030': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-8', isbn:'978-7-111-59850-8', price:99.00, shelfId:2,  layer:2, slot:3,  copies:3}
 };
 const READERS = {
   '2022010301': {name:'陈思远', gender:'男', type:'学生',     dept:'计算机科学与技术学院', phone:'13801234567'},
@@ -1618,6 +1678,20 @@ function batchPrint(){
   clearSelection();
 }
 
+/* =========================================================
+   借阅详情（标签页切换：借阅信息 / 图书信息(含馆藏位置) / 读者信息；
+             流转记录固定在最下方）
+   =======================================================*/
+function switchDetailTab(btn, panelId){
+  const body = $('detailBody');
+  if(!body) return;
+  body.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  body.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = body.querySelector('#' + panelId);
+  if(panel) panel.classList.add('active');
+}
+
 function openDetail(id){
   const b = borrows.find(x => x.id === id);
   if(!b) return;
@@ -1680,49 +1754,59 @@ function openDetail(id){
       </div>
     </div>
 
-    <div class="detail-sec">
-      <h4>借阅信息</h4>
+    <div class="detail-tabs">
+      <button type="button" class="detail-tab active" onclick="switchDetailTab(this,'dtBorrow')">借阅信息</button>
+      <button type="button" class="detail-tab" onclick="switchDetailTab(this,'dtBook')">图书信息</button>
+      <button type="button" class="detail-tab" onclick="switchDetailTab(this,'dtReader')">读者信息</button>
+    </div>
+
+    <div class="detail-panel active" id="dtBorrow">
       <dl class="detail-grid">
         <dt>借阅状态</dt><dd><span class="rec-badge ${sm.cls}">${sm.label}</span>${od > 0 ? ' <span style="color:#dc2626;font-size:12.5px">逾期 ' + od + ' 天</span>' : ''}</dd>
         <dt>借出日期</dt><dd class="mono">${b.borrowDate}</dd>
         <dt>应还日期</dt><dd class="mono">${b.dueDate}</dd>
         <dt>归还日期</dt><dd class="mono">${b.retDate || '尚未归还'}</dd>
+        <dt>借阅天数</dt><dd>${totalDays} 天</dd>
         <dt>续借</dt><dd>${b.renewCount} / ${b.maxRenew} 次</dd>
         <dt>滞纳金</dt><dd>${fine > 0 ? '<span style="color:#dc2626;font-weight:600">￥' + fine.toFixed(2) + '</span>（按 ' + b.fineRate.toFixed(2) + ' 元/天 × ' + od + ' 天）' : '无'}</dd>
       </dl>
     </div>
 
-    <div class="detail-sec">
-      <h4>馆藏位置（精确到架位格）</h4>
-      <div style="padding:14px 16px;background:linear-gradient(135deg,#f0f9ff,#fdfdff);border:1px solid #bae6fd;border-radius:8px;font-size:13px;line-height:1.9">
-        <div style="color:#1e3a8a;font-weight:600;margin-bottom:6px">${esc(path.fullPath)}</div>
-        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:#0c4a6e">
-          📍 编码：<b>${esc(path.code)}</b>
-        </div>
-      </div>
-    </div>
-
-    <div class="detail-sec">
-      <h4>图书信息</h4>
+    <div class="detail-panel" id="dtBook">
       <dl class="detail-grid">
         <dt>书名</dt><dd>${esc(b.book.title)}</dd>
         <dt>索书号</dt><dd class="mono">${esc(b.book.callNo)}</dd>
         <dt>条码号</dt><dd class="mono">${esc(b.barcode)}</dd>
+        <dt>ISBN</dt><dd class="mono">${esc(b.book.isbn || '—')}</dd>
+        <dt>定价</dt><dd><span class="price-tag">￥${(b.book.price || 0).toFixed(2)}</span></dd>
       </dl>
+      <div class="detail-sec">
+        <h4>馆藏位置</h4>
+        <div class="loc-card">
+          <div class="lc-path">${esc(path.fullPath)}</div>
+          <div class="lc-code">📍 编码：<b>${esc(path.code)}</b></div>
+        </div>
+      </div>
     </div>
 
-    <div class="detail-sec">
-      <h4>读者信息</h4>
-      <dl class="detail-grid">
-        <dt>姓名</dt><dd>${esc(b.reader.name)} <span class="tag t-${typeKey(b.reader.type)}">${b.reader.type}</span></dd>
-        <dt>借阅凭证</dt><dd class="mono">${esc(b.certNo)}</dd>
-        <dt>所属单位</dt><dd>${esc(b.reader.dept)}</dd>
-        <dt>联系电话</dt><dd class="mono">${esc(b.reader.phone)}</dd>
-      </dl>
+    <div class="detail-panel" id="dtReader">
+      <div class="reader-card" style="margin-top:0;display:flex;gap:12px;align-items:center;padding:13px 14px;border:1px solid #dbeafe;background:linear-gradient(135deg,#f8fbff,#fdfdff);border-radius:8px">
+        <div class="avatar ${b.reader.gender==='女'?'f':''}" style="width:42px;height:42px;font-size:16px">${esc(b.reader.name[0])}</div>
+        <div style="min-width:0">
+          <div style="font-size:14px;font-weight:600;color:#111827;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            ${esc(b.reader.name)} <span class="tag t-${typeKey(b.reader.type)}">${b.reader.type}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <span class="mono">${esc(b.certNo)}</span>
+            <span>${esc(b.reader.dept)}</span>
+            <span class="mono">${esc(b.reader.phone)}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="detail-sec">
-      <h4>流转记录</h4>
+    <div class="detail-flow">
+      <div class="flow-title">流转记录 <span class="flow-cnt">（借出 · 续借 · 归还）</span></div>
       <div class="timeline">${timeline}</div>
     </div>
   `;
@@ -2192,4 +2276,3 @@ function exportStats(){
   </script>
 </body>
 </html>
-

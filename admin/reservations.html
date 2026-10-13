@@ -385,6 +385,16 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
 .detail-sec h4{font-size:13px;font-weight:600;color:#111827;margin-bottom:11px;display:flex;align-items:center;gap:7px}
 .detail-sec h4::before{content:'';width:3px;height:13px;border-radius:2px;background:var(--primary)}
 
+/* ===== ★ 新增：详情弹窗 Tabs 切换样式 ===== */
+.detail-tabs{display:flex;gap:4px;padding:4px;background:#f1f5f9;border-radius:9px;margin-bottom:14px;flex-wrap:wrap}
+.detail-tab{flex:1 1 auto;padding:9px 14px;border-radius:6px;font-size:13px;color:#475569;cursor:pointer;text-align:center;transition:.15s;user-select:none;display:flex;align-items:center;justify-content:center;gap:6px;min-width:90px}
+.detail-tab:hover{color:#2563eb}
+.detail-tab.active{background:#fff;color:#2563eb;font-weight:600;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.detail-tab .tab-ico{font-size:14px}
+.detail-pane{display:none}
+.detail-pane.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:translateY(0)}}
+
 .timeline{position:relative;padding-left:20px}
 .timeline::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:#e8edf5;border-radius:1px}
 .tl-item{position:relative;padding-bottom:14px;font-size:12.5px}
@@ -575,7 +585,7 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
         <div class="filter-bar">
           <div class="filter-item search">
             <label>关键字</label>
-            <input type="text" id="kw" placeholder="预约单号 / 书名 / 索书号 / 条码 / 读者姓名 / 卡号" onkeydown="if(event.key==='Enter')doSearch()">
+            <input type="text" id="kw" placeholder="预约单号 / 书名 / 索书号 / ISBN / 条码 / 读者姓名 / 卡号" onkeydown="if(event.key==='Enter')doSearch()">
           </div>
 
           <div class="filter-item">
@@ -610,7 +620,6 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
             </div>
           </div>
 
-          <!-- ★ 改动①：筛选区尾部新增"导出"按钮 -->
           <div class="filter-actions">
             <button class="btn btn-primary" onclick="doSearch()">搜索</button>
             <button class="btn" onclick="resetFilter()">重置</button>
@@ -643,7 +652,6 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
           </div>
         </div>
 
-        <!-- ★ 改动③：批量栏去掉"导出选中" -->
         <div class="batch-bar" id="batchBar">
           <span>已选择 <b id="selCount">0</b> 条预约记录</span>
           <button class="btn btn-sm" onclick="batchPickup()">批量取书</button>
@@ -765,7 +773,7 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
   </div>
 </div>
 
-<!-- ★ 改动④：新增预约分析弹窗 -->
+<!-- 预约分析弹窗 -->
 <div class="modal" id="analysisMask">
   <div class="modal-box" style="max-width:920px">
     <div class="modal-header"><span>📊 预约情况分析 · 趋势洞察</span><button class="icon-btn" onclick="closeModal('analysisMask')">✕</button></div>
@@ -966,31 +974,31 @@ function getLocationPath(shelfId, layer, slot){
 }
 
 const BOOKS = {
-  'B2023001': {title:'《数据结构与算法分析》', callNo:'TP311.12/W-3', price:59.00,  shelfId:1,  layer:1, slot:5,  copies:5, available:0},
-  'B2023002': {title:'《人类简史》',           callNo:'K02/H-1',       price:68.00,  shelfId:8,  layer:1, slot:3,  copies:6, available:0},
-  'B2023003': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-7', price:89.00,  shelfId:2,  layer:1, slot:12, copies:4, available:0},
-  'B2023004': {title:'《算法导论》',           callNo:'TP301.6/C-1',   price:128.00, shelfId:5,  layer:2, slot:8,  copies:3, available:0},
-  'B2023005': {title:'《活着》',               callNo:'I247.5/Y-12',   price:45.00,  shelfId:11, layer:1, slot:2,  copies:8, available:0},
-  'B2023006': {title:'《机器学习》',           callNo:'TP181/Z-2',     price:88.00,  shelfId:1,  layer:3, slot:15, copies:4, available:0},
-  'B2023007': {title:'《万历十五年》',         callNo:'K248/H-4',      price:35.00,  shelfId:17, layer:2, slot:7,  copies:5, available:0},
-  'B2023008': {title:'《深入理解计算机系统》', callNo:'TP303/B-1',     price:139.00, shelfId:3,  layer:4, slot:11, copies:3, available:0},
-  'B2023009': {title:'《百年孤独》',           callNo:'I775.4/M-2',    price:55.00,  shelfId:11, layer:2, slot:18, copies:6, available:0},
-  'B2023010': {title:'《中国哲学简史》',       callNo:'B2/F-3',        price:39.00,  shelfId:18, layer:1, slot:6,  copies:5, available:0},
-  'B2023011': {title:'《数据库系统概论》',     callNo:'TP311.13/W-9',  price:42.00,  shelfId:5,  layer:4, slot:14, copies:4, available:0},
-  'B2023012': {title:'《经济学原理》',         callNo:'F0/M-6',        price:98.00,  shelfId:17, layer:3, slot:9,  copies:4, available:0},
-  'B2023013': {title:'《月亮与六便士》',       callNo:'I561.4/M-8',    price:39.00,  shelfId:12, layer:1, slot:11, copies:6, available:0},
-  'B2023014': {title:'《乌合之众》',           callNo:'C912.6/L-2',    price:32.00,  shelfId:18, layer:2, slot:4,  copies:5, available:0},
-  'B2023015': {title:'《操作系统概念》',       callNo:'TP316/S-5',     price:99.00,  shelfId:2,  layer:3, slot:18, copies:4, available:0},
-  'B2023016': {title:'《围城》',               callNo:'I246.5/Q-1',    price:36.00,  shelfId:11, layer:3, slot:9,  copies:6, available:0},
-  'B2023017': {title:'《时间简史》',           callNo:'P159/H-3',      price:45.00,  shelfId:17, layer:5, slot:12, copies:5, available:0},
-  'B2023018': {title:'《平凡的世界》',         callNo:'I247.5/L-7',    price:108.00, shelfId:12, layer:4, slot:7,  copies:6, available:0},
-  'B2023019': {title:'《枪炮、病菌与钢铁》',   callNo:'K02/D-5',       price:78.00,  shelfId:18, layer:4, slot:3,  copies:5, available:0},
-  'B2023020': {title:'《社会契约论》',         callNo:'D0/L-4',        price:29.00,  shelfId:18, layer:5, slot:15, copies:5, available:0},
-  'B2023021': {title:'《编译原理》',           callNo:'TP314/A-2',     price:95.00,  shelfId:3,  layer:2, slot:19, copies:3, available:0},
-  'B2023022': {title:'《国富论》',             callNo:'F091.33/S-1',   price:88.00,  shelfId:17, layer:4, slot:11, copies:4, available:0},
-  'B2023023': {title:'《三体》',               callNo:'I247.5/L-1',    price:93.00,  shelfId:13, layer:2, slot:5,  copies:5, available:0},
-  'B2023024': {title:'《白夜行》',             callNo:'I313.45/D-1',    price:39.50, shelfId:12, layer:2, slot:16, copies:6, available:0},
-  'B2023025': {title:'《新概念英语》',         callNo:'H31/A-1',       price:39.90,  shelfId:19, layer:1, slot:8,  copies:5, available:0}
+  'B2023001': {title:'《数据结构与算法分析》', callNo:'TP311.12/W-3', isbn:'978-7-302-56923-1', price:59.00,  shelfId:1,  layer:1, slot:5,  copies:5, available:0},
+  'B2023002': {title:'《人类简史》',           callNo:'K02/H-1',       isbn:'978-7-5086-5495-2', price:68.00,  shelfId:8,  layer:1, slot:3,  copies:6, available:0},
+  'B2023003': {title:'《计算机网络：自顶向下方法》', callNo:'TP393/K-7', isbn:'978-7-302-56487-8', price:89.00,  shelfId:2,  layer:1, slot:12, copies:4, available:0},
+  'B2023004': {title:'《算法导论》',           callNo:'TP301.6/C-1',   isbn:'978-7-111-54301-1', price:128.00, shelfId:5,  layer:2, slot:8,  copies:3, available:0},
+  'B2023005': {title:'《活着》',               callNo:'I247.5/Y-12',   isbn:'978-7-5063-1817-2', price:45.00,  shelfId:11, layer:1, slot:2,  copies:8, available:0},
+  'B2023006': {title:'《机器学习》',           callNo:'TP181/Z-2',     isbn:'978-7-302-54209-7', price:88.00,  shelfId:1,  layer:3, slot:15, copies:4, available:0},
+  'B2023007': {title:'《万历十五年》',         callNo:'K248/H-4',      isbn:'978-7-108-06183-7', price:35.00,  shelfId:17, layer:2, slot:7,  copies:5, available:0},
+  'B2023008': {title:'《深入理解计算机系统》', callNo:'TP303/B-1',     isbn:'978-7-115-54416-4', price:139.00, shelfId:3,  layer:4, slot:11, copies:3, available:0},
+  'B2023009': {title:'《百年孤独》',           callNo:'I775.4/M-2',    isbn:'978-7-5442-7081-8', price:55.00,  shelfId:11, layer:2, slot:18, copies:6, available:0},
+  'B2023010': {title:'《中国哲学简史》',       callNo:'B2/F-3',        isbn:'978-7-100-08921-8', price:39.00,  shelfId:18, layer:1, slot:6,  copies:5, available:0},
+  'B2023011': {title:'《数据库系统概论》',     callNo:'TP311.13/W-9',  isbn:'978-7-04-059301-1', price:42.00,  shelfId:5,  layer:4, slot:14, copies:4, available:0},
+  'B2023012': {title:'《经济学原理》',         callNo:'F0/M-6',        isbn:'978-7-300-22013-2', price:98.00,  shelfId:17, layer:3, slot:9,  copies:4, available:0},
+  'B2023013': {title:'《月亮与六便士》',       callNo:'I561.4/M-8',    isbn:'978-7-5442-5921-9', price:39.00,  shelfId:12, layer:1, slot:11, copies:6, available:0},
+  'B2023014': {title:'《乌合之众》',           callNo:'C912.6/L-2',    isbn:'978-7-5399-6541-3', price:32.00,  shelfId:18, layer:2, slot:4,  copies:5, available:0},
+  'B2023015': {title:'《操作系统概念》',       callNo:'TP316/S-5',     isbn:'978-7-302-51693-7', price:99.00,  shelfId:2,  layer:3, slot:18, copies:4, available:0},
+  'B2023016': {title:'《围城》',               callNo:'I246.5/Q-1',    isbn:'978-7-02-002263-7', price:36.00,  shelfId:11, layer:3, slot:9,  copies:6, available:0},
+  'B2023017': {title:'《时间简史》',           callNo:'P159/H-3',      isbn:'978-7-5357-3230-6', price:45.00,  shelfId:17, layer:5, slot:12, copies:5, available:0},
+  'B2023018': {title:'《平凡的世界》',         callNo:'I247.5/L-7',    isbn:'978-7-204-05963-2', price:108.00, shelfId:12, layer:4, slot:7,  copies:6, available:0},
+  'B2023019': {title:'《枪炮、病菌与钢铁》',   callNo:'K02/D-5',       isbn:'978-7-5086-5495-3', price:78.00,  shelfId:18, layer:4, slot:3,  copies:5, available:0},
+  'B2023020': {title:'《社会契约论》',         callNo:'D0/L-4',        isbn:'978-7-100-02345-7', price:29.00,  shelfId:18, layer:5, slot:15, copies:5, available:0},
+  'B2023021': {title:'《编译原理》',           callNo:'TP314/A-2',     isbn:'978-7-302-13491-5', price:95.00,  shelfId:3,  layer:2, slot:19, copies:3, available:0},
+  'B2023022': {title:'《国富论》',             callNo:'F091.33/S-1',   isbn:'978-7-100-08756-6', price:88.00,  shelfId:17, layer:4, slot:11, copies:4, available:0},
+  'B2023023': {title:'《三体》',               callNo:'I247.5/L-1',    isbn:'978-7-229-03093-3', price:93.00,  shelfId:13, layer:2, slot:5,  copies:5, available:0},
+  'B2023024': {title:'《白夜行》',             callNo:'I313.45/D-1',    isbn:'978-7-5442-4972-2', price:39.50, shelfId:12, layer:2, slot:16, copies:6, available:0},
+  'B2023025': {title:'《新概念英语》',         callNo:'H31/A-1',       isbn:'978-7-100-09627-8', price:39.90,  shelfId:19, layer:1, slot:8,  copies:5, available:0}
 };
 
 const READERS = {
@@ -1140,6 +1148,7 @@ function getFiltered(){
       const hit = r.id.toLowerCase().includes(k)
         || r.book.title.toLowerCase().includes(k)
         || r.book.callNo.toLowerCase().includes(k)
+        || (r.book.isbn || '').toLowerCase().includes(k)
         || r.barcode.toLowerCase().includes(k)
         || r.reader.name.toLowerCase().includes(k)
         || r.certNo.toLowerCase().includes(k);
@@ -1293,7 +1302,7 @@ function resetFilter(){
   renderTable();
 }
 
-/* ★ 改动①：筛选区导出函数（按当前筛选导出 CSV） */
+/* 筛选区导出函数（按当前筛选导出 CSV） */
 function exportList(){
   const list = getFiltered();
   if(!list.length){ toast('当前筛选条件下没有数据，无法导出', 'warn'); return; }
@@ -1306,14 +1315,14 @@ function exportList(){
   if(state.dateFrom || state.dateTo) csv += '预约日期:' + (state.dateFrom||'不限') + '~' + (state.dateTo||'不限') + ' ';
   if(!state.keyword && !state.status && !state.type && !state.dateFrom && !state.dateTo) csv += '全部记录';
   csv += '\n导出条数,' + list.length + '\n\n';
-  csv += '预约单号,书名,索书号,条码,读者,读者类型,预约时间,失效时间,排队,取书时间,状态\n';
+  csv += '预约单号,书名,索书号,ISBN,条码,读者,读者类型,预约时间,失效时间,排队,取书时间,状态\n';
   list.forEach(r => {
     const st = statusOf(r);
     const sm = STATUS_MAP[st];
     csv += [
       r.id,
       '"' + r.book.title.replace(/"/g,'""') + '"',
-      r.book.callNo, r.barcode,
+      r.book.callNo, r.book.isbn || '', r.barcode,
       r.reader.name, r.reader.type,
       r.createDate, r.expireDate,
       r.queueNo || '',
@@ -1406,6 +1415,7 @@ function loadReserveBook(){
         <dt>书名</dt><dd>${esc(book.title)}</dd>
         <dt>索书号</dt><dd class="mono">${esc(book.callNo)}</dd>
         <dt>条码</dt><dd class="mono">${esc(code)}</dd>
+        <dt>ISBN</dt><dd class="mono">${esc(book.isbn || '—')}</dd>
         <dt>馆藏位置</dt><dd style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1d4ed8">${esc(path.fullPath)}（${esc(path.code)}）</dd>
      </dl>
     </div>`;
@@ -1535,6 +1545,7 @@ function renderPickupInfo(r){
         <dt>图书</dt><dd>${esc(r.book.title)}</dd>
         <dt>索书号</dt><dd class="mono">${esc(r.book.callNo)}</dd>
         <dt>条码</dt><dd class="mono">${esc(r.barcode)}</dd>
+        <dt>ISBN</dt><dd class="mono">${esc(r.book.isbn || '—')}</dd>
         <dt>馆藏位置</dt><dd class="mono" style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1d4ed8">${esc(path.code)}</dd>
         <dt>预约时间</dt><dd class="mono">${r.createDate}</dd>
         <dt>失效时间</dt><dd class="mono">${r.expireDate}</dd>
@@ -1603,7 +1614,7 @@ function confirmCancel(){
 }
 
 /* =========================================================
-   预约详情
+   ★ 改动：预约详情（Tabs 切换：预约信息 / 图书与位置 / 读者信息，流转记录放底部）
    =======================================================*/
 function openDetail(id){
   const r = reserves.find(x => x.id === id);
@@ -1614,6 +1625,7 @@ function openDetail(id){
   const today = todayStr();
   const remainDays = diffDays(r.expireDate, today);
 
+  // ====== 流转记录（在 Tab 之外，固定在底部） ======
   let timeline = `
     <div class="tl-item done">
       <div class="tl-t">预约登记 <span class="tl-tag">${esc(path.fullPath)}（${esc(path.code)}）</span></div>
@@ -1652,6 +1664,54 @@ function openDetail(id){
     </div>`;
   }
 
+  // ====== Tab 1：预约信息 ======
+  const tabReserve = `
+    <div class="detail-sec" style="margin-top:0">
+      <h4>预约信息</h4>
+      <dl class="detail-grid">
+        <dt>预约状态</dt><dd><span class="rec-badge ${sm.cls}">${sm.label}</span></dd>
+        <dt>预约单号</dt><dd class="mono">${esc(r.id)}</dd>
+        <dt>预约时间</dt><dd class="mono">${r.createDate}</dd>
+        <dt>失效时间</dt><dd class="mono">${r.expireDate}</dd>
+        <dt>保留时长</dt><dd>${r.holdHours} 小时</dd>
+        <dt>排队号</dt><dd>#${r.queueNo || '—'}</dd>
+        <dt>取书时间</dt><dd class="mono">${r.pickDate || '尚未取书'}</dd>
+        <dt>经办人</dt><dd>${esc(r.operator)}</dd>
+      </dl>
+    </div>`;
+
+  // ====== Tab 2：图书信息 + 馆藏位置 合并 ======
+  const tabBook = `
+    <div class="detail-sec" style="margin-top:0">
+      <h4>📖 图书信息</h4>
+      <dl class="detail-grid">
+        <dt>书名</dt><dd>${esc(r.book.title)}</dd>
+        <dt>索书号</dt><dd class="mono">${esc(r.book.callNo)}</dd>
+        <dt>条码号</dt><dd class="mono">${esc(r.barcode)}</dd>
+        <dt>ISBN</dt><dd class="mono">${esc(r.book.isbn || '—')}</dd>
+        <dt>定价</dt><dd>￥${(r.book.price || 0).toFixed(2)}</dd>
+      </dl>
+    </div>
+    <div class="detail-sec">
+      <h4>📍 馆藏位置</h4>
+      <div style="padding:14px 16px;background:linear-gradient(135deg,#f0f9ff,#fdfdff);border:1px solid #bae6fd;border-radius:8px;font-size:13px;line-height:1.9">
+        <div style="color:#1e3a8a;font-weight:600;margin-bottom:6px">${esc(path.fullPath)}</div>
+        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:#0c4a6e">编码：<b>${esc(path.code)}</b></div>
+      </div>
+    </div>`;
+
+  // ====== Tab 3：读者信息 ======
+  const tabReader = `
+    <div class="detail-sec" style="margin-top:0">
+      <h4>读者信息</h4>
+      <dl class="detail-grid">
+        <dt>姓名</dt><dd>${esc(r.reader.name)} <span class="tag t-${typeKey(r.reader.type)}">${r.reader.type}</span></dd>
+        <dt>借阅凭证</dt><dd class="mono">${esc(r.certNo)}</dd>
+        <dt>所属单位</dt><dd>${esc(r.reader.dept)}</dd>
+        <dt>联系电话</dt><dd class="mono">${esc(r.reader.phone)}</dd>
+      </dl>
+    </div>`;
+
   $('detailBody').innerHTML = `
     <div class="detail-hero">
       <div class="dh-icon">📅</div>
@@ -1670,47 +1730,21 @@ function openDetail(id){
       </div>
     </div>
 
-    <div class="detail-sec">
-      <h4>预约信息</h4>
-      <dl class="detail-grid">
-        <dt>预约状态</dt><dd><span class="rec-badge ${sm.cls}">${sm.label}</span></dd>
-        <dt>预约单号</dt><dd class="mono">${esc(r.id)}</dd>
-        <dt>预约时间</dt><dd class="mono">${r.createDate}</dd>
-        <dt>失效时间</dt><dd class="mono">${r.expireDate}</dd>
-        <dt>保留时长</dt><dd>${r.holdHours} 小时</dd>
-        <dt>排队号</dt><dd>#${r.queueNo || '—'}</dd>
-        <dt>取书时间</dt><dd class="mono">${r.pickDate || '尚未取书'}</dd>
-        <dt>经办人</dt><dd>${esc(r.operator)}</dd>
-      </dl>
-    </div>
-
-    <div class="detail-sec">
-      <h4>馆藏位置</h4>
-      <div style="padding:14px 16px;background:linear-gradient(135deg,#f0f9ff,#fdfdff);border:1px solid #bae6fd;border-radius:8px;font-size:13px;line-height:1.9">
-        <div style="color:#1e3a8a;font-weight:600;margin-bottom:6px">${esc(path.fullPath)}</div>
-        <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:#0c4a6e">编码：<b>${esc(path.code)}</b></div>
+    <div class="detail-tabs">
+      <div class="detail-tab active" data-tab="reserve" onclick="switchDetailTab('reserve')">
+        <span class="tab-ico">📋</span><span>预约信息</span>
+      </div>
+      <div class="detail-tab" data-tab="book" onclick="switchDetailTab('book')">
+        <span class="tab-ico">📖</span><span>图书信息</span>
+      </div>
+      <div class="detail-tab" data-tab="reader" onclick="switchDetailTab('reader')">
+        <span class="tab-ico">👤</span><span>读者信息</span>
       </div>
     </div>
 
-    <div class="detail-sec">
-      <h4>图书信息</h4>
-      <dl class="detail-grid">
-        <dt>书名</dt><dd>${esc(r.book.title)}</dd>
-        <dt>索书号</dt><dd class="mono">${esc(r.book.callNo)}</dd>
-        <dt>条码号</dt><dd class="mono">${esc(r.barcode)}</dd>
-        <dt>定价</dt><dd>￥${(r.book.price || 0).toFixed(2)}</dd>
-      </dl>
-    </div>
-
-    <div class="detail-sec">
-      <h4>读者信息</h4>
-      <dl class="detail-grid">
-        <dt>姓名</dt><dd>${esc(r.reader.name)} <span class="tag t-${typeKey(r.reader.type)}">${r.reader.type}</span></dd>
-        <dt>借阅凭证</dt><dd class="mono">${esc(r.certNo)}</dd>
-        <dt>所属单位</dt><dd>${esc(r.reader.dept)}</dd>
-        <dt>联系电话</dt><dd class="mono">${esc(r.reader.phone)}</dd>
-      </dl>
-    </div>
+    <div class="detail-pane active" data-pane="reserve">${tabReserve}</div>
+    <div class="detail-pane" data-pane="book">${tabBook}</div>
+    <div class="detail-pane" data-pane="reader">${tabReader}</div>
 
     <div class="detail-sec">
       <h4>流转记录</h4>
@@ -1726,6 +1760,12 @@ function openDetail(id){
     ${canPickup ? `<button class="btn btn-info" onclick="closeModal('detailMask');openPickup('${r.id}')">✅ 取书确认</button>` : ''}
   `;
   $('detailMask').classList.add('show');
+}
+
+/* ★ 新增：详情弹窗 Tab 切换 */
+function switchDetailTab(tab){
+  document.querySelectorAll('#detailBody .detail-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('#detailBody .detail-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === tab));
 }
 
 function batchNotice(){
@@ -1750,7 +1790,7 @@ function batchPickup(){
 }
 
 /* =========================================================
-   ★ 改动②：预约情况分析弹窗
+   预约情况分析弹窗
    =======================================================*/
 function openReserveAnalysis(){
   const list = reserves;
@@ -1767,16 +1807,13 @@ function openReserveAnalysis(){
   const fulfilled = list.filter(r => r.status === 'picked').length + list.filter(r => r.status === 'ready').length;
   const fulfillRate = total ? (fulfilled / total * 100) : 0;
 
-  // 履约率（picked / 非 cancelled / 非 expired）
   const completed = list.filter(r => r.status === 'picked').length;
   const negCount = cancelled + expired;
   const completionRate = (completed + negCount) ? (completed / (completed + negCount) * 100) : 0;
 
-  // 平均排队号（仅 pending 和 ready）
   const queued = list.filter(r => r.queueNo && (r.status === 'pending' || r.status === 'ready'));
   const avgQueue = queued.length ? (queued.reduce((s, r) => s + r.queueNo, 0) / queued.length) : 0;
 
-  // 平均到书时长（picked 的，createDate -> pickDate 的天数）
   const pickedList = list.filter(r => r.status === 'picked' && r.pickDate);
   const avgDays = pickedList.length ? (pickedList.reduce((s, r) => s + diffDays(r.pickDate, r.createDate), 0) / pickedList.length) : 0;
 
@@ -1789,7 +1826,6 @@ function openReserveAnalysis(){
     {cls:'sc-gray',  ico:'✖', label:'已取消',    val: cancelled,            sub: '读者主动取消' }
   ];
 
-  // 2. 状态分布
   const statusStats = {};
   list.forEach(r => { statusStats[r.status] = (statusStats[r.status] || 0) + 1; });
   const statusRows = Object.entries(STATUS_MAP).map(([key,m]) => {
@@ -1798,7 +1834,6 @@ function openReserveAnalysis(){
     return {label:m.label, cnt, pct, cls:m.cls};
   }).sort((a,b) => b.cnt - a.cnt);
 
-  // 3. 读者类型分布
   const typeStats = {};
   list.forEach(r => { typeStats[r.reader.type] = (typeStats[r.reader.type] || 0) + 1; });
   const typeColor = {'学生':'#2563eb','教师':'#7c3aed','临时':'#ea580c','校友':'#0891b2','校外读者':'#64748b'};
@@ -1808,7 +1843,6 @@ function openReserveAnalysis(){
     color: typeColor[t]
   })).sort((a,b) => b.cnt - a.cnt);
 
-  // 4. 月度预约趋势（近 6 个月）
   const monthStats = {};
   list.forEach(r => {
     const m = r.createDate.substring(0, 7);
@@ -1824,11 +1858,10 @@ function openReserveAnalysis(){
   const maxMonth = Math.max(...monthList.map(m => m.cnt), 1);
   const monthTotal = monthList.reduce((s,m) => s + m.cnt, 0);
 
-  // 5. 热门预约图书 Top10
   const bookStats = {};
   list.forEach(r => {
     if(!bookStats[r.barcode]){
-      bookStats[r.barcode] = { title: r.book.title, callNo: r.book.callNo, barcode: r.barcode, cnt: 0, picked: 0 };
+      bookStats[r.barcode] = { title: r.book.title, callNo: r.book.callNo, isbn: r.book.isbn, barcode: r.barcode, cnt: 0, picked: 0 };
     }
     bookStats[r.barcode].cnt++;
     if(r.status === 'picked') bookStats[r.barcode].picked++;
@@ -1961,18 +1994,18 @@ function exportAnalysis(){
   csv += '已取消,' + list.filter(r => r.status === 'cancelled').length + '\n\n';
 
   csv += '===== 热门预约图书 Top10 =====\n';
-  csv += '排名,书名,索书号,条码,预约次数,已取次数\n';
+  csv += '排名,书名,索书号,ISBN,条码,预约次数,已取次数\n';
   const bookStats = {};
   list.forEach(r => {
     if(!bookStats[r.barcode]){
-      bookStats[r.barcode] = { title: r.book.title, callNo: r.book.callNo, barcode: r.barcode, cnt: 0, picked: 0 };
+      bookStats[r.barcode] = { title: r.book.title, callNo: r.book.callNo, isbn: r.book.isbn, barcode: r.barcode, cnt: 0, picked: 0 };
     }
     bookStats[r.barcode].cnt++;
     if(r.status === 'picked') bookStats[r.barcode].picked++;
   });
   const hotBooks = Object.values(bookStats).sort((a,b) => b.cnt - a.cnt).slice(0, 10);
   hotBooks.forEach((b, idx) => {
-    csv += (idx+1) + ',"' + b.title.replace(/"/g,'""') + '",' + b.callNo + ',' + b.barcode + ',' + b.cnt + ',' + b.picked + '\n';
+    csv += (idx+1) + ',"' + b.title.replace(/"/g,'""') + '",' + b.callNo + ',' + (b.isbn || '') + ',' + b.barcode + ',' + b.cnt + ',' + b.picked + '\n';
   });
 
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
@@ -1998,4 +2031,3 @@ renderTable();
   </script>
 </body>
 </html>
-

@@ -847,6 +847,30 @@ function render() {
 /* =========================================================
  *  5. 近 7 天预约模拟数据
  * ========================================================= */
+/* 共同预约人候选池（与研修室预约记录页面保持一致） */
+const BOOKING_MEMBERS = [
+  { name: '刘子涵', type: '学生', certNo: '2025010111', dept: '计算机科学与技术学院' },
+  { name: '杨梦琪', type: '学生', certNo: '2025020222', dept: '经济管理学院' },
+  { name: '邱志豪', type: '学生', certNo: '2023030333', dept: '电子信息工程学院' },
+  { name: '宋雨薇', type: '学生', certNo: '2022040444', dept: '外国语学院' },
+  { name: '高文博', type: '学生', certNo: '2022031966', dept: '机械工程学院' },
+  { name: '冯子轩', type: '学生', certNo: '2022091133', dept: '计算机科学与技术学院' },
+  { name: '苏婉柔', type: '学生', certNo: '2022050678', dept: '文学院' },
+  { name: '曹雨欣', type: '学生', certNo: '2023020378', dept: '经济管理学院' },
+  { name: '何静怡', type: '学生', certNo: '2023012245', dept: '经济管理学院' },
+  { name: '徐若曦', type: '学生', certNo: '2023041577', dept: '外国语学院' },
+  { name: '马天宇', type: '学生', certNo: '2021060889', dept: '电子信息工程学院' },
+  { name: '韩明辉', type: '学生', certNo: '2021070145', dept: '计算机科学与技术学院' },
+  { name: '沈立诚', type: '教师', certNo: 'T20170412', dept: '机械工程学院' },
+  { name: '黄志强', type: '教师', certNo: 'T20180567', dept: '教务处' },
+  { name: '唐雅琴', type: '教师', certNo: 'T20200678', dept: '文学院' },
+  { name: '郑晓岚', type: '临时', certNo: 'L20240312', dept: '图书馆' },
+  { name: '林晓彤', type: '校友', certNo: 'A20150123', dept: '计算机科学与技术学院' },
+  { name: '邓伟成', type: '校外读者', certNo: '4401061992031856', dept: '社会读者' },
+  { name: '罗嘉诚', type: '学生', certNo: '2023080912', dept: '材料科学与工程学院' },
+  { name: '李婉清', type: '学生', certNo: '2023051208', dept: '外国语学院' }
+];
+
 function getUpcomingBookings(room) {
   const result = [];
   const today = new Date();
@@ -870,11 +894,41 @@ function getUpcomingBookings(room) {
     for (let j = 0; j < count; j++) {
       const startH = 9 + j * 3;
       const endH = startH + 2;
+
+      /* 共同预约人数量：保证 发起人(1) + 成员数 落在 [minPersons, capacity] 之间 */
+      const minM = Math.max(0, room.minPersons - 1);
+      const maxM = Math.max(minM, Math.min(room.capacity - 1, 8));
+      const span = Math.max(1, maxM - minM + 1);
+      const memberCount = minM + ((seed + i * 3 + j * 5) % span);
+
+      /* 从候选池中稳定抽取 memberCount 位成员（去重） */
+      const members = [];
+      let cursor = (seed * 7 + i * 11 + j * 13) % BOOKING_MEMBERS.length;
+      for (let k = 0; k < memberCount; k++) {
+        let tries = 0;
+        while (tries < BOOKING_MEMBERS.length) {
+          const cand = BOOKING_MEMBERS[cursor % BOOKING_MEMBERS.length];
+          if (!members.some(m => m.certNo === cand.certNo)) {
+            members.push({
+              name: cand.name,
+              type: cand.type,
+              certNo: cand.certNo,
+              dept: cand.dept
+            });
+            cursor++;
+            break;
+          }
+          cursor++;
+          tries++;
+        }
+      }
+
       items.push({
         time: `${String(startH).padStart(2, '0')}:00 - ${String(endH).padStart(2, '0')}:00`,
         user: users[(seed + i * 3 + j) % users.length],
         org: orgs[(seed + i + j) % orgs.length],
-        persons: Math.max(room.minPersons, 2 + ((seed + j) % Math.max(1, room.capacity - 1))),
+        members: members,
+        persons: 1 + members.length,
         status: (i === 0 && j === 0) ? 'ongoing' : 'booked'
       });
     }
@@ -884,7 +938,7 @@ function getUpcomingBookings(room) {
 }
 
 /* =========================================================
- *  6. 详情弹窗
+ *  6. 详情弹窗（切换 Tab 形式：基本信息 + 预约情况）
  * ========================================================= */
 function openDetail(room) {
   const bookings = getUpcomingBookings(room);
@@ -907,39 +961,50 @@ function openDetail(room) {
       <span class="badge ${STATUS[room.status].cls}">${STATUS[room.status].text}</span>
     </div>
 
-    <div class="detail-info">
-      <div class="info-item">
-        <label>位置</label>
-        <span>${room.venue} / ${room.floor} / ${room.area}</span>
-      </div>
-      <div class="info-item">
-        <label>容纳人数</label>
-        <span>${room.capacity} 人</span>
-      </div>
-      <div class="info-item">
-        <label>最低预约人数</label>
-        <span>${room.minPersons} 人起</span>
-      </div>
-      <div class="info-item">
-        <label>今日预约</label>
-        <span>${room.todayCount} 场</span>
-      </div>
-      <div class="info-item full">
-        <label>开放时段</label>
-        <div class="time-slot-list">${slotHtml}</div>
-      </div>
-      <div class="info-item full">
-        <label>配置设备</label>
-        <span class="tags">${room.devices.map(d => `<span class="tag">${d}</span>`).join('') || '—'}</span>
+    <div class="detail-tabs" role="tablist">
+      <button class="detail-tab active" data-tab="info" role="tab">基本信息</button>
+      <button class="detail-tab" data-tab="booking" role="tab">
+        预约情况<span class="tab-badge">${totalUpcoming}</span>
+      </button>
+    </div>
+
+    <!-- Tab 1：基本信息（位置 + 人数 + 开放时段 + 配置设备 合并） -->
+    <div class="detail-tab-pane active" data-pane="info" role="tabpanel">
+      <div class="detail-info">
+        <div class="info-item">
+          <label>位置</label>
+          <span>${room.venue} / ${room.floor} / ${room.area}</span>
+        </div>
+        <div class="info-item">
+          <label>容纳人数</label>
+          <span>${room.capacity} 人</span>
+        </div>
+        <div class="info-item">
+          <label>最低预约人数</label>
+          <span>${room.minPersons} 人起</span>
+        </div>
+        <div class="info-item">
+          <label>今日预约</label>
+          <span>${room.todayCount} 场</span>
+        </div>
+        <div class="info-item full">
+          <label>开放时段</label>
+          <div class="time-slot-list">${slotHtml}</div>
+        </div>
+        <div class="info-item full">
+          <label>配置设备</label>
+          <span class="tags">${room.devices.map(d => `<span class="tag">${d}</span>`).join('') || '—'}</span>
+        </div>
       </div>
     </div>
 
-    <div class="detail-title">
-      近 7 天预约情况
-      <span class="detail-summary">共 ${totalUpcoming} 场</span>
-    </div>
-
-    <div class="booking-list">
+    <!-- Tab 2：预约情况 -->
+    <div class="detail-tab-pane" data-pane="booking" role="tabpanel">
+      <div class="detail-title" style="margin-top:0;">
+        近 7 天预约情况
+        <span class="detail-summary">共 ${totalUpcoming} 场</span>
+      </div>
+      <div class="booking-list">
   `;
 
   bookings.forEach(b => {
@@ -951,27 +1016,62 @@ function openDetail(room) {
           <span class="day-count">${b.items.length} 场</span>
         </div>
         <div class="booking-items">
-          ${b.items.length ? b.items.map(it => `
-            <div class="booking-item ${it.status === 'ongoing' ? 'ongoing' : ''}">
-              <div class="bk-time">${it.time}</div>
-              <div class="bk-info">
-                <span class="bk-user">${it.user}</span>
-                <span class="bk-org">${it.org}</span>
+          ${b.items.length ? b.items.map(it => {
+            const memberHtml = (it.members && it.members.length)
+              ? `<div class="booking-members">
+                   <span class="bm-label">共同预约人</span>
+                   ${it.members.map(m => `
+                     <span class="bm-chip${m.type === '校外读者' ? ' guest' : ''}" title="${escHtml(m.name)} · ${escHtml(m.type)} · ${escHtml(m.certNo)} · ${escHtml(m.dept)}">
+                       ${escHtml(m.name)}<span class="bm-meta">${escHtml(m.certNo)}</span>
+                     </span>`).join('')}
+                 </div>`
+              : `<div class="booking-members"><span class="bm-label">共同预约人</span><span class="bm-empty">仅发起人 1 人</span></div>`;
+            return `
+              <div class="booking-item ${it.status === 'ongoing' ? 'ongoing' : ''}">
+                <div class="booking-main">
+                  <div class="bk-time">${it.time}</div>
+                  <div class="bk-info">
+                    <span class="bk-user">${escHtml(it.user)}</span>
+                    <span class="bk-role-tag">发起人</span>
+                    <span class="bk-org">${escHtml(it.org)}</span>
+                  </div>
+                  <div class="bk-persons">共 ${it.persons} 人</div>
+                  ${it.status === 'ongoing' ? '<span class="bk-tag">进行中</span>' : ''}
+                </div>
+                ${memberHtml}
               </div>
-              <div class="bk-persons">${it.persons} 人</div>
-              ${it.status === 'ongoing' ? '<span class="bk-tag">进行中</span>' : ''}
-            </div>
-          `).join('') : '<div class="booking-empty">暂无预约</div>'}
+            `;
+          }).join('') : '<div class="booking-empty">暂无预约</div>'}
         </div>
       </div>
     `;
   });
 
-  html += '</div>';
+  html += '</div></div>';
 
   $('#detailBody').innerHTML = html;
   $('#detailMask').classList.add('show');
   $('#detailBody').scrollTop = 0;
+
+  /* Tab 切换 */
+  $('#detailBody').querySelectorAll('.detail-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const key = tab.dataset.tab;
+      $('#detailBody').querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+      $('#detailBody').querySelectorAll('.detail-tab-pane').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const pane = $('#detailBody').querySelector(`.detail-tab-pane[data-pane="${key}"]`);
+      if (pane) pane.classList.add('active');
+      $('#detailBody').scrollTop = 0;
+    });
+  });
+}
+
+/* 简单 HTML 转义工具（供预约情况渲染使用） */
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
 }
 
 /* =========================================================
@@ -1751,20 +1851,58 @@ lucide.createIcons();
     padding: 1px 8px; align-self: flex-start; margin-top: 4px; font-weight: 500;
   }
   .room-example .booking-items { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+  /* ★ 每个预约项改为纵向布局：主行 + 成员行 */
   .room-example .booking-item {
-    display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: #fff;
+    display: flex; flex-direction: column; gap: 7px;
+    padding: 10px 12px; background: #fff;
     border-radius: 8px; border-left: 3px solid #cbd5e1;
   }
   .room-example .booking-item.ongoing { border-left-color: #2f6fed; background: #f5f8ff; }
-  .room-example .bk-time { font-size: 12px; font-family: "SF Mono", Consolas, monospace; color: #475569; flex: 0 0 118px; }
-  .room-example .bk-info { flex: 1; display: flex; gap: 8px; align-items: baseline; min-width: 0; flex-wrap: wrap; }
-  .room-example .bk-user { font-size: 13px; font-weight: 500; color: #1f2937; }
+
+  .room-example .booking-main {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0;
+  }
+  .room-example .bk-time {
+    font-size: 12px; font-family: "SF Mono", Consolas, monospace;
+    color: #475569; flex: 0 0 auto; font-weight: 500;
+  }
+  .room-example .bk-info { flex: 1; display: flex; gap: 8px; align-items: center; min-width: 0; flex-wrap: wrap; }
+  .room-example .bk-user { font-size: 13px; font-weight: 600; color: #1f2937; }
+  .room-example .bk-role-tag {
+    font-size: 10.5px; color: #2f6fed; background: #e8f0fe;
+    padding: 1px 7px; border-radius: 10px; font-weight: 500; flex-shrink: 0;
+  }
   .room-example .bk-org { font-size: 11.5px; color: #94a3b8; }
-  .room-example .bk-persons { font-size: 12px; color: #64748b; white-space: nowrap; }
+  .room-example .bk-persons { font-size: 12px; color: #64748b; white-space: nowrap; font-weight: 500; }
   .room-example .bk-tag {
     font-size: 11px; color: #2f6fed; background: #e8f0fe;
     padding: 1px 8px; border-radius: 10px; font-weight: 500; white-space: nowrap;
   }
+
+  /* ★ 共同预约人区 */
+  .room-example .booking-members {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    padding-top: 6px; border-top: 1px dashed #e5e9f0;
+  }
+  .room-example .bm-label {
+    font-size: 11.5px; color: #94a3b8; flex-shrink: 0; font-weight: 500;
+  }
+  .room-example .bm-empty { font-size: 11.5px; color: #b0b8c6; font-style: italic; }
+  .room-example .bm-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 9px; border-radius: 5px;
+    background: #f1f5fb; border: 1px solid #e4ebf6;
+    color: #334155; font-size: 11.5px; line-height: 17px; white-space: nowrap;
+  }
+  .room-example .bm-chip.guest { background: #fff7ed; border-color: #fde7cf; color: #c26a00; }
+  .room-example .bm-meta {
+    font-size: 10.5px; color: #94a3b8;
+    font-family: "SF Mono", Consolas, monospace;
+    margin-left: 2px;
+  }
+  .room-example .bm-chip.guest .bm-meta { color: #d08c4a; }
+
   .room-example .booking-empty {
     font-size: 12.5px; color: #b0b8c6; padding: 8px 0; font-style: italic;
   }
@@ -1819,12 +1957,73 @@ lucide.createIcons();
   .room-example .toast.warn { background: #b46b00; }
   .room-example .toast.error { background: #b91c1c; }
 
+  /* =========================================================
+   *  详情弹窗 - Tab 切换
+   * ========================================================= */
+  .room-example .detail-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #eef1f6;
+    margin: -4px 0 18px;
+    padding: 0 2px;
+    position: relative;
+  }
+  .room-example .detail-tab {
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    padding: 10px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    position: relative;
+    transition: color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .room-example .detail-tab:hover { color: #1f2937; }
+  .room-example .detail-tab.active { color: #2f6fed; font-weight: 600; }
+  .room-example .detail-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -1px;
+    height: 2px;
+    background: #2f6fed;
+    border-radius: 2px 2px 0 0;
+  }
+  .room-example .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 18px;
+    padding: 0 7px;
+    border-radius: 10px;
+    background: #e8f0fe;
+    color: #2f6fed;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .room-example .detail-tab.active .tab-badge {
+    background: #2f6fed;
+    color: #fff;
+  }
+  .room-example .detail-tab-pane { display: none; }
+  .room-example .detail-tab-pane.active { display: block; }
+  .room-example .detail-tab-pane .detail-info { margin-bottom: 0; }
+
   @media (max-width: 820px) {
     .room-example .filter-actions { margin-left: 0; width: 100%; }
     .room-example .search input { width: 100%; }
     .room-example .detail-info { grid-template-columns: 1fr; }
     .room-example .modal-mask { padding: 16px; }
     .room-example .modal { max-height: calc(100vh - 32px); }
+    .room-example .detail-tab { padding: 9px 12px; font-size: 13px; }
   }
 
   </style>

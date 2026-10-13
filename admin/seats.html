@@ -47,7 +47,6 @@
   --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
   --lib-sidebar-width: 248px;
   --lib-topbar-height: 64px;
-  /* Semantic aliases required by head contract */
   --lib-background: var(--lib-bg);
   --lib-foreground: var(--lib-ink);
   --lib-card: var(--lib-surface);
@@ -1001,6 +1000,58 @@ display: none;
 width: 260px;
 }
 }
+
+/* ====== 详情弹窗：Tab 切换 ====== */
+.seat-example .detail-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: #fcfdfe;
+}
+.seat-example .detail-tab {
+  padding: 10px 4px;
+  margin-right: 22px;
+  font-size: 13.5px;
+  color: var(--text-2);
+  cursor: pointer;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  transition: .15s;
+  user-select: none;
+  font-family: inherit;
+  outline: none;
+  position: relative;
+  top: 1px;
+}
+.seat-example .detail-tab:hover { color: var(--primary); }
+.seat-example .detail-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+/* ====== 座位详情：预约情况模块样式 ====== */
+.seat-example .bk-summary { display: flex; gap: 8px; margin-bottom: 10px; }
+.seat-example .bk-stat { flex: 1; background: #f5f7fa; border-radius: 6px; padding: 8px 6px; text-align: center; }
+.seat-example .bk-stat .n { font-size: 17px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.seat-example .bk-stat .l { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+.seat-example .bk-sub { font-size: 11.5px; color: var(--text-3); font-weight: 600; margin: 10px 0 6px; }
+.seat-example .bk-day { border: 1px solid #eef0f3; border-radius: 6px; margin-bottom: 8px; overflow: hidden; background: #fff; }
+.seat-example .bk-day-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #fafbfc; border-bottom: 1px solid #f2f3f5; font-size: 12px; color: var(--text-2); font-weight: 600; }
+.seat-example .bk-day-head .bk-date { font-family: ui-monospace, Menlo, Consolas, monospace; letter-spacing: -.2px; }
+.seat-example .bk-tag { font-size: 11px; font-weight: 500; color: var(--primary); background: var(--primary-l); border-radius: 10px; padding: 1px 8px; }
+.seat-example .bk-tag.muted { color: var(--text-3); background: #f1f2f4; }
+.seat-example .bk-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-bottom: 1px solid #f7f8fa; font-size: 12.5px; }
+.seat-example .bk-item:last-child { border-bottom: none; }
+.seat-example .bk-time { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; color: var(--text-2); flex-shrink: 0; min-width: 140px; }
+.seat-example .bk-reader { font-weight: 600; color: var(--text); flex-shrink: 0; min-width: 56px; }
+.seat-example .bk-badge { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 10px; font-size: 11.5px; white-space: nowrap; flex-shrink: 0; }
+.seat-example .bk-meta { font-size: 11.5px; color: var(--text-3); margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seat-example .bk-none { color: var(--text-3); font-size: 12.5px; }
+.seat-example .bk-empty { padding: 40px 0; text-align: center; color: var(--text-3); font-size: 13px; background: #fafbfc; border-radius: 6px; }
 </style>
 </head>
 <body>
@@ -1293,12 +1344,16 @@ width: 260px;
   </div>
 </div>
 
-<!-- ============ 座位详情 ============ -->
+<!-- ============ 座位详情（Tab 切换） ============ -->
 <div class="modal-mask" id="detailModal">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="detailTitle">座位详情</div>
       <button class="modal-close" type="button" id="btnCloseDetail">×</button>
+    </div>
+    <div class="detail-tabs" id="detailTabs">
+      <button type="button" class="detail-tab active" data-tab="basic">基本信息</button>
+      <button type="button" class="detail-tab" data-tab="bookings">预约情况</button>
     </div>
     <div class="modal-body" id="detailBody"></div>
     <div class="modal-footer">
@@ -1589,6 +1644,10 @@ const state = {
   editingSeatId: null, confirmHandler: null
 };
 
+/* 详情弹窗 Tab 状态 */
+let detailSeatId = null;
+let detailActiveTab = 'basic';
+
 /* ============================================================
  *  工具
  * ============================================================ */
@@ -1762,7 +1821,6 @@ function renderTable() {
     const pos = getSeatPosition(s);
     const enabled = s.status !== 'disabled';
     const st = STATUS_MAP[s.status] || STATUS_MAP.free;
-    // 馆藏地 / 楼层 / 区域 合并为位置标签
     const locHtml = `<span class="loc-tag">${esc(path.venueName)} / ${esc(path.floorName)} / ${esc(path.areaName)}</span>`;
     const posHtml = pos
       ? `第 ${pos.row} 排 · 第 ${pos.col} 列`
@@ -1831,20 +1889,224 @@ function pageNumbers(cur, total) {
 function renderAll() { renderTable(); }
 
 /* ============================================================
- *  详情
+ *  座位预约情况（详情弹窗展示）
+ *  —— 仅用于「预约情况」Tab，独立生成展示数据
  * ============================================================ */
-function openDetail(id) {
-  const s = seats.find(x => x.id === id);
-  if (!s) return;
+const BK_SLOT_RANGES = ['08:00 - 10:00','10:00 - 12:00','12:00 - 14:00','14:00 - 16:00','16:00 - 18:00','18:00 - 20:00','20:00 - 22:00'];
+
+const BK_STATUS = {
+  pending:    { label: '待履约',   color: '#9b6f00', bg: '#fdf6ec' },
+  inuse:      { label: '使用中',   color: '#136b3e', bg: '#e8f8ee' },
+  temp:       { label: '暂离中',   color: '#1e4a8b', bg: '#e4edfb' },
+  supervised: { label: '被监督中', color: '#b45309', bg: '#fdf0e0' },
+  done:       { label: '已完成',   color: '#075985', bg: '#e0f2fe' },
+  cancelled:  { label: '已取消',   color: '#7a8699', bg: '#f1f2f4' },
+  noshow:     { label: '未签到',   color: '#b91c1c', bg: '#fef0f0' }
+};
+
+const BK_READERS = [
+  { name:'张伟', cardNo:'2024001', type:'学生' },
+  { name:'李娜', cardNo:'2024002', type:'学生' },
+  { name:'王芳', cardNo:'T2024003', type:'教师' },
+  { name:'刘洋', cardNo:'2024004', type:'学生' },
+  { name:'陈静', cardNo:'2024005', type:'学生' },
+  { name:'杨磊', cardNo:'T2024006', type:'教师' },
+  { name:'赵敏', cardNo:'2024007', type:'学生' },
+  { name:'黄强', cardNo:'2024008', type:'学生' },
+  { name:'周涛', cardNo:'A2024009', type:'校友' },
+  { name:'吴丽', cardNo:'2024010', type:'学生' }
+];
+
+const seatBookingCache = {};
+
+function bkHash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function bkShiftDate(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function bkWeekday(dateStr) {
+  return '周' + '日一二三四五六'.charAt(new Date(dateStr + 'T00:00:00').getDay());
+}
+function bkPickSlots(seed) {
+  const pattern = (seed >>> 5) % 5;
+  const s = (seed >>> 7) % 6;
+  let arr;
+  switch (pattern) {
+    case 0: arr = [s % 7]; break;
+    case 1: arr = [s % 6, (s % 6) + 1]; break;
+    case 2: arr = [s % 5, (s % 5) + 1, (s % 5) + 2]; break;
+    case 3: arr = [s % 4, (s % 4) + 3]; break;
+    case 4: arr = [s % 5, (s % 5) + 2]; break;
+    default: arr = [0];
+  }
+  return Array.from(new Set(arr)).filter(v => v >= 0 && v < 7).sort((a, b) => a - b);
+}
+function bkFmtRanges(slots) {
+  if (!slots || !slots.length) return '—';
+  const a = slots.slice().sort((x, y) => x - y);
+  const parts = [];
+  let i = 0;
+  while (i < a.length) {
+    let j = i;
+    while (j + 1 < a.length && a[j + 1] === a[j] + 1) j++;
+    parts.push(BK_SLOT_RANGES[a[i]].split(' - ')[0] + ' - ' + BK_SLOT_RANGES[a[j]].split(' - ')[1]);
+    i = j + 1;
+  }
+  return parts.join('、');
+}
+function bkReaderFromSeat(seat, seed) {
+  if (seat.reader && seat.reader.name) {
+    const no = String(seat.reader.cardNo || '');
+    return {
+      name: seat.reader.name,
+      cardNo: no,
+      type: no.charAt(0).toUpperCase() === 'T' ? '教师' : '学生'
+    };
+  }
+  return BK_READERS[(seed >>> 4) % BK_READERS.length];
+}
+
+/* 生成某个座位的预约流水（过去 3 天 + 今日 + 未来 5 天） */
+function getSeatBookings(seat) {
+  if (seatBookingCache[seat.id]) return seatBookingCache[seat.id];
+
+  const list = [];
+  const todayStr = today();
+
+  function push(dateKey, slots, statusKey, reader) {
+    list.push({
+      dateKey: dateKey,
+      slots: slots.slice().sort((a, b) => a - b),
+      statusKey: statusKey,
+      reader: reader
+    });
+  }
+
+  if (seat.status === 'disabled') {
+    seatBookingCache[seat.id] = list;
+    return list;
+  }
+
+  for (let off = -3; off <= -1; off++) {
+    const dateKey = bkShiftDate(todayStr, off);
+    const seed = bkHash(seat.id + '|' + dateKey);
+    if (seed % 100 >= 72) continue;
+    const r2 = (seed >>> 9) % 100;
+    let statusKey = 'done';
+    if (r2 < 12) statusKey = 'cancelled';
+    else if (r2 < 22) statusKey = 'noshow';
+    push(dateKey, bkPickSlots(seed), statusKey, BK_READERS[(seed >>> 4) % BK_READERS.length]);
+  }
+
+  const seedToday = bkHash(seat.id + '|' + todayStr);
+  if (seat.status === 'occupied') {
+    if (seedToday % 2 === 0) {
+      push(todayStr, [0, 1], 'done', BK_READERS[(seedToday >>> 4) % BK_READERS.length]);
+    }
+    push(todayStr, [4, 5], 'inuse', bkReaderFromSeat(seat, seedToday));
+  } else if (seat.status === 'reserved') {
+    push(todayStr, [4, 5], 'pending', bkReaderFromSeat(seat, seedToday));
+  } else {
+    const r = seedToday % 100;
+    if (r < 42) push(todayStr, bkPickSlots(seedToday), 'done', BK_READERS[(seedToday >>> 4) % BK_READERS.length]);
+    else if (r < 58) push(todayStr, bkPickSlots(seedToday), 'cancelled', BK_READERS[(seedToday >>> 6) % BK_READERS.length]);
+    else if (r < 70) push(todayStr, bkPickSlots(seedToday), 'noshow', BK_READERS[(seedToday >>> 8) % BK_READERS.length]);
+  }
+
+  for (let off = 1; off <= 5; off++) {
+    const dateKey = bkShiftDate(todayStr, off);
+    const seed = bkHash(seat.id + '|' + dateKey);
+    if (seed % 100 >= 50) continue;
+    push(dateKey, bkPickSlots(seed), 'pending', BK_READERS[(seed >>> 4) % BK_READERS.length]);
+  }
+
+  seatBookingCache[seat.id] = list;
+  return list;
+}
+
+function bkRenderDayGroup(tag, dateKey, items, isPast) {
+  const sorted = items.slice().sort((a, b) => a.slots[0] - b.slots[0]);
+  let h = '<div class="bk-day">';
+  h += '<div class="bk-day-head">'
+     + '<span class="bk-date">' + dateKey + ' ' + bkWeekday(dateKey) + '</span>'
+     + (tag ? '<span class="bk-tag">' + tag + '</span>'
+            : (isPast ? '<span class="bk-tag muted">历史</span>' : ''))
+     + '</div>';
+  if (!sorted.length) {
+    h += '<div class="bk-item"><span class="bk-none">暂无预约</span></div>';
+  } else {
+    sorted.forEach(b => {
+      const st = BK_STATUS[b.statusKey] || BK_STATUS.done;
+      h += '<div class="bk-item">'
+         + '<span class="bk-time">' + bkFmtRanges(b.slots) + '</span>'
+         + '<span class="bk-reader">' + esc(b.reader.name) + '</span>'
+         + '<span class="bk-badge" style="color:' + st.color + ';background:' + st.bg + '">' + st.label + '</span>'
+         + '<span class="bk-meta">' + esc(b.reader.type) + ' · ' + esc(b.reader.cardNo) + '</span>'
+         + '</div>';
+    });
+  }
+  h += '</div>';
+  return h;
+}
+
+/* 预约情况 Tab 内容（不含外层标题） */
+function renderSeatBookingsHtml(seat) {
+  const list = getSeatBookings(seat);
+  const todayStr = today();
+  const tomorrowStr = bkShiftDate(todayStr, 1);
+
+  const todayList  = list.filter(b => b.dateKey === todayStr);
+  const futureList = list.filter(b => b.dateKey > todayStr);
+  const pastList   = list.filter(b => b.dateKey < todayStr);
+
+  if (!list.length) {
+    return '<div class="bk-empty">该座位暂无预约记录</div>';
+  }
+
+  let html = '';
+  html += '<div class="bk-summary">'
+        +   '<div class="bk-stat"><div class="n">' + todayList.length + '</div><div class="l">今日预约</div></div>'
+        +   '<div class="bk-stat"><div class="n">' + futureList.length + '</div><div class="l">未来预约</div></div>'
+        +   '<div class="bk-stat"><div class="n">' + pastList.length + '</div><div class="l">近 3 日记录</div></div>'
+        + '</div>';
+
+  html += bkRenderDayGroup('今日', todayStr, todayList, false);
+
+  if (futureList.length) {
+    const grouped = {};
+    futureList.forEach(b => { (grouped[b.dateKey] = grouped[b.dateKey] || []).push(b); });
+    Object.keys(grouped).sort().forEach(dk => {
+      html += bkRenderDayGroup(dk === tomorrowStr ? '明日' : '', dk, grouped[dk], false);
+    });
+  }
+
+  if (pastList.length) {
+    const grouped = {};
+    pastList.forEach(b => { (grouped[b.dateKey] = grouped[b.dateKey] || []).push(b); });
+    html += '<div class="bk-sub">近 3 日历史</div>';
+    Object.keys(grouped).sort().reverse().forEach(dk => {
+      html += bkRenderDayGroup('', dk, grouped[dk], true);
+    });
+  }
+
+  return html;
+}
+
+/* 基本信息 Tab 内容 */
+function renderSeatBasicHtml(s) {
   const st = STATUS_MAP[s.status] || STATUS_MAP.free;
   const path = getSeatPath(s);
   const pos = getSeatPosition(s);
-  document.getElementById('detailTitle').textContent = `座位 ${s.seatNo} - 详情`;
-  let readerHtml = s.reader
+  const readerHtml = s.reader
     ? `<div class="detail-row"><span class="label">读者姓名</span><span class="value">${esc(s.reader.name)}</span></div>
        <div class="detail-row"><span class="label">读者证号</span><span class="value">${esc(s.reader.cardNo)}</span></div>`
     : `<div class="detail-row"><span class="label">当前读者</span><span class="value" style="color:var(--text-3);">无</span></div>`;
-  document.getElementById('detailBody').innerHTML = `
+  return `
     <div class="detail-row"><span class="label">座位号</span><span class="value" style="font-weight:600;">${esc(s.seatNo)}</span></div>
     <div class="detail-row"><span class="label">位置</span><span class="value"><span class="loc-tag">${esc(path.venueName)} / ${esc(path.floorName)} / ${esc(path.areaName)}</span></span></div>
     <div class="detail-row"><span class="label">座位类型</span><span class="value">${esc(s.type)}</span></div>
@@ -1856,7 +2118,39 @@ function openDetail(id) {
       <div class="detail-subtitle">读者信息</div>
       ${readerHtml}
     </div>`;
+}
+
+/* ============================================================
+ *  详情弹窗（Tab 切换）
+ * ============================================================ */
+function openDetail(id) {
+  const s = seats.find(x => x.id === id);
+  if (!s) return;
+  detailSeatId = id;
+  detailActiveTab = 'basic';
+  document.getElementById('detailTitle').textContent = `座位 ${s.seatNo} - 详情`;
   document.getElementById('detailModal').classList.add('show');
+  renderDetailTabs();
+}
+function switchDetailTab(tabKey) {
+  detailActiveTab = tabKey;
+  renderDetailTabs();
+}
+function renderDetailTabs() {
+  document.querySelectorAll('#detailTabs .detail-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === detailActiveTab);
+  });
+  renderDetailBody();
+}
+function renderDetailBody() {
+  const s = seats.find(x => x.id === detailSeatId);
+  if (!s) return;
+  const body = document.getElementById('detailBody');
+  if (detailActiveTab === 'bookings') {
+    body.innerHTML = renderSeatBookingsHtml(s);
+  } else {
+    body.innerHTML = renderSeatBasicHtml(s);
+  }
 }
 function closeDetail() { document.getElementById('detailModal').classList.remove('show'); }
 
@@ -2174,7 +2468,7 @@ function toggleSeatEnabled(seatId, enabled) {
 }
 
 /* ============================================================
- *  批量停用（使用中/已预约的座位会被跳过）
+ *  批量停用
  * ============================================================ */
 function batchDisableSeats() {
   const checked = document.querySelectorAll('.row-checkbox:checked');
@@ -2219,7 +2513,7 @@ function batchDisableSeats() {
 }
 
 /* ============================================================
- *  批量删除（使用中/已预约的座位会被跳过）
+ *  批量删除
  * ============================================================ */
 function batchDeleteSeats() {
   const checked = document.querySelectorAll('.row-checkbox:checked');
@@ -2228,7 +2522,6 @@ function batchDeleteSeats() {
   const ids = [...checked].map(cb => Number(cb.dataset.id));
   const list = ids.map(id => seats.find(s => s.id === id)).filter(Boolean);
 
-  // 使用中 / 已预约 → 不可删除
   const blocked   = list.filter(s => s.status === 'occupied' || s.status === 'reserved');
   const deletable = list.filter(s => s.status !== 'occupied' && s.status !== 'reserved');
 
@@ -2247,7 +2540,6 @@ function batchDeleteSeats() {
       const delIds = new Set(deletable.map(s => s.id));
       seats = seats.filter(s => !delIds.has(s.id));
 
-      // 同步删除编辑器布局中对应的座位项
       Object.values(areaLayouts).forEach(layout => {
         if (!layout || !layout.items) return;
         layout.items = layout.items.filter(it =>
@@ -2307,7 +2599,7 @@ function exportCSV() {
 }
 
 /* ============================================================
- *  编辑器（座位排布可视化，与座位位置数据完全独立）
+ *  编辑器（座位排布可视化）
  * ============================================================ */
 const CELL_STEP = 52;
 
@@ -2466,7 +2758,6 @@ function edFindEmptySlot(layout, w, h) {
   return { x: 1, y: 1 };
 }
 
-/* ---- 默认布局 ---- */
 function generateDefaultLayout(areaId) {
   const areaSeats = seats.filter(s => s.areaId === areaId).sort((a, b) => a.order - b.order);
   const items = [];
@@ -2605,7 +2896,6 @@ function buildEditorItems(areaId) {
   return layout;
 }
 
-/* ---- 历史 ---- */
 function edSaveHistory() {
   ed.history = ed.history.slice(0, ed.historyIndex + 1);
   ed.history.push({ items: JSON.parse(JSON.stringify(ed.items)), nextId: ed.nextId });
@@ -2638,7 +2928,6 @@ function edUpdateUndoRedoBtns() {
   $e('edRedo').disabled = ed.historyIndex >= ed.history.length - 1;
 }
 
-/* ---- 物品库 ---- */
 function renderEdLibrary() {
   const container = $e('edLibBody');
   let html = '';
@@ -2693,7 +2982,6 @@ function renderEdSlotStrip() {
     </div>`).join('');
 }
 
-/* ---- 放置模式 ---- */
 function startEdPlacing(typeKey) {
   const def = edGetType(typeKey);
   if (!def) return;
@@ -2714,7 +3002,6 @@ function cancelEdPlacing() {
   hideEdPreview();
 }
 
-/* ---- 渲染画布 ---- */
 function renderEd() {
   const canvas = $e('edCanvas');
   if (!canvas) return;
@@ -2777,7 +3064,6 @@ function renderEdResizers() {
   return dirs.map(d => `<div class="le-resizer le-r-${d}" data-dir="${d}"></div>`).join('');
 }
 
-/* ---- 坐标计算 ---- */
 function calcEdGridPos(e) {
   const canvas = $e('edCanvas');
   const rect = canvas.getBoundingClientRect();
@@ -2798,7 +3084,6 @@ function calcEdDropPos(e) {
   return { x, y };
 }
 
-/* ---- 预览 ---- */
 function ensureEdPreviewEl() {
   const canvas = $e('edCanvas');
   if (!canvas) return;
@@ -2843,7 +3128,6 @@ function updateEdMovePreview(x, y, w, h, valid) {
   edMovePreviewEl.classList.toggle('invalid', !valid);
 }
 
-/* ---- 放置物品 ---- */
 function edNextFacilityName(typeKey) {
   const def = edGetType(typeKey);
   if (!def) return '物品';
@@ -2895,7 +3179,6 @@ function tryEdPlaceAt(x, y) {
   renderEd();
 }
 
-/* ---- 多选 & 统计 ---- */
 function edClearSelection() {
   ed.selectedIds.clear();
   ed.selectedId = null;
@@ -2930,7 +3213,6 @@ function updateEdStats() {
   set('edStatFacility', ed.items.length - seatItems.length);
 }
 
-/* ---- 圈选 ---- */
 function ensureEdMarqueeEl() {
   const canvas = $e('edCanvas');
   if (!canvas) return;
@@ -3003,7 +3285,6 @@ function onEdMarqueeEnd(e) {
   renderEd(); edUpdateInspector();
 }
 
-/* ---- 批量删除（编辑器内） ---- */
 function edDeleteSelected() {
   const sel = edSelectedArray();
   if (!sel.length) return;
@@ -3026,7 +3307,6 @@ function edDeleteSelected() {
   }
 }
 
-/* ---- 选中 & 属性面板 ---- */
 function selectEdItem(id) {
   edClearSelection();
   ed.selectedIds.add(id);
@@ -3122,7 +3402,6 @@ function edUpdateInspector() {
   $e('edShortcutResize').style.display = (!isSeatItem && resizable) ? '' : 'none';
 }
 
-/* ---- 属性面板事件 ---- */
 $e('edInsName').addEventListener('input', e => {
   const item = ed.items.find(it => it.id === ed.selectedId);
   if (!item) return;
@@ -3205,7 +3484,6 @@ $e('edRotate').addEventListener('click', () => { if (ed.selectedId != null) edRo
 $e('edDelete').addEventListener('click', () => { if (ed.selectedIds.size) edDeleteSelected(); });
 $e('edDeselect').addEventListener('click', deselectEd);
 
-/* ---- 旋转 ---- */
 function edRotateItem(id) {
   if (!ed.editMode) return;
   const item = ed.items.find(it => it.id === id);
@@ -3237,7 +3515,6 @@ function edFindNearestPlace(x, y, w, h, excludeId) {
   return null;
 }
 
-/* ---- 删除 ---- */
 function edDeleteItem(id) {
   const item = ed.items.find(it => it.id === id);
   if (!item) return;
@@ -3258,7 +3535,6 @@ function edDeleteItem(id) {
   toast(`已删除「${item.name}」`);
 }
 
-/* ---- 画布事件 ---- */
 function bindEdCanvasEvents() {
   const canvas = $e('edCanvas');
   const scroll = $e('edCanvasScroll');
@@ -3412,7 +3688,6 @@ function bindEdCanvasEvents() {
   scroll.onmouseleave = function() { hideEdPreview(); };
 }
 
-/* ---- 缩放 ---- */
 function startEdResize(e, itemId, dir) {
   if (!ed.editMode) return;
   e.stopPropagation(); e.preventDefault();
@@ -3488,7 +3763,6 @@ function showEdBubble(x, y, w, h, invalid) {
 }
 function hideEdBubble() { const b = $e('edSizeBubble'); if (b) b.classList.remove('show'); }
 
-/* ---- 位置选择器 ---- */
 function fillEdVenueSelect(selectedId) {
   const sel = $e('edVenue');
   if (!sel) return;
@@ -3526,7 +3800,6 @@ function syncEdLocationSelects(areaId) {
   fillEdAreaSelect(area.floorId, areaId);
 }
 
-/* ---- 加载区域 ---- */
 function loadEditorArea(areaId) {
   const area = getArea(areaId);
   if (!area) return;
@@ -3556,7 +3829,6 @@ function loadEditorArea(areaId) {
   renderEdSlotStrip();
 }
 
-/* ---- 保存布局 ---- */
 function saveEdLayout() {
   if (!ed.areaId) return;
   const layout = areaLayouts[ed.areaId];
@@ -3583,7 +3855,6 @@ function saveEdLayout() {
   renderAll();
 }
 
-/* ---- 打开/关闭编辑器 ---- */
 function openLayoutEditor(targetSeatId) {
   ed.open = true;
   $e('layoutEditorModal').classList.add('show');
@@ -3633,7 +3904,6 @@ function closeLayoutEditor() {
   renderAll();
 }
 
-/* ---- 加载示例 ---- */
 function edLoadDemo() {
   if (!ed.areaId) return;
   const facilityCount = ed.items.filter(it => it.kind === 'facility').length;
@@ -3689,7 +3959,6 @@ function edApplyDemo() {
   toast('示例布局已加载');
 }
 
-/* ---- 编辑器事件 ---- */
 function bindEditorEvents() {
   $e('edVenue').addEventListener('change', e => {
     const fid = fillEdFloorSelect(e.target.value, '');
@@ -3759,7 +4028,6 @@ function bindEditorEvents() {
   $e('edClose').addEventListener('click', closeLayoutEditor);
 }
 
-/* ---- 编辑器键盘快捷键 ---- */
 document.addEventListener('keydown', e => {
   if (!ed.open) return;
   if (document.activeElement.matches('input, textarea, select')) return;
@@ -3891,6 +4159,12 @@ function bindEvents() {
   document.getElementById('btnCloseDetail2').addEventListener('click', closeDetail);
   document.getElementById('detailModal').addEventListener('click', e => {
     if (e.target.id === 'detailModal') closeDetail();
+  });
+  /* 详情弹窗 Tab 切换 */
+  document.getElementById('detailTabs').addEventListener('click', e => {
+    const tab = e.target.closest('.detail-tab');
+    if (!tab) return;
+    switchDetailTab(tab.dataset.tab);
   });
   document.getElementById('tbody').addEventListener('change', e => {
     const cb = e.target.closest('[data-toggle-id]');
