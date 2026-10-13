@@ -289,6 +289,38 @@ tbody tr:last-child td{border-bottom:none}
 .modal-close:hover{background:#f1f5f9;color:#475569}
 .modal-body{padding:20px;overflow-y:auto;flex:1;min-height:0}
 .modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;background:#fcfdfe}
+
+/* ===== 详情弹窗 Tab 切换 ===== */
+.modal-tabs{display:flex;gap:2px;padding:0 14px;border-bottom:1px solid var(--border);flex-shrink:0;background:#fcfdfe;overflow-x:auto}
+.modal-tabs::-webkit-scrollbar{height:0}
+.modal-tab{padding:11px 14px;font-size:13px;color:#4b5563;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;transition:.15s;user-select:none;font-family:inherit;white-space:nowrap;outline:none}
+.modal-tab:hover{color:var(--primary)}
+.modal-tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+
+/* 详情弹窗底部固定时间线 */
+.detail-timeline-footer{
+  margin-top:22px;
+  padding:14px 16px;
+  background:#f8fafc;
+  border:1px solid #eef2f7;
+  border-radius:8px;
+}
+.detail-timeline-footer .dtf-caption{
+  font-size:11.5px;
+  color:var(--text-3);
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+.detail-timeline-footer .dtf-caption::before{
+  content:"";
+  width:3px;height:12px;border-radius:2px;background:var(--primary);
+}
+.detail-timeline-footer .detail-section:last-child{margin-bottom:0}
+
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px}
 .form-item{display:flex;flex-direction:column;gap:6px;min-width:0}
 .form-item.full{grid-column:1/-1}
@@ -300,6 +332,7 @@ tbody tr:last-child td{border-bottom:none}
 .form-item textarea{height:auto;padding:8px 10px;resize:vertical;line-height:1.5}
 .form-item input:focus, .form-item select:focus, .form-item textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
 .form-tip{font-size:11.5px;color:var(--text-3);margin-top:1px}
+.form-tip b{color:var(--primary)}
 .reader-pick{position:relative}
 .reader-pick-list{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:260px;overflow-y:auto;background:#fff;border:1px solid #d8dee8;border-radius:8px;box-shadow:0 8px 26px rgba(15,23,42,.14);z-index:50;display:none}
 .reader-pick-list.show{display:block}
@@ -362,6 +395,22 @@ tbody tr:last-child td{border-bottom:none}
 .legal-summary td{padding:8px 10px;border:1px solid var(--border);color:#374151;vertical-align:top;line-height:1.7}
 .legal-summary td:first-child{font-weight:600;color:#111827;white-space:nowrap}
 
+/* ===== 时段多选器 ===== */
+.slot-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.slot-empty{padding:14px;text-align:center;color:var(--text-3);font-size:12.5px;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:8px;grid-column:1/-1}
+.slot-chip{position:relative;display:flex;flex-direction:column;gap:3px;padding:9px 11px;border:1px solid #d8dee8;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;text-align:left;transition:.15s;line-height:1.25}
+.slot-chip:hover:not(:disabled){border-color:#93c5fd;background:var(--primary-light)}
+.slot-chip.selected{border-color:var(--primary);background:var(--primary-light);box-shadow:inset 0 0 0 1px var(--primary)}
+.slot-chip.selected .sc-name{color:var(--primary)}
+.slot-chip:disabled{opacity:.5;cursor:not-allowed;background:#f8fafc}
+.slot-chip .sc-name{font-size:12.5px;font-weight:600;color:#374151}
+.slot-chip .sc-time{font-size:11px;color:#6b7280;font-family:ui-monospace,Menlo,monospace}
+.slot-chip .sc-remain{font-size:11px;color:#16a34a}
+.slot-chip:disabled .sc-remain{color:#dc2626}
+.slot-chip.selected::after{content:"✓";position:absolute;top:4px;right:7px;font-size:11px;color:var(--primary);font-weight:700}
+.slot-summary{margin-top:2px}
+.slot-summary .ss-range{font-family:ui-monospace,Menlo,monospace;color:#1f2937}
+
 /* ===== 座位使用及预约状态弹窗 ===== */
 #usageMask .modal{width:1060px}
 .usage-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
@@ -415,14 +464,14 @@ table.u-matrix tbody tr:hover th.seat-col{background:#f8fafc}
 .sd-section h4::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--primary)}
 .sd-list{display:flex;flex-direction:column;gap:8px}
 .sd-card{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;font-size:12.5px}
-.sd-card .sd-time{font-family:ui-monospace,monospace;color:#4b5563;font-weight:600;width:100px;flex-shrink:0}
+.sd-card .sd-time{font-family:ui-monospace,monospace;color:#4b5563;font-weight:600;flex-shrink:0;min-width:170px}
 .sd-card .sd-reader{font-weight:500;color:#111827;width:80px;flex-shrink:0}
 .sd-card .sd-status{flex-shrink:0}
 .sd-card .sd-meta{color:var(--text-3);font-size:11.5px;margin-left:auto}
 .sd-empty{padding:30px;text-align:center;color:var(--text-3);font-size:12.5px;background:#f8fafc;border-radius:6px}
 
 #toastWrap{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.toast{background:#fff;border:1px solid var(--border);border-left:3px solid #22c55e;border-radius:8px;padding:10px 18px;font-size:13px;color:#1f2937;box-shadow:08px 26px rgba(15,23,42,.14);animation:popIn .2s ease;transition:.3s;max-width:520px;line-height:1.5}
+.toast{background:#fff;border:1px solid var(--border);border-left:3px solid #22c55e;border-radius:8px;padding:10px 18px;font-size:13px;color:#1f2937;box-shadow:0 8px 26px rgba(15,23,42,.14);animation:popIn .2s ease;transition:.3s;max-width:520px;line-height:1.5}
 .toast.error{border-left-color:#ef4444}
 .toast.warn{border-left-color:#f59e0b}
 .toast.out{opacity:0;transform:translateY(-8px)}
@@ -575,11 +624,11 @@ table.u-matrix tbody tr:hover th.seat-col{background:#f8fafc}
             <thead><tr>
               <th style="width:38px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
               <th style="width:96px">记录ID</th>
-              <th style="width:60px">类型</th>
-              <th style="width:170px">读者信息</th>
               <th style="width:80px">座位</th>
               <th style="width:200px">位置（馆/楼层/区域）</th>
-              <th style="width:170px">预约时段</th>
+              <th style="width:170px">预约人</th>
+              <th style="width:60px">类型</th>
+              <th style="width:200px">预约时段</th>
               <th style="width:90px">状态</th>
               <th style="width:90px">座位物理</th>
               <th>最后操作 / 超时</th>
@@ -597,19 +646,23 @@ table.u-matrix tbody tr:hover th.seat-col{background:#f8fafc}
 
 <div class="mask" id="legalMask"><div class="modal" style="width:780px"><div class="modal-header"><span><i class="fas fa-book-open" style="color:var(--primary);margin-right:8px"></i>座位预约 · 10 种状态说明与流转</span><div class="modal-close" onclick="closeModal('legalMask')">✕</div></div><div class="modal-body" id="legalBody"></div><div class="modal-footer"><button class="btn" onclick="closeModal('legalMask')">关闭</button></div></div></div>
 
-<div class="mask" id="addMask"><div class="modal" style="width:760px"><div class="modal-header"><span>新增座位预约</span><div class="modal-close" onclick="closeModal('addMask')">✕</div></div><div class="modal-body"><div class="form-grid">
+<div class="mask" id="addMask"><div class="modal" style="width:820px"><div class="modal-header"><span>新增座位预约</span><div class="modal-close" onclick="closeModal('addMask')">✕</div></div><div class="modal-body"><div class="form-grid">
  <div class="form-item full reader-pick"><label>选择读者<span class="req">*</span></label><input type="text" id="addReaderSearch" placeholder="输入姓名 / 学号 / 工号 搜索（仅显示「正常」状态）" autocomplete="off"><div class="reader-pick-list" id="readerPickList"></div><div class="form-tip">冻结 / 挂失 / 注销 / 过期的读者无法预约</div></div>
   <div class="form-item"><label>馆藏地<span class="req">*</span></label><select id="addVenue" onchange="onVenueChange()"><option value="">请选择馆藏地</option><option value="v-main">总馆</option><option value="v-branch">南区分馆</option></select></div>
   <div class="form-item"><label>楼层<span class="req">*</span></label><select id="addFloor" onchange="onFloorChange()" disabled><option value="">请先选择馆藏地</option></select></div>
   <div class="form-item"><label>区域<span class="req">*</span></label><select id="addArea" onchange="onAreaChange()" disabled><option value="">请先选择楼层</option></select></div>
   <div class="form-item"><label>预约日期<span class="req">*</span></label><input type="date" id="addDate"><div class="form-tip">可预约今日起 7 天内的座位</div></div>
-  <div class="form-item"><label>预约时段<span class="req">*</span></label><select id="addSlot"><option value="0">上午一 (08:00-10:00)</option><option value="1">上午二 (10:00-12:00)</option><option value="2">中午 (12:00-14:00)</option><option value="3">下午一 (14:00-16:00)</option><option value="4">下午二 (16:00-18:00)</option><option value="5" selected>晚上一 (18:00-20:00)</option><option value="6">晚上二 (20:00-22:00)</option></select></div>
-  <div class="form-item"><label>预约时长<span class="req">*</span></label><select id="addDuration"><option value="1">1 个时段（2 小时）</option><option value="2" selected>2 个时段（4 小时·单次最长）</option></select></div>
-  <div class="form-item full"><label>选择座位<span class="req">*</span></label><div class="seat-section"><div class="seat-section-head"><div>已选座位：<b id="pickedSeatText" style="color:var(--primary)">未选择</b></div><div class="legend"><div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border-color:#86efac"></div>空闲</div><div class="legend-item"><div class="legend-dot" style="background:#fef2f2;border-color:#fca5a5"></div>已被占用</div><div class="legend-item"><div class="legend-dot" style="background:#2563eb;border-color:#2563eb"></div>已选</div></div></div><div id="seatContainer"><div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div></div></div><input type="hidden" id="pickedSeat" value=""></div>
+  <div class="form-item full">
+    <label>预约时段<span class="req">*</span>（可多选，支持不连续时段）</label>
+    <div class="slot-picker" id="slotPicker"><div class="slot-empty">请先选择「区域」后再选择时段</div></div>
+    <div class="form-tip slot-summary" id="slotTip">可多选，支持不连续时段（如「上午一 + 下午一」）；单次最多 4 个时段（8 小时）</div>
+  </div>
+  <div class="form-item full"><label>选择座位<span class="req">*</span></label><div class="seat-section"><div class="seat-section-head"><div>已选座位：<b id="pickedSeatText" style="color:var(--primary)">未选择</b></div><div class="legend"><div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border-color:#86efac"></div>空闲</div><div class="legend-item"><div class="legend-dot" style="background:#fef2f2;border-color:#fca5a5"></div>所选时段已被占用</div><div class="legend-item"><div class="legend-dot" style="background:#2563eb;border-color:#2563eb"></div>已选</div></div></div><div id="seatContainer"><div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div></div></div><input type="hidden" id="pickedSeat" value=""></div>
   <div class="form-item full"><label>备注</label><textarea id="addRemark" rows="2" placeholder="选填"></textarea></div>
 </div></div><div class="modal-footer"><button class="btn" onclick="closeModal('addMask')">取消</button><button class="btn btn-primary" onclick="submitAdd()" id="addSubmitBtn" disabled>提交预约</button></div></div></div>
 
-<div class="mask" id="detailMask" style="z-index:130"><div class="modal" style="width:720px"><div class="modal-header"><span>预约详情</span><div class="modal-close" onclick="closeModal('detailMask')">✕</div></div><div class="modal-body" id="detailBody"></div><div class="modal-footer"><button class="btn" onclick="closeModal('detailMask')">关闭</button></div></div></div>
+<!-- 预约详情弹窗（Tab 切换 + 底部固定时间线） -->
+<div class="mask" id="detailMask" style="z-index:130"><div class="modal" style="width:720px"><div class="modal-header"><span id="detailTitle">预约详情</span><div class="modal-close" onclick="closeModal('detailMask')">✕</div></div><div class="modal-tabs" id="detailTabs"></div><div class="modal-body" id="detailBody"></div><div class="modal-footer"><button class="btn" onclick="closeModal('detailMask')">关闭</button></div></div></div>
 
 <div class="mask" id="usageMask">
   <div class="modal" style="width:1060px">
@@ -720,6 +773,9 @@ const FLOORS = [{id:'f-main-2',venueId:'v-main',name:'2F'},{id:'f-main-3',venueI
 const AREAS = [{id:'a1',floorId:'f-main-2',name:'自习区A',cols:12,rows:5,prefix:'A'},{id:'a2',floorId:'f-main-2',name:'自习区B',cols:12,rows:5,prefix:'B'},{id:'a3',floorId:'f-main-3',name:'电子阅览区',cols:12,rows:5,prefix:'C'},{id:'a4',floorId:'f-main-4',name:'研讨区',cols:10,rows:4,prefix:'D'},{id:'a5',floorId:'f-branch-1',name:'综合阅览区',cols:10,rows:4,prefix:'E'},{id:'a6',floorId:'f-branch-2',name:'少儿阅读区',cols:8,rows:4,prefix:'F'}];
 const SLOT_RANGES = ['08:00 - 10:00','10:00 - 12:00','12:00 - 14:00','14:00 - 16:00','16:00 - 18:00','18:00 - 20:00','20:00 - 22:00'];
 const SLOT_NAMES = ['上午一','上午二','中午','下午一','下午二','晚上一','晚上二'];
+const SLOT_TOTAL = SLOT_RANGES.length;
+const MAX_SLOTS_PER_ORDER = 4;            /* 单次最多选择 4 个时段（8 小时） */
+const RELEASE_STATES = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'];
 function typeKeyFn(t){return {'学生':'stu','教师':'tea','临时':'tmp','校友':'alu','校外读者':'out'}[t]||'out';}
 const READERS = [
  {name:'陈思远',gender:'男',type:'学生',certNo:'2022010301',dept:'计算机科学与技术学院',status:'正常',violations:1},
@@ -771,6 +827,16 @@ let data = [
  {id:'R24040939',readerIdx:9, seatNo:'C-010',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'4',duration:'2',time:'16:00 - 20:00',sk:'supervised',st:'被监督中',sc:'s-supervised',sp:'监督中',bg:'#fff1e0',tx:'#b45309',la:'需 7 分钟内返回',lat:'urgent',remark:'邻座发起监督',createdAt:'2025-04-09 15:55',signInAt:'2025-04-09 16:00',supervisedAt:'2025-04-09 17:20'},
  {id:'R24040940',readerIdx:7, seatNo:'C-015',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slotStart:'1',duration:'2',time:'10:00 - 14:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 15:40',lat:'normal',remark:'',createdAt:'2025-04-09 09:50',signInAt:'2025-04-09 10:01',tempAt:'2025-04-09 11:40'},
 
+ /* ===== 今日 · 不连贯（多段）时段记录 ===== */
+ {id:'R24040941',readerIdx:0, seatNo:'A-060',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slots:[0,3],slotStart:'0',duration:'2',time:'08:00 - 10:00、14:00 - 16:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'上午场已签到 · 中间空档',lat:'normal',remark:'上午一 + 下午一（不连续）',createdAt:'2025-04-09 07:40',signInAt:'2025-04-09 08:02'},
+ {id:'R24040942',readerIdx:5, seatNo:'A-062',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:TODAY,slots:[1,4],slotStart:'1',duration:'2',time:'10:00 - 12:00、16:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'签到剩余 18 分钟',lat:'normal',remark:'两段不连续时段',createdAt:'2025-04-09 09:38'},
+ {id:'R24040943',readerIdx:3, seatNo:'B-030',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slots:[2,5],slotStart:'2',duration:'2',time:'12:00 - 14:00、18:00 - 20:00',sk:'temp',st:'暂离中',sc:'s-temp',sp:'暂离保留',bg:'#e4edfb',tx:'#1e4a8b',la:'暂离剩余 09:15',lat:'normal',remark:'午间 + 晚间不连续',createdAt:'2025-04-09 11:50',signInAt:'2025-04-09 12:01',tempAt:'2025-04-09 13:20'},
+ {id:'R24040944',readerIdx:6, seatNo:'B-033',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slots:[0,4,6],slotStart:'0',duration:'3',time:'08:00 - 10:00、16:00 - 18:00、20:00 - 22:00',sk:'done',st:'已完成',sc:'s-done',sp:'已释放',bg:'#e0f2fe',tx:'#075985',la:'三段时段全部正常签退',lat:'normal',remark:'三段不连续时段',createdAt:'2025-04-09 07:35',signInAt:'2025-04-09 08:00',checkoutAt:'2025-04-09 21:55'},
+ {id:'R24040945',readerIdx:9, seatNo:'C-020',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slots:[3,5],slotStart:'3',duration:'2',time:'14:00 - 16:00、18:00 - 20:00',sk:'inuse',st:'使用中',sc:'s-inuse',sp:'在用',bg:'#e3f2e8',tx:'#136b3e',la:'第一段使用中',lat:'normal',remark:'下午一 + 晚上一',createdAt:'2025-04-09 13:45',signInAt:'2025-04-09 14:02'},
+ {id:'R24040946',readerIdx:2, seatNo:'C-022',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slots:[1,6],slotStart:'1',duration:'2',time:'10:00 - 12:00、20:00 - 22:00',sk:'cancelled',st:'已取消',sc:'s-cancelled',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'用户主动取消 09:12',lat:'normal',remark:'',createdAt:'2025-04-09 09:00'},
+ {id:'R24040947',readerIdx:4, seatNo:'B-036',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:TODAY,slots:[0,2,4,6],slotStart:'0',duration:'4',time:'08:00 - 10:00、12:00 - 14:00、16:00 - 18:00、20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'签到剩余 06 分钟',lat:'urgent',remark:'四段不连续（隔段预约）',createdAt:'2025-04-09 07:30'},
+ {id:'R24040948',readerIdx:8, seatNo:'C-026',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:TODAY,slots:[1,4],slotStart:'1',duration:'2',time:'10:00 - 12:00、16:00 - 18:00',sk:'noshow',st:'未签到',sc:'s-noshow',sp:'已释放',bg:'#f0f2f5',tx:'#5e6f8c',la:'两段均未签到 · 违约',lat:'violation',remark:'不连续时段未签到',createdAt:'2025-04-09 09:30'},
+
  /* ===== 未来 · 原有记录 ===== */
  {id:'R25041001',readerIdx:0, seatNo:'A-102',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'0',duration:'2',time:'08:00 - 12:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:12'},
  {id:'R25041002',readerIdx:1, seatNo:'A-156',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 16:20'},
@@ -815,24 +881,76 @@ let data = [
  {id:'R25041607',readerIdx:9, seatNo:'B-005',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,1),slotStart:'2',duration:'2',time:'12:00 - 16:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:35'},
  {id:'R25041608',readerIdx:10,seatNo:'B-010',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,2),slotStart:'5',duration:'2',time:'18:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:38'},
  {id:'R25041609',readerIdx:1, seatNo:'C-005',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,1),slotStart:'3',duration:'2',time:'14:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:40'},
- {id:'R25041610',readerIdx:7, seatNo:'C-010',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,3),slotStart:'6',duration:'1',time:'20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:42'}
+ {id:'R25041610',readerIdx:7, seatNo:'C-010',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,3),slotStart:'6',duration:'1',time:'20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'',createdAt:'2025-04-09 18:42'},
+
+ /* ===== 未来 · 不连贯（多段）时段记录 ===== */
+ {id:'R25041701',readerIdx:1, seatNo:'A-070',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slots:[0,2,4],slotStart:'0',duration:'3',time:'08:00 - 10:00、12:00 - 14:00、16:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'三段不连续时段',createdAt:'2025-04-09 18:50'},
+ {id:'R25041702',readerIdx:4, seatNo:'A-072',venueId:'v-main',floorId:'f-main-2',areaId:'a1',dateKey:addDays(TODAY,1),slots:[3,6],slotStart:'3',duration:'2',time:'14:00 - 16:00、20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'下午一 + 晚上二',createdAt:'2025-04-09 18:52'},
+ {id:'R25041703',readerIdx:7, seatNo:'B-040',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,2),slots:[1,5],slotStart:'1',duration:'2',time:'10:00 - 12:00、18:00 - 20:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'不连续两段',createdAt:'2025-04-09 18:55'},
+ {id:'R25041704',readerIdx:10,seatNo:'C-025',venueId:'v-main',floorId:'f-main-3',areaId:'a3',dateKey:addDays(TODAY,3),slots:[0,4],slotStart:'0',duration:'2',time:'08:00 - 10:00、16:00 - 18:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'早间 + 下午',createdAt:'2025-04-09 18:58'},
+ {id:'R25041705',readerIdx:8, seatNo:'B-045',venueId:'v-main',floorId:'f-main-2',areaId:'a2',dateKey:addDays(TODAY,4),slots:[2,4,6],slotStart:'2',duration:'3',time:'12:00 - 14:00、16:00 - 18:00、20:00 - 22:00',sk:'pending',st:'待履约',sc:'s-pending',sp:'已预约',bg:'#fff8e5',tx:'#9b6f00',la:'读者提前预约 · 待生效',lat:'normal',remark:'隔段预约三段',createdAt:'2025-04-09 19:00'}
 ];
+
+/* ============================================================
+   时段工具函数
+   ============================================================ */
+/* 统一取出一条记录占用的时段索引数组（兼容老数据 slotStart/duration 与新的 slots 数组） */
+function recSlots(r){
+  if(r.slots && r.slots.length){
+    return r.slots.slice().sort(function(a,b){ return a-b; });
+  }
+  const s = parseInt(r.slotStart, 10) || 0;
+  const d = parseInt(r.duration, 10) || 1;
+  const out = [];
+  for(let k=0;k<d;k++){ if(s+k < SLOT_TOTAL) out.push(s+k); }
+  return out;
+}
+/* 把时段索引数组格式化成 "08:00 - 12:00、18:00 - 20:00" */
+function fmtSlotRanges(slots){
+  if(!slots || !slots.length) return '—';
+  const a = slots.slice().sort(function(x,y){ return x-y; });
+  const parts = [];
+  let i = 0;
+  while(i < a.length){
+    let j = i;
+    while(j+1 < a.length && a[j+1] === a[j]+1) j++;
+    parts.push(SLOT_RANGES[a[i]].split(' - ')[0] + ' - ' + SLOT_RANGES[a[j]].split(' - ')[1]);
+    i = j + 1;
+  }
+  return parts.join('、');
+}
+/* 把时段索引数组格式化成短标签："上午一 / 下午一" */
+function fmtSlotNames(slots){
+  return slots.slice().sort(function(a,b){ return a-b; }).map(function(i){ return SLOT_NAMES[i]; }).join('、');
+}
+function minSlotOf(r){ const s = recSlots(r); return s.length ? s[0] : 99; }
+function isReleasedState(sk){ return RELEASE_STATES.indexOf(sk) >= 0; }
+/* 判断该记录是否为多段/不连续时段 */
+function isMultiBlock(r){
+  const s = recSlots(r);
+  if(s.length < 2) return false;
+  if(s.length > 2) return true;
+  return (s[1] - s[0]) !== 1;
+}
+
+/* ============================================================
+   座位占用表
+   ============================================================ */
 const occupancy = {};
 function rebuildOccupancy(){
- for(let k in occupancy) delete occupancy[k];
+  for(let k in occupancy) delete occupancy[k];
   data.forEach(function(r){
-    const slotStart = parseInt(r.slotStart, 10);
-    const duration = parseInt(r.duration, 10);
-    const release = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'].indexOf(r.sk) >= 0;
-    for(let k=0;k<duration;k++){
-      const key = r.areaId + '|' + r.dateKey + '|' + (slotStart+k);
+    if(isReleasedState(r.sk)) return;
+    recSlots(r).forEach(function(s){
+      const key = r.areaId + '|' + r.dateKey + '|' + s;
       if(!occupancy[key]) occupancy[key] = new Set();
-      if(!release) occupancy[key].add(r.seatNo);
-    }
+      occupancy[key].add(r.seatNo);
+    });
   });
 }
 rebuildOccupancy();
-let state = {page:1, pageSize:10, keyword:'', status:'', type:'', date:'today', venue:'', floor:'', area:'', selected:new Set(), addReader:null};
+
+let state = {page:1, pageSize:10, keyword:'', status:'', type:'', date:'today', venue:'', floor:'', area:'', selected:new Set(), addReader:null, addSlots:[]};
 const $ = function(id){ return document.getElementById(id); };
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function pad2(n){ return String(n).padStart(2,'0'); }
@@ -968,14 +1086,19 @@ function renderTable(){
       const ls = r.lat==='violation' ? 'text-danger' : (r.lat==='urgent' ? 'text-urgent' : '');
       const checked = state.selected.has(r.id) ? 'checked' : '';
       const locStr = venue.name+' / '+floor.name+' / '+area.name;
+      const slots = recSlots(r);
+      const multi = isMultiBlock(r);
+      const timeHtml = '<div style="font-size:12.5px">'+r.dateKey+'</div>'
+        + '<div class="text-muted mono" style="margin-top:2px">'+esc(fmtSlotRanges(slots))+'</div>'
+        + (multi ? '<div class="text-muted" style="margin-top:2px;color:#7c3aed">不连续 '+slots.length+' 段 · '+esc(fmtSlotNames(slots))+'</div>' : '');
       html += '<tr>';
       html += '<td><input type="checkbox" class="row-checkbox" data-id="'+r.id+'" '+checked+'></td>';
       html += '<td><span class="text-muted mono">#'+r.id+'</span></td>';
-      html += '<td><span class="tag t-'+typeKeyFn(reader.type)+'">'+esc(reader.type)+'</span></td>';
-      html += '<td><div class="user-cell"><div class="avatar-sm '+(reader.gender==='女'?'f':'')+'">'+esc(reader.name[0])+'</div><div><div class="user-name-sm">'+esc(reader.name)+'</div><div class="user-sub-sm mono">'+esc(reader.certNo)+'</div></div></div></td>';
       html += '<td><span class="seat-number" onclick="openSeatDetail(\''+r.seatNo+'\',\''+r.areaId+'\')" title="查看该座位的使用及预约情况">'+r.seatNo+'</span></td>';
       html += '<td><span class="seat-meta" style="background:'+r.bg+';color:'+r.tx+'">'+locStr+'</span></td>';
-      html += '<td><div style="font-size:12.5px">'+r.dateKey+'</div><div class="text-muted mono" style="margin-top:2px">'+r.time+'</div></td>';
+      html += '<td><div class="user-cell"><div class="avatar-sm '+(reader.gender==='女'?'f':'')+'">'+esc(reader.name[0])+'</div><div><div class="user-name-sm">'+esc(reader.name)+'</div><div class="user-sub-sm mono">'+esc(reader.certNo)+'</div></div></div></td>';
+      html += '<td><span class="tag t-'+typeKeyFn(reader.type)+'">'+esc(reader.type)+'</span></td>';
+      html += '<td>'+timeHtml+'</td>';
       html += '<td><span class="status '+r.sc+'"><i></i>'+r.st+'</span></td>';
       html += '<td><span class="seat-meta" style="background:'+r.bg+';color:'+r.tx+'">'+r.sp+'</span></td>';
       html += '<td class="'+ls+'">'+r.la+'</td>';
@@ -1020,19 +1143,19 @@ function act(a, id){
   const reader = READERS[r.readerIdx];
   switch(a){
     case 'force-checkin':
-      confirmDialog({title:'强制签到',icon:'info',question:'确定要为读者「'+reader.name+'」强制签到吗？',text:'强制签到后预约立即进入「使用中」状态，开始计时。',detail:'读者：'+reader.name+'（'+reader.certNo+'）<br>座位：'+r.seatNo+' · '+r.time,okText:'确认签到',okClass:'btn btn-primary',onOk:function(){
+      confirmDialog({title:'强制签到',icon:'info',question:'确定要为读者「'+reader.name+'」强制签到吗？',text:'强制签到后预约立即进入「使用中」状态，开始计时。',detail:'读者：'+reader.name+'（'+reader.certNo+'）<br>座位：'+r.seatNo+' · '+fmtSlotRanges(recSlots(r)),okText:'确认签到',okClass:'btn btn-primary',onOk:function(){
         r.sk='inuse';r.st='使用中';r.sc='s-inuse';r.sp='在用';r.bg='#e3f2e8';r.tx='#136b3e';r.la='管理员强制签到';r.lat='normal';r.signInAt=fmtNow();
         rebuildOccupancy();renderTable();toast('已为 '+reader.name+' 强制签到','success');
       }});
       break;
     case 'cancel':
-      confirmDialog({title:'取消预约',icon:'warning',question:'确定要取消该预约吗？',text:'取消后座位将立即释放，归档为「已取消」。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+r.time,okText:'确认取消',okClass:'btn btn-primary',onOk:function(){
+      confirmDialog({title:'取消预约',icon:'warning',question:'确定要取消该预约吗？',text:'取消后座位将立即释放，归档为「已取消」。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+fmtSlotRanges(recSlots(r)),okText:'确认取消',okClass:'btn btn-primary',onOk:function(){
         r.sk='cancelled';r.st='已取消';r.sc='s-cancelled';r.sp='已释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员取消预约';r.lat='normal';
         rebuildOccupancy();renderTable();toast('已取消 '+reader.name+' 的预约','warn');
       }});
       break;
     case 'force-checkout':
-      confirmDialog({title:'强制签退',icon:'warning',question:'确定要强制签退吗？',text:'强制签退将记入读者违约档案（未签离）。',detail:'读者：'+reader.name+'（当前累计违约 '+reader.violations+' 次）<br>座位：'+r.seatNo+' · '+r.time,okText:'确认签退',okClass:'btn btn-primary',onOk:function(){
+      confirmDialog({title:'强制签退',icon:'warning',question:'确定要强制签退吗？',text:'强制签退将记入读者违约档案（未签离）。',detail:'读者：'+reader.name+'（当前累计违约 '+reader.violations+' 次）<br>座位：'+r.seatNo+' · '+fmtSlotRanges(recSlots(r)),okText:'确认签退',okClass:'btn btn-primary',onOk:function(){
         r.sk='nocheckout';r.st='未签离';r.sc='s-nocheckout';r.sp='已强制释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员强制签退';r.lat='violation';
         rebuildOccupancy();renderTable();toast('已强制签退，座位 '+r.seatNo+' 已释放','warn');
       }});
@@ -1042,13 +1165,13 @@ function act(a, id){
       rebuildOccupancy();renderTable();toast('已恢复 '+reader.name+' 的座位 '+r.seatNo+' 为「使用中」','success');
       break;
     case 'supervise':
-      confirmDialog({title:'发起监督',icon:'warning',question:'确定要对该座位发起监督吗？',text:'发起监督后读者有10分钟时间返回扫码自证，超时将记违约。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+r.time,okText:'发起监督',okClass:'btn btn-primary',onOk:function(){
+      confirmDialog({title:'发起监督',icon:'warning',question:'确定要对该座位发起监督吗？',text:'发起监督后读者有10分钟时间返回扫码自证，超时将记违约。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+fmtSlotRanges(recSlots(r)),okText:'发起监督',okClass:'btn btn-primary',onOk:function(){
         r.sk='supervised';r.st='被监督中';r.sc='s-supervised';r.sp='监督中';r.bg='#fff1e0';r.tx='#b45309';r.la='管理员发起监督 · 10分钟内返回';r.lat='urgent';r.supervisedAt=fmtNow();
         renderTable();toast('已对 '+reader.name+' '+r.seatNo+' 发起监督','warn');
       }});
       break;
     case 'force-release':
-      confirmDialog({title:'强制释放',icon:'danger',question:'确定要强制释放该座位吗？',text:'强制释放将把记录归档为「已取消」，不记违约。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+r.time,okText:'强制释放',okClass:'btn btn-danger',onOk:function(){
+      confirmDialog({title:'强制释放',icon:'danger',question:'确定要强制释放该座位吗？',text:'强制释放将把记录归档为「已取消」，不记违约。',detail:'读者：'+reader.name+'<br>座位：'+r.seatNo+' · '+fmtSlotRanges(recSlots(r)),okText:'强制释放',okClass:'btn btn-danger',onOk:function(){
         r.sk='cancelled';r.st='已取消';r.sc='s-cancelled';r.sp='已释放';r.bg='#f0f2f5';r.tx='#5e6f8c';r.la='管理员强制释放';r.lat='normal';
         rebuildOccupancy();renderTable();toast('已强制释放座位 '+r.seatNo,'warn');
       }});
@@ -1102,6 +1225,14 @@ function updateBatchBar(){
   $('selCount').textContent = state.selected.size;
   $('batchBar').classList.toggle('show', state.selected.size>0);
 }
+
+/* ============================================================
+   预约详情弹窗（Tab 切换 + 底部固定时间线）
+   ============================================================ */
+let detailTabData = [];
+let detailActiveTab = 'basic';
+let detailTimelineHtml = '';
+
 function openDetail(id){
   const r = data.find(function(x){ return x.id===id; });
   if(!r) return;
@@ -1109,50 +1240,95 @@ function openDetail(id){
   const venue = VENUES.find(function(v){ return v.id===r.venueId; });
   const floor = FLOORS.find(function(f){ return f.id===r.floorId; });
   const area = AREAS.find(function(a){ return a.id===r.areaId; });
-  const slotStart = parseInt(r.slotStart,10);
-  const slotEnd = slotStart + parseInt(r.duration,10);
-  let slotsHtml = '';
-  for(let i=slotStart;i<slotEnd;i++){ slotsHtml += '<span class="seat-meta" style="background:#eff6ff;color:#2563eb">'+SLOT_NAMES[i]+' '+SLOT_RANGES[i]+'</span>'; }
-  const endStates = ['cancelled','noshow','nocheckout','overtime','supervised-return','done'];
+  const slots = recSlots(r);
+  const multi = isMultiBlock(r);
+
+  /* ---------- Tab 1：基本信息 ---------- */
+  const basicHtml = ''
+  + '<div class="detail-section"><h4>预约概览</h4><div class="info-grid">'
+  +   '<div class="info-item"><div class="label">记录ID</div><div class="value mono">#'+r.id+'</div></div>'
+  +   '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
+  +   '<div class="info-item"><div class="label">当前状态</div><div class="value"><span class="status '+r.sc+'"><i></i>'+r.st+'</span></div></div>'
+  +   '<div class="info-item"><div class="label">座位物理状态</div><div class="value">'+r.sp+'</div></div>'
+  +   '<div class="info-item"><div class="label">预约类型</div><div class="value">'
+  +     (multi ? '<span class="tag" style="background:#f5f3ff;color:#7c3aed">多段不连续（'+fmtSlotRanges(slots).split('、').length+' 段）</span>'
+            : '<span class="tag" style="background:#eff6ff;color:#2563eb">连续单段</span>')
+  +   '</div></div>'
+  +   '<div class="info-item"><div class="label">总时长</div><div class="value">'+slots.length+' 个时段 · '+(slots.length*2)+' 小时</div></div>'
+  + '</div></div>'
+  + '<div class="detail-section"><h4>最新动态</h4><div class="confirm-detail" style="margin-top:0">'+r.la+'</div></div>';
+
+  /* ---------- Tab 2：读者信息 ---------- */
+  const readerHtml = ''
+  + '<div class="detail-section"><h4>读者档案</h4><div class="info-grid">'
+  +   '<div class="info-item"><div class="label">姓名</div><div class="value">'+esc(reader.name)+'</div></div>'
+  +   '<div class="info-item"><div class="label">读者类型</div><div class="value"><span class="tag t-'+typeKeyFn(reader.type)+'">'+esc(reader.type)+'</span></div></div>'
+  +   '<div class="info-item"><div class="label">借阅凭证号</div><div class="value mono">'+esc(reader.certNo)+'</div></div>'
+  +   '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(reader.dept)+'</div></div>'
+  +   '<div class="info-item"><div class="label">读者状态</div><div class="value">'+esc(reader.status)+'</div></div>'
+  +   '<div class="info-item"><div class="label">累计违约</div><div class="value" style="color:'+(reader.violations>0?'#b91c1c':'#111827')+'">'+reader.violations+' 次</div></div>'
+  + '</div></div>';
+
+  /* ---------- Tab 3：座位与时段 ---------- */
+  let slotsHtml = slots.map(function(i){
+    return '<span class="seat-meta" style="background:#eff6ff;color:#2563eb;margin-left:0">'+SLOT_NAMES[i]+' '+SLOT_RANGES[i]+'</span>';
+  }).join('');
+  let remarkHtml = '';
+  if(r.remark) remarkHtml = '<div class="info-item full"><div class="label">备注</div><div class="value">'+esc(r.remark)+'</div></div>';
+  const seatHtml = ''
+  + '<div class="detail-section"><h4>座位信息</h4><div class="info-grid">'
+  +   '<div class="info-item"><div class="label">座位号</div><div class="value"><span class="seat-number">'+r.seatNo+'</span></div></div>'
+  +   '<div class="info-item"><div class="label">位置</div><div class="value">'+venue.name+' / '+floor.name+' / '+area.name+'</div></div>'
+  +   '<div class="info-item"><div class="label">预约日期</div><div class="value mono">'+r.dateKey+'</div></div>'
+  +   '<div class="info-item"><div class="label">时段数 / 总时长</div><div class="value">'+slots.length+' 个时段 · '+(slots.length*2)+' 小时</div></div>'
+  +   '<div class="info-item full"><div class="label">时间段（合并显示）</div><div class="value mono">'+esc(fmtSlotRanges(slots))+'</div></div>'
+  +   '<div class="info-item full"><div class="label">占用时段明细</div><div class="value" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'+slotsHtml+'</div></div>'
+  +   remarkHtml
+  + '</div></div>';
+
+  /* ---------- 底部固定：操作时间线 ---------- */
   const signedStates = ['inuse','temp','supervised','overtime','nocheckout','supervised-return','done'];
   const tempStates = ['temp','overtime'];
   const supStates = ['supervised','supervised-return'];
   const doneStates = ['done'];
+  const endStates = ['cancelled','noshow','nocheckout','overtime','supervised-return','done'];
   let timelineHtml = '<div class="timeline-item active"><div>预约创建</div><div class="ti-time">'+r.createdAt+'</div></div>';
   if(r.signInAt) timelineHtml += '<div class="timeline-item '+(signedStates.indexOf(r.sk)>=0?'active':'')+'"><div>读者签到</div><div class="ti-time">'+r.signInAt+'</div></div>';
   if(r.tempAt) timelineHtml += '<div class="timeline-item '+(tempStates.indexOf(r.sk)>=0?'active':'')+'"><div>读者暂离</div><div class="ti-time">'+r.tempAt+'</div></div>';
   if(r.supervisedAt) timelineHtml += '<div class="timeline-item '+(supStates.indexOf(r.sk)>=0?'active':'')+'"><div>发起监督</div><div class="ti-time">'+r.supervisedAt+'</div></div>';
   if(r.checkoutAt) timelineHtml += '<div class="timeline-item '+(doneStates.indexOf(r.sk)>=0?'active':'')+'"><div>读者签退</div><div class="ti-time">'+r.checkoutAt+'</div></div>';
   if(endStates.indexOf(r.sk)>=0) timelineHtml += '<div class="timeline-item active"><div>记录终结 · '+r.st+'</div><div class="ti-time">'+fmtNow().substr(11)+'</div></div>';
-  let remarkHtml = '';
-  if(r.remark) remarkHtml = '<div class="info-item full"><div class="label">备注</div><div class="value">'+esc(r.remark)+'</div></div>';
-  $('detailBody').innerHTML = ''
-+ '<div class="detail-section"><h4>基本信息</h4><div class="info-grid">'
-+   '<div class="info-item"><div class="label">记录ID</div><div class="value mono">#'+r.id+'</div></div>'
-+   '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
-+   '<div class="info-item"><div class="label">当前状态</div><div class="value"><span class="status '+r.sc+'"><i></i>'+r.st+'</span></div></div>'
-+   '<div class="info-item"><div class="label">座位物理状态</div><div class="value">'+r.sp+'</div></div>'
-+ '</div></div>'
-+ '<div class="detail-section"><h4>读者信息</h4><div class="info-grid">'
-+   '<div class="info-item"><div class="label">姓名</div><div class="value">'+esc(reader.name)+'</div></div>'
-+   '<div class="info-item"><div class="label">读者类型</div><div class="value"><span class="tag t-'+typeKeyFn(reader.type)+'">'+esc(reader.type)+'</span></div></div>'
-+   '<div class="info-item"><div class="label">借阅凭证号</div><div class="value mono">'+esc(reader.certNo)+'</div></div>'
-+   '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(reader.dept)+'</div></div>'
-+   '<div class="info-item"><div class="label">读者状态</div><div class="value">'+esc(reader.status)+'</div></div>'
-+   '<div class="info-item"><div class="label">累计违约</div><div class="value" style="color:'+(reader.violations>0?'#b91c1c':'#111827')+'">'+reader.violations+' 次</div></div>'
-+ '</div></div>'
-+ '<div class="detail-section"><h4>座位与时段</h4><div class="info-grid">'
-+   '<div class="info-item"><div class="label">座位号</div><div class="value"><span class="seat-number">'+r.seatNo+'</span></div></div>'
-+   '<div class="info-item"><div class="label">位置</div><div class="value">'+venue.name+' / '+floor.name+' / '+area.name+'</div></div>'
-+   '<div class="info-item"><div class="label">预约日期</div><div class="value mono">'+r.dateKey+'</div></div>'
-+   '<div class="info-item"><div class="label">时段</div><div class="value">'+r.time+'</div></div>'
-+   '<div class="info-item full"><div class="label">占用时段明细</div><div class="value" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">'+slotsHtml+'</div></div>'
-+   remarkHtml
-+ '</div></div>'
-+ '<div class="detail-section"><h4>操作时间线</h4><div class="timeline">'+timelineHtml+'</div></div>'
-+ '<div class="detail-section"><h4>最后操作</h4><div class="confirm-detail">'+r.la+'</div></div>';
+  detailTimelineHtml = ''
+  + '<div class="detail-section"><h4>操作时间线</h4><div class="timeline">'+timelineHtml+'</div></div>'
+  + '<div class="detail-section" style="margin-top:14px"><h4>最后操作</h4><div class="confirm-detail" style="margin-top:0">'+r.la+'</div></div>';
+
+  detailTabData = [
+    { key:'basic',  label:'基本信息',   html:basicHtml },
+    { key:'reader', label:'读者信息',   html:readerHtml },
+    { key:'seat',   label:'座位与时段', html:seatHtml }
+  ];
+  detailActiveTab = 'basic';
+  $('detailTitle').textContent = '预约详情 · ' + r.id;
+  renderDetailTabs();
   $('detailMask').classList.add('show');
 }
+
+function renderDetailTabs(){
+  let h = '';
+  detailTabData.forEach(function(t){
+    h += '<button type="button" class="modal-tab'+(t.key===detailActiveTab?' active':'')+'" onclick="switchDetailTab(\''+t.key+'\')">'+t.label+'</button>';
+  });
+  $('detailTabs').innerHTML = h;
+  const cur = detailTabData.find(function(t){ return t.key===detailActiveTab; });
+  $('detailBody').innerHTML = (cur ? cur.html : '')
+    + '<div class="detail-timeline-footer">' + detailTimelineHtml + '</div>';
+}
+
+function switchDetailTab(key){
+  detailActiveTab = key;
+  renderDetailTabs();
+}
+
 function openLegal(){
   $('legalBody').innerHTML = ''
 + '<div class="legal-cat"><div class="legal-cat-title">一、正常流转中的状态（5 种）</div>'
@@ -1228,7 +1404,6 @@ const USAGE_STATUS = {
   nocheckout:         { label:'未签离',     bg:'#fee2e2', tx:'#991b1b' },
   'supervised-return':{ label:'被监督未返回', bg:'#fee2e2', tx:'#a11212' }
 };
-const USAGE_RELEASED = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'];
 
 /* 图例定义（点击可筛选） */
 const LEGEND_ITEMS = [
@@ -1244,7 +1419,7 @@ const LEGEND_ITEMS = [
 const uState = { inited:false, venueId:'v-main', floorId:'f-main-2', areaId:'a1', dateKey:TODAY, showAll:false, page:1, pageSize:15, filterStatus:'' };
 
 function weekdayCn(dk){ return '周' + '日一二三四五六'.charAt(new Date(dk+'T00:00:00').getDay()); }
-function isUsageReleased(sk){ return USAGE_RELEASED.indexOf(sk) >= 0; }
+function isUsageReleased(sk){ return isReleasedState(sk); }
 function usageDates(){ const a=[]; for(let i=0;i<7;i++) a.push(addDays(TODAY,i)); return a; }
 function usageDateLabel(i, dk){
   if(i===0) return '今日';
@@ -1305,11 +1480,10 @@ function renderUsage(){
 
   const cellMap = {};
   recs.forEach(function(r){
-    const s0 = parseInt(r.slotStart,10), d = parseInt(r.duration,10);
-    for(let k=0;k<d;k++){
-      const key = r.seatNo + '|' + (s0+k);
+    recSlots(r).forEach(function(s){
+      const key = r.seatNo + '|' + s;
       if(!cellMap[key]) cellMap[key] = r;
-    }
+    });
   });
 
   const allSeats = getAreaSeatList(uState.areaId);
@@ -1340,8 +1514,8 @@ function renderUsage(){
   const orderCount = activeRecs.length;
   const usedSeats  = new Set(activeRecs.map(function(r){ return r.seatNo; })).size;
   let slotCells = 0;
-  activeRecs.forEach(function(r){ slotCells += parseInt(r.duration,10); });
-  const rate = totalSeats ? Math.round(slotCells / (totalSeats*7) * 100) : 0;
+  activeRecs.forEach(function(r){ slotCells += recSlots(r).length; });
+  const rate = totalSeats ? Math.round(slotCells / (totalSeats*SLOT_TOTAL) * 100) : 0;
   const idleSeats = Math.max(0, totalSeats - usedSeats);
 
   /* 分页 */
@@ -1408,16 +1582,16 @@ function renderUsage(){
     pagedSeats.forEach(function(seatNo){
       h += '<tr><th class="seat-col">'+esc(seatNo)+'</th>';
       let s = 0;
-      while(s < 7){
+      while(s < SLOT_TOTAL){
         const rec = cellMap[seatNo+'|'+s];
         if(!rec){
           let span = 1;
-          while(s+span < 7 && !cellMap[seatNo+'|'+(s+span)]) span++;
+          while(s+span < SLOT_TOTAL && !cellMap[seatNo+'|'+(s+span)]) span++;
           h += '<td colspan="'+span+'"><div class="u-cell free">空闲</div></td>';
           s += span;
         } else {
           let span = 1;
-          while(s+span < 7 && cellMap[seatNo+'|'+(s+span)] && cellMap[seatNo+'|'+(s+span)].id === rec.id) span++;
+          while(s+span < SLOT_TOTAL && cellMap[seatNo+'|'+(s+span)] && cellMap[seatNo+'|'+(s+span)].id === rec.id) span++;
           const st = USAGE_STATUS[rec.sk] || USAGE_STATUS.pending;
           const reader = READERS[rec.readerIdx];
           const released = isUsageReleased(rec.sk);
@@ -1454,7 +1628,7 @@ function renderUsage(){
   h += '<button class="up-btn" '+(uState.page===totalPages?'disabled':'')+' onclick="uGoPage('+(uState.page+1)+')">›</button>';
   h += '</div></div>';
 
-  h += '<div class="u-legend-note">说明：矩阵「行 = 座位、列 = 时段」，单元格显示该时段的占用读者，点击可查看该预约的完整详情；灰色半透明表示该预约已终结（已取消 / 违约释放 / 已完成）。点击上方「图例」可按状态筛选座位，再次点击同一图例取消筛选。</div>';
+  h += '<div class="u-legend-note">说明：矩阵「行 = 座位、列 = 时段」，单元格显示该时段的占用读者，点击可查看该预约的完整详情；灰色半透明表示该预约已终结（已取消 / 违约释放 / 已完成）。不连续时段的预约会拆成多个色块，中间的空档即未占用时段。点击上方「图例」可按状态筛选座位，再次点击同一图例取消筛选。</div>';
 
   $('usageBody').innerHTML = h;
 }
@@ -1470,15 +1644,16 @@ function openSeatDetail(seatNo, areaId){
 
   const all = data.filter(function(r){ return r.seatNo===seatNo && r.areaId===areaId; });
   const todayList = all.filter(function(r){ return r.dateKey===TODAY; })
-                      .sort(function(a,b){ return parseInt(a.slotStart,10)-parseInt(b.slotStart,10); });
+                      .sort(function(a,b){ return minSlotOf(a)-minSlotOf(b); });
   const futureList = all.filter(function(r){ return r.dateKey>TODAY; })
-                       .sort(function(a,b){ return a.dateKey.localeCompare(b.dateKey) || parseInt(a.slotStart,10)-parseInt(b.slotStart,10); });
+                       .sort(function(a,b){ return a.dateKey.localeCompare(b.dateKey) || minSlotOf(a)-minSlotOf(b); });
 
   function cardHtml(r){
     const reader = READERS[r.readerIdx];
     const released = isUsageReleased(r.sk);
+    const slots = recSlots(r);
     return '<div class="sd-card">'
-      + '<div class="sd-time">'+r.time+'</div>'
+      + '<div class="sd-time">'+esc(fmtSlotRanges(slots))+'</div>'
       + '<div class="sd-reader">'+esc(reader.name)+'</div>'
       + '<div class="sd-status"><span class="status '+r.sc+'"><i></i>'+r.st+'</span></div>'
       + '<div class="sd-meta">'+esc(r.dateKey)+(released?' · 已释放':'')+'</div>'
@@ -1521,8 +1696,12 @@ function openSeatDetail(seatNo, areaId){
   $('seatDetailMask').classList.add('show');
 }
 
+/* ============================================================
+   新增预约弹窗（多时段 / 不连续时段）
+   ============================================================ */
 function openAddModal(){
   state.addReader = null;
+  state.addSlots = [];
   $('addReaderSearch').value = '';
   $('readerPickList').classList.remove('show');
   $('addVenue').value = '';
@@ -1533,16 +1712,87 @@ function openAddModal(){
   $('addDate').value = TODAY;
   $('addDate').min = TODAY;
   $('addDate').max = addDays(TODAY, 7);
-  $('addSlot').value = '5';
-  $('addDuration').value = '2';
   $('addRemark').value = '';
- $('pickedSeat').value = '';
+  $('pickedSeat').value = '';
   $('pickedSeatText').textContent = '未选择';
   $('addSubmitBtn').disabled = true;
   $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+  renderSlotPicker();
   $('addMask').classList.add('show');
   setTimeout(function(){ $('addReaderSearch').focus(); }, 100);
 }
+
+/* 渲染时段多选器（根据区域/日期动态显示每个时段的剩余座位） */
+function renderSlotPicker(){
+  const wrap = $('slotPicker');
+  if(!wrap) return;
+  const areaId = $('addArea').value;
+  const dateKey = $('addDate').value || TODAY;
+  if(!areaId){
+    wrap.innerHTML = '<div class="slot-empty">请先选择「区域」后再选择时段</div>';
+    updateSlotTip();
+    return;
+  }
+  const area = AREAS.find(function(a){ return a.id===areaId; });
+  const totalSeats = area ? area.cols * area.rows : 0;
+  let html = '';
+  SLOT_NAMES.forEach(function(n, i){
+    const key = areaId + '|' + dateKey + '|' + i;
+    const used = occupancy[key] ? occupancy[key].size : 0;
+    const remain = Math.max(0, totalSeats - used);
+    const full = totalSeats > 0 && remain <= 0;
+    const sel = state.addSlots.indexOf(i) >= 0;
+    html += '<button type="button" class="slot-chip' + (sel ? ' selected' : '') + (full ? ' full' : '') + '"'
+         +  (full ? ' disabled' : '')
+         +  ' onclick="toggleAddSlot(' + i + ')">'
+         +  '<span class="sc-name">' + n + '</span>'
+         +  '<span class="sc-time">' + SLOT_RANGES[i] + '</span>'
+         +  '<span class="sc-remain">' + (full ? '已满座' : '空闲 ' + remain) + '</span>'
+         +  '</button>';
+  });
+  wrap.innerHTML = html;
+  updateSlotTip();
+}
+
+function updateSlotTip(){
+  const tip = $('slotTip');
+  if(!tip) return;
+  if(!state.addSlots.length){
+    tip.innerHTML = '可多选，支持不连续时段（如「上午一 + 下午一」）；单次最多 ' + MAX_SLOTS_PER_ORDER + ' 个时段（' + (MAX_SLOTS_PER_ORDER*2) + ' 小时）';
+    return;
+  }
+  const n = state.addSlots.length;
+  const blocks = fmtSlotRanges(state.addSlots).split('、').length;
+  tip.innerHTML = '已选 <b>' + n + '</b> 个时段 · 合计 <b>' + (n*2) + '</b> 小时'
+    + ' · <span class="ss-range">' + esc(fmtSlotRanges(state.addSlots)) + '</span>'
+    + (blocks > 1 ? '　（含 ' + blocks + ' 段不连续时段）' : '');
+}
+
+/* 点击某个时段 chip：切换选中状态 */
+function toggleAddSlot(i){
+  const idx = state.addSlots.indexOf(i);
+  if(idx >= 0){
+    state.addSlots.splice(idx, 1);
+  } else {
+    if(state.addSlots.length >= MAX_SLOTS_PER_ORDER){
+      toast('单次最多选择 ' + MAX_SLOTS_PER_ORDER + ' 个时段', 'warn');
+      return;
+    }
+    state.addSlots.push(i);
+    state.addSlots.sort(function(a,b){ return a-b; });
+  }
+  renderSlotPicker();
+  const areaId = $('addArea').value;
+  if(areaId) renderSeatsForArea(areaId, true);
+  updateAddSubmit();
+}
+
+function resetSeatPick(){
+  $('pickedSeat').value = '';
+  $('pickedSeatText').textContent = '未选择';
+  $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+}
+
 function onVenueChange(){
   const venueId = $('addVenue').value;
   const floorSel = $('addFloor');
@@ -1557,10 +1807,11 @@ function onVenueChange(){
     floorSel.innerHTML = '<option value="">请选择楼层</option>' + floors.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
     floorSel.disabled = false;
     floorSel.value = '';
+    areaSel.innerHTML = '<option value="">请先选择楼层</option>';
+    areaSel.disabled = true;
   }
-  $('pickedSeat').value = '';
-  $('pickedSeatText').textContent = '未选择';
-  $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+  resetSeatPick();
+  renderSlotPicker();
   updateAddSubmit();
 }
 function onFloorChange(){
@@ -1575,28 +1826,37 @@ function onFloorChange(){
     areaSel.disabled = false;
     areaSel.value = '';
   }
-  $('pickedSeat').value = '';
-  $('pickedSeatText').textContent = '未选择';
-  $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+  resetSeatPick();
+  renderSlotPicker();
   updateAddSubmit();
 }
 function onAreaChange(){
   const areaId = $('addArea').value;
   if(!areaId){
-    $('seatContainer').innerHTML = '<div class="empty-mini">请先完成上方「馆藏地 / 楼层 / 区域」三级选择</div>';
+    resetSeatPick();
+    renderSlotPicker();
+    updateAddSubmit();
+    return;
+  }
+  renderSlotPicker();
+  renderSeatsForArea(areaId, false);
+}
+
+/* 渲染座位图；keepPicked=true 时尽量保留之前选中的座位 */
+function renderSeatsForArea(areaId, keepPicked){
+  const area = AREAS.find(function(a){ return a.id===areaId; });
+  if(!area){ $('seatContainer').innerHTML = '<div class="empty-mini">未找到该区域</div>'; return; }
+  const dateKey = $('addDate').value || TODAY;
+
+  if(!state.addSlots.length){
+    $('seatContainer').innerHTML = '<div class="empty-mini">请先在上方选择「预约时段」，再选择座位</div>';
     $('pickedSeat').value = '';
     $('pickedSeatText').textContent = '未选择';
     updateAddSubmit();
     return;
   }
-  renderSeatsForArea(areaId);
-}
-function renderSeatsForArea(areaId){
-  const area = AREAS.find(function(a){ return a.id===areaId; });
-  if(!area){ $('seatContainer').innerHTML = '<div class="empty-mini">未找到该区域</div>'; return; }
-  const dateKey = $('addDate').value || TODAY;
-  const slotStart = parseInt($('addSlot').value,10);
-  const duration = parseInt($('addDuration').value, 10);
+
+  const slots = state.addSlots;
   const cols = area.cols;
   const rows = area.rows;
   let facilitiesRow = ''
@@ -1610,8 +1870,8 @@ function renderSeatsForArea(areaId){
       const num = seatIdx + 1;
       const seatNo = area.prefix + String(num).padStart(3,'0');
       let occupied = false;
-      for(let k=0;k<duration;k++){
-        const key = areaId+'|'+dateKey+'|'+(slotStart+k);
+      for(let k=0;k<slots.length;k++){
+        const key = areaId+'|'+dateKey+'|'+slots[k];
         if(occupancy[key] && occupancy[key].has(seatNo)){ occupied = true; break; }
       }
       const cls = occupied ? 'occupied' : 'free';
@@ -1619,8 +1879,23 @@ function renderSeatsForArea(areaId){
     }
   }
   $('seatContainer').innerHTML = '<div class="sgp-canvas" style="grid-template-columns:repeat('+cols+',38px)">'+facilitiesRow+seatCells+'</div>';
-  $('pickedSeat').value = '';
-  $('pickedSeatText').textContent = '未选择';
+
+  /* 尽量恢复之前选中的座位 */
+  const prev = keepPicked ? $('pickedSeat').value : '';
+  let restored = '';
+  if(prev){
+    const cells = $('seatContainer').querySelectorAll('.sgp-cell.free');
+    for(let i=0;i<cells.length;i++){
+      if(cells[i].dataset.seat === prev){
+        cells[i].classList.add('selected');
+        restored = prev;
+        break;
+      }
+    }
+  }
+  $('pickedSeat').value = restored;
+  $('pickedSeatText').textContent = restored ? (restored + '（' + area.name + '）') : '未选择';
+
   $('seatContainer').querySelectorAll('.sgp-cell.free').forEach(function(el){
     el.addEventListener('click', function(){
       const sn = el.dataset.seat;
@@ -1632,11 +1907,27 @@ function renderSeatsForArea(areaId){
   });
   updateAddSubmit();
 }
-['addDate','addSlot','addDuration'].forEach(function(id){
-  $(id).addEventListener('change', function(){
-    if($('addArea').value) renderSeatsForArea($('addArea').value);
-  });
+
+/* 日期变化：清理在新日期下已满的时段，并重绘时段与座位 */
+$('addDate').addEventListener('change', function(){
+  const areaId = $('addArea').value;
+  const dateKey = $('addDate').value || TODAY;
+  if(areaId && state.addSlots.length){
+    const area = AREAS.find(function(a){ return a.id===areaId; });
+    const totalSeats = area ? area.cols * area.rows : 0;
+    const before = state.addSlots.length;
+    state.addSlots = state.addSlots.filter(function(i){
+      const key = areaId+'|'+dateKey+'|'+i;
+      const used = occupancy[key] ? occupancy[key].size : 0;
+      return (totalSeats - used) > 0;
+    });
+    if(state.addSlots.length < before) toast('部分时段在该日期已满座，已自动取消选择','warn');
+  }
+  renderSlotPicker();
+  if(areaId) renderSeatsForArea(areaId, true);
+  updateAddSubmit();
 });
+
 $('addReaderSearch').addEventListener('input', function(e){ renderReaderPick(e.target.value); });
 $('addReaderSearch').addEventListener('focus', function(e){ renderReaderPick(e.target.value); });
 document.addEventListener('click', function(e){
@@ -1675,31 +1966,67 @@ function renderReaderPick(kw){
   });
 }
 function updateAddSubmit(){
- const ok = state.addReader && $('pickedSeat').value && $('addVenue').value && $('addFloor').value && $('addArea').value && $('addDate').value;
+  const ok = !!(state.addReader
+    && state.addSlots.length
+    && $('pickedSeat').value
+    && $('addVenue').value
+    && $('addFloor').value
+    && $('addArea').value
+    && $('addDate').value);
   $('addSubmitBtn').disabled = !ok;
 }
 function submitAdd(){
   if(!state.addReader){ toast('请选择读者','error'); return; }
   if(state.addReader.status!=='正常'){ toast('该读者状态异常，无法预约','error'); return; }
   if(!$('addVenue').value || !$('addFloor').value || !$('addArea').value){ toast('请完成馆藏地/楼层/区域三级选择','error'); return; }
+  if(!state.addSlots.length){ toast('请至少选择 1 个预约时段','error'); return; }
   if(!$('pickedSeat').value){ toast('请选择座位','error'); return; }
+
   const venueId = $('addVenue').value;
   const floorId = $('addFloor').value;
-  const areaId = $('addArea').value;
+  const areaId  = $('addArea').value;
   const dateKey = $('addDate').value;
-  const slotStart = parseInt($('addSlot').value, 10);
-  const duration = parseInt($('addDuration').value, 10);
-  const seatNo = $('pickedSeat').value;
+  const slots   = state.addSlots.slice().sort(function(a,b){ return a-b; });
+  const seatNo  = $('pickedSeat').value;
   const readerIdx = READERS.indexOf(state.addReader);
-  const releaseStates = ['cancelled','noshow','overtime','nocheckout','supervised-return','done'];
-  const todayCount = data.filter(function(r){ return r.readerIdx===readerIdx && r.dateKey===dateKey && releaseStates.indexOf(r.sk)===-1; }).length;
-  if(todayCount >= 2){ toast('该读者当日已有 '+todayCount+' 条有效预约，最多2 条','error'); return; }
-  const slotEnd = slotStart + duration;
-  const time = SLOT_RANGES[slotStart].split(' - ')[0] + ' - ' + SLOT_RANGES[Math.min(slotEnd-1,6)].split(' - ')[1];
+
+  /* 1. 读者当日预约条数限制 */
+  const todayCount = data.filter(function(r){
+    return r.readerIdx===readerIdx && r.dateKey===dateKey && !isReleasedState(r.sk);
+  }).length;
+  if(todayCount >= 2){ toast('该读者当日已有 '+todayCount+' 条有效预约，最多 2 条','error'); return; }
+
+  /* 2. 座位时段冲突校验 */
+  const seatClash = data.some(function(r){
+    if(r.areaId!==areaId || r.dateKey!==dateKey || r.seatNo!==seatNo) return false;
+    if(isReleasedState(r.sk)) return false;
+    const rs = recSlots(r);
+    return rs.some(function(s){ return slots.indexOf(s) >= 0; });
+  });
+  if(seatClash){
+    toast('座位 '+seatNo+' 在所选时段已被占用，请重新选择','error');
+    renderSeatsForArea(areaId, true);
+    return;
+  }
+
+  /* 3. 读者自身时段冲突校验 */
+  const readerClash = data.some(function(r){
+    if(r.readerIdx!==readerIdx || r.dateKey!==dateKey) return false;
+    if(isReleasedState(r.sk)) return false;
+    const rs = recSlots(r);
+    return rs.some(function(s){ return slots.indexOf(s) >= 0; });
+  });
+  if(readerClash){ toast('该读者在所选时段已有预约，请勿重复','error'); return; }
+
+  const time = fmtSlotRanges(slots);
   const id = 'R' + dateKey.substr(2).replace(/-/g,'') + String(Math.floor(Math.random()*900)+100);
   const newRec = {
     id: id, readerIdx: readerIdx, seatNo: seatNo, venueId: venueId, floorId: floorId, areaId: areaId,
-    dateKey: dateKey, slotStart: String(slotStart), duration: String(duration), time: time,
+    dateKey: dateKey,
+    slots: slots,                        /* 完整时段索引数组（支持不连续） */
+    slotStart: String(slots[0]),         /* 兼容字段：首个时段 */
+    duration: String(slots.length),      /* 兼容字段：时段个数 */
+    time: time,
     sk:'pending', st:'待履约', sc:'s-pending', sp:'已预约',
     bg:'#fff8e5', tx:'#9b6f00',
     la: dateKey===TODAY ? '签到剩余 15 分钟' : '预约成功 · '+dateKey+' 生效',
@@ -1710,14 +2037,15 @@ function submitAdd(){
   data.unshift(newRec);
   rebuildOccupancy();
   closeModal('addMask');
+
   if(dateKey===TODAY) state.date='today';
   else if(dateKey===addDays(TODAY,-1)) state.date='yesterday';
-  else if(dateKey>TODAY) state.date='all';
   else state.date='all';
   $('fDate').value = state.date;
   renderTable();
-  toast('预约创建成功！记录号 '+id, 'success');
+  toast('预约创建成功！记录号 '+id+'（'+slots.length+' 个时段）', 'success');
 }
+
 let confirmCb = null;
 function confirmDialog(opts){
   $('confirmTitle').textContent = opts.title;
@@ -1791,4 +2119,3 @@ document.addEventListener('keydown', function(e){
   </script>
 </body>
 </html>
-

@@ -816,6 +816,97 @@ html, body {
   cursor: pointer;
 }
 
+/* 开放时间：只读展示（列表） */
+.location-example .readonly-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.location-example .readonly-cell .time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.location-example .readonly-cell .tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--primary-light);
+  color: var(--primary-hover);
+  font-size: 11px;
+  line-height: 17px;
+  white-space: nowrap;
+}
+
+.location-example .readonly-cell .lock {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* 开放时间：只读展示（表单） */
+.modal .readonly-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-height: 36px;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.modal .readonly-field .ro-icon {
+  font-size: 12px;
+  opacity: .65;
+}
+
+.modal .readonly-field .ro-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .3px;
+}
+
+.modal .readonly-field .ro-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 5px;
+  background: var(--primary-light);
+  color: var(--primary-hover);
+  font-size: 11.5px;
+  line-height: 18px;
+}
+
+.modal .readonly-field .ro-link {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: .15s;
+  white-space: nowrap;
+}
+
+.modal .readonly-field .ro-link:hover {
+  background: var(--primary-light);
+}
+
+.modal .form-hint {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
 .toast {
   position: fixed;
   top: 26px;
@@ -863,6 +954,9 @@ html, body {
   }
   .location-example .filter-actions .btn {
     flex: 1;
+  }
+  .modal .readonly-field .ro-link {
+    margin-left: 0;
   }
 }
 </style>
@@ -1053,9 +1147,18 @@ html, body {
           <input type="text" id="phone" maxlength="20" placeholder="如：010-88880001">
           <span class="error-tip"></span>
         </div>
-        <div class="form-item">
+        <!-- 开放时间：只读展示，不再可编辑 -->
+        <div class="form-item full">
           <label>开放时间</label>
-          <input type="text" id="openTime" maxlength="30" placeholder="如：08:30-21:30">
+          <div class="readonly-field">
+            <span class="ro-icon">🔒</span>
+            <span class="ro-value" id="openTimeValue">—</span>
+            <span class="ro-tag">全局配置</span>
+            <button type="button" class="ro-link" id="btnGotoOpenConfig">前往配置 →</button>
+          </div>
+          <div class="form-hint">
+            开放时间已统一由「开放全局配置」维护（基础开放时间 / 周规则 / 特殊日期），此处仅作展示，不可直接编辑。
+          </div>
         </div>
         <div class="form-item">
           <label>排序值</label>
@@ -1117,6 +1220,13 @@ function toast(msg, type){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.classList.remove('show'); }, 2200);
 }
+
+/* ============================================================
+   数据说明
+   openTime 已不再是本页可编辑字段，仅作为「开放全局配置」的
+   计算结果在此只读展示。新增馆藏地默认继承全馆基础时间。
+   ============================================================ */
+const DEFAULT_OPEN_TIME = '08:30-21:30';   // 模拟「开放全局配置」中的全馆基础时间
 
 /* 数据：馆藏地就是总馆、分馆 —— 只有总馆启用，其余全部停用 */
 let store = [
@@ -1224,6 +1334,11 @@ function bindEvents(){
     if (e.target === $('formModal')) closeForm();
   });
 
+  /* 前往开放全局配置 */
+  $('btnGotoOpenConfig').addEventListener('click', () => {
+    location.href = 'opening-hours.html';
+  });
+
   $('btnCloseConfirm').addEventListener('click', closeConfirm);
   $('btnCancelConfirm').addEventListener('click', closeConfirm);
   $('btnOkConfirm').addEventListener('click', () => {
@@ -1266,7 +1381,7 @@ function exportCSV(){
   const list = getFiltered();
   if (!list.length) return toast('没有可导出的数据', 'error');
 
-  const headers = ['馆藏地代码', '馆藏地名称', '地址', '负责人', '联系电话', '开放时间', '排序', '状态', '备注'];
+  const headers = ['馆藏地代码', '馆藏地名称', '地址', '负责人', '联系电话', '开放时间（全局配置）', '排序', '状态', '备注'];
   const rows = list.map(it => [
     it.code, it.name, it.address, it.manager, it.phone, it.openTime,
     it.sort, it.status ? '启用' : '停用', it.remark
@@ -1314,7 +1429,15 @@ function render(){
         <td>${esc(it.address) || '-'}</td>
         <td>${esc(it.manager) || '-'}</td>
         <td>${esc(it.phone) || '-'}</td>
-        <td>${esc(it.openTime) || '-'}</td>
+        <td>
+          <div class="readonly-cell" title="开放时间由「开放全局配置」统一维护，此处仅作展示">
+            ${it.openTime
+              ? `<span class="lock">🔒</span>
+                 <span class="time">${esc(it.openTime)}</span>
+                 <span class="tag">全局</span>`
+              : `<span style="color:#94a3b8;">—</span>`}
+          </div>
+        </td>
         <td>${it.sort}</td>
         <td>
           <label class="switch">
@@ -1403,6 +1526,11 @@ function setError(id, msg){
   if (tip) tip.textContent = msg;
 }
 
+/** 只读展示开放时间 */
+function setOpenTimeDisplay(val){
+  $('openTimeValue').textContent = val || '—';
+}
+
 function openForm(id){
   editingId = id ?? null;
   clearErrors();
@@ -1412,7 +1540,6 @@ function openForm(id){
   $('address').value = '';
   $('manager').value = '';
   $('phone').value = '';
-  $('openTime').value = '';
   $('remark').value = '';
   document.querySelector('input[name="status"][value="1"]').checked = true;
 
@@ -1425,14 +1552,15 @@ function openForm(id){
     $('address').value = it.address || '';
     $('manager').value = it.manager || '';
     $('phone').value = it.phone || '';
-    $('openTime').value = it.openTime || '';
     $('sort').value = it.sort;
     $('remark').value = it.remark || '';
     document.querySelector(`input[name="status"][value="${it.status}"]`).checked = true;
+    setOpenTimeDisplay(it.openTime);
   } else {
     $('modalTitle').textContent = '新增馆藏地';
     const maxSort = store.reduce((m, i) => Math.max(m, i.sort), 0);
     $('sort').value = maxSort + 1;
+    setOpenTimeDisplay(DEFAULT_OPEN_TIME);
   }
 
   $('formModal').classList.add('show');
@@ -1444,6 +1572,7 @@ function closeForm(){
   editingId = null;
 }
 
+/* 注意：不再收集 openTime，开放时间由全局配置决定 */
 function collectForm(){
   return {
     code:     $('code').value.trim(),
@@ -1451,7 +1580,6 @@ function collectForm(){
     address:  $('address').value.trim(),
     manager:  $('manager').value.trim(),
     phone:    $('phone').value.trim(),
-    openTime: $('openTime').value.trim(),
     sort:     Number($('sort').value) || 0,
     status:   Number(document.querySelector('input[name="status"]:checked').value),
     remark:   $('remark').value.trim()
@@ -1495,10 +1623,12 @@ function submitForm(){
 
   if (editingId){
     const idx = store.findIndex(i => i.id === editingId);
+    // 保留原有 openTime（由全局配置决定，本页不参与编辑）
     store[idx] = { ...store[idx], ...data };
     toast('保存成功');
   } else {
-    store.push({ id: nextId++, ...data });
+    // 新增馆藏地：开放时间继承全馆基础时间
+    store.push({ id: nextId++, openTime: DEFAULT_OPEN_TIME, ...data });
     toast('新增成功');
   }
   closeForm();

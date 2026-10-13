@@ -491,7 +491,7 @@ html, body {
 .area-example .pager-btn:disabled { opacity: .45; cursor: not-allowed; }
 .area-example .pager-dots { padding: 0 4px; color: var(--text-3); }
 
-.area-example .slot-config-cell { cursor: default; position: relative; }
+.area-example .slot-config-cell { cursor: pointer; position: relative; }
 .area-example .slot-tooltip,
 #slotTooltip {
   position: fixed;
@@ -655,6 +655,51 @@ html, body {
 .area-example .chain-hint .crumb { color: var(--text); font-weight: 500; }
 .area-example .chain-hint .sep { color: #cbd5e1; font-size: 11px; }
 
+/* 开放时间段：只读展示（表单） */
+.area-example .readonly-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-height: 36px;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.area-example .readonly-field .ro-icon { font-size: 12px; opacity: .65; }
+.area-example .readonly-field .ro-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .3px;
+}
+.area-example .readonly-field .ro-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 5px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11.5px;
+  line-height: 18px;
+}
+.area-example .readonly-field .ro-link {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: .15s;
+  white-space: nowrap;
+}
+.area-example .readonly-field .ro-link:hover { background: var(--primary-light); }
+.area-example .form-hint { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+
 .area-example .slot-tabs {
   display: flex;
   padding: 0 20px;
@@ -684,7 +729,6 @@ html, body {
 }
 .area-example .slot-area-bar label { font-size: 13px; color: var(--text-2); font-weight: 500; }
 .area-example .slot-area-bar select { width: 300px; height: 34px; max-width: 100%; }
-.area-example .slot-area-actions { margin-left: auto; display: flex; gap: 8px; }
 .area-example .slot-area-hint { font-size: 12.5px; color: var(--text-3); margin-top: 4px; width: 100%; }
 .area-example .slot-toolbar {
   display: flex;
@@ -707,17 +751,6 @@ html, body {
   font-size: 12.5px;
 }
 .area-example .slot-table tbody td { padding: 11px 16px; font-size: 13px; }
-.area-example .slot-form {
-  display: none;
-  padding: 16px 20px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border);
-}
-.area-example .slot-form.show { display: block; }
-.area-example .slot-form-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
-.area-example .slot-form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 12px; }
-.area-example .slot-form-grid .form-item > label { font-size: 12px; }
-.area-example .slot-form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
 .area-example .slot-empty { padding: 50px 20px; text-align: center; color: var(--text-3); font-size: 13px; }
 .area-example .slot-empty-icon { font-size: 32px; opacity: .5; margin-bottom: 8px; }
 
@@ -752,9 +785,8 @@ html, body {
   .area-example .filter-item { min-width: 100%; }
   .area-example .filter-actions { width: 100%; margin-left: 0; }
   .area-example .filter-actions .btn { flex: 1; }
-  .area-example .slot-form-grid { grid-template-columns: 1fr 1fr; }
   .area-example .slot-area-bar select { width: 100%; }
-  .area-example .slot-area-actions { margin-left: 0; width: 100%; }
+  .area-example .readonly-field .ro-link { margin-left: 0; }
 }
 </style>
 </head>
@@ -882,7 +914,7 @@ html, body {
         <div class="toolbar">
           <div class="toolbar-left">
             <button class="btn btn-primary" id="btnAdd">＋ 新增区域</button>
-            <button class="btn" id="btnManageSlots">🕒 预约时段管理</button>
+            <button class="btn" id="btnViewSlots">🕒 查看时段配置</button>
           </div>
           <div class="toolbar-right">
             <span class="stat">共 <b id="statTotal">0</b> 个区域 · 启用 <b id="statOn">0</b> 个</span>
@@ -1002,6 +1034,18 @@ html, body {
           </div>
         </div>
         <div class="form-item full">
+          <label>开放时间段（只读）</label>
+          <div class="readonly-field">
+            <span class="ro-icon">🔒</span>
+            <span class="ro-value" id="slotReadonlyValue">—</span>
+            <span class="ro-tag">全局配置</span>
+            <button type="button" class="ro-link" id="btnGotoOpenConfigFromForm">前往配置 →</button>
+          </div>
+          <div class="form-hint">
+            开放时间段已统一由「开放全局配置」维护（基础开放时间 / 周规则 / 特殊日期），此处仅作展示，不可直接编辑。
+          </div>
+        </div>
+        <div class="form-item full">
           <label>备注说明</label>
           <textarea id="fRemark" maxlength="200" placeholder="选填，可填写该区域的特殊说明"></textarea>
         </div>
@@ -1014,11 +1058,11 @@ html, body {
   </div>
 </div>
 
-<!-- 时段管理弹窗（z-index:200） -->
+<!-- 时段查看弹窗（只读，z-index:200） -->
 <div class="modal" id="slotModal">
   <div class="modal-box large">
     <div class="modal-header">
-      <span>预约时段管理</span>
+      <span>预约时段配置（只读）</span>
       <button class="icon-btn" id="btnCloseSlotModal">✕</button>
     </div>
     <div class="modal-body no-pad">
@@ -1032,54 +1076,12 @@ html, body {
         <label>选择区域：</label>
         <select id="slotAreaSelect"></select>
         <span id="slotAreaStatus" class="badge badge-gray">使用统一时段</span>
-        <div class="slot-area-actions">
-          <button class="btn btn-sm" id="btnEnableAreaSlots">启用独立配置</button>
-          <button class="btn btn-sm" id="btnResetAreaSlots">恢复使用统一</button>
-        </div>
         <div class="slot-area-hint" id="slotAreaHint"></div>
-      </div>
-
-      <div class="slot-form" id="slotForm">
-        <div class="slot-form-title" id="slotFormTitle">新增时段</div>
-        <div class="slot-form-grid">
-          <div class="form-item">
-            <label>时段名称</label>
-            <input type="text" id="slotName" placeholder="如：上午一">
-          </div>
-          <div class="form-item">
-            <label>开始时间</label>
-            <input type="time" id="slotStart" value="08:00">
-          </div>
-          <div class="form-item">
-            <label>结束时间</label>
-            <input type="time" id="slotEnd" value="10:00">
-          </div>
-          <div class="form-item">
-            <label>适用星期</label>
-            <select id="slotWeek">
-              <option>每天</option>
-              <option>周一至周五</option>
-              <option>周末</option>
-            </select>
-          </div>
-          <div class="form-item">
-            <label>状态</label>
-            <select id="slotStatus">
-              <option>启用</option>
-              <option>停用</option>
-            </select>
-          </div>
-        </div>
-        <div class="slot-form-actions">
-          <button class="btn btn-sm" onclick="closeSlotForm()">取消</button>
-          <button class="btn btn-sm btn-primary" onclick="saveSlotForm()">保存</button>
-        </div>
       </div>
 
       <div class="slot-toolbar">
         <div class="slot-toolbar-left">
-          <button class="btn btn-primary btn-sm" onclick="openSlotForm()">＋ 新增时段</button>
-          <button class="btn btn-sm" onclick="generateDefaultSlots()">一键生成2小时时段</button>
+          <span style="font-size:12.5px;color:#64748b;">🔒 以下时段仅供查看，编辑请前往「开放全局配置」</span>
         </div>
         <span class="stat">共 <b id="slotTotal">0</b> 个时段</span>
       </div>
@@ -1093,7 +1095,6 @@ html, body {
               <th>时间段</th>
               <th>适用星期</th>
               <th>状态</th>
-              <th style="width:180px;">操作</th>
             </tr>
           </thead>
           <tbody id="slotTbody"></tbody>
@@ -1187,6 +1188,7 @@ let editingId = null;
 let nextId = 100;
 let confirmCallback = null;
 
+// 统一时段（模拟全局配置中的数据，只读）
 let unifiedSlots = [
   { id:1, name:'上午一', start:'08:00', end:'10:00', week:'每天', status:'启用' },
   { id:2, name:'上午二', start:'10:00', end:'12:00', week:'每天', status:'启用' },
@@ -1196,11 +1198,21 @@ let unifiedSlots = [
   { id:6, name:'晚上一', start:'18:00', end:'20:00', week:'每天', status:'启用' },
   { id:7, name:'晚上二', start:'20:00', end:'22:00', week:'每天', status:'启用' }
 ];
-let areaSlots = {};
+// 区域独立时段（模拟全局配置中的数据，只读）
+let areaSlots = {
+  5: [
+    { id:101, name:'上午', start:'09:00', end:'12:00', week:'每天', status:'启用' },
+    { id:102, name:'下午', start:'14:00', end:'17:00', week:'每天', status:'启用' }
+  ],
+  7: [
+    { id:103, name:'上午', start:'08:00', end:'12:00', week:'每天', status:'启用' },
+    { id:104, name:'下午', start:'13:00', end:'18:00', week:'每天', status:'启用' },
+    { id:105, name:'晚上', start:'18:00', end:'21:00', week:'周末', status:'停用' }
+  ]
+};
 
 let slotMode = 'unified';
 let currentAreaId = null;
-let editingSlotId = null;
 
 function getLibrary(id){ return LIBRARIES.find(l => l.id === id) || null; }
 function getFloor(id){ return FLOORS.find(f => f.id === id) || null; }
@@ -1351,7 +1363,7 @@ function render(){
           <td>${esc(it.manager) || '<span style="color:#94a3b8;">—</span>'}</td>
           <td>${esc(it.phone) || '<span style="color:#94a3b8;">—</span>'}</td>
           <td>${it.sort}</td>
-          <td class="slot-config-cell" data-id="${it.id}">
+          <td class="slot-config-cell" data-id="${it.id}" title="点击查看详情">
             <span class="badge ${independent ? 'badge-orange' : 'badge-gray'}">
               ${independent ? '独立配置' : '使用统一'}
             </span>
@@ -1451,29 +1463,26 @@ function refreshFilterFloorSelect(){
       }).join('');
 }
 
-/* ========================= 预约时段管理 ========================= */
-function getEditingSlots(){
+/* ========================= 预约时段查看（只读） ========================= */
+function getViewingSlots(){
   if (slotMode === 'unified') return unifiedSlots;
   if (!currentAreaId) return [];
   return areaSlots[currentAreaId] || [];
 }
 
-function setEditingSlots(list){
-  if (slotMode === 'unified') unifiedSlots = list;
-  else if (currentAreaId) areaSlots[currentAreaId] = list;
-}
-
-function openSlotModal(){
-  editingSlotId = null;
-  closeSlotForm();
-
-  const ids = Array.from(selected);
-  if (ids.length === 1){
+function openSlotModal(areaId){
+  if (areaId) {
     slotMode = 'area';
-    currentAreaId = ids[0];
+    currentAreaId = areaId;
   } else {
-    slotMode = 'unified';
-    currentAreaId = areas.length ? areas[0].id : null;
+    const ids = Array.from(selected);
+    if (ids.length === 1){
+      slotMode = 'area';
+      currentAreaId = ids[0];
+    } else {
+      slotMode = 'unified';
+      currentAreaId = areas.length ? areas[0].id : null;
+    }
   }
 
   updateSlotUI();
@@ -1483,14 +1492,11 @@ function openSlotModal(){
 
 function closeSlotModal(){
   $('slotModal').classList.remove('show');
-  editingSlotId = null;
 }
 
 function switchSlotMode(mode){
   if (slotMode === mode) return;
   slotMode = mode;
-  editingSlotId = null;
-  closeSlotForm();
   updateSlotUI();
   renderSlots();
 }
@@ -1536,8 +1542,6 @@ function updateAreaBarStatus(){
     $('slotAreaStatus').textContent = '—';
     $('slotAreaStatus').className = 'badge badge-gray';
     $('slotAreaHint').textContent = '';
-    $('btnEnableAreaSlots').style.display = 'none';
-    $('btnResetAreaSlots').style.display = 'none';
     return;
   }
   const independent = hasIndependentSlots(currentAreaId);
@@ -1547,34 +1551,30 @@ function updateAreaBarStatus(){
   if (independent){
     status.textContent = '已独立配置';
     status.className = 'badge badge-orange';
-    hint.textContent = '该区域使用独立时段，不受统一时段影响。';
-    $('btnEnableAreaSlots').style.display = 'none';
-    $('btnResetAreaSlots').style.display = 'inline-flex';
+    hint.textContent = '该区域使用独立时段，不受统一时段影响。如需修改，请前往「开放全局配置」。';
   } else {
     status.textContent = '使用统一时段';
     status.className = 'badge badge-gray';
-    hint.textContent = '该区域当前使用统一时段。如需单独设置，点击右侧「启用独立配置」。';
-    $('btnEnableAreaSlots').style.display = 'inline-flex';
-    $('btnResetAreaSlots').style.display = 'none';
+    hint.textContent = '该区域当前使用统一时段。如需调整，请前往「开放全局配置」。';
   }
 }
 
 function renderSlots(){
   if (slotMode === 'area' && !currentAreaId){
     $('slotTotal').textContent = 0;
-    $('slotTbody').innerHTML = `<tr><td colspan="6"><div class="slot-empty"><div class="slot-empty-icon">📐</div>请先选择区域</div></td></tr>`;
+    $('slotTbody').innerHTML = `<tr><td colspan="5"><div class="slot-empty"><div class="slot-empty-icon">📐</div>请先选择区域</div></td></tr>`;
     return;
   }
 
-  const list = getEditingSlots();
+  const list = getViewingSlots();
   const tbody = $('slotTbody');
   $('slotTotal').textContent = list.length;
 
   if (!list.length){
     const msg = (slotMode === 'area' && !hasIndependentSlots(currentAreaId))
-      ? '该区域当前使用统一时段。点击「启用独立配置」后，可在此区域单独维护时段。'
-      : '暂无时段，点击上方「新增时段」开始配置';
-    tbody.innerHTML = `<tr><td colspan="6"><div class="slot-empty"><div class="slot-empty-icon">🕒</div>${msg}</div></td></tr>`;
+      ? '该区域当前使用统一时段。如需调整，请前往「开放全局配置」。'
+      : '暂无时段配置';
+    tbody.innerHTML = `<tr><td colspan="5"><div class="slot-empty"><div class="slot-empty-icon">🕒</div>${msg}</div></td></tr>`;
     return;
   }
 
@@ -1585,173 +1585,8 @@ function renderSlots(){
       <td>${esc(s.start)} - ${esc(s.end)}</td>
       <td>${esc(s.week)}</td>
       <td><span class="badge ${s.status === '启用' ? 'badge-green' : 'badge-gray'}">${esc(s.status)}</span></td>
-      <td class="ops">
-        <button class="link-btn" onclick="editSlot(${s.id})">编辑</button>
-        <button class="link-btn" onclick="toggleSlotStatus(${s.id})">${s.status === '启用' ? '停用' : '启用'}</button>
-        <button class="link-btn danger" onclick="deleteSlot(${s.id})">删除</button>
-      </td>
     </tr>
   `).join('');
-}
-
-function openSlotForm(id){
-  if (slotMode === 'area' && !hasIndependentSlots(currentAreaId)){
-    return toast('请先点击「启用独立配置」，再新增时段', 'error');
-  }
-
-  editingSlotId = id ?? null;
-  const form = $('slotForm');
-
-  if (id){
-    const slot = getEditingSlots().find(s => s.id === id);
-    if (!slot) return;
-    $('slotFormTitle').textContent = '编辑时段';
-    $('slotName').value = slot.name;
-    $('slotStart').value = slot.start;
-    $('slotEnd').value = slot.end;
-    $('slotWeek').value = slot.week;
-    $('slotStatus').value = slot.status;
-  } else {
-    $('slotFormTitle').textContent = '新增时段';
-    $('slotName').value = '';
-    $('slotStart').value = '08:00';
-    $('slotEnd').value = '10:00';
-    $('slotWeek').value = '每天';
-    $('slotStatus').value = '启用';
-  }
-
-  form.classList.add('show');
-  setTimeout(() => $('slotName').focus(), 60);
-}
-
-function closeSlotForm(){
-  $('slotForm').classList.remove('show');
-  editingSlotId = null;
-}
-
-function editSlot(id){
-  openSlotForm(id);
-}
-
-function saveSlotForm(){
-  const name = $('slotName').value.trim();
-  const start = $('slotStart').value;
-  const end = $('slotEnd').value;
-  const week = $('slotWeek').value;
-  const status = $('slotStatus').value;
-
-  if (!name || !start || !end){
-    return toast('请填写时段名称、开始时间和结束时间', 'error');
-  }
-  if (start >= end){
-    return toast('结束时间必须大于开始时间', 'error');
-  }
-
-  const list = getEditingSlots();
-
-  if (editingSlotId){
-    const slot = list.find(s => s.id === editingSlotId);
-    if (slot) Object.assign(slot, { name, start, end, week, status });
-    toast('保存成功');
-  } else {
-    list.push({ id: Date.now(), name, start, end, week, status });
-    toast('新增成功');
-  }
-
-  closeSlotForm();
-  renderSlots();
-  render();
-}
-
-function toggleSlotStatus(id){
-  if (slotMode === 'area' && !hasIndependentSlots(currentAreaId)) return;
-  const slot = getEditingSlots().find(s => s.id === id);
-  if (!slot) return;
-  slot.status = slot.status === '启用' ? '停用' : '启用';
-  renderSlots();
-}
-
-/* ---------- 删除时段 ---------- */
-function deleteSlot(id){
-  if (slotMode === 'area' && !hasIndependentSlots(currentAreaId)) return;
-
-  let slot = null;
-  if (slotMode === 'unified'){
-    slot = unifiedSlots.find(s => s.id === id);
-  } else {
-    slot = (areaSlots[currentAreaId] || []).find(s => s.id === id);
-  }
-  if (!slot) return;
-
-  askConfirm('删除时段',
-    `确定要删除时段「${slot.name}（${slot.start}-${slot.end}）」吗？删除后不可恢复。`,
-    () => {
-      if (slotMode === 'unified'){
-        unifiedSlots = unifiedSlots.filter(s => s.id !== id);
-      } else if (currentAreaId){
-        areaSlots[currentAreaId] = (areaSlots[currentAreaId] || []).filter(s => s.id !== id);
-      }
-      toast('删除成功');
-      renderSlots();
-      render();
-    });
-}
-
-function generateDefaultSlots(){
-  if (slotMode === 'area' && !hasIndependentSlots(currentAreaId)){
-    return toast('请先点击「启用独立配置」，再生成时段', 'error');
-  }
-
-  askConfirm('一键生成时段', '将生成 08:00-22:00 每 2 小时一个时段，是否继续？', () => {
-    const defaults = [
-      ['上午一', '08:00', '10:00'],
-      ['上午二', '10:00', '12:00'],
-      ['中午',   '12:00', '14:00'],
-      ['下午一', '14:00', '16:00'],
-      ['下午二', '16:00', '18:00'],
-      ['晚上一', '18:00', '20:00'],
-      ['晚上二', '20:00', '22:00']
-    ];
-    const base = Date.now();
-    const list = defaults.map((d, i) => ({
-      id: base + i,
-      name: d[0],
-      start: d[1],
-      end: d[2],
-      week: '每天',
-      status: '启用'
-    }));
-    setEditingSlots(list);
-    toast('生成成功');
-    renderSlots();
-    render();
-  });
-}
-
-function enableAreaSlots(){
-  if (!currentAreaId) return;
-  areaSlots[currentAreaId] = JSON.parse(JSON.stringify(unifiedSlots)).map((s, i) => ({
-    ...s,
-    id: Date.now() + i
-  }));
-  updateAreaBarStatus();
-  renderSlots();
-  render();
-  toast('已启用独立配置，可单独编辑该区域时段');
-}
-
-function resetAreaSlots(){
-  if (!currentAreaId) return;
-  const area = areas.find(a => a.id === currentAreaId);
-  askConfirm('恢复使用统一时段',
-    `确定要放弃「${area ? area.name : '当前区域'}」的独立时段配置，改为使用统一时段吗？`,
-    () => {
-      delete areaSlots[currentAreaId];
-      updateAreaBarStatus();
-      renderSlots();
-      render();
-      toast('已恢复使用统一时段');
-    });
 }
 
 /* ========================= 时段配置 Tooltip ========================= */
@@ -1849,7 +1684,7 @@ function bindEvents(){
   });
 
   $('btnAdd').addEventListener('click', () => openForm());
-  $('btnManageSlots').addEventListener('click', openSlotModal);
+  $('btnViewSlots').addEventListener('click', () => openSlotModal());
 
   $('checkAll').addEventListener('change', e => {
     const pageIds = getPageIds();
@@ -1861,22 +1696,31 @@ function bindEvents(){
 
   tbody.addEventListener('click', e => {
     const btn = e.target.closest('[data-action]');
-    if (!btn || btn.tagName === 'INPUT') return;
-    const action = btn.dataset.action;
-    const id = Number(btn.dataset.id);
-    if (action === 'edit') openForm(id);
-    if (action === 'del') {
-      const item = areas.find(a => a.id === id);
-      const { library, floor } = getChainByArea(item);
-      askConfirm('删除区域',
-        `确定要删除「${library ? library.name : ''} › ${floor ? floor.name : ''} › ${item.code} ${item.name}」吗？删除后不可恢复。`,
-        () => {
-          areas = areas.filter(a => a.id !== id);
-          delete areaSlots[id];
-          selected.delete(id);
-          toast('删除成功');
-          render();
-        });
+    if (btn && btn.tagName !== 'INPUT') {
+      const action = btn.dataset.action;
+      const id = Number(btn.dataset.id);
+      if (action === 'edit') openForm(id);
+      if (action === 'del') {
+        const item = areas.find(a => a.id === id);
+        const { library, floor } = getChainByArea(item);
+        askConfirm('删除区域',
+          `确定要删除「${library ? library.name : ''} › ${floor ? floor.name : ''} › ${item.code} ${item.name}」吗？删除后不可恢复。`,
+          () => {
+            areas = areas.filter(a => a.id !== id);
+            delete areaSlots[id];
+            selected.delete(id);
+            toast('删除成功');
+            render();
+          });
+      }
+      return;
+    }
+
+    // 点击时段配置单元格，打开只读查看弹窗
+    const cell = e.target.closest('.slot-config-cell');
+    if (cell) {
+      const areaId = Number(cell.dataset.id);
+      openSlotModal(areaId);
     }
   });
 
@@ -1950,6 +1794,11 @@ function bindEvents(){
     el.closest('.form-item').classList.remove('has-error');
   });
 
+  // 前往全局配置
+  $('btnGotoOpenConfigFromForm').addEventListener('click', () => {
+    toast('开放时段由「开放全局配置」页面统一维护');
+  });
+
   $('btnCloseConfirm').addEventListener('click', closeConfirm);
   $('btnCancelConfirm').addEventListener('click', closeConfirm);
   $('btnOkConfirm').addEventListener('click', () => {
@@ -1973,22 +1822,14 @@ function bindEvents(){
 
   $('slotAreaSelect').addEventListener('change', e => {
     currentAreaId = Number(e.target.value);
-    editingSlotId = null;
-    closeSlotForm();
     updateAreaBarStatus();
     renderSlots();
   });
 
-  $('btnEnableAreaSlots').addEventListener('click', enableAreaSlots);
-  $('btnResetAreaSlots').addEventListener('click', resetAreaSlots);
-
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if ($('confirmModal').classList.contains('show')) closeConfirm();
-    else if ($('slotModal').classList.contains('show')) {
-      if ($('slotForm').classList.contains('show')) closeSlotForm();
-      else closeSlotModal();
-    }
+    else if ($('slotModal').classList.contains('show')) closeSlotModal();
     else if ($('formModal').classList.contains('show')) closeForm();
   });
 }
@@ -2069,11 +1910,17 @@ function openForm(id){
     $('fSort').value = it.sort;
     $('fRemark').value = it.remark || '';
     document.querySelector(`input[name="fStatus"][value="${it.status}"]`).checked = true;
+
+    // 只读展示该区域的时段配置
+    const independent = hasIndependentSlots(it.id);
+    const slotCount = getEffectiveSlots(it.id).length;
+    $('slotReadonlyValue').textContent = `${independent ? '独立配置' : '使用统一时段'}（${slotCount} 个时段）`;
   } else {
     $('formTitle').textContent = '新增区域';
     refreshFormFloorSelect();
     const maxSort = areas.reduce((m, a) => Math.max(m, a.sort), 0);
     $('fSort').value = maxSort + 1;
+    $('slotReadonlyValue').textContent = '继承全馆基础时段（前往全局配置可调整）';
   }
 
   updateChainHint();
