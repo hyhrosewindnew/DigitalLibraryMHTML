@@ -863,8 +863,7 @@ html, body {
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
@@ -1046,7 +1045,7 @@ html, body {
             <button type="button" class="ro-link" id="btnGotoOpenConfigFromForm">前往配置 →</button>
           </div>
           <div class="form-hint">
-            开放时间段已统一由「开放全局配置」维护（基础开放时间 / 周规则 / 特殊日期），此处仅作展示，不可直接编辑。
+            开放时间段已统一由「开放时间配置」维护（基础开放时间 / 周规则 / 特殊日期），此处仅作展示，不可直接编辑。
           </div>
         </div>
         <div class="form-item full">
@@ -1085,7 +1084,7 @@ html, body {
 
       <div class="slot-toolbar">
         <div class="slot-toolbar-left">
-          <span style="font-size:12.5px;color:#64748b;">🔒 以下时段仅供查看，编辑请前往「开放全局配置」</span>
+          <span style="font-size:12.5px;color:#64748b;">🔒 以下时段仅供查看，编辑请前往「开放时间配置」</span>
         </div>
         <span class="stat">共 <b id="slotTotal">0</b> 个时段</span>
       </div>
@@ -1555,11 +1554,11 @@ function updateAreaBarStatus(){
   if (independent){
     status.textContent = '已独立配置';
     status.className = 'badge badge-orange';
-    hint.textContent = '该区域使用独立时段，不受统一时段影响。如需修改，请前往「开放全局配置」。';
+    hint.textContent = '该区域使用独立时段，不受统一时段影响。如需修改，请前往「开放时间配置」。';
   } else {
     status.textContent = '使用统一时段';
     status.className = 'badge badge-gray';
-    hint.textContent = '该区域当前使用统一时段。如需调整，请前往「开放全局配置」。';
+    hint.textContent = '该区域当前使用统一时段。如需调整，请前往「开放时间配置」。';
   }
 }
 
@@ -1576,7 +1575,7 @@ function renderSlots(){
 
   if (!list.length){
     const msg = (slotMode === 'area' && !hasIndependentSlots(currentAreaId))
-      ? '该区域当前使用统一时段。如需调整，请前往「开放全局配置」。'
+      ? '该区域当前使用统一时段。如需调整，请前往「开放时间配置」。'
       : '暂无时段配置';
     tbody.innerHTML = `<tr><td colspan="5"><div class="slot-empty"><div class="slot-empty-icon">🕒</div>${msg}</div></td></tr>`;
     return;
@@ -1800,7 +1799,7 @@ function bindEvents(){
 
   // 前往全局配置
   $('btnGotoOpenConfigFromForm').addEventListener('click', () => {
-    toast('开放时段由「开放全局配置」页面统一维护');
+    toast('开放时段由「开放时间配置」页面统一维护');
   });
 
   $('btnCloseConfirm').addEventListener('click', closeConfirm);

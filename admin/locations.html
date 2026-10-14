@@ -1034,8 +1034,7 @@ html, body {
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
@@ -1161,7 +1160,7 @@ html, body {
             <button type="button" class="ro-link" id="btnGotoOpenConfig">前往配置 →</button>
           </div>
           <div class="form-hint">
-            开放时间已统一由「开放全局配置」维护（基础开放时间 / 周规则 / 特殊日期），此处仅作展示，不可直接编辑。
+            开放时间已统一由「开放时间配置」维护（基础开放时间 / 周规则 / 特殊日期），此处仅作展示，不可直接编辑。
           </div>
         </div>
         <div class="form-item">
@@ -1227,10 +1226,10 @@ function toast(msg, type){
 
 /* ============================================================
    数据说明
-   openTime 已不再是本页可编辑字段，仅作为「开放全局配置」的
+   openTime 已不再是本页可编辑字段，仅作为「开放时间配置」的
    计算结果在此只读展示。新增馆藏地默认继承全馆基础时间。
    ============================================================ */
-const DEFAULT_OPEN_TIME = '08:30-21:30';   // 模拟「开放全局配置」中的全馆基础时间
+const DEFAULT_OPEN_TIME = '08:30-21:30';   // 模拟「开放时间配置」中的全馆基础时间
 
 /* 数据：馆藏地就是总馆、分馆 —— 只有总馆启用，其余全部停用 */
 let store = [
@@ -1338,9 +1337,9 @@ function bindEvents(){
     if (e.target === $('formModal')) closeForm();
   });
 
-  /* 前往开放全局配置 */
+  /* 前往开放时间配置 */
   $('btnGotoOpenConfig').addEventListener('click', () => {
-    location.href = 'opening-hours.html';
+    location.href = 'time-templates.html';
   });
 
   $('btnCloseConfirm').addEventListener('click', closeConfirm);
@@ -1434,7 +1433,7 @@ function render(){
         <td>${esc(it.manager) || '-'}</td>
         <td>${esc(it.phone) || '-'}</td>
         <td>
-          <div class="readonly-cell" title="开放时间由「开放全局配置」统一维护，此处仅作展示">
+          <div class="readonly-cell" title="开放时间由「开放时间配置」统一维护，此处仅作展示">
             ${it.openTime
               ? `<span class="lock">🔒</span>
                  <span class="time">${esc(it.openTime)}</span>
