@@ -1,4 +1,4 @@
-﻿﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -586,7 +586,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
@@ -1533,9 +1533,7 @@ function act(a, id){
 }
 
 /* =========================================================
-   详情弹窗
-   — 上半部：Tab 切换（采购信息+复本明细 / 采访馆员+推荐人+推荐理由）
-   — 下半部：处理流程（时间轴，不随 Tab 切换）
+   详情弹窗（标签页：采购信息与复本明细 / 采访馆员与推荐理由 / 流转记录）
    =======================================================*/
 function openDetail(id){
   const r = data.find(x=>x.id===id);
@@ -1629,6 +1627,7 @@ function openDetail(id){
 + '<div class="detail-tabs">'
 +   '<button class="detail-tab active" onclick="switchDetailTab(0)">采购信息与复本明细</button>'
 +   '<button class="detail-tab" onclick="switchDetailTab(1)">采访馆员与推荐理由</button>'
++   '<button class="detail-tab" onclick="switchDetailTab(2)">流转记录</button>'
 + '</div>'
 
 /* Tab 1：采购信息 + 复本明细 */
@@ -1666,10 +1665,12 @@ function openDetail(id){
 +   '</div>'
 + '</div>'
 
-/* 固定底部：处理流程（不随 Tab 切换） */
-+ '<div class="detail-section" style="margin-top:20px;margin-bottom:0">'
-+   '<h4>处理流程（'+logArr.length+' 条）</h4>'
-+   '<div class="flow-timeline">'+logHtml+'</div>'
+/* Tab 3：流转记录 */
++ '<div class="detail-tab-panel" data-panel="2">'
++   '<div class="detail-section" style="margin-bottom:0">'
++     '<h4>流转记录（'+logArr.length+' 条）</h4>'
++     '<div class="flow-timeline">'+logHtml+'</div>'
++   '</div>'
 + '</div>';
 
   $('detailMask').classList.add('show');

@@ -517,31 +517,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
 .modal-tab:hover{color:#2563eb}
 .modal-tab.active{color:#2563eb;border-bottom-color:#2563eb;font-weight:600}
 
-/* 详情弹窗底部时间线卡片 */
-.detail-timeline-footer{
-  margin-top:22px;
-  padding:14px 16px;
-  background:#f8fafc;
-  border:1px solid #eef2f7;
-  border-radius:8px;
-}
-.detail-timeline-footer .dtf-caption{
-  font-size:11.5px;
-  color:#9ca3af;
-  margin-bottom:10px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  font-weight:600;
-  letter-spacing:.3px;
-}
-.detail-timeline-footer .dtf-caption::before{
-  content:"";
-  width:3px;height:12px;border-radius:2px;background:#2563eb;
-}
-.detail-timeline-footer .detail-section:last-child{margin-bottom:0}
-
-/* confirm-detail 复用为「最后操作」面板 */
+/* confirm-detail 复用为「最新动态」面板 */
 .confirm-detail{background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:11px 13px;margin-top:11px;font-size:12.5px;line-height:1.85;color:#1f2937}
 
 /* —— 以下样式作用域仅限 #detailBody，不影响状态说明等其他模态框 —— */
@@ -635,7 +611,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
@@ -1437,12 +1413,11 @@ function act(a,id){
 }
 
 /* ============================================================
-   详情弹窗（仿座位预约记录：Tab 切换 + 底部时间线卡片）
+   详情弹窗（Tab：基本信息 / 预约读者 / 预约成员 / 研修室与时段 / 流转记录）
    样式仅作用于 #detailBody 内部，不影响其他模态框
    ============================================================ */
 let detailTabData = [];
 let detailActiveTab = 'base';
-let detailTimelineHtml = '';
 
 function openDetail(id){
   const r = data.find(x=>x.id===id);
@@ -1455,23 +1430,6 @@ function openDetail(id){
   const capP = room.capacity || 99;
   const slots = getSlots(r);
   const timeStr = fmtTime(r.dateKey, slots);
-
-  /* ---------- 底部时间线 ---------- */
-  const endStates = ['cancelled','noshow','overdue','minnotreach','completed'];
-  const afterSignIn = ['inuse','temp','supervising','overdue','noshow','completed'];
-  let tl = '<div class="timeline-item active"><div>预约创建</div><div class="ti-time">'+r.createdAt+'</div></div>';
-  if(r.signInAt) tl += '<div class="timeline-item '+(afterSignIn.indexOf(r.sk)>=0?'active':'')+'"><div>读者签到（进入使用中）</div><div class="ti-time">'+r.signInAt+'</div></div>';
-  if(r.tempAt) tl += '<div class="timeline-item '+(r.sk==='temp'?'active':'')+'"><div>暂离开始</div><div class="ti-time">'+r.tempAt+'</div></div>';
-  if(r.superviseAt) tl += '<div class="timeline-item '+(r.sk==='supervising'?'active':'')+'"><div>管理员发起监督</div><div class="ti-time">'+r.superviseAt+'</div></div>';
-  if(r.signOutAt) tl += '<div class="timeline-item active"><div>读者签退 / 强制释放</div><div class="ti-time">'+r.signOutAt+'</div></div>';
-  if(endStates.indexOf(r.sk)>=0) tl += '<div class="timeline-item active"><div>记录终结 · '+r.st+'</div><div class="ti-time">'+fmtNow().substr(11)+'</div></div>';
-
-  const lastOpHtml = '<div style="line-height:1.8">'+r.la+'</div>'
-    + '<div style="margin-top:10px;font-size:12px;color:#9ca3af">当前状态：<span class="status '+STATUS_DEF[r.sk].cls+'" style="margin-left:4px">'+STATUS_DEF[r.sk].label+'</span></div>';
-
-  detailTimelineHtml = ''
-    + '<div class="detail-section"><h4>操作时间线</h4><div class="timeline">'+tl+'</div></div>'
-    + '<div class="detail-section" style="margin-top:14px"><h4>最后操作</h4><div class="confirm-detail" style="margin-top:0">'+lastOpHtml+'</div></div>';
 
   /* ---------- Tab 1：基本信息 ---------- */
   const baseHtml = ''
@@ -1533,11 +1491,24 @@ function openDetail(id){
     +   remarkHtml
     + '</div></div>';
 
+  /* ---------- Tab 5：流转记录 ---------- */
+  const endStates = ['cancelled','noshow','overdue','minnotreach','completed'];
+  const afterSignIn = ['inuse','temp','supervising','overdue','noshow','completed'];
+  let tl = '<div class="timeline-item active"><div>预约创建</div><div class="ti-time">'+r.createdAt+'</div></div>';
+  if(r.signInAt) tl += '<div class="timeline-item '+(afterSignIn.indexOf(r.sk)>=0?'active':'')+'"><div>读者签到（进入使用中）</div><div class="ti-time">'+r.signInAt+'</div></div>';
+  if(r.tempAt) tl += '<div class="timeline-item '+(r.sk==='temp'?'active':'')+'"><div>暂离开始</div><div class="ti-time">'+r.tempAt+'</div></div>';
+  if(r.superviseAt) tl += '<div class="timeline-item '+(r.sk==='supervising'?'active':'')+'"><div>管理员发起监督</div><div class="ti-time">'+r.superviseAt+'</div></div>';
+  if(r.signOutAt) tl += '<div class="timeline-item active"><div>读者签退 / 强制释放</div><div class="ti-time">'+r.signOutAt+'</div></div>';
+  if(endStates.indexOf(r.sk)>=0) tl += '<div class="timeline-item active"><div>记录终结 · '+r.st+'</div><div class="ti-time">'+fmtNow().substr(11)+'</div></div>';
+  const flowHtml = ''
+    + '<div class="detail-section"><h4>流转记录</h4><div class="timeline">'+tl+'</div></div>';
+
   detailTabData = [
     { key:'base',    label:'基本信息',     html:baseHtml },
     { key:'reader',  label:'预约读者',     html:readerHtml },
     { key:'members', label:'预约成员',     html:membersHtml },
-    { key:'room',    label:'研修室与时段', html:roomHtml }
+    { key:'room',    label:'研修室与时段', html:roomHtml },
+    { key:'flow',    label:'流转记录',     html:flowHtml }
   ];
   detailActiveTab = 'base';
   $('detailTitle').textContent = '预约详情 · ' + r.id;
@@ -1553,8 +1524,7 @@ function renderDetailTabs(){
   });
   $('detailTabs').innerHTML = h;
   const cur = detailTabData.find(function(t){ return t.key===detailActiveTab; });
-  $('detailBody').innerHTML = (cur ? cur.html : '')
-    + '<div class="detail-timeline-footer">' + detailTimelineHtml + '</div>';
+  $('detailBody').innerHTML = cur ? cur.html : '';
 }
 
 function switchDetailTab(key){

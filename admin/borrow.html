@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -401,10 +401,6 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
 .detail-panel.active{display:block;animation:detailFade .18s ease}
 @keyframes detailFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-.detail-flow{
-  margin-top:20px;padding-top:16px;
-  border-top:1px solid var(--lib-line);
-}
 .detail-flow .flow-title{
   font-size:13px;font-weight:600;color:#111827;margin-bottom:12px;
   display:flex;align-items:center;gap:7px;
@@ -626,7 +622,7 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:p
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
@@ -1682,8 +1678,7 @@ function batchPrint(){
 }
 
 /* =========================================================
-   借阅详情（标签页切换：借阅信息 / 图书信息(含馆藏位置) / 读者信息；
-             流转记录固定在最下方）
+   借阅详情（标签页：借阅信息 / 图书信息 / 读者信息 / 流转记录）
    =======================================================*/
 function switchDetailTab(btn, panelId){
   const body = $('detailBody');
@@ -1761,6 +1756,7 @@ function openDetail(id){
       <button type="button" class="detail-tab active" onclick="switchDetailTab(this,'dtBorrow')">借阅信息</button>
       <button type="button" class="detail-tab" onclick="switchDetailTab(this,'dtBook')">图书信息</button>
       <button type="button" class="detail-tab" onclick="switchDetailTab(this,'dtReader')">读者信息</button>
+      <button type="button" class="detail-tab" onclick="switchDetailTab(this,'dtFlow')">流转记录</button>
     </div>
 
     <div class="detail-panel active" id="dtBorrow">
@@ -1808,9 +1804,11 @@ function openDetail(id){
       </div>
     </div>
 
-    <div class="detail-flow">
-      <div class="flow-title">流转记录 <span class="flow-cnt">（借出 · 续借 · 归还）</span></div>
-      <div class="timeline">${timeline}</div>
+    <div class="detail-panel" id="dtFlow">
+      <div class="detail-flow">
+        <div class="flow-title">流转记录 <span class="flow-cnt">（借出 · 续借 · 归还）</span></div>
+        <div class="timeline">${timeline}</div>
+      </div>
     </div>
   `;
   $('detailMask').classList.add('show');
