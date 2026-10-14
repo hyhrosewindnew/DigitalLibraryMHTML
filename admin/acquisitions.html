@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html class="light" lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
@@ -47,7 +47,6 @@
   --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
   --lib-sidebar-width: 248px;
   --lib-topbar-height: 64px;
-  /* Semantic aliases required by head contract */
   --lib-background: var(--lib-bg);
   --lib-foreground: var(--lib-ink);
   --lib-card: var(--lib-surface);
@@ -397,10 +396,121 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
 .audit-item .ai-action{font-size:12.5px;color:#5a6577;margin-top:4px}
 .audit-item .ai-comment{font-size:12.5px;color:#1f2937;background:#fff;padding:8px 10px;border-radius:6px;margin-top:6px;line-height:1.6}
 
+/* ============ 详情弹窗 · 处理流程时间轴（新版） ============ */
+.flow-timeline{position:relative;padding-left:36px}
+.flow-timeline::before{content:'';position:absolute;left:13px;top:12px;bottom:16px;width:2px;border-radius:2px;background:#e8eef7}
+.flow-node{position:relative;padding-bottom:14px}
+.flow-node:last-child{padding-bottom:0}
+.fn-dot{position:absolute;left:-36px;top:1px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;background:#fff;border:2px solid #d5dce8;color:#94a3b8;box-shadow:0 0 0 3px #fff;z-index:1}
+.fn-card{background:#f8fafc;border:1px solid #edf1f7;border-radius:9px;padding:10px 13px;transition:.15s}
+.fn-card:hover{background:#f5f8fd;border-color:#e0e8f4}
+.fn-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.fn-actor{font-size:12.5px;font-weight:600;color:#1f2937}
+.fn-time{font-size:11px;color:#9aa3b2;font-family:"SF Mono",Consolas,monospace;white-space:nowrap}
+.fn-action{display:inline-block;margin-top:6px;font-size:11.5px;font-weight:500;padding:2px 10px;border-radius:20px;background:#eef2f8;color:#5a6577}
+.fn-comment{font-size:12.5px;color:#4b5563;line-height:1.65;margin-top:8px;padding-top:8px;border-top:1px dashed #e5eaf2}
+.flow-empty{padding:18px;text-align:center;font-size:12.5px;color:#a8b0bf;background:#fafcff;border:1px dashed #d5dce8;border-radius:8px}
+.flow-node.approve .fn-dot{border-color:#4ade80;color:#16a34a;background:#f0fdf4}
+.flow-node.approve .fn-action{background:#e8f7ee;color:#12894f}
+.flow-node.reject .fn-dot{border-color:#f87171;color:#dc2626;background:#fef2f2}
+.flow-node.reject .fn-action{background:#ffe9e9;color:#b91c1c}
+.flow-node.order .fn-dot{border-color:#a78bfa;color:#7c3aed;background:#faf5ff}
+.flow-node.order .fn-action{background:#f0e7ff;color:#7c3aed}
+.flow-node.draft .fn-dot{border-color:#cbd5e1;color:#94a3b8;background:#f8fafc}
+.flow-node.draft .fn-action{background:#f0f2f5;color:#6b7280}
+.flow-node.review .fn-dot{border-color:#60a5fa;color:#2563eb;background:#eff6ff}
+.flow-node.review .fn-action{background:#e8f0fe;color:#1d5fd6}
+.flow-node.submit .fn-dot{border-color:#60a5fa;color:#2563eb;background:#eff6ff}
+.flow-node.submit .fn-action{background:#e8f0fe;color:#1d5fd6}
+.flow-node.arrive .fn-dot{border-color:#38bdf8;color:#0284c7;background:#f0f9ff}
+.flow-node.arrive .fn-action{background:#e0f2fe;color:#075985}
+.flow-node.catalog .fn-dot{border-color:#818cf8;color:#1d4ed8;background:#eef2ff}
+.flow-node.catalog .fn-action{background:#e8f0fe;color:#1e40af}
+.flow-node.onshelf .fn-dot{border-color:#34d399;color:#059669;background:#ecfdf5}
+.flow-node.onshelf .fn-action{background:#d1fae5;color:#047857}
+.flow-node.duplicate .fn-dot{border-color:#fca5a5;color:#b91c1c;background:#fef2f2}
+.flow-node.duplicate .fn-action{background:#fee2e2;color:#991b1b}
+
+/* ============ 详情弹窗 · 小节标题 ============ */
+.copies-sub-title{font-size:12px;font-weight:600;color:#4b5563;margin:16px 0 9px;display:flex;align-items:center;gap:7px}
+.copies-sub-title::before{content:'';width:3px;height:11px;border-radius:2px;background:#c7d5ea}
+.copies-sub-title .cnt{font-size:11px;font-weight:500;color:#2f6fed;background:#ecf3fe;padding:1px 8px;border-radius:20px}
+.copies-sub-title .plain{font-weight:400;color:#94a3b8;font-size:11.5px}
+
 .toast{position:fixed;left:50%;top:26px;transform:translate(-50%,-14px);background:#1f2937;color:#fff;padding:10px 20px;border-radius:9px;font-size:13px;opacity:0;transition:.25s;z-index:300;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:80vw;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast.warn{background:#b46b00}
 .toast.error{background:#b91c1c}
+
+/* ============ 详情弹窗 Tab 切换 ============ */
+.detail-tabs{display:flex;border-bottom:1px solid #eef1f6;margin-bottom:18px}
+.detail-tab{padding:10px 18px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;border:none;background:transparent;font-family:inherit;border-bottom:2px solid transparent;transition:.15s;margin-bottom:-1px}
+.detail-tab:hover{color:#2f6fed}
+.detail-tab.active{color:#2f6fed;border-bottom-color:#2f6fed}
+.detail-tab-panel{display:none}
+.detail-tab-panel.active{display:block}
+
+/* ============ 复本明细展示（详情 Tab） ============ */
+.copies-detail-grid{display:flex;flex-direction:column;border:1px solid #eef1f6;border-radius:8px;overflow:hidden;margin-top:4px;background:#fff}
+.cdg-header,.cdg-row{display:grid;grid-template-columns:40px 150px minmax(0,1fr) 90px;align-items:center;gap:8px;padding:9px 14px}
+.cdg-header{background:#f8fafc;font-size:11px;color:#94a3b8;font-weight:600;border-bottom:1px solid #eef1f6}
+.cdg-row{font-size:12.5px;color:#1f2937;border-bottom:1px solid #f2f4f8}
+.cdg-row:last-child{border-bottom:none}
+.cdg-row > div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cdg-row .cdg-idx{color:#94a3b8}
+.copy-barcode-mono{font-family:"SF Mono",Consolas,monospace;color:#2f6fed;font-weight:500}
+.copy-status-tag{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;display:inline-block;white-space:nowrap}
+.copy-status-tag.available{background:#e6f7e6;color:#1e7b1e}
+.copy-status-tag.borrowed{background:#e8f0fe;color:#2c6eb0}
+.copy-status-tag.lost{background:#ffeaea;color:#c0392b}
+.copy-status-tag.damaged{background:#fff3e0;color:#b45f06}
+.copy-status-tag.offline{background:#eef2f7;color:#6b7b8b}
+.copies-empty-inline{padding:22px 14px;text-align:center;font-size:12.5px;color:#a8b0bf;background:#fafcff;border:1px dashed #d5dce8;border-radius:8px;line-height:1.7}
+
+/* ============ 送编目 · 复本编辑器 ============ */
+.copies-block{border:1px solid #e5e9f0;border-radius:10px;overflow:hidden;background:#fff}
+.copies-block-header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:#f5f7fb;border-bottom:1px solid #e8ecf3}
+.copies-block-header .title{font-size:12.5px;font-weight:600;color:#374151;display:flex;align-items:center;gap:6px}
+.copies-block-header .title i{color:#2f6fed}
+.copies-summary{font-size:11.5px;color:#2f6fed;background:#ecf3fe;padding:3px 10px;border-radius:20px;font-weight:500;white-space:nowrap}
+.copies-table-head{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:.4px;color:#94a3b8;background:#fafcff;border-bottom:1px solid #eef1f6}
+.copies-table-head span:nth-child(1){flex:0 0 150px}
+.copies-table-head span:nth-child(2){flex:1}
+.copies-table-head span:nth-child(3){flex:0 0 112px}
+.copies-table-head span:nth-child(4){flex:0 0 34px}
+.copies-list{max-height:290px;overflow-y:auto}
+.copies-list::-webkit-scrollbar{width:6px}
+.copies-list::-webkit-scrollbar-thumb{background:#d5dce8;border-radius:4px}
+.copy-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid #f2f4f8;background:#fff;transition:.12s}
+.copy-row:last-child{border-bottom:none}
+.copy-row:hover{background:#fafbfd}
+.copy-row input[type=text]{flex:0 0 150px;width:auto;padding:7px 10px;font-size:12.5px;border:1px solid #dfe4ec;border-radius:7px;font-family:"SF Mono",Consolas,monospace;background:#fff;color:#1f2937}
+.copy-row input[type=text]:focus{border-color:#2f6fed;box-shadow:0 0 0 3px rgba(47,111,237,.12)}
+.copy-row select{flex:0 0 112px;width:auto;min-width:0;height:34px;padding:0 26px 0 10px;font-size:12.5px;border:1px solid #dfe4ec;border-radius:7px;background-position:right 9px center}
+.copy-location-picker{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 12px;font-size:12.5px;border:1px solid #dfe4ec;border-radius:7px;background:#fff;color:#1f2937;cursor:pointer;transition:.15s;min-height:34px}
+.copy-location-picker:hover{border-color:#2f6fed;background:#f5f9ff}
+.copy-location-picker .loc-text{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.copy-location-picker .loc-text.placeholder{color:#b0bece}
+.copy-location-picker i{color:#94a3b8;font-size:.68rem;flex-shrink:0}
+.copy-remove{flex:0 0 34px;height:34px;border-radius:7px;border:none;background:transparent;color:#c0c4cc;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.copy-remove:hover{background:#fef0f0;color:#f56c6c}
+.copies-empty{padding:24px 14px;text-align:center;font-size:12.5px;color:#a8b0bf;background:#fff;line-height:1.6}
+.copies-empty i{display:block;font-size:20px;color:#d5dce8;margin-bottom:6px}
+.copies-actions{padding:10px 14px;background:#fafcff;border-top:1px dashed #e8ecf3;display:flex;gap:8px;flex-wrap:wrap}
+.btn-add-copy{border:1px dashed #2f6fed;background:#f5f9ff;color:#2f6fed;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;font-family:inherit}
+.btn-add-copy:hover{background:#e8f0fe}
+
+/* ============ 位置选择器 ============ */
+.loc-step{margin-bottom:12px}
+.loc-step:last-of-type{margin-bottom:0}
+.loc-step label{display:block;font-size:12.5px;font-weight:500;color:#4b5563;margin-bottom:6px}
+.loc-step label .opt{color:#94a3b8;font-weight:400;font-size:11.5px;margin-left:3px}
+.loc-step select{width:100%;padding:9px 12px;height:38px;border:1px solid #dfe4ec;border-radius:8px;font-size:13px;background:#fff;color:#1f2937;font-family:inherit;cursor:pointer;outline:none;transition:.15s}
+.loc-step select:focus{border-color:#2f6fed;box-shadow:0 0 0 3px rgba(47,111,237,.12)}
+.loc-step select:disabled{background:#f5f7fa;cursor:not-allowed;color:#b0bece}
+.loc-preview{margin-top:14px;padding:11px 13px;background:#f5f9ff;border:1px dashed #b8d4f0;border-radius:8px}
+.loc-preview .lp-label{font-size:11px;color:#7a8b9c;margin-bottom:4px;font-weight:600;letter-spacing:.4px}
+.loc-preview .lp-value{font-family:"SF Mono",Consolas,monospace;color:#1f2937;font-weight:500;font-size:13px}
   </style>
 </head>
 <body>
@@ -460,9 +570,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
 
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约记录</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约记录</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约记录</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约管理</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
@@ -566,7 +676,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
                 <th style="width:110px">订单号</th>
                 <th style="width:240px">图书信息</th>
                 <th style="width:80px">来源</th>
-                <th style="width:80px">复本</th>
+                <th style="width:90px">复本</th>
                 <th style="width:90px">定价</th>
                 <th style="width:130px">推荐人</th>
                 <th style="width:150px">采访馆员</th>
@@ -601,6 +711,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
         <div class="field">
           <label>复本数<span class="req">*</span></label>
           <input type="number" id="addCopies" min="1" max="50" value="2">
+          <div class="form-tip">复本明细在「送编目」时设置</div>
         </div>
 
         <div class="field full">
@@ -685,6 +796,40 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
   </div>
 </div>
 
+<!-- ============ 送编目 · 设置复本明细 ============ -->
+<div class="modal-mask" id="catalogMask">
+  <div class="modal" style="width:760px">
+    <div class="modal-head"><h3>送编目 · 设置复本明细</h3><button class="modal-close" onclick="closeCatalogModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-text" id="catalogInfo" style="margin-bottom:14px"></div>
+      <div class="copies-block">
+        <div class="copies-block-header">
+          <span class="title"><i class="fas fa-layer-group"></i> 复本清单</span>
+          <span class="copies-summary" id="catalogCopiesSummary">共 0 本</span>
+        </div>
+        <div class="copies-table-head">
+          <span>条码</span>
+          <span>馆藏位置（区›排›架）</span>
+          <span>状态</span>
+          <span></span>
+        </div>
+        <div class="copies-list" id="catalogCopiesList"></div>
+        <div class="copies-actions">
+          <button type="button" class="btn-add-copy" id="catalogAddCopyBtn"><i class="fas fa-plus"></i> 添加复本</button>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label>编目意见</label>
+        <textarea id="catalogComment" placeholder="选填，如索书号分配说明、典藏分配说明"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeCatalogModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmCatalog()">确认送编目</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ 审核弹窗 ============ -->
 <div class="modal-mask" id="auditMask">
   <div class="modal" style="width:520px">
@@ -733,6 +878,43 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
   </div>
 </div>
 
+<!-- ============ 位置选择器 ============ -->
+<div class="modal-mask" id="locPickerMask" style="z-index:120">
+  <div class="modal" style="width:500px">
+    <div class="modal-head"><h3>选择馆藏位置</h3><button class="modal-close" onclick="closeLocPicker()">✕</button></div>
+    <div class="modal-body">
+      <div class="loc-step">
+        <label>区域 <span style="color:#e5484d">*</span></label>
+        <select id="locAreaSel"></select>
+      </div>
+      <div class="loc-step">
+        <label>排 <span style="color:#e5484d">*</span></label>
+        <select id="locRowSel" disabled><option value="">请先选择区域</option></select>
+      </div>
+      <div class="loc-step">
+        <label>书架 <span style="color:#e5484d">*</span></label>
+        <select id="locShelfSel" disabled><option value="">请先选择排</option></select>
+      </div>
+      <div class="loc-step" id="locLayerStep" style="display:none">
+        <label>架层 <span class="opt">（可选）</span></label>
+        <select id="locLayerSel"></select>
+      </div>
+      <div class="loc-step" id="locSlotStep" style="display:none">
+        <label>架位 <span class="opt">（可选）</span></label>
+        <select id="locSlotSel"></select>
+      </div>
+      <div class="loc-preview">
+        <div class="lp-label">位置预览</div>
+        <div class="lp-value" id="locPreviewText" style="color:#9aabb9;">请选择区域</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeLocPicker()">取消</button>
+      <button class="btn btn-primary" onclick="confirmLocPicker()">确定</button>
+    </div>
+  </div>
+</div>
+
 <div id="toastWrap"></div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </div>
@@ -766,7 +948,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:#2f6fed;cursor:pointer}
     background-color: var(--lib-primary-soft);
     color: var(--lib-primary) !important;
   }
-  
+
     .lib-toggle {
       position: relative;
       display: inline-flex;
@@ -839,10 +1021,91 @@ const ACQUISITION_STAFF = [
 ];
 
 /* =========================================================
+   馆藏位置基础数据（与「图书资源」页保持一致）
+   =======================================================*/
+const LOCATION_AREAS = [
+  { id:'A', code:'A', name:'中文图书借阅区' },
+  { id:'B', code:'B', name:'外文图书借阅区' },
+  { id:'H', code:'H', name:'英语学习区' },
+  { id:'I', code:'I', name:'文学区' },
+  { id:'O', code:'O', name:'物理学区' }
+];
+
+const LOCATION_ROWS = [
+  { id:'A-1', areaId:'A', code:'1', name:'第1排' },
+  { id:'A-2', areaId:'A', code:'2', name:'第2排' },
+  { id:'A-3', areaId:'A', code:'3', name:'第3排' },
+  { id:'B-1', areaId:'B', code:'1', name:'第1排' },
+  { id:'B-2', areaId:'B', code:'2', name:'第2排' },
+  { id:'H-1', areaId:'H', code:'1', name:'第1排' },
+  { id:'H-2', areaId:'H', code:'2', name:'第2排' },
+  { id:'I-1', areaId:'I', code:'1', name:'第1排' },
+  { id:'I-2', areaId:'I', code:'2', name:'第2排' },
+  { id:'I-3', areaId:'I', code:'3', name:'第3排' },
+  { id:'I-4', areaId:'I', code:'4', name:'第4排' },
+  { id:'O-1', areaId:'O', code:'1', name:'第1排' },
+  { id:'O-2', areaId:'O', code:'2', name:'第2排' }
+];
+
+const LOCATION_SHELVES = [
+  { id:'A-1-1', rowId:'A-1', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-1-2', rowId:'A-1', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-1-3', rowId:'A-1', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-1-4', rowId:'A-1', code:'4', name:'第4书架', layerCount:5, layerSlots:[18,18,18,18,15] },
+  { id:'A-2-1', rowId:'A-2', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-2-2', rowId:'A-2', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-2-3', rowId:'A-2', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'A-3-1', rowId:'A-3', code:'1', name:'第1书架', layerCount:5, layerSlots:[15,15,15,15,15] },
+  { id:'A-3-2', rowId:'A-3', code:'2', name:'第2书架', layerCount:5, layerSlots:[15,15,15,15,12] },
+  { id:'B-1-1', rowId:'B-1', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,18] },
+  { id:'B-1-2', rowId:'B-1', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'B-1-3', rowId:'B-1', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'B-2-1', rowId:'B-2', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'B-2-2', rowId:'B-2', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'H-1-1', rowId:'H-1', code:'1', name:'第1书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'H-1-2', rowId:'H-1', code:'2', name:'第2书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'H-2-1', rowId:'H-2', code:'1', name:'第1书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'H-2-2', rowId:'H-2', code:'2', name:'第2书架', layerCount:5, layerSlots:[18,18,18,18,18] },
+  { id:'I-1-1', rowId:'I-1', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-1-2', rowId:'I-1', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-2-1', rowId:'I-2', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-2-2', rowId:'I-2', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-1', rowId:'I-3', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-2', rowId:'I-3', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-3', rowId:'I-3', code:'3', name:'第3书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-3-4', rowId:'I-3', code:'4', name:'第4书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-4-1', rowId:'I-4', code:'1', name:'第1书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'I-4-2', rowId:'I-4', code:'2', name:'第2书架', layerCount:6, layerSlots:[20,20,20,20,20,20] },
+  { id:'O-1-1', rowId:'O-1', code:'1', name:'第1书架', layerCount:5, layerSlots:[16,16,16,16,16] },
+  { id:'O-1-2', rowId:'O-1', code:'2', name:'第2书架', layerCount:5, layerSlots:[16,16,16,16,16] },
+  { id:'O-2-1', rowId:'O-2', code:'1', name:'第1书架', layerCount:5, layerSlots:[16,16,16,16,16] },
+  { id:'O-2-2', rowId:'O-2', code:'2', name:'第2书架', layerCount:5, layerSlots:[16,16,16,16,16] }
+];
+
+const COPY_STATUS_OPTIONS = [
+  { value:'available', label:'在架' },
+  { value:'borrowed',  label:'已借出' },
+  { value:'damaged',   label:'损毁' },
+  { value:'lost',      label:'遗失' },
+  { value:'offline',   label:'已下架' }
+];
+const COPY_STATUS_LABEL = {};
+COPY_STATUS_OPTIONS.forEach(function(o){ COPY_STATUS_LABEL[o.value] = o.label; });
+
+function mkDetails(prefix, n, loc, status){
+  const arr = [];
+  for(let i=0;i<n;i++){
+    arr.push({ barcode: prefix + String(i+1).padStart(4,'0'), location: loc || '', status: status || 'available' });
+  }
+  return arr;
+}
+
+/* =========================================================
    示例数据：10 种状态各 1 条
+   copies = 复本数（数字，荐购阶段填写）
+   copyDetails = 复本明细数组（编目阶段填写，可能为空）
    =======================================================*/
 let data = [
-  /* ===== 1. 草稿 draft ===== */
   {
     id:'PO20250409001', isbn:'978-7-02-000220-7',
     title:'围城', author:'钱钟书', publisher:'人民文学出版社', pubYear:1991,
@@ -854,8 +1117,6 @@ let data = [
     createdAt:'2025-04-09 08:40',
     auditLog:[{actor:'王采编员', act:'保存草稿', time:'2025-04-09 08:40', comment:'已保存为草稿，待补充完整信息后提交'}]
   },
-
-  /* ===== 2. 待审核 pending ===== */
   {
     id:'PO20250409002', isbn:'978-7-115-58901-2',
     title:'计算机网络：自顶向下方法（第8版）',
@@ -871,8 +1132,6 @@ let data = [
       {actor:'王采编员', act:'提交待审', time:'2025-04-09 09:15', comment:'已提交，等待审核员认领处理'}
     ]
   },
-
-  /* ===== 3. 审核中 reviewing ===== */
   {
     id:'PO20250409003', isbn:'978-7-302-67890-1',
     title:'深入理解操作系统（CSAPP 第3版）',
@@ -889,8 +1148,6 @@ let data = [
       {actor:'李审核员', act:'开始审核', time:'2025-04-08 16:20', comment:'已认领，正在查重：馆藏 0 册同名同版'}
     ]
   },
-
-  /* ===== 4. 已批准 approved ===== */
   {
     id:'PO20250409004', isbn:'978-7-208-16234-5',
     title:'百年孤独', author:'加西亚·马尔克斯',
@@ -907,8 +1164,6 @@ let data = [
       {actor:'李审核员', act:'已批准', time:'2025-04-07 15:40', comment:'馆藏 3 册长期高预约排队（42 人候补），同意增订 5 册'}
     ]
   },
-
-  /* ===== 5. 已采购 ordered ===== */
   {
     id:'PO20250409005', isbn:'978-7-111-54493-7',
     title:'深入理解计算机系统（原书第3版）', author:'Randal E. Bryant',
@@ -926,8 +1181,6 @@ let data = [
       {actor:'赵文博', act:'已采购', time:'2025-04-04 09:30', comment:'订单已发至供应商，预计 5 个工作日到货'}
     ]
   },
-
-  /* ===== 6. 已到馆 arrived ===== */
   {
     id:'PO20250409006', isbn:'978-7-115-61234-5',
     title:'Python 编程：从入门到实践（第3版）', author:'Eric Matthes',
@@ -946,8 +1199,6 @@ let data = [
       {actor:'物流', act:'已到馆', time:'2025-04-06 08:15', comment:'供应商送货，4 册全部签收'}
     ]
   },
-
-  /* ===== 7. 已编目 cataloged ===== */
   {
     id:'PO20250409007', isbn:'978-7-5399-8901-2',
     title:'三体（套装全3册）', author:'刘慈欣',
@@ -958,6 +1209,7 @@ let data = [
     acquisitionLibrarian:'王采编员',
     status:'cataloged', requester:'采编系统', requestDept:'采编部',
     createdAt:'2025-03-20 10:00',
+    copyDetails: mkDetails('T', 6, 'I区3排4架'),
     auditLog:[
       {actor:'王采编员', act:'提交待审', time:'2025-03-20 10:00', comment:'系统自动荐购，附借阅数据'},
       {actor:'李审核员', act:'开始审核', time:'2025-03-20 10:45', comment:'已认领'},
@@ -967,8 +1219,6 @@ let data = [
       {actor:'周编目员', act:'已编目', time:'2025-04-07 16:30', comment:'分配索书号 I247.55/L-3，条形码已生成'}
     ]
   },
-
-  /* ===== 8. 已上架 onshelf ===== */
   {
     id:'PO20250409008', isbn:'978-7-100-98765-4',
     title:'乡土中国', author:'费孝通',
@@ -979,6 +1229,7 @@ let data = [
     acquisitionLibrarian:'许诗涵',
     status:'onshelf', requester:'何静怡', requestDept:'经济管理学院',
     createdAt:'2025-03-05 09:00',
+    copyDetails: mkDetails('X', 3, 'A区1排1架'),
     auditLog:[
       {actor:'许诗涵', act:'提交待审', time:'2025-03-05 09:00', comment:'读者荐购，馆藏借空'},
       {actor:'李审核员', act:'开始审核', time:'2025-03-05 09:30', comment:'已认领'},
@@ -989,8 +1240,6 @@ let data = [
       {actor:'流通部', act:'已上架', time:'2025-04-01 09:00', comment:'总馆三层中文图书借阅区已上架流通'}
     ]
   },
-
-  /* ===== 9. 已驳回 rejected ===== */
   {
     id:'PO20250409009', isbn:'978-7-5063-6543-7',
     title:'活着', author:'余华',
@@ -1007,8 +1256,6 @@ let data = [
       {actor:'李审核员', act:'已驳回', time:'2025-04-09 10:15', comment:'本年度采购经费已使用 78%，该书现有复本 4 册可基本满足需求，建议延至下季度评估'}
     ]
   },
-
-  /* ===== 10. 重复采购 duplicate ===== */
   {
     id:'PO20250409010', isbn:'978-7-111-40701-1',
     title:'算法导论（原书第3版）', author:'Thomas H. Cormen',
@@ -1071,15 +1318,32 @@ function getLastAuditAction(r){
   return r.auditLog[r.auditLog.length-1];
 }
 
+/* 复本数（数字） */
+function getCopiesCount(r){
+  return Number(r.copies) || 0;
+}
+/* 复本明细数组（可能为空） */
+function getCopyDetails(r){
+  return Array.isArray(r.copyDetails) ? r.copyDetails : [];
+}
+/* 复本明细统计 */
+function getDetailStats(details){
+  let avail=0, offline=0, other=0;
+  details.forEach(c=>{
+    if(c.status==='available') avail++;
+    else if(c.status==='offline') offline++;
+    else other++;
+  });
+  return {total:details.length, avail, offline, other};
+}
+
 function getBtns(r){
   const id = r.id, sk = r.status;
   const detail = '<a class="link" data-act="detail" data-id="'+id+'">详情</a>';
   if(sk==='draft'){
-    /* 草稿：提交待审 → 进入 pending */
     return '<a class="link" data-act="submit" data-id="'+id+'">提交待审</a><a class="link" data-act="edit" data-id="'+id+'">编辑</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
   }
   if(sk==='pending'){
-    /* 待审核：审核员开始审核 → 进入 reviewing；同时允许推荐人撤回编辑 */
     return '<a class="link" data-act="startAudit" data-id="'+id+'">开始审核</a><a class="link" data-act="edit" data-id="'+id+'">编辑</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
   }
   if(sk==='reviewing'){
@@ -1095,7 +1359,7 @@ function getBtns(r){
     return '<a class="link" data-act="catalog" data-id="'+id+'">送编目</a>'+detail;
   }
   if(sk==='cataloged'){
-    return '<a class="link" data-act="onshelf" data-id="'+id+'">标记上架</a>'+detail;
+    return '<a class="link" data-act="onshelf" data-id="'+id+'">标记上架</a><a class="link" data-act="editCatalog" data-id="'+id+'">改复本</a>'+detail;
   }
   if(sk==='rejected'){
     return '<a class="link" data-act="reopen" data-id="'+id+'">重新提交</a><a class="link danger" data-act="delete" data-id="'+id+'">删除</a>'+detail;
@@ -1138,12 +1402,13 @@ function renderTable(){
       const src = SOURCE_DEF[r.source];
       const last = getLastAuditAction(r);
       const checked = state.selected.has(r.id) ? 'checked' : '';
+      const cc = getCopiesCount(r);
       html += '<tr>';
       html += '<td><input type="checkbox" class="row-chk" data-id="'+r.id+'" '+checked+'></td>';
       html += '<td><span class="record-id">#'+r.id+'</span></td>';
       html += '<td><div class="book-cell"><div class="book-cover '+cover+'">📖</div><div class="book-info"><div class="book-title">'+esc(r.title)+'</div><div class="book-meta">作者：'+esc(r.author)+'<br>出版社：'+esc(r.publisher)+' · '+r.pubYear+' <span class="isbn">ISBN '+r.isbn+'</span></div></div></div></td>';
       html += '<td><span class="source '+src.cls+'">'+src.label+'</span></td>';
-      html += '<td><span class="copies">'+r.copies+' <small>本</small></span></td>';
+      html += '<td><span class="copies">'+cc+' <small>本</small></span></td>';
       html += '<td><span class="price">¥'+r.price.toFixed(2)+'</span></td>';
       html += '<td><div class="requester"><div><span class="req-name">'+esc(r.requester)+'</span><div class="req-sub">'+esc(r.requestDept)+'</div></div></div></td>';
       html += '<td>'+renderAcqCell(r)+'</td>';
@@ -1192,7 +1457,6 @@ function act(a, id){
   if(!r) return;
   if(a==='detail'){ openDetail(id); return; }
 
-  /* 草稿 → 待审核（而不是直接跳审核中） */
   if(a==='submit'){
     r.status='pending';
     r.auditLog = r.auditLog || [];
@@ -1201,8 +1465,6 @@ function act(a, id){
     render();
     return;
   }
-
-  /* 待审核 → 审核中（审核员认领） */
   if(a==='startAudit'){
     r.status='reviewing';
     r.auditLog = r.auditLog || [];
@@ -1211,12 +1473,7 @@ function act(a, id){
     render();
     return;
   }
-
-  if(a==='edit'){
-    openEdit(r);
-    return;
-  }
-
+  if(a==='edit'){ openEdit(r); return; }
   if(a==='delete'){
     confirmDialog({title:'删除荐购',icon:'danger',question:'确定要删除订单 #'+r.id+' 吗？',text:'删除后该荐购记录将不可恢复，但馆藏图书不受影响。',detail:'书名：'+r.title+'<br>推荐人：'+r.requester,okText:'确认删除',okClass:'btn btn-danger',onOk:()=>{
       data = data.filter(x=>x.id!==id);
@@ -1226,14 +1483,10 @@ function act(a, id){
     }});
     return;
   }
-
-  if(a==='audit'){
-    openAudit(r);
-    return;
-  }
-
+  if(a==='audit'){ openAudit(r); return; }
   if(a==='order'){
-    confirmDialog({title:'下单采购',icon:'info',question:'确认要为该订单下单吗？',text:'订单将发送给供应商，预计 3-5 个工作日到货。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本 · 单价：¥'+r.price.toFixed(2)+'<br>合计：¥'+(r.copies*r.price).toFixed(2),okText:'确认下单',okClass:'btn btn-primary',onOk:()=>{
+    const cc = getCopiesCount(r);
+    confirmDialog({title:'下单采购',icon:'info',question:'确认要为该订单下单吗？',text:'订单将发送给供应商，预计 3-5 个工作日到货。',detail:'书名：'+r.title+'<br>复本：'+cc+' 本 · 单价：¥'+r.price.toFixed(2)+'<br>合计：¥'+(cc*r.price).toFixed(2),okText:'确认下单',okClass:'btn btn-primary',onOk:()=>{
       r.status='ordered';
       r.auditLog.push({actor:r.acquisitionLibrarian||'王采编员',act:'已采购',time:fmtNow(),comment:'订单已发送至供应商'});
       toast('订单已发送至供应商');
@@ -1241,9 +1494,9 @@ function act(a, id){
     }});
     return;
   }
-
   if(a==='arrive'){
-    confirmDialog({title:'标记到馆',icon:'info',question:'确认该订单已到馆吗？',text:'请确保供应商已送货签收，订单进入编目流程。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本',okText:'确认到馆',okClass:'btn btn-primary',onOk:()=>{
+    const cc = getCopiesCount(r);
+    confirmDialog({title:'标记到馆',icon:'info',question:'确认该订单已到馆吗？',text:'请确保供应商已送货签收，订单进入编目流程。',detail:'书名：'+r.title+'<br>复本：'+cc+' 本',okText:'确认到馆',okClass:'btn btn-primary',onOk:()=>{
       r.status='arrived';
       r.auditLog.push({actor:'物流',act:'已到馆',time:fmtNow(),comment:'供应商送货签收'});
       toast('订单已标记为到馆');
@@ -1251,19 +1504,13 @@ function act(a, id){
     }});
     return;
   }
-
-  if(a==='catalog'){
-    confirmDialog({title:'送编目',icon:'info',question:'确认送编目吗？',text:'将分配中图法分类号、设置馆藏地、生成条形码。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本',okText:'确认送编目',okClass:'btn btn-primary',onOk:()=>{
-      r.status='cataloged';
-      r.auditLog.push({actor:'周编目员',act:'已编目',time:fmtNow(),comment:'分配索书号 '+r.clc+'，生成条形码'});
-      toast('订单已送编目');
-      render();
-    }});
+  if(a==='catalog' || a==='editCatalog'){
+    openCatalogModal(r);
     return;
   }
-
   if(a==='onshelf'){
-    confirmDialog({title:'标记上架',icon:'success',question:'确认该订单已上架流通吗？',text:'图书已分配具体馆藏位置，读者可正常借阅。',detail:'书名：'+r.title+'<br>复本：'+r.copies+' 本',okText:'确认上架',okClass:'btn btn-primary',onOk:()=>{
+    const cc = getCopiesCount(r);
+    confirmDialog({title:'标记上架',icon:'success',question:'确认该订单已上架流通吗？',text:'图书已分配具体馆藏位置，读者可正常借阅。',detail:'书名：'+r.title+'<br>复本：'+cc+' 本',okText:'确认上架',okClass:'btn btn-primary',onOk:()=>{
       r.status='onshelf';
       r.auditLog.push({actor:'流通部',act:'已上架',time:fmtNow(),comment:'流通库已上架'});
       toast('订单已完成，图书已上架流通');
@@ -1271,7 +1518,6 @@ function act(a, id){
     }});
     return;
   }
-
   if(a==='reopen'){
     confirmDialog({title:'重新提交',icon:'info',question:'确定要重新提交该荐购吗？',text:'重新提交后进入「待审核」状态，等待审核员处理。',detail:'书名：'+r.title,okText:'确认重新提交',okClass:'btn btn-primary',onOk:()=>{
       r.status='pending';
@@ -1283,30 +1529,81 @@ function act(a, id){
   }
 }
 
-/* 详情 */
+/* =========================================================
+   详情弹窗
+   — 上半部：Tab 切换（采购信息+复本明细 / 采访馆员+推荐人+推荐理由）
+   — 下半部：处理流程（时间轴，不随 Tab 切换）
+   =======================================================*/
 function openDetail(id){
   const r = data.find(x=>x.id===id);
   if(!r) return;
   const cover = STATUS_DEF[r.status].cover;
   const src = SOURCE_DEF[r.source];
+  const cc = getCopiesCount(r);
+  const details = getCopyDetails(r);
+  const logArr = r.auditLog || [];
 
+  /* --- 处理流程 HTML（时间轴） --- */
   let logHtml = '';
-  if(r.auditLog && r.auditLog.length){
-    r.auditLog.forEach(log=>{
-      let actionCls = '';
-      if(log.act.indexOf('批准')>=0) actionCls='approve';
-      else if(log.act.indexOf('驳回')>=0) actionCls='reject';
-      else if(log.act.indexOf('采购')>=0) actionCls='order';
-      else if(log.act.indexOf('草稿')>=0) actionCls='draft';
-      else if(log.act.indexOf('开始审核')>=0) actionCls='review';
-      logHtml += '<div class="audit-item '+actionCls+'">'
-        + '<div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:baseline"><div class="ai-actor">'+esc(log.actor)+'</div><div class="ai-time">'+esc(log.time)+'</div></div>'
-        + '<div class="ai-action">→ '+esc(log.act)+'</div>'
-        + (log.comment? '<div class="ai-comment">'+esc(log.comment)+'</div>' : '')
-        + '</div></div>';
+  if(logArr.length){
+    logArr.forEach(log=>{
+      const act = log.act || '';
+      let cls = 'default', icon = 'fa-circle';
+      if(act.indexOf('重复')>=0){ cls='duplicate'; icon='fa-copy'; }
+      else if(act.indexOf('批准')>=0){ cls='approve'; icon='fa-check'; }
+      else if(act.indexOf('驳回')>=0){ cls='reject'; icon='fa-times'; }
+      else if(act.indexOf('采购')>=0){ cls='order'; icon='fa-shopping-cart'; }
+      else if(act.indexOf('草稿')>=0){ cls='draft'; icon='fa-file-alt'; }
+      else if(act.indexOf('开始审核')>=0){ cls='review'; icon='fa-search'; }
+      else if(act.indexOf('到馆')>=0){ cls='arrive'; icon='fa-truck'; }
+      else if(act.indexOf('编目')>=0){ cls='catalog'; icon='fa-book'; }
+      else if(act.indexOf('上架')>=0){ cls='onshelf'; icon='fa-bookmark'; }
+      else if(act.indexOf('提交')>=0){ cls='submit'; icon='fa-paper-plane'; }
+      else if(act.indexOf('修改')>=0){ cls='review'; icon='fa-pen'; }
+
+      logHtml +=
+        '<div class="flow-node '+cls+'">'
+        +   '<span class="fn-dot"><i class="fas '+icon+'"></i></span>'
+        +   '<div class="fn-card">'
+        +     '<div class="fn-head">'
+        +       '<span class="fn-actor">'+esc(log.actor)+'</span>'
+        +       '<span class="fn-time">'+esc(log.time)+'</span>'
+        +     '</div>'
+        +     '<span class="fn-action">'+esc(act)+'</span>'
+        +     (log.comment ? '<div class="fn-comment">'+esc(log.comment)+'</div>' : '')
+        +   '</div>'
+        + '</div>';
     });
   } else {
-    logHtml = '<div class="text-muted" style="font-size:12.5px;padding:10px 0">暂无记录</div>';
+    logHtml = '<div class="flow-empty">暂无处理记录</div>';
+  }
+
+  /* --- 复本明细 HTML --- */
+  let copiesHtml = '';
+  if(details.length){
+    let rowsHtml = '';
+    details.forEach((c, i)=>{
+      const statusKey = c.status || 'available';
+      const statusLabel = COPY_STATUS_LABEL[statusKey] || statusKey;
+      rowsHtml +=
+        '<div class="cdg-row">'+
+          '<div class="cdg-idx">'+(i+1)+'</div>'+
+          '<div class="copy-barcode-mono">'+esc(c.barcode || '待编目生成')+'</div>'+
+          '<div title="'+esc(c.location||'')+'">'+esc(c.location || '—')+'</div>'+
+          '<div><span class="copy-status-tag '+statusKey+'">'+statusLabel+'</span></div>'+
+        '</div>';
+    });
+    copiesHtml =
+      '<div class="copies-detail-grid">'
+      +   '<div class="cdg-header"><div>#</div><div>条码</div><div>馆藏位置</div><div>状态</div></div>'
+      +   rowsHtml
+      + '</div>';
+  } else {
+    copiesHtml =
+      '<div class="copies-empty-inline">'
+      +   '复本明细尚未设置<br>'
+      +   '到馆后点「送编目」时按实际到货数量填写条码、馆藏位置和状态'
+      + '</div>';
   }
 
   const acqDisplay = r.acquisitionLibrarian
@@ -1314,6 +1611,7 @@ function openDetail(id){
     : '<span class="text-muted">— 待分配 —</span>';
 
   $('detailBody').innerHTML = ''
+/* Hero */
 + '<div class="detail-hero">'
 +   '<div class="book-cover '+cover+'">📖</div>'
 +   '<div class="dh-info">'
@@ -1324,33 +1622,67 @@ function openDetail(id){
 +   '<div class="dh-status"><span class="status '+STATUS_DEF[r.status].cls+'">'+STATUS_DEF[r.status].label+'</span></div>'
 + '</div>'
 
-+ '<div class="detail-section"><h4>采购信息</h4><div class="info-grid four">'
-+   '<div class="info-item"><div class="label">复本数</div><div class="value">'+r.copies+' 本</div></div>'
-+   '<div class="info-item"><div class="label">单价</div><div class="value">¥'+r.price.toFixed(2)+'</div></div>'
-+   '<div class="info-item"><div class="label">合计金额</div><div class="value" style="color:#dc2626">¥'+(r.copies*r.price).toFixed(2)+'</div></div>'
-+   '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
-+ '</div></div>'
-
-+ '<div class="detail-section"><h4>采访馆员与推荐人</h4><div class="info-grid">'
-+   '<div class="info-item"><div class="label">采访馆员</div><div class="value">'+acqDisplay+'</div></div>'
-+   '<div class="info-item"><div class="label">负责部门</div><div class="value">采编部</div></div>'
-+   '<div class="info-item"><div class="label">推荐人</div><div class="value">'+esc(r.requester)+'</div></div>'
-+   '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(r.requestDept)+'</div></div>'
-+ '</div></div>'
-
-+ '<div class="detail-section"><h4>推荐理由</h4><div class="modal-detail" style="font-size:13px;line-height:1.7">'+(r.reason?esc(r.reason):'<span class="text-muted">（草稿阶段暂未填写）</span>')+'</div>'
-+ (r.remark? '<div class="modal-detail" style="font-size:12.5px;margin-top:8px"><b>备注：</b>'+esc(r.remark)+'</div>' : '')
+/* Tabs 切换区 */
++ '<div class="detail-tabs">'
++   '<button class="detail-tab active" onclick="switchDetailTab(0)">采购信息与复本明细</button>'
++   '<button class="detail-tab" onclick="switchDetailTab(1)">采访馆员与推荐理由</button>'
 + '</div>'
 
-+ '<div class="detail-section"><h4>处理流程（'+r.auditLog.length+' 条）</h4>'
-+ '<div class="audit-list">'+logHtml+'</div>'
+/* Tab 1：采购信息 + 复本明细 */
++ '<div class="detail-tab-panel active" data-panel="0">'
++   '<div class="detail-section">'
++     '<h4>采购信息</h4>'
++     '<div class="info-grid four">'
++       '<div class="info-item"><div class="label">复本数</div><div class="value">'+cc+' 本</div></div>'
++       '<div class="info-item"><div class="label">单价</div><div class="value">¥'+r.price.toFixed(2)+'</div></div>'
++       '<div class="info-item"><div class="label">合计金额</div><div class="value" style="color:#dc2626">¥'+(cc*r.price).toFixed(2)+'</div></div>'
++       '<div class="info-item"><div class="label">创建时间</div><div class="value mono">'+r.createdAt+'</div></div>'
++     '</div>'
++   '</div>'
++   '<div class="detail-section" style="margin-bottom:0">'
++     '<h4>复本明细（'+cc+' 本）</h4>'
++     copiesHtml
++   '</div>'
++ '</div>'
+
+/* Tab 2：采访馆员 + 推荐人 + 推荐理由 */
++ '<div class="detail-tab-panel" data-panel="1">'
++   '<div class="detail-section">'
++     '<h4>采访馆员与推荐人</h4>'
++     '<div class="info-grid four">'
++       '<div class="info-item"><div class="label">采访馆员</div><div class="value">'+acqDisplay+'</div></div>'
++       '<div class="info-item"><div class="label">负责部门</div><div class="value">采编部</div></div>'
++       '<div class="info-item"><div class="label">推荐人</div><div class="value">'+esc(r.requester)+'</div></div>'
++       '<div class="info-item"><div class="label">所属单位</div><div class="value">'+esc(r.requestDept)+'</div></div>'
++     '</div>'
++   '</div>'
++   '<div class="detail-section" style="margin-bottom:0">'
++     '<h4>推荐理由</h4>'
++     '<div class="modal-detail" style="font-size:13px;line-height:1.7;margin-top:0">'+(r.reason?esc(r.reason):'<span class="text-muted">（草稿阶段暂未填写）</span>')+'</div>'
++     (r.remark? '<div class="modal-detail" style="font-size:12.5px;margin-top:8px"><b>备注：</b>'+esc(r.remark)+'</div>' : '')
++   '</div>'
++ '</div>'
+
+/* 固定底部：处理流程（不随 Tab 切换） */
++ '<div class="detail-section" style="margin-top:20px;margin-bottom:0">'
++   '<h4>处理流程（'+logArr.length+' 条）</h4>'
++   '<div class="flow-timeline">'+logHtml+'</div>'
 + '</div>';
+
   $('detailMask').classList.add('show');
   $('detailBody').scrollTop=0;
 }
 function closeDetail(){ $('detailMask').classList.remove('show'); }
 
-/* 新增 / 编辑荐购 */
+function switchDetailTab(idx){
+  const body = $('detailBody');
+  body.querySelectorAll('.detail-tab').forEach((t,i)=>t.classList.toggle('active', i===idx));
+  body.querySelectorAll('.detail-tab-panel').forEach((p,i)=>p.classList.toggle('active', i===idx));
+}
+
+/* =========================================================
+   新增 / 编辑荐购
+   =======================================================*/
 let editingId = null;
 
 function clearAddForm(){
@@ -1386,7 +1718,7 @@ function openEdit(r){
   editingId = r.id;
   $('addTitle').textContent = '编辑荐购 · #' + r.id;
   $('addIsbn').value = r.isbn;
-  $('addCopies').value = r.copies;
+  $('addCopies').value = getCopiesCount(r);
   $('addTitleInput').value = r.title;
   $('addAuthor').value = r.author;
   $('addPublisher').value = r.publisher;
@@ -1407,7 +1739,6 @@ function openEdit(r){
     $('draftTip').style.display = '';
     $('addSubmitBtn').onclick = function(){ submitAdd(true, false); };
   } else {
-    /* 待审核：可以保存修改（保持状态），也可以退回草稿 */
     $('addDraftBtn').style.display = '';
     $('addDraftBtn').textContent = '📥 转为草稿';
     $('addSubmitBtn').textContent = '保存修改';
@@ -1420,12 +1751,6 @@ function openEdit(r){
 
 function closeAdd(){ $('addMask').classList.remove('show'); editingId = null; }
 
-/**
- * 提交 / 保存
- * @param {boolean} isEdit
- * @param {boolean} asDraft
- * @param {boolean} keepStatus 编辑时保持原状态
- */
 function submitAdd(isEdit, asDraft, keepStatus){
   const isbn = $('addIsbn').value.trim();
   const copies = parseInt($('addCopies').value,10);
@@ -1487,7 +1812,6 @@ function submitAdd(isEdit, asDraft, keepStatus){
         actComment = '已转为草稿，待补充完整信息后提交';
         toastMsg = '已转为草稿';
       } else {
-        /* 编辑草稿后提交：进入待审核 */
         r.status = 'pending';
         actName = prevStatus === 'draft' ? '提交待审' : '编辑并提交';
         actComment = '已提交，等待审核员认领处理';
@@ -1501,7 +1825,6 @@ function submitAdd(isEdit, asDraft, keepStatus){
     return;
   }
 
-  /* 新增模式：查重 */
   if(!asDraft && data.some(r=>r.isbn===isbn)){
     confirmDialog({
       title:'ISBN 重复', icon:'warn',
@@ -1557,13 +1880,355 @@ function saveNew(isbn,copies,title,author,publisher,pubYear,price,source,clc,acq
   toast(toastMsg);
 }
 
+/* =========================================================
+   送编目：设置复本明细
+   =======================================================*/
+let catalogId = null;
+let catalogCopies = [];
+
+function openCatalogModal(r){
+  catalogId = r.id;
+  const existing = getCopyDetails(r);
+  if(existing.length){
+    catalogCopies = existing.map(c=>({
+      barcode: c.barcode || '',
+      location: c.location || '',
+      status: c.status || 'available'
+    }));
+  } else {
+    const n = getCopiesCount(r) || 1;
+    catalogCopies = [];
+    for(let i=0;i<n;i++){
+      catalogCopies.push({ barcode:'', location:'', status:'available' });
+    }
+  }
+  $('catalogInfo').innerHTML = '为订单 <b>#'+r.id+'</b>《'+esc(r.title)+'》设置复本明细（共 '+catalogCopies.length+' 本）：';
+  renderCatalogCopies();
+  $('catalogComment').value = '';
+  $('catalogMask').classList.add('show');
+}
+function closeCatalogModal(){
+  $('catalogMask').classList.remove('show');
+  catalogId = null;
+  catalogCopies = [];
+}
+function renderCatalogCopies(){
+  const list = $('catalogCopiesList');
+  if(!catalogCopies.length){
+    list.innerHTML = '<div class="copies-empty"><i class="fas fa-inbox"></i>还没有复本，点击下方"添加复本"开始录入</div>';
+  } else {
+    list.innerHTML = catalogCopies.map((c, i)=>{
+      const hasLoc = !!(c.location && c.location.trim());
+      const locText = hasLoc ? esc(c.location) : '点击选择位置';
+      const locCls = hasLoc ? '' : 'placeholder';
+      const statusKey = c.status || 'available';
+      return ''
+        + '<div class="copy-row" data-index="'+i+'">'
+        +   '<input type="text" class="copy-barcode" value="'+esc(c.barcode||'')+'" placeholder="留空自动生成">'
+        +   '<div class="copy-location-picker" data-index="'+i+'" title="'+(hasLoc?esc(c.location):'点击选择馆藏位置')+'">'
+        +     '<span class="loc-text '+locCls+'">'+locText+'</span>'
+        +     '<i class="fas fa-chevron-right"></i>'
+        +   '</div>'
+        +   '<select class="copy-status">'
+        +     COPY_STATUS_OPTIONS.map(o=>'<option value="'+o.value+'" '+(o.value===statusKey?'selected':'')+'>'+o.label+'</option>').join('')
+        +   '</select>'
+        +   '<button type="button" class="copy-remove" title="删除此复本"><i class="fas fa-times"></i></button>'
+        + '</div>';
+    }).join('');
+  }
+  $('catalogCopiesSummary').textContent = '共 '+catalogCopies.length+' 本';
+}
+function confirmCatalog(){
+  const r = data.find(x=>x.id===catalogId);
+  if(!r){ closeCatalogModal(); return; }
+  if(!catalogCopies.length){ toast('请至少添加一本复本','error'); return; }
+  for(let i=0;i<catalogCopies.length;i++){
+    if(!catalogCopies[i].location || !catalogCopies[i].location.trim()){
+      toast('第 '+(i+1)+' 本复本未设置馆藏位置','error');
+      return;
+    }
+  }
+  const comment = $('catalogComment').value.trim();
+  const prevStatus = r.status;
+
+  r.copyDetails = catalogCopies.map((c, i)=>({
+    barcode: (c.barcode||'').trim() || (r.id + '-' + String(i+1).padStart(2,'0')),
+    location: (c.location||'').trim(),
+    status: c.status || 'available'
+  }));
+  r.copies = r.copyDetails.length;
+
+  let toastMsg;
+  if(prevStatus === 'cataloged'){
+    r.auditLog.push({actor:'周编目员', act:'修改复本明细', time:fmtNow(), comment:comment || '更新复本清单，共 '+r.copyDetails.length+' 本'});
+    toastMsg = '复本明细已更新';
+  } else {
+    r.status = 'cataloged';
+    r.auditLog.push({actor:'周编目员', act:'已编目', time:fmtNow(), comment:comment || ('分配索书号 '+r.clc+'，生成 '+r.copyDetails.length+' 个复本条形码')});
+    toastMsg = '订单已送编目，共 '+r.copyDetails.length+' 本复本';
+  }
+  closeCatalogModal();
+  toast(toastMsg);
+  render();
+}
+
+/* 编目复本编辑事件 */
+$('catalogCopiesList').addEventListener('input', e=>{
+  const row = e.target.closest('.copy-row');
+  if(!row) return;
+  const idx = parseInt(row.dataset.index,10);
+  if(isNaN(idx)) return;
+  if(e.target.classList.contains('copy-barcode')){
+    catalogCopies[idx].barcode = e.target.value;
+  }
+});
+$('catalogCopiesList').addEventListener('change', e=>{
+  const row = e.target.closest('.copy-row');
+  if(!row) return;
+  const idx = parseInt(row.dataset.index,10);
+  if(isNaN(idx)) return;
+  if(e.target.classList.contains('copy-status')){
+    catalogCopies[idx].status = e.target.value;
+  }
+});
+$('catalogCopiesList').addEventListener('click', e=>{
+  const picker = e.target.closest('.copy-location-picker');
+  if(picker){
+    const idx = parseInt(picker.dataset.index,10);
+    if(!isNaN(idx)) openLocPicker(catalogCopies[idx].location||'', function(loc){
+      catalogCopies[idx].location = loc;
+      renderCatalogCopies();
+    });
+    return;
+  }
+  const btn = e.target.closest('.copy-remove');
+  if(!btn) return;
+  const row = btn.closest('.copy-row');
+  const idx = parseInt(row.dataset.index,10);
+  if(isNaN(idx)) return;
+  catalogCopies.splice(idx,1);
+  renderCatalogCopies();
+});
+$('catalogAddCopyBtn').addEventListener('click', ()=>{
+  const lastLoc = catalogCopies.length ? catalogCopies[catalogCopies.length-1].location : '';
+  catalogCopies.push({ barcode:'', location:lastLoc||'', status:'available' });
+  renderCatalogCopies();
+  const rows = $('catalogCopiesList').querySelectorAll('.copy-row');
+  const last = rows[rows.length-1];
+  if(last) last.querySelector('.copy-barcode').focus();
+});
+
+/* =========================================================
+   位置选择器（回调形式）
+   =======================================================*/
+let locPickerOnConfirm = null;
+let pickerSelection = { areaId:'', rowId:'', shelfId:'', layer:null, slot:null };
+
+function getAreaById(id){ return LOCATION_AREAS.find(a=>a.id===id) || null; }
+function getRowById(id){ return LOCATION_ROWS.find(r=>r.id===id) || null; }
+function getShelfById(id){ return LOCATION_SHELVES.find(s=>s.id===id) || null; }
+function getRowsByArea(areaId){ return LOCATION_ROWS.filter(r=>r.areaId===areaId); }
+function getShelvesByRow(rowId){ return LOCATION_SHELVES.filter(s=>s.rowId===rowId); }
+
+function parseLocationString(str){
+  if(!str) return null;
+  const m = String(str).trim().match(/^([A-Z])区(\d+)排(\d+)架(?:\s+第(\d+)层(?:第(\d+)格)?)?$/);
+  if(!m) return null;
+  return {
+    areaCode:m[1], rowCode:m[2], shelfCode:m[3],
+    layer:m[4]?parseInt(m[4],10):null,
+    slot:m[5]?parseInt(m[5],10):null
+  };
+}
+function buildLocationString(){
+  const area = getAreaById(pickerSelection.areaId);
+  const row = getRowById(pickerSelection.rowId);
+  const shelf = getShelfById(pickerSelection.shelfId);
+  if(!area || !row || !shelf) return '';
+  let str = area.code+'区'+parseInt(row.code,10)+'排'+parseInt(shelf.code,10)+'架';
+  if(pickerSelection.layer){
+    str += ' 第'+pickerSelection.layer+'层';
+    if(pickerSelection.slot) str += '第'+pickerSelection.slot+'格';
+  }
+  return str;
+}
+function refreshLocAreaSel(){
+  const sel = $('locAreaSel');
+  sel.innerHTML = '<option value="">请选择区域</option>'+
+    LOCATION_AREAS.map(a=>'<option value="'+a.id+'" '+(pickerSelection.areaId===a.id?'selected':'')+'>'+esc(a.code)+' 区 · '+esc(a.name)+'</option>').join('');
+}
+function refreshLocRowSel(){
+  const sel = $('locRowSel');
+  if(!pickerSelection.areaId){
+    sel.innerHTML = '<option value="">请先选择区域</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  const rows = getRowsByArea(pickerSelection.areaId);
+  sel.innerHTML = '<option value="">请选择排</option>'+
+    rows.map(r=>'<option value="'+r.id+'" '+(pickerSelection.rowId===r.id?'selected':'')+'>'+esc(r.code)+' 排 · '+esc(r.name)+'</option>').join('');
+}
+function refreshLocShelfSel(){
+  const sel = $('locShelfSel');
+  if(!pickerSelection.rowId){
+    sel.innerHTML = '<option value="">请先选择排</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  const shelves = getShelvesByRow(pickerSelection.rowId);
+  sel.innerHTML = '<option value="">请选择书架</option>'+
+    shelves.map(s=>'<option value="'+s.id+'" '+(pickerSelection.shelfId===s.id?'selected':'')+'>'+esc(s.code)+' 架 · '+esc(s.name)+'（'+s.layerCount+'层）</option>').join('');
+}
+function refreshLocLayerSel(){
+  const step = $('locLayerStep');
+  const sel = $('locLayerSel');
+  const shelf = getShelfById(pickerSelection.shelfId);
+  if(!shelf || !shelf.layerCount || shelf.layerCount<=0){
+    step.style.display = 'none';
+    pickerSelection.layer = null;
+    return;
+  }
+  step.style.display = 'block';
+  let html = '<option value="">不指定（可选）</option>';
+  for(let i=1;i<=shelf.layerCount;i++){
+    const slots = (shelf.layerSlots||[])[i-1]||0;
+    html += '<option value="'+i+'" '+(pickerSelection.layer===i?'selected':'')+'>第 '+i+' 层（'+slots+' 格）</option>';
+  }
+  sel.innerHTML = html;
+}
+function refreshLocSlotSel(){
+  const step = $('locSlotStep');
+  const sel = $('locSlotSel');
+  const shelf = getShelfById(pickerSelection.shelfId);
+  if(!shelf || !pickerSelection.layer){
+    step.style.display = 'none';
+    pickerSelection.slot = null;
+    return;
+  }
+  const maxSlots = (shelf.layerSlots||[])[pickerSelection.layer-1]||0;
+  if(maxSlots<=0){
+    step.style.display = 'none';
+    pickerSelection.slot = null;
+    return;
+  }
+  step.style.display = 'block';
+  let html = '<option value="">不指定（可选）</option>';
+  for(let i=1;i<=maxSlots;i++){
+    html += '<option value="'+i+'" '+(pickerSelection.slot===i?'selected':'')+'>第 '+i+' 格</option>';
+  }
+  sel.innerHTML = html;
+}
+function updateLocPreview(){
+  const el = $('locPreviewText');
+  const area = getAreaById(pickerSelection.areaId);
+  const row = getRowById(pickerSelection.rowId);
+  const shelf = getShelfById(pickerSelection.shelfId);
+  if(!area){ el.textContent = '请选择区域'; el.style.color = '#9aabb9'; return; }
+  let str = area.code+'区';
+  if(!row){ el.textContent = str + ' …'; el.style.color = '#2f6fed'; return; }
+  str += parseInt(row.code,10)+'排';
+  if(!shelf){ el.textContent = str + ' …'; el.style.color = '#2f6fed'; return; }
+  str += parseInt(shelf.code,10)+'架';
+  if(pickerSelection.layer){
+    str += ' 第'+pickerSelection.layer+'层';
+    if(pickerSelection.slot) str += '第'+pickerSelection.slot+'格';
+  }
+  el.textContent = str;
+  el.style.color = '#1f2937';
+}
+function openLocPicker(initialValue, onConfirm){
+  locPickerOnConfirm = onConfirm;
+  pickerSelection = { areaId:'', rowId:'', shelfId:'', layer:null, slot:null };
+  const parsed = parseLocationString(initialValue);
+  if(parsed){
+    const area = LOCATION_AREAS.find(a=>a.code===parsed.areaCode);
+    if(area){
+      pickerSelection.areaId = area.id;
+      const row = LOCATION_ROWS.find(r=>r.areaId===area.id && parseInt(r.code,10)===parseInt(parsed.rowCode,10));
+      if(row){
+        pickerSelection.rowId = row.id;
+        const shelf = LOCATION_SHELVES.find(s=>s.rowId===row.id && parseInt(s.code,10)===parseInt(parsed.shelfCode,10));
+        if(shelf){
+          pickerSelection.shelfId = shelf.id;
+          if(parsed.layer && shelf.layerCount>=parsed.layer){
+            pickerSelection.layer = parsed.layer;
+            const maxSlot = (shelf.layerSlots||[])[parsed.layer-1]||0;
+            if(parsed.slot && parsed.slot<=maxSlot) pickerSelection.slot = parsed.slot;
+          }
+        }
+      }
+    }
+  }
+  refreshLocAreaSel();
+  refreshLocRowSel();
+  refreshLocShelfSel();
+  refreshLocLayerSel();
+  refreshLocSlotSel();
+  updateLocPreview();
+  $('locPickerMask').classList.add('show');
+}
+function closeLocPicker(){
+  $('locPickerMask').classList.remove('show');
+  locPickerOnConfirm = null;
+}
+function confirmLocPicker(){
+  const area = getAreaById(pickerSelection.areaId);
+  const row = getRowById(pickerSelection.rowId);
+  const shelf = getShelfById(pickerSelection.shelfId);
+  if(!area){ toast('请选择区域','error'); return; }
+  if(!row){ toast('请选择排','error'); return; }
+  if(!shelf){ toast('请选择书架','error'); return; }
+  const locStr = buildLocationString();
+  if(typeof locPickerOnConfirm === 'function') locPickerOnConfirm(locStr);
+  closeLocPicker();
+}
+
+/* 位置选择器事件 */
+$('locAreaSel').addEventListener('change', e=>{
+  pickerSelection.areaId = e.target.value;
+  pickerSelection.rowId = '';
+  pickerSelection.shelfId = '';
+  pickerSelection.layer = null;
+  pickerSelection.slot = null;
+  refreshLocRowSel(); refreshLocShelfSel(); refreshLocLayerSel(); refreshLocSlotSel();
+  updateLocPreview();
+});
+$('locRowSel').addEventListener('change', e=>{
+  pickerSelection.rowId = e.target.value;
+  pickerSelection.shelfId = '';
+  pickerSelection.layer = null;
+  pickerSelection.slot = null;
+  refreshLocShelfSel(); refreshLocLayerSel(); refreshLocSlotSel();
+  updateLocPreview();
+});
+$('locShelfSel').addEventListener('change', e=>{
+  pickerSelection.shelfId = e.target.value;
+  pickerSelection.layer = null;
+  pickerSelection.slot = null;
+  refreshLocLayerSel(); refreshLocSlotSel();
+  updateLocPreview();
+});
+$('locLayerSel').addEventListener('change', e=>{
+  pickerSelection.layer = e.target.value ? parseInt(e.target.value,10) : null;
+  pickerSelection.slot = null;
+  refreshLocSlotSel();
+  updateLocPreview();
+});
+$('locSlotSel').addEventListener('change', e=>{
+  pickerSelection.slot = e.target.value ? parseInt(e.target.value,10) : null;
+  updateLocPreview();
+});
+
 /* 审核弹窗 */
 let auditId = null;
 function openAudit(r){
   auditId = r.id;
+  const cc = getCopiesCount(r);
   $('auditTitle').textContent = '审核 · '+r.title.substr(0,20)+(r.title.length>20?'...':'');
   $('auditQuestion').textContent = '请审核该荐购订单并填写意见';
-  $('auditText').innerHTML = '订单 <b>#'+r.id+'</b>，推荐人：<b>'+r.requester+'</b>（'+r.requestDept+'），复本：<b>'+r.copies+'</b> 本，金额：<b>¥'+(r.copies*r.price).toFixed(2)+'</b>';
+  $('auditText').innerHTML = '订单 <b>#'+r.id+'</b>，推荐人：<b>'+r.requester+'</b>（'+r.requestDept+'），复本：<b>'+cc+'</b> 本，金额：<b>¥'+(cc*r.price).toFixed(2)+'</b>';
   $('auditDetail').innerHTML = '<b>推荐理由：</b><br>'+esc(r.reason);
   $('auditDetail').style.display = 'block';
   $('auditComment').value = '';
@@ -1691,8 +2356,8 @@ function openLegal(){
 +     '<tr><td>审核中</td><td>审核员已认领，正在评估</td><td>审核（批准/驳回）/ 删除 / 详情</td></tr>'
 +     '<tr><td>已批准</td><td>进入采购</td><td>下单采购 / 详情</td></tr>'
 +     '<tr><td>已采购</td><td>供应商处理中</td><td>标记到馆 / 详情</td></tr>'
-+     '<tr><td>已到馆</td><td>已送货签收</td><td>送编目 / 详情</td></tr>'
-+     '<tr><td>已编目</td><td>已分配索书号</td><td>标记上架 / 详情</td></tr>'
++     '<tr><td>已到馆</td><td>已送货签收</td><td>送编目（设置复本明细）/ 详情</td></tr>'
++     '<tr><td>已编目</td><td>已分配索书号</td><td>标记上架 / 改复本 / 详情</td></tr>'
 +     '<tr><td>已上架</td><td>读者可借阅</td><td>详情（只读，流程已结束）</td></tr>'
 +     '<tr><td>已驳回</td><td>审核未通过</td><td>重新提交 / 删除 / 详情</td></tr>'
 +     '<tr><td>重复采购</td><td>查重命中</td><td>删除 / 详情</td></tr>'
@@ -1707,11 +2372,14 @@ function openLegal(){
 
 + '<div class="detail-section"><h4>六、角色职责</h4>'
 + '<div class="modal-detail" style="font-size:13px;line-height:1.85">'
-+   '<b>· 推荐人（读者 / 馆员 / 数据库）</b>：发起荐购，填写书名、ISBN、推荐理由。<br>'
++   '<b>· 推荐人（读者 / 馆员 / 数据库）</b>：发起荐购，填写书名、ISBN、复本数、推荐理由。<br>'
 +   '<b>· 采访馆员（采编部）</b>：负责该订单的全流程跟进——查重、下单、催货、验收到货，是每条荐购的「责任人」。<br>'
 +   '<b>· 审核员（采编部主管）</b>：认领待审核订单、查重馆藏、批准或驳回。<br>'
-+   '<b>· 编目员（编目部）</b>：到货后分配索书号、生成条形码、典藏分配。<br>'
++   '<b>· 编目员（编目部）</b>：到货后点「送编目」，按实际到货数量设置复本明细（条码 / 馆藏位置 / 状态），分配索书号。<br>'
 +   '<b>· 流通部</b>：将编目完毕的图书上架到对应馆藏位置。<br>'
++   '<br><b style="color:#2f6fed">· 复本数（荐购阶段）vs 复本明细（编目阶段）：</b><br>'
++   '荐购阶段只填「预计买几本」（用于预算测算和审核决策）；<br>'
++   '到馆编目时再按实际到货数量设置每一本的条码、馆藏位置和状态。<br>'
 +   '<br><b style="color:#2f6fed">· 采访馆员 vs 最后操作人的区别：</b><br>'
 +   '「采访馆员」是固定责任人，从荐购创建时即确定，贯穿始终；<br>'
 +   '「最后操作」是流程中最后一步的操作人，可能是审核员、物流、编目员、流通部，随流程变化。'
@@ -1731,6 +2399,7 @@ function initAcqFilter(){
 /* 事件绑定 */
 function bind(){
   initAcqFilter();
+
   $('kwInput').addEventListener('input', ()=>{ state.keyword=$('kwInput').value; state.page=1; render(); });
   $('statusSel').addEventListener('change', ()=>{ state.status=$('statusSel').value; state.page=1; render(); });
   $('sourceSel').addEventListener('change', ()=>{ state.source=$('sourceSel').value; state.page=1; render(); });
@@ -1769,6 +2438,9 @@ function bind(){
       document.querySelectorAll('.modal-mask.show').forEach(m=>m.classList.remove('show'));
     }
   });
+
+  $('locPickerMask').addEventListener('click', e=>{ if(e.target === $('locPickerMask')) closeLocPicker(); });
+  $('catalogMask').addEventListener('click', e=>{ if(e.target === $('catalogMask')) closeCatalogModal(); });
 }
 
 bind();
@@ -1776,4 +2448,3 @@ render();
   </script>
 </body>
 </html>
-
