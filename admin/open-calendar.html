@@ -1,0 +1,3854 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>开放日历 - 信航图书馆 管理后台</title>
+
+<style id="theme-vars">
+:root {
+  --lib-bg: #f2f3f5;
+  --lib-surface: #ffffff;
+  --lib-surface-2: #f5f7fa;
+  --lib-surface-3: #e4e7ed;
+  --lib-ink: #303133;
+  --lib-ink-2: #606266;
+  --lib-ink-3: #909399;
+  --lib-ink-4: #c0c4cc;
+  --lib-line: #e4e7ed;
+  --lib-border: #dcdfe6;
+  --lib-input: #e4e7ed;
+  --lib-ring: #409eff;
+  --lib-primary: #409eff;
+  --lib-primary-50: #ecf5ff;
+  --lib-primary-100: #d9ecff;
+  --lib-primary-200: #b3d8ff;
+  --lib-primary-500: #66b1ff;
+  --lib-primary-600: #409eff;
+  --lib-primary-700: #3a8ee6;
+  --lib-primary-foreground: #ffffff;
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-state-success: #67c23a;
+  --lib-success-50: #f0f9eb;
+  --lib-state-warning: #e6a23c;
+  --lib-warning-50: #fdf6ec;
+  --lib-state-error: #f56c6c;
+  --lib-error-50: #fef0f0;
+  --lib-state-info: #909399;
+  --lib-info-50: #f4f4f5;
+  --lib-radius-sm: 2px;
+  --lib-radius-md: 4px;
+  --lib-radius-lg: 8px;
+  --lib-radius-full: 9999px;
+  --lib-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lib-shadow-2: 0 2px 12px 0 rgba(0, 0, 0, 0.06);
+  --lib-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --lib-font-sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  --lib-font-mono: "SF Mono", "Fira Code", "Noto Sans Mono CJK SC", monospace;
+  --lib-sidebar-width: 248px;
+  --lib-topbar-height: 64px;
+  /* Semantic aliases required by head contract */
+  --lib-background: var(--lib-bg);
+  --lib-foreground: var(--lib-ink);
+  --lib-card: var(--lib-surface);
+  --lib-card-foreground: var(--lib-ink);
+  --lib-popover: var(--lib-surface);
+  --lib-popover-foreground: var(--lib-ink);
+  --lib-muted: #f5f7fa;
+  --lib-muted-foreground: #909399;
+  --lib-destructive: var(--lib-state-error);
+  --lib-destructive-foreground: #ffffff;
+}
+html, body {
+  font-family: var(--lib-font-sans);
+  min-width: 1200px;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.text-display { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
+.text-h1 { font-size: clamp(20px, 2vw, 26px); line-height: 1.2; font-weight: 600; letter-spacing: -0.015em; }
+.text-h2 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.text-h3 { font-size: 16px; line-height: 1.4; font-weight: 600; }
+.text-body { font-size: 14px; line-height: 1.6; }
+.text-caption { font-size: 12px; line-height: 1.5; }
+.text-mono { font-family: var(--lib-font-mono); font-size: 13px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.tabular { font-variant-numeric: tabular-nums; }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+<script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--lib-background);
+    --color-foreground: var(--lib-foreground);
+    --color-card: var(--lib-card);
+    --color-card-foreground: var(--lib-card-foreground);
+    --color-popover: var(--lib-popover);
+    --color-popover-foreground: var(--lib-popover-foreground);
+    --color-primary: var(--lib-primary);
+    --color-primary-foreground: var(--lib-primary-foreground);
+    --color-muted: var(--lib-muted);
+    --color-muted-foreground: var(--lib-muted-foreground);
+    --color-destructive: var(--lib-destructive);
+    --color-destructive-foreground: var(--lib-destructive-foreground);
+    --color-border: var(--lib-border);
+    --color-input: var(--lib-input);
+    --color-ring: var(--lib-ring);
+    --radius-sm: var(--lib-radius-sm);
+    --radius-md: var(--lib-radius-md);
+    --radius-lg: var(--lib-radius-lg);
+  }
+  @layer base {
+    body { background: var(--lib-background); color: var(--lib-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+<style id="semantic-token-fallback">
+      .bg-background { background-color: var(--lib-background); }
+      .text-background { color: var(--lib-background); }
+      .border-background { border-color: var(--lib-background); }
+      .ring-background { --tw-ring-color: var(--lib-background); }
+      .bg-foreground { background-color: var(--lib-foreground); }
+      .text-foreground { color: var(--lib-foreground); }
+      .border-foreground { border-color: var(--lib-foreground); }
+      .ring-foreground { --tw-ring-color: var(--lib-foreground); }
+      .bg-card { background-color: var(--lib-card); }
+      .text-card { color: var(--lib-card); }
+      .border-card { border-color: var(--lib-card); }
+      .ring-card { --tw-ring-color: var(--lib-card); }
+      .bg-card-foreground { background-color: var(--lib-card-foreground); }
+      .text-card-foreground { color: var(--lib-card-foreground); }
+      .border-card-foreground { border-color: var(--lib-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--lib-card-foreground); }
+      .bg-popover { background-color: var(--lib-popover); }
+      .text-popover { color: var(--lib-popover); }
+      .border-popover { border-color: var(--lib-popover); }
+      .ring-popover { --tw-ring-color: var(--lib-popover); }
+      .bg-popover-foreground { background-color: var(--lib-popover-foreground); }
+      .text-popover-foreground { color: var(--lib-popover-foreground); }
+      .border-popover-foreground { border-color: var(--lib-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--lib-popover-foreground); }
+      .bg-primary { background-color: var(--lib-primary); }
+      .text-primary { color: var(--lib-primary); }
+      .border-primary { border-color: var(--lib-primary); }
+      .ring-primary { --tw-ring-color: var(--lib-primary); }
+      .bg-primary-foreground { background-color: var(--lib-primary-foreground); }
+      .text-primary-foreground { color: var(--lib-primary-foreground); }
+      .border-primary-foreground { border-color: var(--lib-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--lib-primary-foreground); }
+      .bg-muted { background-color: var(--lib-muted); }
+      .text-muted { color: var(--lib-muted); }
+      .border-muted { border-color: var(--lib-muted); }
+      .ring-muted { --tw-ring-color: var(--lib-muted); }
+      .bg-muted-foreground { background-color: var(--lib-muted-foreground); }
+      .text-muted-foreground { color: var(--lib-muted-foreground); }
+      .border-muted-foreground { border-color: var(--lib-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--lib-muted-foreground); }
+      .bg-destructive { background-color: var(--lib-destructive); }
+      .text-destructive { color: var(--lib-destructive); }
+      .border-destructive { border-color: var(--lib-destructive); }
+      .ring-destructive { --tw-ring-color: var(--lib-destructive); }
+      .bg-destructive-foreground { background-color: var(--lib-destructive-foreground); }
+      .text-destructive-foreground { color: var(--lib-destructive-foreground); }
+      .border-destructive-foreground { border-color: var(--lib-destructive-foreground); }
+      .ring-destructive-foreground { --tw-ring-color: var(--lib-destructive-foreground); }
+      .bg-border { background-color: var(--lib-border); }
+      .text-border { color: var(--lib-border); }
+      .border-border { border-color: var(--lib-border); }
+      .ring-border { --tw-ring-color: var(--lib-border); }
+      .bg-input { background-color: var(--lib-input); }
+      .text-input { color: var(--lib-input); }
+      .border-input { border-color: var(--lib-input); }
+      .ring-input { --tw-ring-color: var(--lib-input); }
+      .bg-ring { background-color: var(--lib-ring); }
+      .text-ring { color: var(--lib-ring); }
+      .border-ring { border-color: var(--lib-ring); }
+      .ring-ring { --tw-ring-color: var(--lib-ring); }
+      table tbody tr { border-bottom: 1px solid var(--lib-line) !important; }
+      table tbody tr:last-child { border-bottom: none !important; }
+      table thead { border-bottom: 1px solid var(--lib-line) !important; }
+    </style>
+<style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap" rel="stylesheet" />
+<style id="oh-proto-styles">
+
+    :root {
+      --bg: #e9f0f8;
+      --panel: #ffffff;
+      --ink: #12233d;
+      --muted: #5d7390;
+      --line: #d4e0f0;
+      --line-strong: #b7c9e2;
+      --blue: #1a5fbf;
+      --blue-2: #2470d6;
+      --blue-soft: #e7f0fc;
+      --blue-deep: #0e3470;
+      --amber: #b86d0d;
+      --amber-soft: #fff3e0;
+      --rose: #b33b3b;
+      --rose-soft: #fdecec;
+      --slate: #4a5d78;
+      --l1: #1a5fbf;
+      --l1-soft: #dceafb;
+      --l2: #2a7fd4;
+      --l2-soft: #e3f1fb;
+      --l3: #3d9ae8;
+      --l3-soft: #eaf6fd;
+      --shadow: 0 10px 28px rgba(18, 52, 100, 0.07);
+      --shadow-sm: 0 2px 8px rgba(18, 52, 100, 0.05);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --sidebar-w: 248px;
+      --ease: cubic-bezier(.2, .7, .2, 1);
+    }
+
+    * { box-sizing: border-box; }
+    
+    .oh-page {
+      color: var(--ink);
+      font-family: "Noto Sans SC", "DM Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      display: block;
+      min-height: 0;
+    }
+
+    .sidebar { display: none !important; }
+
+    .brand {
+      padding: 6px 10px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .brand small {
+      display: block;
+      opacity: .55;
+      font-family: "DM Sans", sans-serif;
+      font-size: 10px;
+      letter-spacing: .14em;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: .01em;
+    }
+
+    .nav { display: grid; gap: 4px; }
+    .nav button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: rgba(220, 234, 250, .82);
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background .18s var(--ease), color .18s var(--ease), transform .18s var(--ease);
+      position: relative;
+    }
+    .nav button:hover {
+      background: rgba(255,255,255,.08);
+      color: #fff;
+    }
+    .nav button.active {
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    .nav button.active::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 10px;
+      bottom: 10px;
+      width: 3px;
+      border-radius: 99px;
+      background: #7eb6ff;
+    }
+
+    .side-foot {
+      margin-top: auto;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.07);
+      font-size: 12px;
+      line-height: 1.7;
+      color: #c5daf5;
+    }
+
+    .side-foot a {
+      color: #9ec8ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .side-foot a:hover { text-decoration: underline; }
+
+    .oh-page .main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 28px;
+      border-bottom: 1px solid rgba(208, 221, 239, .85);
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(12px) saturate(1.2);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    .topbar p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 640px;
+    }
+
+    .content { padding: 22px 28px 48px; }
+
+    .view { display: none; animation: fade .28s var(--ease); }
+    .view.active { display: block; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .toolbar .left, .toolbar .right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 9px 15px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .15s var(--ease), background .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease);
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--blue-2), var(--blue));
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(26, 95, 191, .22);
+    }
+    .btn-primary:hover { background: linear-gradient(180deg, #2d7ae0, var(--blue-2)); }
+    .btn-ghost {
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-ghost:hover { border-color: var(--line-strong); background: #f8fbff; }
+    .btn-danger {
+      background: var(--rose-soft);
+      color: var(--rose);
+      border-color: #f0c8c8;
+    }
+    .btn-danger:hover { background: #fbe3e3; }
+
+    .select, .input {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 13px;
+      color: var(--ink);
+      min-height: 38px;
+      transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+      width: 100%;
+    }
+    .select:focus, .input:focus {
+      outline: none;
+      border-color: #7eace8;
+      box-shadow: 0 0 0 3px rgba(26, 95, 191, .12);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(212, 224, 240, .95);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fcfdff, #f2f7fc);
+    }
+
+    .panel-hd h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .panel-bd { padding: 18px; }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table th, .table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+      background: #f4f8fc;
+      letter-spacing: .02em;
+    }
+
+    .table tbody tr { transition: background .12s var(--ease); }
+    .table tbody tr:hover { background: #f8fbff; }
+    .table tr:last-child td { border-bottom: 0; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      letter-spacing: .01em;
+    }
+
+    .pill-blue { background: var(--blue-soft); color: var(--blue); }
+    .pill-amber { background: var(--amber-soft); color: var(--amber); }
+    .pill-rose { background: var(--rose-soft); color: var(--rose); }
+    .pill-slate { background: #eef2f6; color: var(--slate); }
+    .pill-l1 { background: var(--l1-soft); color: var(--l1); }
+    .pill-l2 { background: var(--l2-soft); color: var(--l2); }
+    .pill-l3 { background: var(--l3-soft); color: var(--l3); }
+    .pill-inherit { background: #f0f3f7; color: var(--muted); }
+
+    .layout-2 {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        min-height: 0;
+      }
+      .layout-2 { grid-template-columns: 1fr; }
+    }
+
+    .tree { display: grid; gap: 7px; }
+
+    .tree-item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 11px 13px;
+      cursor: pointer;
+      transition: border-color .15s var(--ease), background .15s var(--ease), box-shadow .15s var(--ease), transform .15s var(--ease);
+      box-shadow: var(--shadow-sm);
+      border-left: 3px solid transparent;
+    }
+
+    .tree-item:hover {
+      border-color: #a8c4ea;
+      transform: translateX(1px);
+    }
+    .tree-item.active {
+      border-color: var(--blue);
+      border-left-color: var(--blue);
+      background: linear-gradient(90deg, var(--blue-soft), #f5f9ff);
+      box-shadow: 0 0 0 1px rgba(26,95,191,.12), var(--shadow-sm);
+    }
+
+    .tree-item .name {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      line-height: 1.35;
+    }
+
+    .tree-item .meta {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .indent-0 { margin-left: 0; }
+    .indent-1 { margin-left: 14px; }
+    .indent-2 { margin-left: 28px; }
+    .indent-3 { margin-left: 42px; }
+    .indent-4 { margin-left: 56px; }
+    .indent-5 { margin-left: 70px; }
+    .indent-6 { margin-left: 84px; }
+    .indent-7 { margin-left: 98px; }
+
+    .tree-item[data-depth="0"] { border-left-color: var(--l1); }
+    .tree-item[data-depth="1"] { border-left-color: var(--l2); }
+    .tree-item[data-depth="2"] { border-left-color: var(--l3); }
+    .tree-item[data-depth="3"] { border-left-color: #1aa38a; }
+    .tree-item[data-depth="4"] { border-left-color: #d4891a; }
+
+    .kind-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 20px;
+      padding: 0 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .kind-badge.venue {
+      background: #e8f1fc;
+      color: var(--blue);
+    }
+
+    .kind-badge.seat {
+      background: #e4f7f2;
+      color: #0f8a72;
+    }
+
+    .kind-badge.room {
+      background: #fff3e0;
+      color: #b86d0d;
+    }
+
+    .tree-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .tree-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tree-item.service {
+      border-style: solid;
+      border-left-style: dashed;
+    }
+
+    .tree-item.service.svc-seat {
+      background: #f5fbf9;
+      border-left-color: #1aa38a;
+    }
+
+    .tree-item.service.svc-room {
+      background: #fffaf3;
+      border-left-color: #d4891a;
+    }
+
+    .tree-item.service .name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tree-item.service.svc-seat .name { color: #0f5c4e; }
+    .tree-item.service.svc-room .name { color: #8a5208; }
+
+    .tree-item.service.svc-seat.active {
+      border-left-style: solid;
+      background: linear-gradient(90deg, #e4f7f2, #f5fbf9);
+      border-color: #1aa38a;
+    }
+
+    .tree-item.service.svc-room.active {
+      border-left-style: solid;
+      background: linear-gradient(90deg, #fff3e0, #fffaf3);
+      border-color: #d4891a;
+    }
+
+    .pill-seat { background: #e4f7f2; color: #0f8a72; }
+    .pill-room { background: #fff3e0; color: #b86d0d; }
+
+    .svc-card.svc-seat {
+      border-color: #b7e2d6;
+      border-left: 3px solid #1aa38a;
+    }
+
+    .svc-card.svc-room {
+      border-color: #f0d0a0;
+      border-left: 3px solid #d4891a;
+    }
+
+    .constraint-box {
+      border-radius: 13px;
+      padding: 13px 15px;
+      background: linear-gradient(135deg, #e8f1fc, #f5f9ff);
+      border: 1px solid #b8cce8;
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .constraint-box .c-title {
+      font-weight: 700;
+      color: var(--blue);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .constraint-box.warn {
+      background: linear-gradient(135deg, #fff3e0, #fffaf2);
+      border-color: #f0d0a0;
+    }
+
+    .constraint-box.warn .c-title { color: var(--amber); }
+
+    .constraint-box.err {
+      background: linear-gradient(135deg, #fdecec, #fff7f7);
+      border-color: #f0c8c8;
+    }
+
+    .constraint-box.err .c-title { color: var(--rose); }
+
+    .svc-slot-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .slot-editor {
+      display: grid;
+      gap: 8px;
+    }
+
+    .slot-editor-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      align-items: end;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .slot-editor-row .field {
+      margin: 0;
+      width: auto;
+      flex: 0 0 auto;
+    }
+
+    .slot-editor-row .input.slot-start,
+    .slot-editor-row .input.slot-end {
+      width: 118px;
+      min-width: 118px;
+      max-width: 118px;
+    }
+
+    .slot-editor-row .btn-remove-slot {
+      flex: 0 0 auto;
+      margin-left: 2px;
+    }
+
+    .slot-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .slot-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 8px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .slot-chip.bad {
+      background: var(--rose-soft);
+      color: var(--rose);
+    }
+
+    .limit-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .limit-row .field { flex: 0 0 180px; }
+
+    .advance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 860px) {
+      .advance-grid { grid-template-columns: 1fr; }
+    }
+
+    .advance-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .advance-card .ac-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .advance-card .ac-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    .advance-card.disabled {
+      opacity: .55;
+    }
+
+    .advance-card .ac-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .advance-card .ac-head label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .advance-preview {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f3f8f6;
+      border: 1px dashed #b7e2d6;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .advance-preview b { color: #0f8a72; }
+
+    .fold-block {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .fold-block > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(180deg, #f8fbff, #f3f7fc);
+      user-select: none;
+    }
+
+    .fold-block > summary::-webkit-details-marker { display: none; }
+
+    .fold-block > summary .fold-main {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .fold-block > summary .fold-title {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fold-block > summary .fold-summary {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .fold-block > summary .fold-chevron {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      transition: transform .18s var(--ease);
+    }
+
+    .fold-block[open] > summary .fold-chevron {
+      transform: rotate(180deg);
+    }
+
+    .fold-block .fold-body {
+      padding: 12px 14px 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    /* —— 开放时间轴 —— */
+    .timeline-box {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 14px 16px 12px;
+      background: linear-gradient(180deg, #f8fbff, #f2f7fc);
+    }
+
+    .timeline-box .tl-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-box .tl-head strong {
+      font-size: 13px;
+    }
+
+    .timeline-box .tl-head span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .timeline-track-wrap {
+      position: relative;
+      padding: 8px 0 22px;
+    }
+
+    .timeline-track {
+      position: relative;
+      height: 28px;
+      border-radius: 999px;
+      background: #d7e5f5;
+      box-shadow: inset 0 1px 2px rgba(18, 52, 100, .08);
+      overflow: hidden;
+    }
+
+    .timeline-track .tl-open {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(255,255,255,.35),
+        rgba(255,255,255,.35) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+
+    .timeline-seg {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 999px;
+      min-width: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+      transition: left .15s var(--ease), width .15s var(--ease);
+    }
+
+    .timeline-seg.bad {
+      background: #d65a5a !important;
+      outline: 1px dashed rgba(255,255,255,.7);
+    }
+
+    .timeline-seg .tl-tip {
+      position: absolute;
+      left: 50%;
+      top: -22px;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 2px 6px;
+      border-radius: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-seg:hover .tl-tip { opacity: 1; }
+
+    .timeline-scale {
+      position: relative;
+      height: 18px;
+      margin-top: 4px;
+    }
+
+    .timeline-scale .tick {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+    }
+
+    .timeline-scale .tick::before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 5px;
+      background: #a8bfd8;
+      margin: 0 auto 2px;
+    }
+
+    .timeline-ends {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .timeline-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .timeline-legend i {
+      display: inline-block;
+      width: 14px;
+      height: 8px;
+      border-radius: 99px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .timeline-legend .lg-open { background: #d7e5f5; }
+    .timeline-legend .lg-gap { background: transparent; box-shadow: inset 0 0 0 1px #b7c9e2; }
+
+    .svc-list { display: grid; gap: 8px; }
+
+    .svc-card {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 13px 14px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      cursor: pointer;
+      transition: .15s var(--ease);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .svc-card:hover {
+      border-color: #9bbce8;
+      background: #f7faff;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(18,52,100,.08);
+    }
+
+    .level-chip {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      letter-spacing: .02em;
+    }
+    .level-chip.l1 { background: var(--l1); color: #fff; }
+    .level-chip.l2 { background: var(--l2); color: #fff; }
+    .level-chip.l3 { background: var(--l3); color: #fff; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line);
+      padding: 5px 10px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-override { background: var(--rose); }
+    .dot-l3 { background: var(--l3); }
+    .dot-l2 { background: var(--l2); }
+    .dot-l1 { background: var(--l1); }
+    .dot-closed { background: #8a9794; }
+
+    .cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .cal-head h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .weekdays, .days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .weekdays div {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      padding: 6px 0;
+      letter-spacing: .04em;
+    }
+
+    .day {
+      min-height: 108px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 9px 10px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: .16s var(--ease);
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .day:hover {
+      border-color: #a8c4ea;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(21,54,110,.1);
+    }
+
+    .day.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .day .d {
+      font-size: 13px;
+      font-weight: 700;
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+    }
+
+    .day .time {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .day .src {
+      margin-top: auto;
+      font-size: 11px;
+      font-weight: 600;
+      opacity: .9;
+    }
+
+    .day.source-override { background: linear-gradient(180deg, #fff 35%, var(--rose-soft)); }
+    .day.source-l3 { background: linear-gradient(180deg, #fff 35%, var(--l3-soft)); }
+    .day.source-l2 { background: linear-gradient(180deg, #fff 35%, var(--l2-soft)); }
+    .day.source-l1 { background: linear-gradient(180deg, #fff 35%, var(--l1-soft)); }
+    .day.source-closed { background: linear-gradient(180deg, #fff 35%, #f0f3f2); color: #6a7774; }
+
+    .day.today::after {
+      content: "今天";
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+      color: var(--blue);
+      font-weight: 700;
+      background: rgba(232,241,252,.9);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .day.source-override.today::after {
+      color: var(--rose);
+      background: rgba(253,236,236,.95);
+    }
+
+    .day .mark {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--rose);
+      background: rgba(253, 236, 236, .95);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .day.today .mark { top: 28px; }
+
+    .hint {
+      margin-top: 14px;
+      padding: 13px 15px;
+      border-radius: 13px;
+      background: #f3f7fc;
+      border: 1px dashed #b8cce8;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 32, 64, .48);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal-mask.show { display: flex; }
+
+    .modal {
+      width: min(540px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 28px 70px rgba(10, 30, 60, .28);
+      overflow: hidden;
+      animation: fade .22s var(--ease);
+      max-height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,.4);
+    }
+
+    .modal.modal-day { width: min(640px, 100%); }
+
+    .modal header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #fcfdff, #f6f9fd);
+    }
+
+    .modal header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal header .sub {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .modal .body {
+      padding: 20px;
+      display: grid;
+      gap: 15px;
+      overflow-y: auto;
+    }
+    .modal .foot {
+      padding: 14px 18px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      background: #f5f8fc;
+      flex-shrink: 0;
+    }
+
+    .day-hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 20px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #1657b3 0%, #2a7fd4 55%, #45a3ef 100%);
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(26, 95, 191, 0.28);
+    }
+
+    .day-hero.closed {
+      background: linear-gradient(135deg, #5a6578 0%, #7a8494 100%);
+      box-shadow: 0 10px 24px rgba(90, 101, 120, 0.25);
+    }
+
+    .day-hero.override {
+      background: linear-gradient(135deg, #a33a3a 0%, #c45a4a 100%);
+      box-shadow: 0 10px 24px rgba(163, 58, 58, 0.28);
+    }
+
+    .day-hero .kicker {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      opacity: .85;
+      margin-bottom: 4px;
+    }
+
+    .day-hero .time-big {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: .01em;
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+    }
+
+    .day-hero .from {
+      margin-top: 7px;
+      font-size: 12px;
+      opacity: .92;
+    }
+
+    .day-hero .badge-side {
+      text-align: center;
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.22);
+      min-width: 92px;
+      backdrop-filter: blur(4px);
+    }
+
+    .day-hero .badge-side .lv {
+      font-size: 11px;
+      opacity: .85;
+      margin-bottom: 2px;
+    }
+
+    .day-hero .badge-side .val {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .section-label strong {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .section-label span {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    @media (max-width: 560px) {
+      .mode-grid { grid-template-columns: 1fr; }
+      .day-hero { grid-template-columns: 1fr; }
+      .svc-slot-row { grid-template-columns: 1fr; }
+    }
+
+    .mode-card {
+      appearance: none;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      border-radius: 13px;
+      padding: 13px 12px;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      transition: .15s var(--ease);
+      display: grid;
+      gap: 4px;
+      min-height: 92px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mode-card:hover {
+      border-color: #9bbce8;
+      background: #f7faff;
+      transform: translateY(-1px);
+    }
+
+    .mode-card.active {
+      border-color: var(--blue);
+      background: linear-gradient(180deg, #eef5fd, var(--blue-soft));
+      box-shadow: inset 0 0 0 1px rgba(26,95,191,.18), 0 6px 14px rgba(26,95,191,.08);
+    }
+
+    .mode-card.active.danger {
+      border-color: var(--rose);
+      background: linear-gradient(180deg, #fff5f5, var(--rose-soft));
+      box-shadow: inset 0 0 0 1px rgba(179,59,59,.16);
+    }
+
+    .mode-card .mc-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .mode-card .mc-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .mode-card .mc-tag {
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: .04em;
+    }
+
+    .mode-card.active.danger .mc-tag { color: var(--rose); }
+
+    .tpl-panel {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 13px;
+      background: #f6f9fc;
+      display: none;
+      gap: 10px;
+    }
+
+    .tpl-panel.show { display: grid; }
+
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px 15px;
+      border-radius: 13px;
+      border: 1px dashed #b8cce8;
+      background: linear-gradient(180deg, #f7faff, #f1f6fc);
+      font-size: 13px;
+    }
+
+    .preview-bar b { color: var(--blue); }
+
+    .chain-compact {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+      padding: 2px 0;
+    }
+
+    .chain-node {
+      flex: 1;
+      min-width: 110px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      position: relative;
+    }
+
+    .chain-node:first-child { border-radius: 11px 0 0 11px; }
+    .chain-node:last-child { border-radius: 0 11px 11px 0; }
+    .chain-node + .chain-node { border-left: 0; }
+
+    .chain-node.hit {
+      background: var(--blue-soft);
+      border-color: var(--blue);
+      z-index: 1;
+      box-shadow: 0 0 0 1px rgba(26,95,191,.12);
+    }
+
+    .chain-node.skip { opacity: .48; }
+
+    .chain-node .cn-lv {
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .chain-node .cn-name {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chain-node .cn-time {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .chain-node .cn-flag {
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .chain-node.hit .cn-flag { color: var(--blue); }
+
+    label.field {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    label.field span { color: var(--muted); font-weight: 500; }
+
+    .resolve-box {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 13px 14px;
+      background: linear-gradient(180deg, #f7faff, #f2f7fc);
+      display: grid;
+      gap: 9px;
+    }
+
+    .resolve-box .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      align-items: center;
+    }
+
+    .resolve-box .row b { font-weight: 600; text-align: right; }
+
+    .chain {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .chain-step {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 13px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 13px;
+      transition: .12s var(--ease);
+    }
+
+    .chain-step.hit {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+      box-shadow: 0 0 0 1px rgba(26,95,191,.1);
+    }
+
+    .chain-step.skip { opacity: .55; }
+
+    .chain-step .lv {
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .chain-step .status {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .muted { color: var(--muted); }
+    .close-x {
+      border: 0;
+      background: #eef3f9;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+      transition: .15s var(--ease);
+    }
+    .close-x:hover { background: #e2ebf5; color: var(--ink); }
+
+    .slots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .empty-state {
+      padding: 36px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .priority-banner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .priority-banner { grid-template-columns: 1fr; }
+      .content { padding: 16px 16px 36px; }
+      .topbar { padding: 16px; }
+    }
+
+    .prio-card {
+      border-radius: 15px;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+
+    .prio-card .num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      margin-bottom: 7px;
+    }
+
+    .prio-card h4 {
+      margin: 0 0 5px;
+      font-size: 14px;
+    }
+
+    .prio-card p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .prio-card.p1 { border-top: 3px solid var(--l3); }
+    .prio-card.p1 .num { color: var(--l3); }
+    .prio-card.p2 { border-top: 3px solid var(--l2); }
+    .prio-card.p2 .num { color: var(--l2); }
+    .prio-card.p3 { border-top: 3px solid var(--l1); }
+    .prio-card.p3 .num { color: var(--l1); }
+
+    /* —— 详情区紧凑布局 —— */
+    .detail-compact {
+      display: grid;
+      gap: 14px;
+    }
+
+    .meta-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .meta-strip.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    @media (max-width: 860px) {
+      .meta-strip,
+      .meta-strip.cols-3 { grid-template-columns: 1fr 1fr; }
+      .config-row { grid-template-columns: 1fr !important; }
+    }
+
+    .meta-cell {
+      background: linear-gradient(180deg, #f7faff, #f2f7fc);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-width: 0;
+    }
+
+    .meta-cell .k {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .meta-cell .v {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+      word-break: break-all;
+    }
+
+    .block {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 12px 14px;
+      background: #fff;
+    }
+
+    .block > .section-label { margin-bottom: 10px; }
+
+    .config-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .mode-card.slim {
+      min-height: 0;
+      padding: 10px 12px;
+      gap: 2px;
+    }
+
+    .mode-card.slim .mc-desc { display: none; }
+
+    .inline-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .svc-list.horizontal {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .svc-list.horizontal .svc-card {
+      flex: 1 1 200px;
+      min-width: 180px;
+      padding: 10px 12px;
+    }
+
+    .hint.slim {
+      margin-top: 0;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .detail-compact .chain-compact .chain-node {
+      padding: 8px 10px;
+      min-width: 96px;
+    }
+
+    .detail-compact .chain-compact .cn-flag { margin-top: 4px; }
+  
+    .oh-page .side-foot { display: none !important; }
+    .oh-page .view { display: none; }
+    .oh-page .view.active { display: block; }
+    .oh-page .topbar {
+      background: transparent;
+      border: 0;
+      padding: 0 0 12px;
+      box-shadow: none;
+    }
+    .oh-page .content { padding: 0; }
+    .oh-page .modal-mask { z-index: 200; }
+  
+</style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+<style>
+
+  /* RuoYi / Element Plus global enhancements */
+  table { border-collapse: separate; border-spacing: 0; }
+  thead th { background-color: var(--lib-surface-2); color: var(--lib-ink); font-weight: 600; border-bottom: 1px solid var(--lib-line); }
+  tbody tr:hover td { background-color: var(--lib-surface-2); }
+  .btn-primary { background-color: var(--lib-primary); color: var(--lib-primary-foreground); border: 1px solid var(--lib-primary); }
+  .btn-primary:hover { background-color: var(--lib-primary-700); border-color: var(--lib-primary-700); }
+  .btn-default { background-color: var(--lib-surface); color: var(--lib-ink-2); border: 1px solid var(--lib-border); }
+  .btn-default:hover { color: var(--lib-primary); border-color: var(--lib-primary-200); background-color: var(--lib-primary-50); }
+  .btn-danger { background-color: var(--lib-surface); color: var(--lib-state-error); border: 1px solid var(--lib-state-error); }
+  .btn-danger:hover { background-color: var(--lib-error-50); }
+  .nav-item { color: var(--lib-ink-2); }
+  .nav-item:hover { background-color: var(--lib-surface-2); color: var(--lib-primary); }
+  .nav-item.nav-active { background-color: var(--lib-primary-50); color: var(--lib-primary); border-right: 3px solid var(--lib-primary); }
+  .nav-group summary { color: var(--lib-ink); font-weight: 600; }
+  input, select, textarea { border-radius: var(--lib-radius-md); border-color: var(--lib-border); }
+  input:focus, select:focus, textarea:focus { border-color: var(--lib-primary); outline: none; box-shadow: 0 0 0 2px var(--lib-primary-100); }
+
+  #app-shell {
+    min-height: 100vh;
+  }
+  #app-sidebar {
+    width: 248px;
+  }
+  #main-content {
+    margin-left: 248px;
+    margin-top: 64px;
+    min-height: calc(100vh - 64px);
+  }
+  .nav-item {
+    color: var(--lib-text-secondary);
+  }
+  .nav-item:hover {
+    background-color: var(--lib-hover);
+    color: var(--lib-text);
+  }
+  .nav-item.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary);
+  }
+      .nav-group summary {
+    list-style: none;
+  }
+  .nav-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-group summary::marker {
+    display: none;
+  }
+  .nav-group .nav-chevron {
+    transition: transform 0.2s ease;
+    transform: rotate(-90deg);
+  }
+  .nav-group[open] > summary .nav-chevron {
+    transform: rotate(0deg);
+  }
+  .nav-group summary:hover {
+    background-color: var(--lib-surface-2);
+    color: var(--lib-ink);
+  }
+  .nav-group summary.nav-active {
+    background-color: var(--lib-primary-soft);
+    color: var(--lib-primary) !important;
+  }
+
+  :root {
+    --lib-primary-soft: var(--lib-primary-50);
+    --lib-hover: var(--lib-surface-2);
+    --lib-text: var(--lib-ink);
+    --lib-text-secondary: var(--lib-ink-2);
+    --lib-text-tertiary: var(--lib-ink-3);
+  }
+</style>
+<div id="app-shell" style="background-color: var(--lib-bg);">
+<!-- 顶部导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b px-4" id="app-header" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
+<!-- 左侧：菜单 / Logo -->
+<div class="flex items-center gap-3">
+<button aria-label="打开菜单" class="inline-flex items-center justify-center rounded-md p-2 md:hidden" id="mobile-menu-toggle" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="menu"></i>
+</button>
+<div class="flex items-center gap-2">
+<span class="text-base font-semibold" id="logo-text" style="color: var(--lib-text);">信航图书馆 管理后台</span>
+<span class="rounded px-2 py-0.5 text-xs font-medium text-white" id="admin-badge" style="background-color: var(--lib-primary);">管理后台</span>
+</div>
+</div>
+<!-- 右侧：搜索 / 通知 / 用户 / 退出 -->
+<div class="flex items-center gap-4">
+<div class="relative hidden items-center sm:flex">
+<i class="absolute left-2.5 h-4 w-4" data-lucide="search" style="color: var(--lib-text-tertiary);"></i>
+<input class="h-9 w-48 rounded-md border pl-9 pr-3 text-sm outline-none transition-all focus:w-64" id="global-search" placeholder="搜索菜单/功能" style="background-color: var(--lib-surface); border-color: var(--lib-line); color: var(--lib-text);" type="text"/>
+</div>
+<button aria-label="消息通知" class="relative rounded-full p-2" id="notification-bell" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="bell"></i>
+<span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium text-white" style="background-color: var(--lib-primary);">3</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white" id="user-avatar" style="background-color: var(--lib-primary);">管</div>
+<span class="hidden text-sm font-medium md:block" style="color: var(--lib-text);">管理员</span>
+</div>
+<button aria-label="退出登录" class="rounded-full p-2" id="logout-btn" style="color: var(--lib-text-secondary);" type="button">
+<i class="h-5 w-5" data-lucide="log-out"></i>
+</button>
+</div>
+</header>
+<!-- 左侧侧边栏 -->
+  <aside
+    id="app-sidebar"
+    class="fixed left-0 top-16 bottom-0 overflow-y-auto border-r"
+    style="background-color: var(--lib-surface); border-color: var(--lib-line);"
+  >
+    <nav class="flex flex-col gap-1 p-3" id="nav-list">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-dashboard" data-nav-key="dashboard" href="dashboard.html"><i class="h-4 w-4" data-lucide="layout-dashboard"></i><span>工作台</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="folder"></i><span>资源管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-resource-analysis" data-nav-key="resource-analysis" href="resource-analysis.html"><i class="h-4 w-4" data-lucide="bar-chart-3"></i><span>馆藏分析</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-categories" data-nav-key="categories" href="categories.html"><i class="h-4 w-4" data-lucide="folder-tree"></i><span>图书分类</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-books" data-nav-key="books" href="books.html"><i class="h-4 w-4" data-lucide="book-open"></i><span>图书资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-periodicals" data-nav-key="periodicals" href="periodicals.html"><i class="h-4 w-4" data-lucide="newspaper"></i><span>期刊管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-electronic-resources" data-nav-key="electronic-resources" href="electronic-resources.html"><i class="h-4 w-4" data-lucide="globe"></i><span>电子资源</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-inventory" data-nav-key="inventory" href="inventory.html"><i class="h-4 w-4" data-lucide="clipboard-check"></i><span>馆藏盘点</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="box"></i><span>空间管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-locations" data-nav-key="locations" href="locations.html"><i class="h-4 w-4" data-lucide="map-pin"></i><span>馆藏地</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-floors" data-nav-key="floors" href="floors.html"><i class="h-4 w-4" data-lucide="layers"></i><span>楼层管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-area-page" data-nav-key="areas" href="areas.html"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-area-module" data-nav-key="area-module"><i class="h-4 w-4" data-lucide="layout-grid"></i><span>区域管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-row-page" data-nav-key="rows" href="rows.html"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span></a>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);" data-dom-id="nav-row-module" data-nav-key="row-module"><i class="h-4 w-4" data-lucide="align-justify"></i><span>排管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-bookshelves" data-nav-key="bookshelves" href="bookshelves.html"><i class="h-4 w-4" data-lucide="library"></i><span>书架管理</span></a></div></details>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats" data-nav-key="seats" href="seats.html"><i class="h-4 w-4" data-lucide="armchair"></i><span>座位管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms" data-nav-key="rooms" href="rooms.html"><i class="h-4 w-4" data-lucide="door-open"></i><span>研修室管理</span></a></div></details></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="users"></i><span>读者服务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-users" data-nav-key="users" href="users.html"><i class="h-4 w-4" data-lucide="users"></i><span>读者用户</span></a>
+
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="book-up"></i><span>流通业务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow-return" data-nav-key="borrow-return" href="borrow-return.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借还管理</span></a>
+
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-borrow" data-nav-key="borrow" href="borrow.html"><i class="h-4 w-4" data-lucide="book-up"></i><span>借阅记录</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-reservations" data-nav-key="reservations" href="reservations.html"><i class="h-4 w-4" data-lucide="calendar-clock"></i><span>预约管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-seats-reservations" data-nav-key="seats-reservations" href="seats-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>座位预约管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-rooms-reservations" data-nav-key="rooms-reservations" href="rooms-reservations.html"><i class="h-4 w-4" data-lucide="calendar-check"></i><span>研修室预约管理</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="shopping-bag"></i><span>采编财务</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-acquisitions" data-nav-key="acquisitions" href="acquisitions.html"><i class="h-4 w-4" data-lucide="shopping-cart"></i><span>采购荐购</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-fines" data-nav-key="fines" href="fines.html"><i class="h-4 w-4" data-lucide="banknote"></i><span>罚款缴费</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="palette"></i><span>运营管理</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1">
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-banners" data-nav-key="banners" href="banners.html"><i class="h-4 w-4" data-lucide="gallery-horizontal-end"></i><span>首页跑马灯</span></a>
+</div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="timer"></i><span>开放时间配置</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-time-templates" data-nav-key="time-templates" href="time-templates.html"><i class="h-4 w-4" data-lucide="clock"></i><span>时间模板</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-venue-hierarchy" data-nav-key="venue-hierarchy" href="venue-hierarchy.html"><i class="h-4 w-4" data-lucide="network"></i><span>场所层级配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors nav-active" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
+<details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
+<div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-opening-hours" data-nav-key="opening-hours" href="opening-hours.html"><i class="h-4 w-4" data-lucide="clock"></i><span>开放全局配置</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
+</nav>
+
+
+
+  </aside>
+
+  <!-- 主内容区 -->
+<main class="p-6" id="main-content" style="background-color: var(--lib-bg);">
+<nav aria-label="breadcrumb" class="mb-4">
+<ol class="flex items-center gap-2 text-sm" style="color: var(--lib-ink-3);">
+<li><a href="dashboard.html" style="color: var(--lib-primary);">首页</a></li>
+<li><i class="h-3.5 w-3.5" data-lucide="chevron-right"></i></li>
+<li style="color: var(--lib-ink-3);">开放时间配置</li>
+<li><i class="h-3.5 w-3.5" data-lucide="chevron-right"></i></li>
+<li class="font-medium" style="color: var(--lib-ink);">开放日历</li>
+</ol>
+</nav>
+<div class="oh-page">
+<div class="app">
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">开放日历</h1>
+          <p id="pageDesc">查看某场所最终开闭时间，以及时间来自哪一层配置。</p>
+        </div>
+        <div class="pill pill-slate">原型演示 · 本地模拟数据</div>
+      </header>
+
+      <div class="content">
+        <!-- 时间模板 -->
+        <section class="view" id="view-templates">
+          <div class="toolbar">
+            <div class="left">
+              <span class="muted" style="font-size:13px">模板可被任意层级引用；场所未配置时会向上继承上级已配置的模板。</span>
+            </div>
+            <div class="right">
+              <button class="btn btn-primary" id="btnAddTemplate">新建模板</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd"><h2>模板列表</h2></div>
+            <div class="panel-bd" style="padding:0">
+              <table class="table" id="templateTable">
+                <thead>
+                  <tr>
+                    <th>名称</th>
+                    <th>开闭时间</th>
+                    <th>状态</th>
+                    <th>引用数</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 场所层级配置 -->
+        <section class="view" id="view-venues">
+          <div class="layout-2">
+            <div class="panel">
+              <div class="panel-hd">
+                <h2>场所树 · 任意层级</h2>
+                <button class="btn btn-ghost" id="btnAddVenue">添加</button>
+              </div>
+              <div class="panel-bd">
+                <div class="tree-legend">
+                  <span><i class="kind-badge venue">场所</i> 区域/楼层等空间</span>
+                  <span><i class="kind-badge seat">座位</i> 座位预约服务</span>
+                  <span><i class="kind-badge room">研讨室</i> 研讨室预约服务</span>
+                </div>
+                <div class="tree" id="venueTree"></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-hd">
+                <h2 id="venueDetailTitle">场所详情</h2>
+                <button class="btn btn-primary" id="btnOpenCalendar">打开日历预览</button>
+              </div>
+              <div class="panel-bd" id="venueDetail">
+                <div class="empty-state">请选择左侧场所</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 开放日历 -->
+        <section class="view active" id="view-calendar">
+          <div class="toolbar">
+            <div class="left">
+              <label class="muted" style="font-size:13px">当前场所</label>
+              <select class="select" id="calendarVenueSelect"></select>
+            </div>
+            <div class="right">
+              <button class="btn btn-ghost" id="prevMonth">上一月</button>
+              <button class="btn btn-ghost" id="thisMonth">本月</button>
+              <button class="btn btn-ghost" id="nextMonth">下一月</button>
+            </div>
+          </div>
+
+          <div class="legend">
+            <span><i class="dot dot-override"></i>单日覆盖</span>
+            <span><i class="dot dot-l3"></i>来自较深层</span>
+            <span><i class="dot dot-l2"></i>来自中间层</span>
+            <span><i class="dot dot-l1"></i>来自根/上层</span>
+            <span><i class="dot dot-closed"></i>闭馆</span>
+          </div>
+
+          <div class="panel">
+            <div class="panel-bd">
+              <div class="cal-head">
+                <h3 id="calTitle">—</h3>
+                <div class="muted" style="font-size:13px">格子颜色 = 最终生效来自哪一层；未配置层会向上回落。</div>
+              </div>
+              <div class="weekdays">
+                <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div>
+              </div>
+              <div class="days" id="calendarDays" style="margin-top:8px"></div>
+              <div class="hint" id="calendarHint"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="modalMask">
+    <div class="modal" role="dialog" aria-modal="true">
+      <header>
+        <h3 id="modalTitle">标题</h3>
+        <button class="close-x" id="modalClose" aria-label="关闭">×</button>
+      </header>
+      <div class="body" id="modalBody"></div>
+      <div class="foot" id="modalFoot"></div>
+    </div>
+  </div>
+
+  <script>
+    const WEEKDAY_NAMES = ["日", "一", "二", "三", "四", "五", "六"];
+
+    const state = {
+      view: "calendar",
+      selectedVenueId: "zone-a1",
+      selectedServiceId: null,
+      calendarVenueId: "zone-a1",
+      year: new Date().getFullYear(),
+      month: new Date().getMonth(),
+      templates: [
+        { id: "tpl-std", name: "标准工作日", closed: false, slots: [{ open: "08:00", close: "22:00" }], remark: "全馆常规" },
+        { id: "tpl-weekend", name: "周末缩短", closed: false, slots: [{ open: "09:00", close: "17:00" }], remark: "周末" },
+        { id: "tpl-exam", name: "考试周延长", closed: false, slots: [{ open: "08:00", close: "23:30" }], remark: "临考加时" },
+        { id: "tpl-floor", name: "楼层专属", closed: false, slots: [{ open: "08:30", close: "21:00" }], remark: "楼层自定义示例" },
+        { id: "tpl-closed", name: "全天闭馆", closed: true, slots: [], remark: "闭馆日" },
+      ],
+      // 任意层级：parentId 成树；defaultTemplateId=null 继承上级；allowService 表示可挂座位/研讨室
+      venues: [
+        { id: "lib-1", name: "总馆", parentId: null, defaultTemplateId: "tpl-std", manager: "王馆长", allowService: false },
+        { id: "floor-1", name: "1F 综合阅览", parentId: "lib-1", defaultTemplateId: "tpl-floor", manager: "", allowService: false },
+        { id: "area-1", name: "A区 · 社科", parentId: "floor-1", defaultTemplateId: "tpl-exam", manager: "", allowService: false },
+        // 第 4 级示例：挂在 A 区下，继承 A 区开放时间，可挂预约服务
+        { id: "zone-a1", name: "社科阅览位", parentId: "area-1", defaultTemplateId: null, manager: "", allowService: true },
+        { id: "area-2", name: "B区 · 自习", parentId: "floor-1", defaultTemplateId: null, manager: "", allowService: true },
+        { id: "floor-2", name: "2F 期刊室", parentId: "lib-1", defaultTemplateId: null, manager: "", allowService: false },
+        { id: "area-3", name: "报刊区", parentId: "floor-2", defaultTemplateId: null, manager: "", allowService: true },
+      ],
+      services: [
+        {
+          id: "svc-seat-1", venueId: "zone-a1", type: "seat", name: "座位预约",
+          enabled: true, mode: "custom", maxSlotsPerBooking: 2,
+          // 当天 / n+1 / n+2 各自可开关，并配置从何时起可约该日
+          advanceRules: {
+            0: { enabled: true, openTime: "00:00" },
+            1: { enabled: true, openTime: "18:00" },
+            2: { enabled: true, openTime: "18:00" },
+          },
+          slots: [
+            { start: "08:00", end: "09:59" },
+            { start: "10:00", end: "11:59" },
+            { start: "13:00", end: "14:59" },
+          ],
+        },
+        {
+          id: "svc-room-1", venueId: "zone-a1", type: "room", name: "研讨室预约",
+          enabled: true, mode: "follow", maxSlotsPerBooking: 1,
+          advanceRules: {
+            0: { enabled: true, openTime: "00:00" },
+            1: { enabled: true, openTime: "12:00" },
+            2: { enabled: false, openTime: "18:00" },
+          },
+          slots: [],
+        },
+        {
+          id: "svc-seat-2", venueId: "area-2", type: "seat", name: "座位预约",
+          enabled: true, mode: "custom", maxSlotsPerBooking: 2,
+          advanceRules: {
+            0: { enabled: true, openTime: "06:00" },
+            1: { enabled: false, openTime: "18:00" },
+            2: { enabled: false, openTime: "18:00" },
+          },
+          slots: [
+            { start: "08:00", end: "09:59" },
+            { start: "10:00", end: "11:59" },
+            { start: "13:00", end: "14:59" },
+          ],
+        },
+        {
+          id: "svc-room-3", venueId: "area-3", type: "room", name: "研讨室预约",
+          enabled: true, mode: "custom", maxSlotsPerBooking: 1,
+          advanceRules: {
+            0: { enabled: true, openTime: "00:00" },
+            1: { enabled: true, openTime: "18:00" },
+            2: { enabled: true, openTime: "20:00" },
+          },
+          slots: [{ start: "10:00", end: "16:00" }],
+        },
+      ],
+      overrides: {},
+    };
+
+    (function initDemoOverride() {
+      const y = state.year;
+      const m = state.month;
+      const pad = (n) => String(n).padStart(2, "0");
+      const key = `zone-a1|${y}-${pad(m + 1)}-18`;
+      state.overrides[key] = {
+        venueId: "zone-a1",
+        date: `${y}-${pad(m + 1)}-18`,
+        mode: "template",
+        templateId: "tpl-closed",
+        note: "设备检修（单日覆盖示例）",
+      };
+    })();
+
+    const titles = {
+      templates: ["时间模板", "维护可复用的开闭时间，供任意层级场所引用。"],
+      venues: ["场所层级配置", "任意深度树：下层优先、未配向上回落；预约服务挂在「可挂服务」节点，且须 ⊆ 该节点开放时间。"],
+      calendar: ["开放日历", "查看某场所最终开闭时间，以及时间来自哪一层配置。"],
+    };
+
+    function $(sel) { return document.querySelector(sel); }
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function dateKey(y, m, d) { return `${y}-${pad(m + 1)}-${pad(d)}`; }
+    function tplById(id) { return state.templates.find((t) => t.id === id); }
+    function venueById(id) { return state.venues.find((v) => v.id === id); }
+    function formatSlots(tpl) {
+      if (!tpl) return "—";
+      if (tpl.closed) return "闭馆";
+      return tpl.slots.map((s) => `${s.open}-${s.close}`).join(" / ");
+    }
+    function isRoot(v) { return !!(v && !v.parentId); }
+    function childrenOf(venueId) {
+      return state.venues.filter((v) => v.parentId === venueId);
+    }
+    function venueDepth(v) {
+      if (!v) return 0;
+      let d = 0;
+      let cur = v;
+      const guard = new Set();
+      while (cur && cur.parentId && !guard.has(cur.id)) {
+        guard.add(cur.id);
+        cur = venueById(cur.parentId);
+        d += 1;
+        if (d > 32) break;
+      }
+      return d;
+    }
+    /** 展示用：第 1 级、第 2 级…（depth 从 0 起） */
+    function levelShortOf(v) {
+      return `第${venueDepth(v) + 1}级`;
+    }
+    /** 日历/色条用：按深度映射到 3 档色 */
+    function levelKeyOf(v) {
+      const d = typeof v === "number" ? v : venueDepth(v);
+      if (d <= 0) return "l1";
+      if (d === 1) return "l2";
+      return "l3";
+    }
+    function venueLevelLabel(v) {
+      if (!v) return "—";
+      return `${levelShortOf(v)}${isRoot(v) ? " · 根节点" : ""}`;
+    }
+    function canAttachService(v) {
+      return !!(v && v.allowService);
+    }
+    function hasOwnConfig(v) {
+      return !!(v && v.defaultTemplateId);
+    }
+    function svcById(id) { return state.services.find((s) => s.id === id); }
+    function servicesOf(venueId) {
+      return state.services.filter((s) => s.venueId === venueId);
+    }
+    /** 收集某节点及所有子孙上的预约服务 */
+    function descendantServices(venueId) {
+      const ids = new Set();
+      const walk = (id) => {
+        ids.add(id);
+        childrenOf(id).forEach((c) => walk(c.id));
+      };
+      walk(venueId);
+      return state.services.filter((s) => ids.has(s.venueId));
+    }
+    function serviceTypeLabel(type) {
+      return { seat: "座位预约", room: "研讨室预约" }[type] || type;
+    }
+    function serviceKindBadge(type) {
+      if (type === "seat") return '<span class="kind-badge seat">座位</span>';
+      if (type === "room") return '<span class="kind-badge room">研讨室</span>';
+      return '<span class="kind-badge venue">服务</span>';
+    }
+    function serviceKindClass(type) {
+      return type === "room" ? "svc-room" : "svc-seat";
+    }
+    function ensureAdvanceConfig(svc) {
+      // 兼容旧字段 advanceDays / advanceOpenAt → advanceRules
+      if (!svc.advanceRules) {
+        const days = svc.advanceDays != null ? Number(svc.advanceDays) : (svc.type === "seat" ? 2 : 1);
+        const openAt = svc.advanceOpenAt || {};
+        svc.advanceRules = {
+          0: { enabled: true, openTime: openAt[0] || "00:00" },
+          1: { enabled: days >= 1, openTime: openAt[1] || "18:00" },
+          2: { enabled: days >= 2, openTime: openAt[2] || "18:00" },
+        };
+      }
+      [0, 1, 2].forEach((k) => {
+        if (!svc.advanceRules[k]) {
+          svc.advanceRules[k] = {
+            enabled: k === 0,
+            openTime: k === 0 ? "00:00" : "18:00",
+          };
+        }
+        if (svc.advanceRules[k].openTime == null) {
+          svc.advanceRules[k].openTime = k === 0 ? "00:00" : "18:00";
+        }
+      });
+      return svc;
+    }
+    function advanceRangeLabel(svc) {
+      ensureAdvanceConfig(svc);
+      const on = [0, 1, 2].filter((k) => svc.advanceRules[k].enabled);
+      if (!on.length) return "未开放预约";
+      return on.map((k) => (k === 0 ? "当天" : `n+${k}`)).join(" + ");
+    }
+    function formatAdvancePreview(svc) {
+      ensureAdvanceConfig(svc);
+      const names = { 0: "当天（n+0）", 1: "次日（n+1）", 2: "后日（n+2）" };
+      const targets = { 0: "今天", 1: "明天", 2: "后天" };
+      const lines = [0, 1, 2].map((k) => {
+        const rule = svc.advanceRules[k];
+        if (!rule.enabled) return `${names[k]}：<span style="color:var(--muted)">未启用</span>`;
+        return `${names[k]}：每天 <b>${rule.openTime || "00:00"}</b> 起可预约${targets[k]}`;
+      });
+      return lines.join("<br />");
+    }
+    /** 折叠标题上一行摘要 */
+    function formatAdvanceBrief(svc) {
+      ensureAdvanceConfig(svc);
+      const parts = [0, 1, 2]
+        .filter((k) => svc.advanceRules[k].enabled)
+        .map((k) => {
+          const t = svc.advanceRules[k].openTime || "00:00";
+          if (k === 0) return `当天 ${t}起`;
+          return `n+${k} ${t}起`;
+        });
+      return parts.length ? parts.join(" · ") : "未启用任何预约日";
+    }
+    function readAdvanceRulesFromDom() {
+      return {
+        0: {
+          enabled: !!($("#advEnable0") && $("#advEnable0").checked),
+          openTime: ($("#advOpen0") && $("#advOpen0").value) || "00:00",
+        },
+        1: {
+          enabled: !!($("#advEnable1") && $("#advEnable1").checked),
+          openTime: ($("#advOpen1") && $("#advOpen1").value) || "18:00",
+        },
+        2: {
+          enabled: !!($("#advEnable2") && $("#advEnable2").checked),
+          openTime: ($("#advOpen2") && $("#advOpen2").value) || "18:00",
+        },
+      };
+    }
+    function toMinutes(hhmm) {
+      const [h, m] = (hhmm || "00:00").split(":").map(Number);
+      return h * 60 + m;
+    }
+    function formatBookSlots(slots) {
+      if (!slots || !slots.length) return "—";
+      return slots.map((s) => `${s.start}-${s.end}`).join("、");
+    }
+    function formatBookSlotsShort(slots) {
+      if (!slots || !slots.length) return "—";
+      if (slots.length <= 2) return formatBookSlots(slots);
+      return `${slots.length}个时段`;
+    }
+    function slotsOverlap(a, b) {
+      return toMinutes(a.start) < toMinutes(b.end) && toMinutes(b.start) < toMinutes(a.end);
+    }
+    /** 预约时段是否完全落在开放时段内（支持多段开放） */
+    function isBookSlotWithinOpen(book, openSlots) {
+      if (!openSlots || !openSlots.length) return false;
+      const bs = toMinutes(book.start);
+      const be = toMinutes(book.end);
+      if (be <= bs) return false;
+      return openSlots.some((o) => {
+        const os = toMinutes(o.open);
+        const oe = toMinutes(o.close);
+        return bs >= os && be <= oe;
+      });
+    }
+    function validateService(svc) {
+      const resolved = resolveDay(svc.venueId, state.year, state.month, 1);
+      const openTpl = resolved.template;
+      const openText = resolved.timeText;
+      const maxN = Number(svc.maxSlotsPerBooking) || 1;
+      if (resolved.closed || !openTpl || openTpl.closed) {
+        return {
+          ok: false, level: "err",
+          openText: "闭馆/关闭",
+          message: "所属场所当日关闭，预约不可用。",
+          effectiveSlots: [],
+          badIndexes: [],
+        };
+      }
+      if (svc.mode === "follow") {
+        return {
+          ok: true, level: "ok",
+          openText,
+          message: `跟随场所开放时间；单次最多约 ${maxN} 个时段。`,
+          effectiveSlots: openTpl.slots.map((s) => ({ start: s.open, end: s.close })),
+          badIndexes: [],
+        };
+      }
+      const slots = svc.slots || [];
+      if (!slots.length) {
+        return {
+          ok: false, level: "err",
+          openText,
+          message: "请至少配置 1 个可预约时段。",
+          effectiveSlots: [],
+          badIndexes: [],
+        };
+      }
+      const badIndexes = [];
+      slots.forEach((b, i) => {
+        if (!isBookSlotWithinOpen(b, openTpl.slots)) badIndexes.push(i);
+      });
+      // 时段互相重叠
+      let overlap = false;
+      for (let i = 0; i < slots.length; i++) {
+        for (let j = i + 1; j < slots.length; j++) {
+          if (slotsOverlap(slots[i], slots[j])) {
+            overlap = true;
+            if (!badIndexes.includes(i)) badIndexes.push(i);
+            if (!badIndexes.includes(j)) badIndexes.push(j);
+          }
+        }
+      }
+      if (badIndexes.length) {
+        const bad = badIndexes.map((i) => slots[i]);
+        return {
+          ok: false, level: "err",
+          openText,
+          message: overlap
+            ? `时段存在重叠或超出开放时间（${openText}）：${formatBookSlots(bad)}`
+            : `以下时段超出场所开放时间（${openText}）：${formatBookSlots(bad)}`,
+          effectiveSlots: slots,
+          badIndexes,
+        };
+      }
+      if (maxN < 1) {
+        return {
+          ok: false, level: "err",
+          openText,
+          message: "单次最多预约时段数至少为 1。",
+          effectiveSlots: slots,
+          badIndexes: [],
+        };
+      }
+      return {
+        ok: true, level: "ok",
+        openText,
+        message: `已配置 ${slots.length} 个可约时段（均在 ${openText} 内）；每位学生单次最多选 ${maxN} 段。`,
+        effectiveSlots: slots,
+        badIndexes: [],
+      };
+    }
+    function countRefs(templateId) {
+      let n = 0;
+      state.venues.forEach((v) => { if (v.defaultTemplateId === templateId) n++; });
+      Object.values(state.overrides).forEach((o) => { if (o.templateId === templateId) n++; });
+      return n;
+    }
+
+    /** 自下而上：当前场所 → 父级 → … → 根节点（不限级数） */
+    function ancestorChain(venueId) {
+      const chain = [];
+      let cur = venueById(venueId);
+      const guard = new Set();
+      while (cur && !guard.has(cur.id)) {
+        chain.push(cur);
+        guard.add(cur.id);
+        cur = cur.parentId ? venueById(cur.parentId) : null;
+      }
+      return chain;
+    }
+
+    /**
+     * 解析某天最终开放时间
+     * 1) 本场所单日覆盖（最高）
+     * 2) 否则从本级向上找第一个「已配置默认模板」（可跨任意多级）
+     */
+    function resolveDay(venueId, y, m, d) {
+      const dateStr = dateKey(y, m, d);
+      const venue = venueById(venueId);
+      if (!venue) return { source: "none", label: "未选择场所", timeText: "—", closed: true, chain: [] };
+
+      const ancestors = ancestorChain(venueId);
+      const chain = ancestors.map((v) => {
+        const tpl = hasOwnConfig(v) ? tplById(v.defaultTemplateId) : null;
+        return {
+          venue: v,
+          level: levelShortOf(v),
+          levelKey: levelKeyOf(v),
+          configured: hasOwnConfig(v),
+          detail: hasOwnConfig(v)
+            ? `${tpl?.name || "—"}（${formatSlots(tpl)}）`
+            : "未配置 · 继续向上",
+          hit: false,
+        };
+      });
+
+      const override = state.overrides[`${venueId}|${dateStr}`];
+      if (override) {
+        const tpl = override.mode === "template" ? tplById(override.templateId) : null;
+        const closed = override.mode === "closed" || (tpl && tpl.closed);
+        const timeText = override.mode === "closed"
+          ? "闭馆"
+          : formatSlots(tpl);
+        return {
+          source: "override",
+          label: "单日覆盖",
+          timeText: closed ? "闭馆" : timeText,
+          closed: !!closed,
+          template: tpl,
+          fromVenue: venue,
+          note: override.note || "",
+          chain,
+        };
+      }
+
+      // 自下而上找第一个已配置的层级
+      const hit = chain.find((c) => c.configured);
+      if (hit) {
+        hit.hit = true;
+        const tpl = tplById(hit.venue.defaultTemplateId);
+        const fromSelf = hit.venue.id === venueId;
+        return {
+          source: hit.levelKey,
+          label: fromSelf ? `${hit.level}本级配置` : `继承${hit.level}（${hit.venue.name}）`,
+          timeText: formatSlots(tpl),
+          closed: !!(tpl && tpl.closed),
+          template: tpl,
+          fromVenue: hit.venue,
+          note: "",
+          chain,
+        };
+      }
+
+      return {
+        source: "none",
+        label: "整条链路未配置",
+        timeText: "—",
+        closed: true,
+        template: null,
+        fromVenue: null,
+        note: "",
+        chain,
+      };
+    }
+
+    function openModal({ title, subtitle, bodyHTML, footHTML, modalClass }) {
+      const titleEl = $("#modalTitle");
+      titleEl.innerHTML = subtitle
+        ? `${title}<div class="sub">${subtitle}</div>`
+        : title;
+      $("#modalBody").innerHTML = bodyHTML;
+      $("#modalFoot").innerHTML = footHTML || "";
+      const modal = $("#modalMask .modal");
+      modal.className = "modal" + (modalClass ? ` ${modalClass}` : "");
+      $("#modalMask").classList.add("show");
+    }
+    function closeModal() {
+      $("#modalMask").classList.remove("show");
+      $("#modalMask .modal").className = "modal";
+    }
+    $("#modalClose").onclick = closeModal;
+    $("#modalMask").addEventListener("click", (e) => {
+      if (e.target.id === "modalMask") closeModal();
+    });
+
+    document.querySelectorAll(".nav button").forEach((btn) => {
+      const map = { templates: "time-templates.html", venues: "venue-hierarchy.html", calendar: "open-calendar.html" };
+      btn.addEventListener("click", () => { location.href = map[btn.dataset.view] || "#"; });
+    });
+
+    function switchView(view, opts = {}) {
+      state.view = view;
+      document.querySelectorAll(".nav button").forEach((b) => {
+        b.classList.toggle("active", b.dataset.view === view);
+      });
+      document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+      $(`#view-${view}`).classList.add("active");
+      $("#pageTitle").textContent = titles[view][0];
+      $("#pageDesc").textContent = titles[view][1];
+
+      if (opts.venueId) {
+        state.selectedVenueId = opts.venueId;
+        state.calendarVenueId = opts.venueId;
+      }
+      renderAll();
+    }
+
+    function renderTemplates() {
+      const tbody = $("#templateTable tbody");
+      tbody.innerHTML = state.templates.map((t) => `
+        <tr>
+          <td>
+            <div style="font-weight:600">${t.name}</div>
+            <div class="muted" style="font-size:12px;margin-top:2px">${t.remark || ""}</div>
+          </td>
+          <td><div class="slots"><span class="pill ${t.closed ? "pill-slate" : "pill-blue"}">${formatSlots(t)}</span></div></td>
+          <td>${t.closed ? '<span class="pill pill-slate">闭馆</span>' : '<span class="pill pill-blue">开放</span>'}</td>
+          <td>${countRefs(t.id)}</td>
+          <td>
+            <button class="btn btn-ghost" data-edit-tpl="${t.id}">编辑</button>
+          </td>
+        </tr>
+      `).join("");
+
+      tbody.querySelectorAll("[data-edit-tpl]").forEach((btn) => {
+        btn.onclick = () => editTemplate(btn.dataset.editTpl);
+      });
+    }
+
+    function editTemplate(id) {
+      const t = id ? tplById(id) : { id: "", name: "", closed: false, slots: [{ open: "08:00", close: "22:00" }], remark: "" };
+      openModal({
+        title: id ? "编辑时间模板" : "新建时间模板",
+        bodyHTML: `
+          <label class="field">模板名称
+            <input class="input" id="fName" value="${t.name || ""}" placeholder="如：标准工作日" />
+          </label>
+          <label class="field">备注
+            <input class="input" id="fRemark" value="${t.remark || ""}" placeholder="可选" />
+          </label>
+          <label class="field">类型
+            <select class="select" id="fClosed">
+              <option value="0" ${!t.closed ? "selected" : ""}>开放时段</option>
+              <option value="1" ${t.closed ? "selected" : ""}>全天闭馆</option>
+            </select>
+          </label>
+          <label class="field">开放时间 <span>可先配置一段</span>
+            <div style="display:flex;gap:8px">
+              <input class="input" id="fOpen" type="time" value="${(t.slots[0] && t.slots[0].open) || "08:00"}" />
+              <input class="input" id="fClose" type="time" value="${(t.slots[0] && t.slots[0].close) || "22:00"}" />
+            </div>
+          </label>
+        `,
+        footHTML: `
+          <button class="btn btn-ghost" id="mCancel">取消</button>
+          <button class="btn btn-primary" id="mSave">保存</button>
+        `,
+      });
+      $("#mCancel").onclick = closeModal;
+      $("#mSave").onclick = () => {
+        const name = $("#fName").value.trim();
+        if (!name) return alert("请填写模板名称");
+        const closed = $("#fClosed").value === "1";
+        const payload = {
+          id: t.id || `tpl-${Date.now()}`,
+          name,
+          remark: $("#fRemark").value.trim(),
+          closed,
+          slots: closed ? [] : [{ open: $("#fOpen").value, close: $("#fClose").value }],
+        };
+        if (t.id) {
+          const idx = state.templates.findIndex((x) => x.id === t.id);
+          state.templates[idx] = payload;
+        } else {
+          state.templates.push(payload);
+        }
+        closeModal();
+        renderAll();
+      };
+    }
+
+    $("#btnAddTemplate").onclick = () => editTemplate(null);
+
+    function orderedVenues() {
+      const result = [];
+      const walk = (node) => {
+        result.push(node);
+        childrenOf(node.id)
+          .slice()
+          .sort((a, b) => a.name.localeCompare(b.name, "zh-CN"))
+          .forEach(walk);
+      };
+      state.venues
+        .filter((v) => isRoot(v))
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name, "zh-CN"))
+        .forEach(walk);
+      return result;
+    }
+
+    function configStatusLabel(v) {
+      if (hasOwnConfig(v)) {
+        const tpl = tplById(v.defaultTemplateId);
+        return { pill: `pill-${levelKeyOf(v)}`, text: `本级已配 · ${tpl?.name || ""}` };
+      }
+      if (isRoot(v)) {
+        return { pill: "pill-rose", text: "根节点必须配置" };
+      }
+      const resolved = resolveDay(v.id, state.year, state.month, 1);
+      if (resolved.fromVenue) {
+        return { pill: "pill-inherit", text: `未配置 · 继承${levelShortOf(resolved.fromVenue)}` };
+      }
+      return { pill: "pill-rose", text: "未配置且无上级可继承" };
+    }
+
+    function renderVenueTree() {
+      const box = $("#venueTree");
+      const html = [];
+      orderedVenues().forEach((v) => {
+        const depth = Math.min(venueDepth(v), 7);
+        const st = configStatusLabel(v);
+        const venueActive = state.selectedVenueId === v.id && !state.selectedServiceId;
+        const seatN = servicesOf(v.id).filter((s) => s.type === "seat").length;
+        const roomN = servicesOf(v.id).filter((s) => s.type === "room").length;
+        let hangTag = "";
+        if (canAttachService(v)) {
+          const bits = [];
+          if (seatN) bits.push(`座位${seatN}`);
+          if (roomN) bits.push(`研讨室${roomN}`);
+          hangTag = bits.length
+            ? `<span class="pill pill-blue">可挂 · ${bits.join(" / ")}</span>`
+            : `<span class="pill pill-inherit">可挂服务</span>`;
+        }
+        html.push(`
+          <div class="tree-item indent-${depth} ${venueActive ? "active" : ""}" data-depth="${depth}" data-venue="${v.id}">
+            <div class="name">
+              <span class="kind-badge venue">场所</span>
+              ${v.name}
+              ${hangTag}
+            </div>
+            <div class="meta"><span class="pill ${st.pill}">${st.text}</span> · ${levelShortOf(v)}</div>
+          </div>
+        `);
+        // 预约服务挂在任意 allowService 节点下（不限层级）
+        servicesOf(v.id).forEach((svc) => {
+          const check = validateService(svc);
+          const active = state.selectedServiceId === svc.id;
+          const svcIndent = Math.min(depth + 1, 7);
+          const kindCls = serviceKindClass(svc.type);
+          const statusPill = !svc.enabled
+            ? '<span class="pill pill-slate">已停用</span>'
+            : check.ok
+              ? `<span class="pill ${svc.type === "room" ? "pill-room" : "pill-seat"}">${svc.mode === "follow" ? "跟随开放" : `${formatBookSlotsShort(svc.slots)} · 最多${svc.maxSlotsPerBooking || 1}段`}</span>`
+              : '<span class="pill pill-rose">时段需调整</span>';
+          html.push(`
+            <div class="tree-item service ${kindCls} indent-${svcIndent} ${active ? "active" : ""}" data-depth="${svcIndent}" data-service="${svc.id}">
+              <div class="name">
+                ${serviceKindBadge(svc.type)}
+                ${svc.name}
+              </div>
+              <div class="meta">${statusPill}</div>
+            </div>
+          `);
+        });
+      });
+      box.innerHTML = html.join("");
+
+      box.querySelectorAll("[data-venue]").forEach((el) => {
+        el.onclick = () => {
+          state.selectedVenueId = el.dataset.venue;
+          state.selectedServiceId = null;
+          renderVenues();
+        };
+      });
+      box.querySelectorAll("[data-service]").forEach((el) => {
+        el.onclick = () => {
+          const svc = svcById(el.dataset.service);
+          if (!svc) return;
+          state.selectedServiceId = svc.id;
+          state.selectedVenueId = svc.venueId;
+          renderVenues();
+        };
+      });
+    }
+
+    function renderInheritChain(venueId, opts = {}) {
+      const resolved = resolveDay(venueId, state.year, state.month, 1);
+      if (opts.compact) {
+        // 横向：本级 → 上级 → … → 根（左高右低）
+        return `
+          <div class="chain-compact">
+            ${resolved.chain.map((c) => {
+              const time = c.configured
+                ? formatSlots(tplById(c.venue.defaultTemplateId))
+                : "未配置";
+              return `
+                <div class="chain-node ${c.hit ? "hit" : c.configured ? "" : "skip"}">
+                  <div class="cn-lv" style="color:var(--${c.levelKey})">${c.level}</div>
+                  <div class="cn-name">${c.venue.name}</div>
+                  <div class="cn-time">${time}</div>
+                  <div class="cn-flag">${c.hit ? "✓ 当前生效" : c.configured ? "未采用" : "跳过"}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+      return `
+        <div class="chain">
+          ${resolved.chain.map((c) => `
+            <div class="chain-step ${c.hit ? "hit" : c.configured ? "" : "skip"}">
+              <div class="lv" style="color:var(--${c.levelKey})">${c.level}</div>
+              <div>
+                <div style="font-weight:600">${c.venue.name}</div>
+                <div class="muted" style="font-size:12px;margin-top:2px">${c.detail}</div>
+              </div>
+              <div class="status" style="color:${c.hit ? "var(--blue)" : "var(--muted)"}">
+                ${c.hit ? "✓ 生效" : c.configured ? "有配置未用" : "跳过"}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function defaultSeatSlots(openTpl) {
+      // 按常见「上午两段 + 下午一段」生成示例，并尽量落在开放时间内
+      const candidates = [
+        { start: "08:00", end: "09:59" },
+        { start: "08:30", end: "09:59" },
+        { start: "10:00", end: "11:59" },
+        { start: "13:00", end: "14:59" },
+      ];
+      if (!openTpl || openTpl.closed) return [{ start: "09:00", end: "10:59" }];
+      const ok = candidates.filter((s) => isBookSlotWithinOpen(s, openTpl.slots));
+      if (ok.length) return ok.slice(0, 3);
+      const first = openTpl.slots[0];
+      return [{ start: first.open, end: first.close }];
+    }
+
+    const SLOT_COLORS = ["#2a7fd4", "#1aa38a", "#d4891a", "#3d9ae8", "#5b7cfa", "#c97b3a"];
+
+    /** 开放时间轴：底轨 = 区域开放起止；彩色块 = 座位可约时段 */
+    function renderOpenTimeline(openTpl, bookSlots, badIndexes = []) {
+      if (!openTpl || openTpl.closed || !openTpl.slots || !openTpl.slots.length) {
+        return `
+          <div class="timeline-box">
+            <div class="tl-head"><strong>开放时间轴</strong><span>区域关闭，无法展示</span></div>
+            <div class="muted" style="font-size:13px">请先配置所属区域的开放时间。</div>
+          </div>
+        `;
+      }
+
+      const openStart = Math.min(...openTpl.slots.map((s) => toMinutes(s.open)));
+      const openEnd = Math.max(...openTpl.slots.map((s) => toMinutes(s.close)));
+      const span = Math.max(openEnd - openStart, 1);
+      const startLabel = openTpl.slots.reduce((a, s) => toMinutes(s.open) < toMinutes(a) ? s.open : a, openTpl.slots[0].open);
+      const endLabel = openTpl.slots.reduce((a, s) => toMinutes(s.close) > toMinutes(a) ? s.close : a, openTpl.slots[0].close);
+
+      const pct = (mins) => ((mins - openStart) / span) * 100;
+      const clampPct = (n) => Math.max(0, Math.min(100, n));
+
+      // 刻度：大约每 2 小时一个
+      const ticks = [];
+      const firstHour = Math.ceil(openStart / 60);
+      const lastHour = Math.floor(openEnd / 60);
+      for (let h = firstHour; h <= lastHour; h++) {
+        if (h % 2 !== 0 && lastHour - firstHour > 6) continue;
+        const m = h * 60;
+        if (m < openStart || m > openEnd) continue;
+        ticks.push({ label: `${String(h).padStart(2, "0")}:00`, left: pct(m) });
+      }
+
+      const segs = (bookSlots || []).map((s, i) => {
+        const bs = toMinutes(s.start);
+        const be = toMinutes(s.end);
+        const left = clampPct(pct(bs));
+        const right = clampPct(pct(be));
+        const width = Math.max(right - left, 0.8);
+        const bad = badIndexes.includes(i) || be <= bs || bs < openStart || be > openEnd;
+        const color = bad ? "#d65a5a" : SLOT_COLORS[i % SLOT_COLORS.length];
+        return `
+          <div class="timeline-seg ${bad ? "bad" : ""}" style="left:${left}%;width:${width}%;background:${color}" title="时段${i + 1}: ${s.start}-${s.end}">
+            <span class="tl-tip">时段${i + 1} ${s.start}-${s.end}</span>
+          </div>
+        `;
+      }).join("");
+
+      const legendItems = (bookSlots || []).map((s, i) => {
+        const bad = badIndexes.includes(i);
+        const color = bad ? "#d65a5a" : SLOT_COLORS[i % SLOT_COLORS.length];
+        return `<span><i style="background:${color}"></i>时段${i + 1} ${s.start}-${s.end}${bad ? "（异常）" : ""}</span>`;
+      }).join("");
+
+      return `
+        <div class="timeline-box" id="openTimeline">
+          <div class="tl-head">
+            <strong>开放时间轴</strong>
+            <span>底轨 = 区域开放 ${startLabel}–${endLabel}；彩色段 = 座位可约时段</span>
+          </div>
+          <div class="timeline-track-wrap">
+            <div class="timeline-track">
+              <div class="tl-open"></div>
+              ${segs}
+            </div>
+            <div class="timeline-scale">
+              ${ticks.map((t) => `<span class="tick" style="left:${t.left}%">${t.label}</span>`).join("")}
+            </div>
+            <div class="timeline-ends">
+              <span>${startLabel} 开馆</span>
+              <span>${endLabel} 闭馆</span>
+            </div>
+          </div>
+          <div class="timeline-legend">
+            <span><i class="lg-open"></i>区域开放时段</span>
+            <span><i class="lg-gap"></i>未设为可约</span>
+            ${legendItems}
+          </div>
+        </div>
+      `;
+    }
+
+    function refreshTimelinePreview(openTpl) {
+      const editor = $("#slotEditor");
+      if (!editor || !openTpl) return;
+      const list = [...editor.querySelectorAll(".slot-editor-row")].map((row) => ({
+        start: row.querySelector(".slot-start").value,
+        end: row.querySelector(".slot-end").value,
+      }));
+      const badIndexes = [];
+      list.forEach((b, i) => {
+        if (!b.start || !b.end || toMinutes(b.end) <= toMinutes(b.start) || !isBookSlotWithinOpen(b, openTpl.slots)) {
+          badIndexes.push(i);
+        }
+      });
+      // 重叠也标红
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i + 1; j < list.length; j++) {
+          if (list[i].start && list[j].start && slotsOverlap(list[i], list[j])) {
+            if (!badIndexes.includes(i)) badIndexes.push(i);
+            if (!badIndexes.includes(j)) badIndexes.push(j);
+          }
+        }
+      }
+      const host = $("#timelineHost");
+      if (host) host.innerHTML = renderOpenTimeline(openTpl, list, badIndexes);
+    }
+
+    function renderServiceDetail(svc) {
+      const area = venueById(svc.venueId);
+      const box = $("#venueDetail");
+      const check = validateService(svc);
+      const resolved = resolveDay(svc.venueId, state.year, state.month, 1);
+      const isSeat = svc.type === "seat";
+      if (svc.maxSlotsPerBooking == null) svc.maxSlotsPerBooking = isSeat ? 2 : 1;
+      ensureAdvanceConfig(svc);
+      $("#venueDetailTitle").innerHTML = `${serviceKindBadge(svc.type)} ${svc.name} · 预约配置`;
+
+      const slots = (svc.slots && svc.slots.length)
+        ? svc.slots
+        : [{ start: "09:00", end: "10:59" }];
+      const r0 = svc.advanceRules[0];
+      const r1 = svc.advanceRules[1];
+      const r2 = svc.advanceRules[2];
+
+      box.innerHTML = `
+        <div class="detail-compact">
+          <div class="meta-strip">
+            <div class="meta-cell"><span class="k">服务类型</span><span class="v">${serviceKindBadge(svc.type)} ${serviceTypeLabel(svc.type)}</span></div>
+            <div class="meta-cell"><span class="k">所属场所</span><span class="v">${area ? area.name : "—"}</span></div>
+            <div class="meta-cell"><span class="k">场所开放</span><span class="v">${resolved.timeText}</span></div>
+            <div class="meta-cell"><span class="k">可约日期</span><span class="v">${advanceRangeLabel(svc)}</span></div>
+          </div>
+
+          <details class="fold-block" id="advanceFold">
+            <summary>
+              <div class="fold-main">
+                <div class="fold-title">
+                  可预约日期与开放时刻
+                  <span class="pill ${isSeat ? "pill-seat" : "pill-room"}" id="advanceRangePill">${advanceRangeLabel(svc)}</span>
+                </div>
+                <div class="fold-summary" id="advanceBrief">${formatAdvanceBrief(svc)}</div>
+              </div>
+              <span class="fold-chevron">▼</span>
+            </summary>
+            <div class="fold-body">
+              <p class="muted" style="font-size:12px;margin:0 0 10px">当天、次日(n+1)、后日(n+2) 可分别启用，并各自设置「从每天几点起可以约这一天」。</p>
+              <div class="advance-grid">
+                <div class="advance-card ${r0.enabled ? "" : "disabled"}" id="advCard0">
+                  <div class="ac-head">
+                    <label><input type="checkbox" id="advEnable0" ${r0.enabled ? "checked" : ""} /> 当天（n+0）</label>
+                  </div>
+                  <div class="ac-desc">启用后，从设定时刻起可预约「今天」。</div>
+                  <label class="field">开放预约时刻
+                    <input class="input" type="time" id="advOpen0" value="${r0.openTime || "00:00"}" ${r0.enabled ? "" : "disabled"} />
+                  </label>
+                </div>
+                <div class="advance-card ${r1.enabled ? "" : "disabled"}" id="advCard1">
+                  <div class="ac-head">
+                    <label><input type="checkbox" id="advEnable1" ${r1.enabled ? "checked" : ""} /> 次日（n+1）</label>
+                  </div>
+                  <div class="ac-desc">启用后，从设定时刻起可预约「明天」。</div>
+                  <label class="field">开放预约时刻
+                    <input class="input" type="time" id="advOpen1" value="${r1.openTime || "18:00"}" ${r1.enabled ? "" : "disabled"} />
+                  </label>
+                </div>
+                <div class="advance-card ${r2.enabled ? "" : "disabled"}" id="advCard2">
+                  <div class="ac-head">
+                    <label><input type="checkbox" id="advEnable2" ${r2.enabled ? "checked" : ""} /> 后日（n+2）</label>
+                  </div>
+                  <div class="ac-desc">启用后，从设定时刻起可预约「后天」。</div>
+                  <label class="field">开放预约时刻
+                    <input class="input" type="time" id="advOpen2" value="${r2.openTime || "18:00"}" ${r2.enabled ? "" : "disabled"} />
+                  </label>
+                </div>
+              </div>
+              <div class="advance-preview" id="advancePreview">${formatAdvancePreview(svc)}</div>
+              <div class="inline-actions">
+                <button type="button" class="btn btn-primary" id="btnSaveAdvance">保存预约开放规则</button>
+              </div>
+            </div>
+          </details>
+
+          <div id="timelineHost">
+            ${svc.mode === "follow"
+              ? renderOpenTimeline(
+                  resolved.template,
+                  (resolved.template && !resolved.template.closed)
+                    ? resolved.template.slots.map((s) => ({ start: s.open, end: s.close }))
+                    : [],
+                  []
+                )
+              : renderOpenTimeline(resolved.template, slots, check.badIndexes || [])}
+          </div>
+
+          <div class="constraint-box ${check.level === "err" ? "err" : ""}" style="padding:10px 12px">
+            <div class="c-title">约束校验</div>
+            <div>${check.message}</div>
+          </div>
+
+          <div class="block">
+            <div class="section-label">
+              <strong>${isSeat ? "座位可约时段（可多段）" : "预约时段设置"}</strong>
+              <span>每段须 ⊆ 场所开放 ${check.openText}</span>
+            </div>
+
+            ${!isSeat ? `
+              <div class="mode-grid" style="grid-template-columns:1fr 1fr;margin-bottom:10px">
+                <button type="button" class="mode-card slim ${svc.mode === "follow" ? "active" : ""}" data-svc-mode="follow">
+                  <div class="mc-title">跟随区域开放</div>
+                  <div class="mc-tag">全时段可约</div>
+                </button>
+                <button type="button" class="mode-card slim ${svc.mode === "custom" ? "active" : ""}" data-svc-mode="custom">
+                  <div class="mc-title">自定义多段</div>
+                  <div class="mc-tag">须在开放内</div>
+                </button>
+              </div>
+            ` : ""}
+
+            <div id="svcSlotPanel" style="${!isSeat && svc.mode === "follow" ? "display:none" : ""}">
+              <div class="slot-editor" id="slotEditor">
+                ${slots.map((s, i) => `
+                  <div class="slot-editor-row" data-slot-index="${i}">
+                    <label class="field">开始
+                      <input class="input slot-start" type="time" value="${s.start}" />
+                    </label>
+                    <label class="field">结束
+                      <input class="input slot-end" type="time" value="${s.end}" />
+                    </label>
+                    <button type="button" class="btn btn-ghost btn-remove-slot" ${slots.length <= 1 ? "disabled" : ""}>删除</button>
+                  </div>
+                `).join("")}
+              </div>
+              <div class="inline-actions">
+                <button type="button" class="btn btn-ghost" id="btnAddSlot">+ 添加时段</button>
+                <button type="button" class="btn btn-primary" id="btnSaveSvcSlots">保存时段配置</button>
+              </div>
+            </div>
+
+            <div class="limit-row">
+              <label class="field">每位学生单次最多预约
+                <input class="input" type="number" id="maxSlotsPerBooking" min="1" max="20" value="${svc.maxSlotsPerBooking || 1}" />
+              </label>
+              <span class="muted" style="font-size:12px;padding-bottom:8px">单位：时段个数。例如设为 2，则一次最多选 2 段（如上午一段 + 下午一段）。</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const syncAdvanceUi = () => {
+        const rules = readAdvanceRulesFromDom();
+        [0, 1, 2].forEach((k) => {
+          const card = $(`#advCard${k}`);
+          const open = $(`#advOpen${k}`);
+          if (card) card.classList.toggle("disabled", !rules[k].enabled);
+          if (open) open.disabled = !rules[k].enabled;
+        });
+        const draft = { ...svc, advanceRules: rules };
+        const preview = $("#advancePreview");
+        if (preview) preview.innerHTML = formatAdvancePreview(draft);
+        const brief = $("#advanceBrief");
+        if (brief) brief.textContent = formatAdvanceBrief(draft);
+        const pill = $("#advanceRangePill");
+        if (pill) pill.textContent = advanceRangeLabel(draft);
+      };
+      [0, 1, 2].forEach((k) => {
+        const en = $(`#advEnable${k}`);
+        const open = $(`#advOpen${k}`);
+        if (en) en.onchange = syncAdvanceUi;
+        if (open) open.oninput = syncAdvanceUi;
+      });
+      $("#btnSaveAdvance").onclick = () => {
+        svc.advanceRules = readAdvanceRulesFromDom();
+        // 清理旧字段
+        delete svc.advanceDays;
+        delete svc.advanceOpenAt;
+        renderAll();
+        const fold = $("#advanceFold");
+        if (fold) fold.open = true;
+      };
+
+      // 研讨室：跟随 / 自定义切换
+      document.querySelectorAll("[data-svc-mode]").forEach((btn) => {
+        btn.onclick = () => {
+          svc.mode = btn.dataset.svcMode;
+          if (svc.mode === "custom" && (!svc.slots || !svc.slots.length)) {
+            svc.slots = defaultSeatSlots(resolved.template).slice(0, isSeat ? 3 : 1);
+          }
+          renderAll();
+        };
+      });
+
+      const editor = $("#slotEditor");
+      const readSlotsFromDom = () => {
+        if (!editor) return [];
+        return [...editor.querySelectorAll(".slot-editor-row")].map((row) => ({
+          start: row.querySelector(".slot-start").value,
+          end: row.querySelector(".slot-end").value,
+        }));
+      };
+
+      // 改起止时间时，时间轴实时预览（未保存也可看位置）
+      if (editor) {
+        editor.querySelectorAll(".slot-start, .slot-end").forEach((input) => {
+          input.addEventListener("input", () => refreshTimelinePreview(resolved.template));
+          input.addEventListener("change", () => refreshTimelinePreview(resolved.template));
+        });
+      }
+
+      const addSlotBtn = $("#btnAddSlot");
+      if (!addSlotBtn) return;
+
+      addSlotBtn.onclick = () => {
+        const openTpl = resolved.template;
+        let next = { start: "15:00", end: "16:59" };
+        if (openTpl && !openTpl.closed && openTpl.slots[0]) {
+          // 默认追加一个落在开放内的下午段
+          const cand = { start: "15:00", end: "16:59" };
+          next = isBookSlotWithinOpen(cand, openTpl.slots)
+            ? cand
+            : { start: openTpl.slots[0].open, end: openTpl.slots[0].close };
+        }
+        svc.mode = "custom";
+        svc.slots = readSlotsFromDom().concat([next]);
+        renderAll();
+      };
+
+      editor.querySelectorAll(".btn-remove-slot").forEach((btn) => {
+        btn.onclick = () => {
+          const row = btn.closest(".slot-editor-row");
+          const idx = Number(row.dataset.slotIndex);
+          const list = readSlotsFromDom();
+          if (list.length <= 1) return alert("至少保留 1 个时段");
+          list.splice(idx, 1);
+          svc.slots = list;
+          svc.mode = "custom";
+          renderAll();
+        };
+      });
+
+      $("#btnSaveSvcSlots").onclick = () => {
+        const list = readSlotsFromDom();
+        for (const s of list) {
+          if (!s.start || !s.end) return alert("请填写完整时段");
+          if (toMinutes(s.end) <= toMinutes(s.start)) return alert("结束时间必须晚于开始时间");
+        }
+        const maxN = Number($("#maxSlotsPerBooking").value || 1);
+        if (maxN < 1) return alert("单次最多预约时段数至少为 1");
+        const probe = { ...svc, mode: "custom", slots: list, maxSlotsPerBooking: maxN };
+        const result = validateService(probe);
+        if (!result.ok) {
+          alert(result.message);
+          return;
+        }
+        svc.mode = "custom";
+        svc.slots = list;
+        svc.maxSlotsPerBooking = maxN;
+        renderAll();
+      };
+    }
+
+    function renderVenueDetail() {
+      if (state.selectedServiceId) {
+        const svc = svcById(state.selectedServiceId);
+        if (svc) {
+          renderServiceDetail(svc);
+          return;
+        }
+        state.selectedServiceId = null;
+      }
+
+      const v = venueById(state.selectedVenueId);
+      const box = $("#venueDetail");
+      if (!v) {
+        box.innerHTML = `<div class="empty-state">请选择左侧场所</div>`;
+        return;
+      }
+      $("#venueDetailTitle").textContent = `${v.name} · 详情`;
+      const own = hasOwnConfig(v);
+      const root = isRoot(v);
+      const resolved = resolveDay(v.id, state.year, state.month, 1);
+      const ownServices = servicesOf(v.id);
+      const descServices = descendantServices(v.id);
+      const showServicePanel = canAttachService(v) || ownServices.length > 0;
+
+      const parentResolved = (() => {
+        if (root) return null;
+        const saved = v.defaultTemplateId;
+        v.defaultTemplateId = null;
+        const r = resolveDay(v.id, state.year, state.month, 1);
+        v.defaultTemplateId = saved;
+        return r;
+      })();
+
+      box.innerHTML = `
+        <div class="detail-compact">
+          <div class="meta-strip ${v.manager ? "" : "cols-3"}">
+            <div class="meta-cell"><span class="k">层级</span><span class="v">${venueLevelLabel(v)}</span></div>
+            ${v.manager ? `<div class="meta-cell"><span class="k">负责人</span><span class="v">${v.manager}</span></div>` : ""}
+            <div class="meta-cell">
+              <span class="k">本级状态</span>
+              <span class="v">${own
+                ? `<span class="pill pill-${levelKeyOf(v)}">本级已配置</span>`
+                : `<span class="pill pill-inherit">继承上级</span>`}</span>
+            </div>
+            <div class="meta-cell"><span class="k">最终生效</span><span class="v">${resolved.timeText}</span></div>
+          </div>
+
+          <div class="block">
+            <div class="section-label">
+              <strong>解析链路</strong>
+              <span>本级 → 上级 → … → 根 · 命中第一个已配置层</span>
+            </div>
+            ${renderInheritChain(v.id, { compact: true })}
+          </div>
+
+          <div class="block">
+            <div class="section-label">
+              <strong>本级开放时间</strong>
+              <span>${root ? "根节点必须配置（保底）" : "可配置本级，或继承上级（可跨多级）"}</span>
+            </div>
+
+            ${root ? `
+              <label class="field">默认模板
+                <select class="select" id="defaultTplSelect">
+                  ${state.templates.map((t) => `<option value="${t.id}" ${t.id === v.defaultTemplateId ? "selected" : ""}>${t.name}（${formatSlots(t)}）</option>`).join("")}
+                </select>
+              </label>
+            ` : `
+              <div class="config-row">
+                <div class="mode-grid" style="grid-template-columns:1fr 1fr" id="venueModeGrid">
+                  <button type="button" class="mode-card slim ${!own ? "active" : ""}" data-venue-mode="inherit">
+                    <div class="mc-title">继承上级</div>
+                    <div class="mc-tag">${!own ? "当前" : "取消本级"}</div>
+                  </button>
+                  <button type="button" class="mode-card slim ${own ? "active" : ""}" data-venue-mode="own">
+                    <div class="mc-title">本级配置</div>
+                    <div class="mc-tag">${own ? "覆盖中" : "覆盖上级"}</div>
+                  </button>
+                </div>
+                <div>
+                  ${own ? `
+                    <label class="field">时间模板
+                      <select class="select" id="defaultTplSelect">
+                        ${state.templates.map((t) => `<option value="${t.id}" ${t.id === v.defaultTemplateId ? "selected" : ""}>${t.name}（${formatSlots(t)}）</option>`).join("")}
+                      </select>
+                    </label>
+                    <div class="inline-actions">
+                      <button class="btn btn-danger" id="btnClearVenueConfig">取消本级配置</button>
+                      <span class="muted" style="font-size:12px">回落后：${parentResolved ? parentResolved.timeText : "—"}</span>
+                    </div>
+                  ` : `
+                    <div class="preview-bar" style="margin:0;height:100%;align-content:center">
+                      <span>当前继承</span>
+                      <b>${resolved.timeText}（${resolved.label}）</b>
+                    </div>
+                    <select class="select" id="defaultTplSelect" style="display:none">
+                      ${state.templates.map((t) => `<option value="${t.id}">${t.name}</option>`).join("")}
+                    </select>
+                  `}
+                </div>
+              </div>
+            `}
+          </div>
+
+          <div class="block">
+            <div class="section-label">
+              <strong>预约服务</strong>
+              <span>${canAttachService(v) ? "本节点可挂服务" : "本节点未开启挂载；下方为下属汇总"}</span>
+            </div>
+            <label class="field" style="margin-bottom:10px">
+              <span style="display:flex;align-items:center;gap:8px;font-weight:600">
+                <input type="checkbox" id="allowServiceToggle" ${canAttachService(v) ? "checked" : ""} />
+                允许在此节点挂载座位/研讨室预约
+              </span>
+            </label>
+            ${showServicePanel ? `
+              <div class="svc-list horizontal">
+                ${ownServices.length ? ownServices.map((svc) => {
+                  const check = validateService(svc);
+                  return `
+                    <div class="svc-card ${serviceKindClass(svc.type)}" data-open-service="${svc.id}">
+                      <div>
+                        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px">
+                          ${serviceKindBadge(svc.type)}
+                          ${svc.name}
+                        </div>
+                        <div class="muted" style="font-size:11px;margin-top:3px">
+                          ${svc.mode === "follow"
+                            ? "跟随开放"
+                            : `${formatBookSlotsShort(svc.slots)} · 单次最多${svc.maxSlotsPerBooking || 1}段`}
+                        </div>
+                      </div>
+                      <span class="pill ${check.ok ? (svc.type === "room" ? "pill-room" : "pill-seat") : "pill-rose"}">${check.ok ? "合规" : "需调整"}</span>
+                    </div>
+                  `;
+                }).join("") : `<div class="muted" style="font-size:13px;padding:6px 0">本节点暂无预约服务</div>`}
+              </div>
+              ${canAttachService(v) ? `
+                <div class="inline-actions">
+                  <button class="btn btn-ghost" id="btnAddService">添加预约服务</button>
+                </div>
+              ` : ""}
+            ` : ""}
+            ${!canAttachService(v) && descServices.length ? `
+              <div class="preview-bar" style="margin-top:10px">
+                <span>下属共有预约服务</span>
+                <b>${descServices.length} 个（座位 ${descServices.filter((s) => s.type === "seat").length} / 研讨室 ${descServices.filter((s) => s.type === "room").length}）</b>
+              </div>
+            ` : ""}
+          </div>
+
+          <div class="hint slim">
+            开放时间：任意深度，下层优先、未配向上回落；预约服务挂在勾选「可挂服务」的节点，时段须 ⊆ 该节点开放时间。
+          </div>
+        </div>
+      `;
+
+      const allowToggle = $("#allowServiceToggle");
+      if (allowToggle) {
+        allowToggle.onchange = () => {
+          v.allowService = allowToggle.checked;
+          if (!v.allowService && servicesOf(v.id).length) {
+            if (!confirm("关闭后本节点仍保留已有服务，但不再显示「添加」。确定？")) {
+              allowToggle.checked = true;
+              v.allowService = true;
+              return;
+            }
+          }
+          renderAll();
+        };
+      }
+
+      if (root) {
+        $("#defaultTplSelect").onchange = (e) => {
+          v.defaultTemplateId = e.target.value;
+          renderAll();
+        };
+      } else {
+        const applyMode = (nextMode) => {
+          if (nextMode === "inherit") {
+            v.defaultTemplateId = null;
+          } else if (!v.defaultTemplateId) {
+            v.defaultTemplateId = state.templates[0]?.id || null;
+          }
+          renderAll();
+        };
+
+        document.querySelectorAll("[data-venue-mode]").forEach((btn) => {
+          btn.onclick = () => applyMode(btn.dataset.venueMode);
+        });
+
+        const tplSel = $("#defaultTplSelect");
+        if (tplSel) {
+          tplSel.onchange = (e) => {
+            v.defaultTemplateId = e.target.value;
+            renderAll();
+          };
+        }
+
+        const clearBtn = $("#btnClearVenueConfig");
+        if (clearBtn) clearBtn.onclick = () => applyMode("inherit");
+      }
+
+      document.querySelectorAll("[data-open-service]").forEach((el) => {
+        el.onclick = () => {
+          state.selectedServiceId = el.dataset.openService;
+          state.selectedVenueId = v.id;
+          renderVenues();
+        };
+      });
+
+      const addSvc = $("#btnAddService");
+      if (addSvc) {
+        addSvc.onclick = () => {
+          openModal({
+            title: "添加预约服务",
+            subtitle: `所属场所：${v.name}（${levelShortOf(v)}）`,
+            bodyHTML: `
+              <label class="field">服务类型
+                <select class="select" id="svcType">
+                  <option value="seat">座位预约</option>
+                  <option value="room">研讨室预约</option>
+                </select>
+              </label>
+              <label class="field">名称
+                <input class="input" id="svcName" placeholder="如：座位预约" value="座位预约" />
+              </label>
+              <label class="field" id="svcModeField">时段模式
+                <select class="select" id="svcMode">
+                  <option value="custom" selected>自定义多段（座位推荐）</option>
+                  <option value="follow">跟随场所开放（全时段可约）</option>
+                </select>
+              </label>
+              <label class="field">每位学生单次最多预约时段数
+                <input class="input" type="number" id="svcMaxSlots" min="1" max="20" value="2" />
+              </label>
+              <div class="constraint-box">
+                <div class="c-title">提醒</div>
+                <div>当前场所开放 <b>${resolved.timeText}</b>。座位可拆成多段，且每段不能超出开放时间。</div>
+              </div>
+            `,
+            footHTML: `
+              <button class="btn btn-ghost" id="mCancel">关闭</button>
+              <button class="btn btn-primary" id="mSave">添加</button>
+            `,
+          });
+          const syncAddForm = () => {
+            const type = $("#svcType").value;
+            $("#svcName").value = serviceTypeLabel(type);
+            $("#svcMaxSlots").value = type === "seat" ? 2 : 1;
+            $("#svcMode").value = type === "seat" ? "custom" : "follow";
+          };
+          $("#svcType").onchange = syncAddForm;
+          $("#mCancel").onclick = closeModal;
+          $("#mSave").onclick = () => {
+            const type = $("#svcType").value;
+            const name = $("#svcName").value.trim() || serviceTypeLabel(type);
+            const mode = type === "seat" ? "custom" : $("#svcMode").value;
+            const maxSlotsPerBooking = Math.max(1, Number($("#svcMaxSlots").value || 1));
+            const openTpl = resolved.template;
+            let slots = [];
+            if (mode === "custom") {
+              slots = type === "seat"
+                ? defaultSeatSlots(openTpl)
+                : (openTpl && !openTpl.closed && openTpl.slots[0]
+                  ? [{ start: openTpl.slots[0].open, end: openTpl.slots[0].close }]
+                  : [{ start: "09:00", end: "10:59" }]);
+            }
+            const svc = {
+              id: `svc-${Date.now()}`,
+              venueId: v.id,
+              type,
+              name,
+              enabled: true,
+              mode,
+              slots,
+              maxSlotsPerBooking,
+              advanceRules: type === "seat"
+                ? {
+                    0: { enabled: true, openTime: "00:00" },
+                    1: { enabled: true, openTime: "18:00" },
+                    2: { enabled: true, openTime: "18:00" },
+                  }
+                : {
+                    0: { enabled: true, openTime: "00:00" },
+                    1: { enabled: true, openTime: "18:00" },
+                    2: { enabled: false, openTime: "18:00" },
+                  },
+            };
+            state.services.push(svc);
+            state.selectedServiceId = svc.id;
+            closeModal();
+            renderAll();
+          };
+        };
+      }
+    }
+
+    function renderVenues() {
+      renderVenueTree();
+      renderVenueDetail();
+    }
+
+    $("#btnOpenCalendar").onclick = () => {
+      if (!state.selectedVenueId) return;
+      location.href = "open-calendar.html?venue=" + encodeURIComponent(state.selectedVenueId);
+    };
+
+    $("#btnAddVenue").onclick = () => {
+      openModal({
+        title: "添加场所",
+        bodyHTML: `
+          <label class="field">名称
+            <input class="input" id="vName" placeholder="如：3F 电子阅览室 / 研讨分区" />
+          </label>
+          <label class="field">上级场所 <span>不选则为根节点（须配置开放时间）</span>
+            <select class="select" id="vParent">
+              <option value="">无 · 作为根节点</option>
+              ${orderedVenues().map((v) => {
+                const padStr = "　".repeat(venueDepth(v));
+                return `<option value="${v.id}">${padStr}${v.name}（${levelShortOf(v)}）</option>`;
+              }).join("")}
+            </select>
+          </label>
+          <label class="field">本级开放时间 <span>非根节点可选继承上级</span>
+            <select class="select" id="vTpl">
+              <option value="">不配置 · 继承上级</option>
+              ${state.templates.map((t) => `<option value="${t.id}">${t.name}</option>`).join("")}
+            </select>
+          </label>
+          <label class="field">
+            <span style="display:flex;align-items:center;gap:8px;font-weight:600">
+              <input type="checkbox" id="vAllowService" checked />
+              允许挂载座位/研讨室预约
+            </span>
+          </label>
+        `,
+        footHTML: `
+          <button class="btn btn-ghost" id="mCancel">取消</button>
+          <button class="btn btn-primary" id="mSave">保存</button>
+        `,
+      });
+      $("#mCancel").onclick = closeModal;
+      $("#mSave").onclick = () => {
+        const name = $("#vName").value.trim();
+        if (!name) return alert("请填写名称");
+        const parentId = $("#vParent").value || null;
+        let tplId = $("#vTpl").value || null;
+        if (!parentId && !tplId) return alert("根节点必须配置默认开放时间");
+        const venue = {
+          id: `venue-${Date.now()}`,
+          name,
+          parentId,
+          defaultTemplateId: tplId,
+          manager: !parentId ? "待指定" : "",
+          allowService: $("#vAllowService").checked,
+        };
+        state.venues.push(venue);
+        state.selectedVenueId = venue.id;
+        closeModal();
+        renderAll();
+      };
+    };
+
+    function renderCalendarSelect() {
+      const sel = $("#calendarVenueSelect");
+      const current = state.calendarVenueId;
+      sel.innerHTML = orderedVenues().map((v) => {
+        const prefix = "　".repeat(venueDepth(v)) + (venueDepth(v) ? "└ " : "");
+        const tag = hasOwnConfig(v) ? "" : "（继承）";
+        return `<option value="${v.id}" ${v.id === current ? "selected" : ""}>${prefix}${v.name}${tag}</option>`;
+      }).join("");
+    }
+
+    function renderCalendar() {
+      renderCalendarSelect();
+      const venue = venueById(state.calendarVenueId);
+      const y = state.year;
+      const m = state.month;
+      $("#calTitle").textContent = `${venue ? venue.name + " · " : ""}${y}年${m + 1}月`;
+
+      const first = new Date(y, m, 1);
+      let startPad = first.getDay() - 1;
+      if (startPad < 0) startPad = 6;
+
+      const daysInMonth = new Date(y, m + 1, 0).getDate();
+      const today = new Date();
+      const cells = [];
+
+      for (let i = 0; i < startPad; i++) cells.push(`<div class="day empty"></div>`);
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const resolved = resolveDay(state.calendarVenueId, y, m, d);
+        const isToday = today.getFullYear() === y && today.getMonth() === m && today.getDate() === d;
+        const sourceClass = resolved.closed && resolved.source !== "override"
+          ? "source-closed"
+          : `source-${resolved.source === "none" ? "closed" : resolved.source}`;
+        const overrideMark = resolved.source === "override"
+          ? `<div class="mark">单独</div>`
+          : "";
+        cells.push(`
+          <div class="day ${sourceClass} ${isToday ? "today" : ""}" data-day="${d}">
+            <div class="d">${d}</div>
+            ${overrideMark}
+            <div class="time">${resolved.timeText}</div>
+            <div class="src">${resolved.label}</div>
+          </div>
+        `);
+      }
+
+      $("#calendarDays").innerHTML = cells.join("");
+      $("#calendarDays").querySelectorAll("[data-day]").forEach((el) => {
+        el.onclick = () => openDayEditor(Number(el.dataset.day));
+      });
+
+      if (venue) {
+        const resolved = resolveDay(venue.id, y, m, 1);
+        $("#calendarHint").innerHTML = `
+          当前场所：<b>${venue.name}</b>（${venueLevelLabel(venue)}）。
+          本级${hasOwnConfig(venue) ? "已配置" : "未配置"}；
+          日常生效：<b>${resolved.timeText}</b>（${resolved.label}）。
+          点击日期可查看链路并做单日覆盖。
+        `;
+      } else {
+        $("#calendarHint").textContent = "请先选择场所。";
+      }
+    }
+
+    function openDayEditor(day) {
+      const y = state.year;
+      const m = state.month;
+      const dateStr = dateKey(y, m, day);
+      const venue = venueById(state.calendarVenueId);
+      const resolved = resolveDay(state.calendarVenueId, y, m, day);
+      const key = `${state.calendarVenueId}|${dateStr}`;
+      const existing = state.overrides[key];
+      const weekday = WEEKDAY_NAMES[new Date(y, m, day).getDay()];
+      let mode = existing ? existing.mode : "none";
+
+      // 去掉覆盖后，层级回落会得到什么
+      const withoutOverride = (() => {
+        const saved = state.overrides[key];
+        delete state.overrides[key];
+        const r = resolveDay(state.calendarVenueId, y, m, day);
+        if (saved) state.overrides[key] = saved;
+        return r;
+      })();
+
+      const heroClass = resolved.source === "override"
+        ? "override"
+        : resolved.closed
+          ? "closed"
+          : "";
+
+      const sourceSide = resolved.source === "override"
+        ? { lv: "优先级", val: "单日覆盖" }
+        : resolved.fromVenue
+          ? { lv: levelShortOf(resolved.fromVenue), val: resolved.fromVenue.name }
+          : { lv: "状态", val: "未配置" };
+
+      openModal({
+        title: `${m + 1}月${day}日 · 周${weekday}`,
+        subtitle: `${venue ? venue.name : ""} · ${dateStr}`,
+        modalClass: "modal-day",
+        bodyHTML: `
+          <div class="day-hero ${heroClass}" id="dayHero">
+            <div>
+              <div class="kicker">当天最终开放时间</div>
+              <div class="time-big" id="heroTime">${resolved.timeText}</div>
+              <div class="from" id="heroFrom">${resolved.label}${resolved.note ? " · " + resolved.note : ""}</div>
+            </div>
+            <div class="badge-side">
+              <div class="lv" id="heroSideLv">${sourceSide.lv}</div>
+              <div class="val" id="heroSideVal">${sourceSide.val}</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-label">
+              <strong>层级回落（未单独配置时）</strong>
+              <span>左高右低 · 命中第一个已配置层</span>
+            </div>
+            ${renderInheritChain(state.calendarVenueId, { compact: true })}
+          </div>
+
+          <div>
+            <div class="section-label">
+              <strong>单独配置方式</strong>
+              <span>仅影响本场所当天，优先级最高</span>
+            </div>
+            <div class="mode-grid" id="modeGrid">
+              <button type="button" class="mode-card ${mode === "none" ? "active" : ""}" data-mode="none">
+                <div class="mc-title">${existing ? "取消覆盖" : "跟随层级"}</div>
+                <div class="mc-desc">${existing ? "删除本日单独配置，恢复向上层级回落" : "不单独配置，按场所树向上回落"}</div>
+                <div class="mc-tag">${existing ? "将清除覆盖" : "默认推荐"}</div>
+              </button>
+              <button type="button" class="mode-card ${mode === "template" ? "active" : ""}" data-mode="template">
+                <div class="mc-title">指定模板</div>
+                <div class="mc-desc">当天改用某个时间模板</div>
+                <div class="mc-tag">单日覆盖</div>
+              </button>
+              <button type="button" class="mode-card danger ${mode === "closed" ? "active" : ""}" data-mode="closed">
+                <div class="mc-title">强制闭馆</div>
+                <div class="mc-desc">当天一律关闭，忽略层级配置</div>
+                <div class="mc-tag">紧急例外</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="tpl-panel ${mode === "template" ? "show" : ""}" id="tplPanel">
+            <label class="field">选择时间模板
+              <select class="select" id="oTpl">
+                ${state.templates.map((t) => `<option value="${t.id}" ${existing && existing.templateId === t.id ? "selected" : ""}>${t.name}（${formatSlots(t)}）</option>`).join("")}
+              </select>
+            </label>
+          </div>
+
+          <label class="field" id="noteField" style="${mode === "none" ? "display:none" : ""}">备注 <span>方便同事理解为何覆盖</span>
+            <input class="input" id="oNote" value="${(existing && existing.note) || ""}" placeholder="如：设备检修 / 活动闭馆" />
+          </label>
+
+          <div class="preview-bar" id="previewBar">
+            <span id="previewLabel">保存后当天将显示为：</span>
+            <b id="previewText">—</b>
+          </div>
+        `,
+        footHTML: `
+          <div style="margin-right:auto;display:flex;gap:8px">
+            ${existing ? `<button class="btn btn-danger" id="mClearOverride">取消当日覆盖</button>` : ""}
+          </div>
+          <button class="btn btn-ghost" id="mCancel">关闭</button>
+          <button class="btn btn-primary" id="mSave">保存配置</button>
+        `,
+      });
+
+      function clearOverrideAndClose() {
+        delete state.overrides[key];
+        closeModal();
+        renderCalendar();
+      }
+
+      function syncPreview() {
+        const cards = document.querySelectorAll("#modeGrid .mode-card");
+        cards.forEach((c) => {
+          c.classList.toggle("active", c.dataset.mode === mode);
+        });
+        $("#tplPanel").classList.toggle("show", mode === "template");
+        $("#noteField").style.display = mode === "none" ? "none" : "";
+
+        const hero = $("#dayHero");
+        let timeText = "";
+        let fromText = "";
+        let sideLv = "";
+        let sideVal = "";
+        let hClass = "";
+
+        if (mode === "none") {
+          timeText = withoutOverride.timeText;
+          fromText = withoutOverride.label;
+          hClass = withoutOverride.closed ? "closed" : "";
+          sideLv = withoutOverride.fromVenue ? levelShortOf(withoutOverride.fromVenue) : "状态";
+          sideVal = withoutOverride.fromVenue ? withoutOverride.fromVenue.name : "未配置";
+        } else if (mode === "closed") {
+          timeText = "闭馆";
+          fromText = "单日覆盖 · 强制闭馆";
+          hClass = "override";
+          sideLv = "优先级";
+          sideVal = "单日覆盖";
+        } else {
+          const tpl = tplById($("#oTpl").value);
+          timeText = formatSlots(tpl);
+          fromText = `单日覆盖 · ${tpl?.name || "模板"}`;
+          hClass = "override";
+          sideLv = "优先级";
+          sideVal = "单日覆盖";
+        }
+
+        hero.className = "day-hero " + hClass;
+        $("#heroTime").textContent = timeText;
+        $("#heroFrom").textContent = fromText + (($("#oNote") && mode !== "none" && $("#oNote").value.trim()) ? " · " + $("#oNote").value.trim() : "");
+        $("#heroSideLv").textContent = sideLv;
+        $("#heroSideVal").textContent = sideVal;
+
+        const willClear = existing && mode === "none";
+        $("#previewLabel").textContent = willClear
+          ? "将取消覆盖，恢复为："
+          : "保存后当天将显示为：";
+        $("#previewText").textContent = `${timeText}（${fromText}）`;
+
+        const saveBtn = $("#mSave");
+        if (saveBtn) {
+          saveBtn.textContent = willClear ? "确认取消覆盖" : "保存配置";
+          saveBtn.className = willClear ? "btn btn-danger" : "btn btn-primary";
+        }
+      }
+
+      document.querySelectorAll("#modeGrid .mode-card").forEach((btn) => {
+        btn.onclick = () => {
+          mode = btn.dataset.mode;
+          syncPreview();
+        };
+      });
+      $("#oTpl").onchange = syncPreview;
+      $("#oNote").oninput = syncPreview;
+      syncPreview();
+
+      $("#mCancel").onclick = closeModal;
+      const clearBtn = $("#mClearOverride");
+      if (clearBtn) {
+        clearBtn.onclick = clearOverrideAndClose;
+      }
+      $("#mSave").onclick = () => {
+        if (mode === "none") {
+          delete state.overrides[key];
+        } else {
+          state.overrides[key] = {
+            venueId: state.calendarVenueId,
+            date: dateStr,
+            mode,
+            templateId: $("#oTpl").value,
+            note: ($("#oNote").value || "").trim(),
+          };
+        }
+        closeModal();
+        renderCalendar();
+      };
+    }
+
+    $("#calendarVenueSelect").onchange = (e) => {
+      state.calendarVenueId = e.target.value;
+      state.selectedVenueId = e.target.value;
+      renderCalendar();
+    };
+    $("#prevMonth").onclick = () => {
+      state.month -= 1;
+      if (state.month < 0) { state.month = 11; state.year -= 1; }
+      renderCalendar();
+    };
+    $("#nextMonth").onclick = () => {
+      state.month += 1;
+      if (state.month > 11) { state.month = 0; state.year += 1; }
+      renderCalendar();
+    };
+    $("#thisMonth").onclick = () => {
+      const now = new Date();
+      state.year = now.getFullYear();
+      state.month = now.getMonth();
+      renderCalendar();
+    };
+
+    function renderAll() {
+      renderTemplates();
+      renderVenues();
+      renderCalendar();
+    }
+
+    (function bootPage() {
+      const params = new URLSearchParams(location.search);
+      const venue = params.get("venue");
+      if (venue && venueById(venue)) {
+        state.selectedVenueId = venue;
+        state.calendarVenueId = venue;
+      }
+      switchView("calendar", venue ? { venueId: venue } : {});
+    })();
+  </script>
+</div>
+</main>
+</div>
+<script>lucide.createIcons();</script>
+<script src="sidebar-scroll.js"></script>
+</body>
+</html>
