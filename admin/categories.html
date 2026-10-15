@@ -262,7 +262,8 @@ html, body {
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-open-calendar" data-nav-key="open-calendar" href="open-calendar.html"><i class="h-4 w-4" data-lucide="calendar-days"></i><span>开放日历</span></a></div></details>
 <details class="nav-group" open="open"><summary class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer" style="color: var(--lib-ink-2);"><i class="h-4 w-4" data-lucide="message-square"></i><span>消息系统</span><i class="h-4 w-4 ml-auto nav-chevron" data-lucide="chevron-down"></i></summary>
 <div class="flex flex-col gap-1 pl-3 mt-1"><a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-announcements" data-nav-key="announcements" href="announcements.html"><i class="h-4 w-4" data-lucide="megaphone"></i><span>公告管理</span></a>
-<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+<a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-faq" data-nav-key="faq" href="faq.html"><i class="h-4 w-4" data-lucide="help-circle"></i><span>常见问题管理</span></a>
+
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-notifications" data-nav-key="notifications" href="notifications.html"><i class="h-4 w-4" data-lucide="bell"></i><span>消息通知</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-logs" data-nav-key="logs" href="logs.html"><i class="h-4 w-4" data-lucide="scroll-text"></i><span>操作日志</span></a>
 <a class="nav-item flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors" data-dom-id="nav-settings" data-nav-key="settings" href="settings.html"><i class="h-4 w-4" data-lucide="settings"></i><span>系统设置</span></a></div></details>
@@ -286,22 +287,22 @@ html, body {
 <div class="mb-4 flex flex-wrap items-center gap-3 rounded-lg border p-4" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
 <div class="flex items-center gap-2">
 <i class="h-4 w-4" data-lucide="search" style="color: var(--lib-ink-4);"></i>
-<input class="h-9 w-44 rounded-md border px-3 text-sm outline-none focus:ring-2" placeholder="分类名称/编号" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
+<input class="h-9 w-44 rounded-md border px-3 text-sm outline-none focus:ring-2" id="fltKeyword" onkeydown="if(event.key==='Enter')doSearch()" placeholder="分类名称/编号" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
 </div>
-<select class="h-9 rounded-md border px-3 text-sm outline-none focus:ring-2" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);">
+<select class="h-9 rounded-md border px-3 text-sm outline-none focus:ring-2" id="fltStatus" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);">
 <option>全部状态</option>
 <option>启用</option>
 <option>停用</option>
 </select>
-<div class="ml-auto flex items-center gap-2"><button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+<div class="ml-auto flex items-center gap-2"><button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" onclick="doSearch()" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
 <i class="h-4 w-4" data-lucide="search"></i>
             搜索
           </button>
-<button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+<button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" onclick="doReset()" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
 <i class="h-4 w-4" data-lucide="rotate-ccw"></i>
             重置
           </button>
-<button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
+<button class="inline-flex h-9 items-center gap-1.5 rounded-md border px-4 text-sm font-medium" onclick="doExport()" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
 <i class="h-4 w-4" data-lucide="download"></i>
             导出
           </button>
@@ -310,7 +311,7 @@ html, body {
 <!-- 数据表格 -->
 <div class="overflow-hidden rounded-lg border" style="background-color: var(--lib-surface); border-color: var(--lib-line);">
 <div class="flex items-center gap-2 border-b p-4" style="border-color: var(--lib-line);">
-<a class="inline-flex h-9 items-center gap-1.5 rounded-md px-4 text-sm font-medium text-white" data-dom-id="btn-add-categories" href="categories-form.html" style="background-color: var(--lib-primary);"><i class="h-4 w-4" data-lucide="plus"></i> 新增</a>
+<button class="inline-flex h-9 items-center gap-1.5 rounded-md px-4 text-sm font-medium text-white" data-dom-id="btn-add-categories" onclick="openAddModal()" style="background-color: var(--lib-primary);" type="button"><i class="h-4 w-4" data-lucide="plus"></i> 新增</button>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left text-sm">
@@ -325,179 +326,363 @@ html, body {
 <th class="px-4 py-3 font-medium" style="color: var(--lib-ink-2);">操作</th>
 </tr>
 </thead>
-<tbody class="divide-y" style="border-color: var(--lib-line);">
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">A</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>马克思主义、列宁主义、毛泽东思想、邓小平理论</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">1,240</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-01</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">A1</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>马克思、恩格斯著作</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">A 马克思主义、列宁主义、毛泽东思想、邓小平理论</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">356</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-02</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">G</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>文化、科学、教育、体育</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">5,680</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-03</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">G25</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>图书馆学、情报学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">G 文化、科学、教育、体育</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">856</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-04</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">H</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>语言、文字</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">8,920</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-05</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">H31</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>英语</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">H 语言、文字</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">4,680</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-06</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">I</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>文学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">12,450</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-07</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">I247.5</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>当代长篇小说</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">I 文学</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2,150</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-08</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">O</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>数理科学和化学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-primary-50); color: var(--lib-primary);">顶级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">-</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">3,210</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-09</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
-          <tr style="border-color: var(--lib-line);">
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">O4</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>物理学</span><span class="rounded px-1.5 py-0.5 text-xs" style="background-color: var(--lib-surface-2); color: var(--lib-ink-2);">子级</span></div></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">O 数理科学和化学</td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">1,560</td>
-            <td class="px-4 py-3"><label class="lib-toggle"><input checked="" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
-            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">2023-09-10</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2">
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="categories-form.html" style="color: var(--lib-primary);">编辑</a>
-                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="categories-delete.html" style="color: var(--lib-state-error);">删除</a>
-              </div>
-            </td>
-          </tr>
+<tbody class="divide-y" id="catTbody" style="border-color: var(--lib-line);">
         </tbody>
 </table>
 </div>
 <!-- 分页 -->
-<div class="flex items-center justify-between border-t px-4 py-3" style="border-color: var(--lib-line);">
-<span class="text-sm" style="color: var(--lib-ink-3);">共130条，第1/13页</span>
-<div class="flex items-center gap-2">
-<button class="inline-flex h-8 items-center rounded-md border px-3 text-sm disabled:opacity-50" disabled="" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
-              上一页
-            </button>
-<button class="inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-medium text-white" style="background-color: var(--lib-primary);" type="button">
-              1
-            </button>
-<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
-              2
-            </button>
-<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
-              3
-            </button>
-<span class="text-sm" style="color: var(--lib-ink-3);">...</span>
-<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
-              13
-            </button>
-<button class="inline-flex h-8 items-center rounded-md border px-3 text-sm" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);" type="button">
-              下一页
-            </button>
+<div class="flex items-center justify-between border-t px-4 py-3" id="catPager" style="border-color: var(--lib-line);">
 </div>
 </div>
+
+<!-- 新增弹窗 -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4" id="catAddModal" style="background-color: rgba(15, 23, 42, 0.45); display: none;">
+  <div class="w-full max-w-md rounded-lg border shadow-2xl" style="background-color: var(--lib-surface); border-color: var(--lib-line); box-shadow: var(--lib-shadow-3);">
+    <div class="flex items-center justify-between border-b px-5 py-4" style="border-color: var(--lib-line);">
+      <h2 class="text-h3" style="color: var(--lib-ink);">新增分类</h2>
+      <a aria-label="关闭" class="inline-flex cursor-pointer rounded-md p-1" data-dom-id="modal-close-categories-form" href="javascript:void(0)" onclick="closeCatModal('catAddModal')" style="color: var(--lib-ink-3);">
+        <i class="h-5 w-5" data-lucide="x"></i>
+      </a>
+    </div>
+    <form class="space-y-4 px-5 py-5" onsubmit="return false;">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" style="color: var(--lib-ink-2);">分类编号</label>
+        <input class="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2" id="addCode" placeholder="例如：G25" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" style="color: var(--lib-ink-2);">分类名称</label>
+        <input class="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2" id="addName" placeholder="例如：图书馆学、情报学" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" style="color: var(--lib-ink-2);">上级分类</label>
+        <select class="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2" id="addParent" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);">
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm font-medium" style="color: var(--lib-ink-2);">启用状态</label>
+        <label class="lib-toggle"><input checked="" id="addStatus" type="checkbox"/><span class="lib-toggle-slider"></span></label>
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <a class="inline-flex h-9 items-center rounded-md border px-4 text-sm font-medium" data-dom-id="btn-cancel-categories-form" href="javascript:void(0)" onclick="closeCatModal('catAddModal')" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);">取消</a>
+        <button class="inline-flex h-9 items-center rounded-md px-4 text-sm font-medium text-white transition-colors hover:opacity-90" onclick="saveAdd()" style="background-color: var(--lib-primary);" type="button">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4" id="catEditModal" style="background-color: rgba(15, 23, 42, 0.45); display: none;">
+  <div class="w-full max-w-md rounded-lg border shadow-2xl" style="background-color: var(--lib-surface); border-color: var(--lib-line); box-shadow: var(--lib-shadow-3);">
+    <div class="flex items-center justify-between border-b px-5 py-4" style="border-color: var(--lib-line);">
+      <h2 class="text-h3" style="color: var(--lib-ink);">编辑分类</h2>
+      <a aria-label="关闭" class="inline-flex cursor-pointer rounded-md p-1" data-dom-id="modal-close-categories-edit" href="javascript:void(0)" onclick="closeCatModal('catEditModal')" style="color: var(--lib-ink-3);">
+        <i class="h-5 w-5" data-lucide="x"></i>
+      </a>
+    </div>
+    <form class="space-y-4 px-5 py-5" onsubmit="return false;">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" style="color: var(--lib-ink-2);">分类编号</label>
+        <input class="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2" id="editCode" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" style="color: var(--lib-ink-2);">分类名称</label>
+        <input class="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2" id="editName" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);" type="text"/>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" style="color: var(--lib-ink-2);">上级分类</label>
+        <select class="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2" id="editParent" style="background-color: var(--lib-surface); border-color: var(--lib-input); color: var(--lib-ink); --tw-ring-color: var(--lib-ring);">
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm font-medium" style="color: var(--lib-ink-2);">启用状态</label>
+        <label class="lib-toggle"><input id="editStatus" type="checkbox"/><span class="lib-toggle-slider"></span></label>
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <a class="inline-flex h-9 items-center rounded-md border px-4 text-sm font-medium" data-dom-id="btn-cancel-categories-edit" href="javascript:void(0)" onclick="closeCatModal('catEditModal')" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);">取消</a>
+        <button class="inline-flex h-9 items-center rounded-md px-4 text-sm font-medium text-white transition-colors hover:opacity-90" onclick="saveEdit()" style="background-color: var(--lib-primary);" type="button">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4" id="catDeleteModal" style="background-color: rgba(15, 23, 42, 0.45); display: none;">
+  <div class="w-full max-w-sm rounded-lg border shadow-2xl" style="background-color: var(--lib-surface); border-color: var(--lib-line); box-shadow: var(--lib-shadow-3);">
+    <div class="flex items-center justify-between border-b px-5 py-4" style="border-color: var(--lib-line);">
+      <h2 class="text-h3" style="color: var(--lib-ink);">删除确认</h2>
+      <a aria-label="关闭" class="inline-flex cursor-pointer rounded-md p-1" data-dom-id="modal-close-categories-delete" href="javascript:void(0)" onclick="closeCatModal('catDeleteModal')" style="color: var(--lib-ink-3);">
+        <i class="h-5 w-5" data-lucide="x"></i>
+      </a>
+    </div>
+    <div class="px-5 py-5">
+      <p class="text-sm" id="delMsg" style="color: var(--lib-ink);"></p>
+      <div class="mt-5 flex items-center justify-end gap-3">
+        <a class="inline-flex h-9 items-center rounded-md border px-4 text-sm font-medium" data-dom-id="btn-cancel-categories-delete" href="javascript:void(0)" onclick="closeCatModal('catDeleteModal')" style="background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);">取消</a>
+        <button class="inline-flex h-9 items-center rounded-md px-4 text-sm font-medium text-white transition-colors hover:opacity-90" data-dom-id="btn-confirm-delete-categories" onclick="confirmDelete()" style="background-color: var(--lib-state-error);" type="button">确认删除</button>
+      </div>
+    </div>
+  </div>
 </div>
 </main>
 </div>
-<script>lucide.createIcons();</script>
+<script>
+// ====== 数据 ======
+let catData = [
+  { id: 1,  code: 'A',      name: '马克思主义、列宁主义、毛泽东思想、邓小平理论', parent: '',  count: 1240,  status: true, created: '2023-09-01' },
+  { id: 2,  code: 'A1',     name: '马克思、恩格斯著作',   parent: 'A', count: 356,   status: true, created: '2023-09-02' },
+  { id: 3,  code: 'G',      name: '文化、科学、教育、体育', parent: '',  count: 5680,  status: true, created: '2023-09-03' },
+  { id: 4,  code: 'G25',    name: '图书馆学、情报学',     parent: 'G', count: 856,   status: true, created: '2023-09-04' },
+  { id: 5,  code: 'H',      name: '语言、文字',           parent: '',  count: 8920,  status: true, created: '2023-09-05' },
+  { id: 6,  code: 'H31',    name: '英语',                 parent: 'H', count: 4680,  status: true, created: '2023-09-06' },
+  { id: 7,  code: 'I',      name: '文学',                 parent: '',  count: 12450, status: true, created: '2023-09-07' },
+  { id: 8,  code: 'I247.5', name: '当代长篇小说',         parent: 'I', count: 2150,  status: true, created: '2023-09-08' },
+  { id: 9,  code: 'O',      name: '数理科学和化学',       parent: '',  count: 3210,  status: true, created: '2023-09-09' },
+  { id: 10, code: 'O4',     name: '物理学',               parent: 'O', count: 1560,  status: true, created: '2023-09-10' }
+];
+let catState = { keyword: '', status: '全部状态', page: 1, pageSize: 10 };
+let editingId = null;
+let deletingId = null;
+
+// ====== 工具 ======
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmt(n){ return Number(n).toLocaleString('en-US'); }
+function parentLabel(code){
+  if(!code) return '-';
+  const p = catData.find(c => c.code === code);
+  return p ? (p.code + ' ' + p.name) : code;
+}
+function isDescendant(code, ancestor){
+  if(!ancestor) return false;
+  let cur = catData.find(c => c.code === code);
+  let guard = 0;
+  while(cur && cur.parent && guard++ < 50){
+    if(cur.parent === ancestor) return true;
+    cur = catData.find(c => c.code === cur.parent);
+  }
+  return false;
+}
+function openCatModal(id){ document.getElementById(id).style.display = 'flex'; }
+function closeCatModal(id){ document.getElementById(id).style.display = 'none'; }
+
+let catToastTimer = null;
+function catToast(msg){
+  let t = document.getElementById('catToast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'catToast';
+    t.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;padding:9px 18px;border-radius:8px;font-size:13px;color:#fff;background:rgba(15,23,42,.88);box-shadow:0 4px 16px rgba(0,0,0,.18);transition:opacity .2s;display:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.display = 'block';
+  t.style.opacity = '1';
+  clearTimeout(catToastTimer);
+  catToastTimer = setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; }, 200); }, 1800);
+}
+
+// ====== 筛选 / 渲染 ======
+function getFiltered(){
+  const kw = catState.keyword.trim().toLowerCase();
+  return catData.filter(c => {
+    const okKw = !kw || c.code.toLowerCase().includes(kw) || c.name.toLowerCase().includes(kw);
+    const okSt = catState.status === '全部状态' || (catState.status === '启用') === c.status;
+    return okKw && okSt;
+  });
+}
+
+function renderTable(){
+  const list = getFiltered();
+  const pages = Math.max(1, Math.ceil(list.length / catState.pageSize));
+  if(catState.page > pages) catState.page = pages;
+  const start = (catState.page - 1) * catState.pageSize;
+  const rows = list.slice(start, start + catState.pageSize);
+  const tbody = document.getElementById('catTbody');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td class="px-4 py-10 text-center text-sm" colspan="7" style="color: var(--lib-ink-3);">暂无数据</td></tr>';
+  } else {
+    tbody.innerHTML = rows.map(c => `
+          <tr style="border-color: var(--lib-line);">
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">${esc(c.code)}</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);"><div class="flex items-center gap-2"><span>${esc(c.name)}</span><span class="rounded px-1.5 py-0.5 text-xs" style="${c.parent ? 'background-color: var(--lib-surface-2); color: var(--lib-ink-2);' : 'background-color: var(--lib-primary-50); color: var(--lib-primary);'}">${c.parent ? '子级' : '顶级'}</span></div></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">${esc(parentLabel(c.parent))}</td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">${fmt(c.count)}</td>
+            <td class="px-4 py-3"><label class="lib-toggle"><input ${c.status ? 'checked=""' : ''} onchange="toggleStatus(${c.id}, this.checked)" type="checkbox"/><span class="lib-toggle-slider"></span></label></td>
+            <td class="px-4 py-3 tabular" style="color: var(--lib-ink);">${esc(c.created)}</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-edit-categories" href="javascript:void(0)" onclick="openEditModal(${c.id})" style="color: var(--lib-primary);">编辑</a>
+                <a class="text-sm font-medium hover:underline" data-dom-id="btn-delete-categories" href="javascript:void(0)" onclick="openDeleteModal(${c.id})" style="color: var(--lib-state-error);">删除</a>
+              </div>
+            </td>
+          </tr>`).join('');
+  }
+  renderPager();
+}
+
+function renderPager(){
+  const el = document.getElementById('catPager');
+  const total = getFiltered().length;
+  const pages = Math.max(1, Math.ceil(total / catState.pageSize));
+  const p = catState.page;
+  const btnBase = 'inline-flex h-8 items-center rounded-md border px-3 text-sm disabled:opacity-50';
+  const btnStyle = 'background-color: var(--lib-surface); border-color: var(--lib-border); color: var(--lib-ink-2);';
+  let nums = '';
+  for(let i = 1; i <= pages; i++){
+    nums += i === p
+      ? `<button class="inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-medium text-white" style="background-color: var(--lib-primary);" type="button">${i}</button>`
+      : `<button class="inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm" onclick="gotoPage(${i})" style="${btnStyle}" type="button">${i}</button>`;
+  }
+  el.innerHTML = `<span class="text-sm" style="color: var(--lib-ink-3);">共${total}条，第${p}/${pages}页</span>
+<div class="flex items-center gap-2">
+<button class="${btnBase}" ${p <= 1 ? 'disabled=""' : ''} onclick="gotoPage(${p - 1})" style="${btnStyle}" type="button">上一页</button>
+${nums}
+<button class="${btnBase}" ${p >= pages ? 'disabled=""' : ''} onclick="gotoPage(${p + 1})" style="${btnStyle}" type="button">下一页</button>
+</div>`;
+}
+
+function gotoPage(p){
+  const pages = Math.max(1, Math.ceil(getFiltered().length / catState.pageSize));
+  if(p < 1 || p > pages) return;
+  catState.page = p;
+  renderTable();
+}
+
+// ====== 搜索 / 重置 / 导出 ======
+function doSearch(){
+  catState.keyword = document.getElementById('fltKeyword').value;
+  catState.status = document.getElementById('fltStatus').value;
+  catState.page = 1;
+  renderTable();
+  catToast('查询完成，共 ' + getFiltered().length + ' 条');
+}
+
+function doReset(){
+  document.getElementById('fltKeyword').value = '';
+  document.getElementById('fltStatus').value = '全部状态';
+  catState.keyword = '';
+  catState.status = '全部状态';
+  catState.page = 1;
+  renderTable();
+  catToast('已重置');
+}
+
+function doExport(){
+  const list = getFiltered();
+  const rows = [['分类编号','分类名称','上级分类','图书数量','状态','创建时间']]
+    .concat(list.map(c => [c.code, c.name, parentLabel(c.parent), c.count, c.status ? '启用' : '停用', c.created]));
+  const csv = '﻿' + rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '图书分类.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  catToast('已导出 ' + list.length + ' 条记录');
+}
+
+// ====== 新增 ======
+function buildParentOptions(sel, current, excludeCode){
+  const tops = catData.filter(c => !c.parent && c.code !== excludeCode && !isDescendant(c.code, excludeCode));
+  sel.innerHTML = '<option value="">无（作为顶级分类）</option>' +
+    tops.map(c => `<option value="${esc(c.code)}">${esc(c.code)} ${esc(c.name)}</option>`).join('');
+  sel.value = current || '';
+}
+
+function openAddModal(){
+  document.getElementById('addCode').value = '';
+  document.getElementById('addName').value = '';
+  document.getElementById('addStatus').checked = true;
+  buildParentOptions(document.getElementById('addParent'), '', null);
+  openCatModal('catAddModal');
+}
+
+function saveAdd(){
+  const code = document.getElementById('addCode').value.trim();
+  const name = document.getElementById('addName').value.trim();
+  if(!code || !name){ catToast('请填写分类编号和分类名称'); return; }
+  if(catData.some(c => c.code === code)){ catToast('分类编号已存在'); return; }
+  catData.push({
+    id: Math.max(0, ...catData.map(c => c.id)) + 1,
+    code: code,
+    name: name,
+    parent: document.getElementById('addParent').value,
+    count: 0,
+    status: document.getElementById('addStatus').checked,
+    created: new Date().toISOString().slice(0, 10)
+  });
+  closeCatModal('catAddModal');
+  catState.page = Math.max(1, Math.ceil(getFiltered().length / catState.pageSize));
+  renderTable();
+  catToast('新增成功');
+}
+
+// ====== 编辑 ======
+function openEditModal(id){
+  const it = catData.find(c => c.id === id);
+  if(!it) return;
+  editingId = id;
+  document.getElementById('editCode').value = it.code;
+  document.getElementById('editName').value = it.name;
+  document.getElementById('editStatus').checked = it.status;
+  buildParentOptions(document.getElementById('editParent'), it.parent, it.code);
+  openCatModal('catEditModal');
+}
+
+function saveEdit(){
+  const it = catData.find(c => c.id === editingId);
+  if(!it) return;
+  const code = document.getElementById('editCode').value.trim();
+  const name = document.getElementById('editName').value.trim();
+  if(!code || !name){ catToast('请填写分类编号和分类名称'); return; }
+  if(catData.some(c => c.code === code && c.id !== editingId)){ catToast('分类编号已存在'); return; }
+  const oldCode = it.code;
+  it.code = code;
+  it.name = name;
+  it.parent = document.getElementById('editParent').value;
+  it.status = document.getElementById('editStatus').checked;
+  if(oldCode !== code){
+    catData.forEach(c => { if(c.parent === oldCode) c.parent = code; });
+  }
+  closeCatModal('catEditModal');
+  renderTable();
+  catToast('保存成功');
+}
+
+// ====== 删除 ======
+function openDeleteModal(id){
+  const it = catData.find(c => c.id === id);
+  if(!it) return;
+  deletingId = id;
+  const childCount = catData.filter(c => isDescendant(c.code, it.code)).length;
+  const extra = childCount > 0 ? `（含 ${childCount} 个子分类）` : '';
+  document.getElementById('delMsg').innerHTML = `确定要删除分类 <span class="font-medium" style="color: var(--lib-primary);">${esc(it.code)} ${esc(it.name)}</span>${extra} 吗？该分类下的 ${fmt(it.count)} 本图书将变为未分类状态，此操作不可恢复。`;
+  openCatModal('catDeleteModal');
+}
+
+function confirmDelete(){
+  const it = catData.find(c => c.id === deletingId);
+  if(it){
+    const codes = new Set([it.code]);
+    catData.forEach(c => { if(isDescendant(c.code, it.code)) codes.add(c.code); });
+    catData = catData.filter(c => !codes.has(c.code));
+  }
+  closeCatModal('catDeleteModal');
+  renderTable();
+  catToast('删除成功');
+}
+
+// ====== 状态开关 ======
+function toggleStatus(id, checked){
+  const it = catData.find(c => c.id === id);
+  if(!it) return;
+  it.status = checked;
+  catToast(checked ? '已启用' : '已停用');
+}
+
+// ====== 初始化 ======
+renderTable();
+lucide.createIcons();
+</script>
 <style>
     #app-shell { min-height: 100vh; }
     #app-sidebar { width: 248px; }
