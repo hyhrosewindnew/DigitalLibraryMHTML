@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/user/assets/logo.png">
+  <title>图书详情 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="/user/assets/site.css?v=33">
+  <style>
+    /* ============ 主题变量 ============ */
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --bg-page: #f4f6fb;
+      --surface: #ffffff;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+      --max-w: 1440px;
+    }
+
+    body { background: var(--bg-page); }
+
+    /* 页头：导航靠右（与检索结果页一致） */
+    body:not(.has-left-rail) .site-header .sh-inner { justify-content: flex-start; }
+    body:not(.has-left-rail) .site-header .sh-nav { margin-left: auto; }
+    body:not(.has-left-rail) .site-header .hd-mid { margin-left: 0; }
+
+    /* ============ 顶部检索条 ============ */
+    .search-hero {
+      width: 100%;
+      background: linear-gradient(180deg, #dbe9ff 0%, #eef5ff 60%, #f7faff 100%);
+    }
+    .res-searchbar {
+      max-width: var(--max-w, 1440px);
+      margin: 0 auto;
+      padding: 24px 30px;
+    }
+    .rs-form {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px 5px 14px;
+      background: #fff;
+      border: 1px solid #e6ebf5;
+      border-radius: 30px;
+      box-shadow: 0 6px 18px rgba(30, 64, 175, .07);
+    }
+    .rs-type { position: relative; flex: none; }
+    .rs-type select {
+      -webkit-appearance: none;
+      appearance: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      height: 44px;
+      padding: 0 32px 0 14px;
+      font-size: 14px;
+      color: var(--text-2);
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .rs-type::after {
+      content: '';
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      margin-top: -5px;
+      border-right: 1.5px solid var(--text-3);
+      border-bottom: 1.5px solid var(--text-3);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+    .rs-sep {
+      flex: none;
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+    }
+    .rs-form input {
+      flex: 1;
+      min-width: 0;
+      height: 44px;
+      border: 0;
+      outline: 0;
+      padding: 0 16px;
+      font-size: 15px;
+      color: var(--text);
+      font-family: inherit;
+      background: transparent;
+    }
+    .rs-form input::placeholder { color: var(--text-3); }
+    .rs-submit {
+      flex: none;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .rs-submit:hover { background: #eef3ff; }
+    .rs-submit svg { width: 21px; height: 21px; }
+    .rs-adv {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 6px;
+      padding: 0 8px 0 14px;
+      border-left: 1px solid var(--border);
+      height: 28px;
+      font-size: 13.5px;
+      color: var(--text-2);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: .2s;
+      background: transparent;
+      border-top: 0;
+      border-right: 0;
+      border-bottom: 0;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .rs-adv:hover { color: var(--primary); }
+    .rs-adv svg { width: 13px; height: 13px; }
+
+    /* ============ 高级检索面板 ============ */
+    .adv-panel {
+      display: none;
+      padding: 14px 46px 26px;
+      background: #fff;
+      border: 1px solid #e6ebf5;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(30, 64, 175, .07);
+      font-size: 14px;
+      color: var(--text-2);
+    }
+    .res-searchbar.adv-open .rs-form { display: none; }
+    .res-searchbar.adv-open .adv-panel { display: block; }
+    .adv-head {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      height: 36px;
+      color: var(--text-2);
+      font-size: 14px;
+    }
+    .adv-close {
+      border: 0;
+      background: transparent;
+      padding: 0 2px;
+      font-size: 17px;
+      line-height: 1;
+      color: var(--text-3);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .adv-close:hover { color: var(--text); }
+    .adv-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .adv-label {
+      flex: none;
+      min-width: 64px;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    .adv-sel {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex: none;
+    }
+    .adv-sel select {
+      -webkit-appearance: none;
+      appearance: none;
+      border: 0;
+      border-bottom: 1px solid #dcdfe6;
+      background: transparent;
+      height: 34px;
+      padding: 0 26px 0 2px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+      cursor: pointer;
+      outline: 0;
+    }
+    .adv-sel::after {
+      content: '';
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      margin-top: -5px;
+      border-right: 1.4px solid #b7bcc6;
+      border-bottom: 1.4px solid #b7bcc6;
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+    .adv-row .adv-sel.w-wide select { width: 202px; }
+    .adv-row .adv-sel.w-mid select { width: 176px; }
+    .adv-sub { color: var(--primary); margin: 4px 0 14px; }
+    .adv-filter {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .adv-filter .adv-input {
+      flex: 1;
+      min-width: 0;
+      height: 34px;
+      border: 0;
+      border-bottom: 1px solid #dcdfe6;
+      background: transparent;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+      outline: 0;
+    }
+    .adv-filter .adv-sel.w-field select { width: 104px; }
+    .adv-filter .adv-sel.w-op select { width: 92px; }
+    .adv-add {
+      flex: none;
+      width: 38px;
+      height: 38px;
+      border: 1px solid #8fb0f0;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .18s;
+    }
+    .adv-add:hover { background: #eef3ff; }
+    .adv-add svg { width: 17px; height: 17px; }
+    .adv-foot {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 28px;
+      margin-top: 26px;
+    }
+    .adv-clear {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      font-size: 14px;
+      color: var(--primary);
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .adv-clear svg { width: 16px; height: 16px; }
+    .adv-submit {
+      border: 0;
+      border-radius: 4px;
+      background: #b1121a;
+      color: #fff;
+      padding: 9px 36px;
+      font-size: 14px;
+      letter-spacing: 3px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: .18s;
+    }
+    .adv-submit:hover { background: #96100f; }
+
+    /* ============ 标题条 ============ */
+    .bd-wrap {
+      max-width: var(--max-w, 1440px);
+      margin: 0 auto;
+      padding: 28px 30px 64px;
+    }
+    .bd-head {
+      display: flex;
+      align-items: center;
+      height: 52px;
+      padding: 0 34px;
+      background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    }
+    .bd-head h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    /* ============ 书目信息卡 ============ */
+    .bd-card {
+      margin-top: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid #eef1f8;
+      border-radius: 12px;
+    }
+    .bd-body { padding: 28px 34px 34px; }
+    .bd-title h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1b1b1b;
+      letter-spacing: .5px;
+    }
+    .bd-sub {
+      font-size: 15px;
+      font-weight: 700;
+      color: #333;
+      letter-spacing: .2px;
+    }
+    .bd-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+      margin-top: 24px;
+    }
+
+    /* 书封 */
+    .bd-cover {
+      flex: none;
+      width: 196px;
+      padding: 9px;
+      background: #fff;
+      border: 1px solid #ececec;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, .10);
+    }
+    .bd-cover-in {
+      display: block;
+      width: 100%;
+      height: 258px;
+      object-fit: cover;
+      background: #f4f1e8;
+    }
+
+    /* 书目字段 */
+    .bd-meta {
+      flex: 1;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 46px;
+      font-size: 14px;
+    }
+    .bd-pair {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+    .bd-pair.full { grid-column: 1 / -1; }
+    .bd-lb { color: var(--text-3); }
+    .bd-vl { color: var(--text); line-height: 1.65; }
+
+    /* ============ 页签 ============ */
+    .bd-tabs {
+      display: flex;
+      gap: 30px;
+      margin-top: 34px;
+      border-bottom: 1px solid var(--border);
+    }
+    .bd-tab {
+      position: relative;
+      padding: 0 0 12px;
+      border: 0;
+      background: transparent;
+      font-size: 16px;
+      color: var(--text-2);
+      font-family: inherit;
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .bd-tab:hover { color: var(--primary); }
+    .bd-tab.active {
+      color: #1b1b1b;
+      font-weight: 700;
+    }
+    .bd-tab.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--primary);
+    }
+    .bd-panel {
+      padding: 22px 2px 0;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.95;
+      text-align: justify;
+    }
+    .bd-panel[hidden] { display: none; }
+    .bd-panel p { margin: 0 0 14px; }
+    .bd-catalog li { margin-bottom: 8px; list-style: none; }
+    .bd-catalog { margin: 0; padding: 0; }
+    .bd-links a {
+      display: inline-block;
+      margin: 0 26px 10px 0;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .bd-links a:hover { text-decoration: underline; }
+
+    /* ============ 馆藏列表 ============ */
+    .bd-table-wrap { padding: 18px 0 0; }
+    .bd-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .bd-table thead th {
+      padding: 12px 14px;
+      background: #e3ebfa;
+      color: var(--primary);
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .bd-table thead th:first-child { border-radius: 6px 0 0 6px; }
+    .bd-table thead th:last-child { border-radius: 0 6px 6px 0; text-align: center; }
+    .bd-table tbody td {
+      padding: 14px;
+      color: var(--text);
+      border-bottom: 1px solid #eef1f8;
+    }
+    .bd-table tbody td:last-child { text-align: center; }
+    .bd-state-out { color: var(--text-3); }
+    .bd-reserve {
+      color: var(--primary);
+      text-decoration: none;
+      border: 0; background: none; padding: 0;
+      font-size: inherit; font-family: inherit; cursor: pointer;
+    }
+    .bd-shelf { color: var(--text-3); border: 0; background: none; padding: 0; font-size: inherit; font-family: inherit; cursor: pointer; }
+    .bd-shelf:hover { color: var(--primary); text-decoration: underline; }
+    .bd-reserve:hover { text-decoration: underline; }
+    .bd-reserve:disabled { color: #9ca7b8; cursor: not-allowed; text-decoration: none; }
+
+    .bd-pager {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 20px 0 4px;
+      font-size: 13.5px;
+      color: var(--text-2);
+    }
+    .bd-pager select {
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #dfe3ea;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text-2);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .bd-arrow {
+      border: 0;
+      background: transparent;
+      padding: 0 4px;
+      font-size: 14px;
+      color: var(--text-3);
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .bd-page-cur { color: var(--text); }
+    .bd-goto {
+      width: 46px;
+      height: 30px;
+      border: 1px solid #dfe3ea;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+    }
+    .bd-goto:focus { border-color: #9fb3d4; }
+
+    /* 推荐书目 */
+    .bd-rec {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+      padding-top: 20px;
+    }
+    .bd-rec-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid #eef1f8;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: .18s;
+    }
+    .bd-rec-item:hover {
+      border-color: #cfdcf5;
+      box-shadow: 0 8px 18px rgba(30, 64, 175, .08);
+    }
+    .bd-rec-cover {
+      flex: none;
+      width: 46px;
+      height: 62px;
+      border-radius: 2px;
+      object-fit: cover;
+      display: block;
+      background: #eef2f7;
+      box-shadow: 0 1px 3px rgba(0,0,0,.18);
+    }
+    .bd-rec-t { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+    .bd-rec-d { margin-top: 4px; font-size: 12px; color: var(--text-3); }
+
+    /* ============ 两栏布局 ============ */
+    .bd-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 306px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* ============ 右侧卡片 ============ */
+    .bd-side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .bd-side-card {
+      padding: 16px 18px 18px;
+      background: #fff;
+      border: 1px solid #eef1f8;
+      border-radius: 12px;
+    }
+    .bd-side-t {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1b1b1b;
+    }
+
+    /* 作者其他著作 */
+    .bd-works { margin: 0; padding: 0; list-style: none; }
+    .bd-works li + li { margin-top: 8px; }
+    .bd-works a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: .15s;
+    }
+    .bd-works a:hover { background: #f5f8fe; }
+    .bd-work-cov {
+      flex: none;
+      width: 38px;
+      height: 52px;
+      border-radius: 2px;
+      object-fit: cover;
+      display: block;
+      background: #eef2f7;
+      box-shadow: 0 1px 3px rgba(0,0,0,.18);
+    }
+    .bd-work-t { font-size: 13.5px; color: var(--text); line-height: 1.4; }
+    .bd-work-y { display: block; margin-top: 3px; font-size: 12px; color: var(--text-3); }
+
+    /* 借阅趋势 */
+    .bd-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+      height: 128px;
+      padding-top: 16px;
+    }
+    .bd-bar {
+      position: relative;
+      flex: 1;
+      height: var(--h);
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, #4f7bd6, #1e40af);
+      transition: filter .15s;
+    }
+    .bd-bar:hover { filter: brightness(1.1); }
+    .bd-bar span {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: var(--text-3);
+    }
+    .bd-x {
+      display: flex;
+      gap: 9px;
+      margin-top: 8px;
+      font-size: 10.5px;
+      color: var(--text-3);
+    }
+    .bd-x span { flex: 1; text-align: center; }
+    .bd-note { margin-top: 12px; font-size: 12px; color: var(--text-3); }
+
+    /* 借阅分布 */
+    .bd-dist { margin: 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--text-2); }
+    .bd-dist li {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) 36px;
+      align-items: center;
+      gap: 10px;
+    }
+    .bd-dist li + li { margin-top: 13px; }
+    .bd-dist i {
+      position: relative;
+      height: 7px;
+      border-radius: 4px;
+      background: #e8eefb;
+    }
+    .bd-dist i::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: var(--w);
+      border-radius: 4px;
+      background: linear-gradient(90deg, #4f7bd6, #1e40af);
+    }
+    .bd-dist b { font-weight: 400; text-align: right; color: var(--text); }
+
+    @media (max-width: 1200px) {
+      .bd-meta { gap: 16px 28px; }
+      .bd-top { gap: 28px; }
+      .bd-rec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bd-layout { grid-template-columns: minmax(0, 1fr) 280px; }
+    }
+    @media (max-width: 900px) {
+      .bd-top { flex-direction: column; }
+      .bd-cover { align-self: center; }
+      .bd-table-wrap { overflow-x: auto; }
+      .bd-table { min-width: 720px; }
+      .bd-layout { grid-template-columns: minmax(0, 1fr); }
+      .bd-side { flex-direction: row; flex-wrap: wrap; }
+      .bd-side-card { flex: 1 1 260px; }
+    }
+    @media (max-width: 760px) {
+      .bd-wrap { padding: 0 14px 44px; }
+      .bd-wrap { padding-top: 20px; }
+      .res-searchbar { padding: 16px 14px 12px; }
+      .rs-form { flex-wrap: wrap; border-radius: 26px; padding: 8px 10px; }
+      .rs-type select { padding-left: 8px; }
+      .rs-sep { display: none; }
+      .rs-form input { flex: 1 1 100%; order: 3; padding: 0 8px; }
+      .rs-submit { order: 4; margin-left: auto; }
+      .rs-adv { order: 5; border-left: 0; padding-left: 6px; }
+      .adv-panel { padding: 12px 18px 24px; border-radius: 14px; }
+      .adv-row, .adv-filter { flex-wrap: wrap; gap: 10px 14px; }
+      .adv-filter .adv-input { flex: 1 1 100%; order: 5; }
+      .adv-add { order: 4; margin-left: auto; }
+      .adv-row .adv-sel.w-wide select,
+      .adv-row .adv-sel.w-mid select { width: 100%; }
+      .adv-row .adv-sel { flex: 1; }
+      .adv-label { min-width: 58px; }
+      .adv-foot { gap: 20px; margin-top: 20px; }
+      .bd-head { height: 46px; padding: 0 18px; }
+      .bd-body { padding: 20px 18px 24px; }
+      .bd-title h2 { font-size: 20px; }
+      .bd-meta { grid-template-columns: 1fr; gap: 14px; }
+      .bd-pair { grid-template-columns: 66px minmax(0, 1fr); }
+      .bd-tabs { gap: 20px; margin-top: 26px; }
+      .bd-tab { font-size: 15px; }
+      .bd-pager { flex-wrap: wrap; gap: 10px; }
+      .bd-rec { grid-template-columns: 1fr; }
+      .bd-side { flex-direction: column; }
+    }
+  /* ============ 引用 / 收藏 ============ */
+  .bd-actions { display: flex; gap: 8px; margin-left: auto; }
+  .bd-act {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 28px; padding: 0 12px; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.16);
+    color: #fff; font-size: 12px; cursor: pointer; transition: .2s;
+  }
+  .bd-act svg {
+    width: 14px; height: 14px; fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .bd-act svg.ico-fill { fill: currentColor; stroke: none; }
+  .bd-act:hover { background: rgba(255,255,255,0.3); border-color: #fff; }
+  .bd-act.active { background: #fff; border-color: #fff; color: var(--primary); }
+  .bd-act.active svg { fill: currentColor; }
+
+  .ct-mask {
+    position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 400;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .ct-mask[hidden] { display: none; }
+  .ct-dialog {
+    width: 560px; max-width: 100%; background: #fff; border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(15,35,95,0.28); overflow: hidden;
+    animation: ctIn .22s ease;
+  }
+  @keyframes ctIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .ct-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+  }
+  .ct-head h3 { font-size: 15px; color: var(--text); margin: 0; }
+  .ct-close { border: 0; background: transparent; color: var(--text-3); font-size: 16px; cursor: pointer; }
+  .ct-close:hover { color: var(--primary); }
+  .ct-tabs { display: flex; gap: 22px; padding: 12px 18px 0; border-bottom: 1px solid var(--border); }
+  .ct-tab {
+    border: 0; background: transparent; padding: 0 0 10px; font-size: 13px;
+    color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .ct-tab.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+  .ct-body { padding: 16px 18px; font-size: 13.5px; line-height: 1.85; color: var(--text); min-height: 96px; }
+  .ct-foot { display: flex; justify-content: flex-end; padding: 0 18px 16px; }
+  .ct-copy {
+    height: 32px; padding: 0 16px; border: 0; border-radius: 8px;
+    background: var(--primary); color: #fff; font-size: 12.5px; cursor: pointer;
+  }
+  .ct-copy:hover { background: var(--primary-light); }
+
+  /* 预约确认弹窗 */
+  .res-body { padding: 16px 18px 0; }
+  .res-book { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  .res-rows { background: #f6f9ff; border: 1px solid #e6eefb; border-radius: 10px; padding: 2px 14px; }
+  .res-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; font-size: 12.5px; color: var(--text-2); }
+  .res-row + .res-row { border-top: 1px dashed #e2ebf9; }
+  .res-row b { color: var(--text); font-weight: 600; }
+  .res-row .res-q { color: var(--primary); }
+  .res-tip { margin: 12px 0 16px; font-size: 12.5px; color: var(--text-3); line-height: 1.7; }
+  .res-dialog-sm { width: 440px; }
+  .res-tip-lg { margin: 4px 0 18px; font-size: 13px; color: var(--text-2); line-height: 1.8; }
+  .res-foot { gap: 10px; }
+  .res-cancel {
+    height: 32px; padding: 0 16px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--border); background: #fff; color: var(--text-2); font-size: 12.5px;
+  }
+  .res-cancel:hover { border-color: var(--primary-light); color: var(--primary); }
+  .bd-toast.wide { white-space: normal; max-width: 520px; border-radius: 12px; line-height: 1.7; }
+
+  .bd-toast {
+    position: fixed; left: 50%; bottom: 48px; transform: translateX(-50%) translateY(8px);
+    background: rgba(15,23,42,0.9); color: #fff; font-size: 12.5px;
+    padding: 8px 16px; border-radius: 999px; opacity: 0; pointer-events: none;
+    transition: .25s; z-index: 500; white-space: nowrap;
+  }
+  .bd-toast.show { opacity: 1; transform: translateX(-50%); }
+
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="/user/首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="/user/首页.html">
+        <span class="sh-icon"><img src="/user/assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <nav class="sh-nav">
+        <a href="/user/首页.html">首页</a>
+
+        <div class="sh-dropdown">
+          <a href="/user/借阅规则.html">借阅</a>
+          <div class="sh-dropdown-menu">
+            <a href="/user/借阅规则.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">借阅规则</span><span class="sh-dd-desc">须知 · 违规处理</span></span></a>
+            <a href="/user/图书预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书预约</span><span class="sh-dd-desc">到馆通知</span></span></a>
+            <a href="/user/图书续借催还.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M21 21v-5h-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">续借 / 催还</span><span class="sh-dd-desc">在线办理</span></span></a>
+            <a href="/user/阅读推荐.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">阅读推荐</span><span class="sh-dd-desc">新书 · 热门</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="/user/馆藏目录.html">资源</a>
+          <div class="sh-dropdown-menu">
+            <a href="/user/馆藏目录.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏目录</span><span class="sh-dd-desc">图书 · 期刊 · OPAC</span></span></a>
+            <a href="/user/数据库导航.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">数据库导航</span><span class="sh-dd-desc">中外文 · 试用</span></span></a>
+            <a href="/user/特色馆藏.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">特色馆藏</span><span class="sh-dd-desc">航空 · 民国文献</span></span></a>
+            <a href="资源动态.html?from=nav"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源动态</span><span class="sh-dd-desc">新书 · 数据库更新</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="/user/座位预约说明.html">空间</a>
+          <div class="sh-dropdown-menu">
+            <a href="/user/座位预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M6 18v3M18 18v3M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个</span></span></a>
+            <a href="/user/研修室预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span></a>
+            <a href="/user/自助服务.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">自助服务</span><span class="sh-dd-desc">借书机 · 打印</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">其他服务</a>
+          <div class="sh-dropdown-menu">
+            <a href="/user/资源荐购.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v8l6 3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源荐购</span><span class="sh-dd-desc">推荐采购</span></span></a>
+            <a href="/user/图书捐赠.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书捐赠</span><span class="sh-dd-desc">接收 · 致谢</span></span></a>
+            <a href="/user/校外访问.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">校外访问</span><span class="sh-dd-desc">VPN · 校外</span></span></a>
+            <a href="/user/论文提交.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M10 13l2 2 4-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">论文提交</span><span class="sh-dd-desc">机构库 · 硕博</span></span></a>
+            <a href="/user/信息素养.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">信息素养</span><span class="sh-dd-desc">课程 · 培训</span></span></a>
+            <a href="/user/科技查新.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2c4 0 7 3 7 7 0 6-7 13-7 13S7 15 7 9c0-4 3-7 7-7z"/><circle cx="14" cy="9" r="2.5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">科技查新</span><span class="sh-dd-desc">立项 · 成果</span></span></a>
+            <a href="/user/知识产权.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 3a9 9 0 0 0 0 18"/><path d="M8 12h8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">知识产权</span><span class="sh-dd-desc">专利 · 版权</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">概况</a>
+          <div class="sh-dropdown-menu">
+            <a href="/user/本馆简介.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">本馆简介</span><span class="sh-dd-desc">历史 · 馆藏 · 空间</span></span></a>
+            <a href="/user/馆藏分布.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏分布</span><span class="sh-dd-desc">楼层 · 分区</span></span></a>
+            <a href="/user/入馆须知.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">入馆须知</span><span class="sh-dd-desc">刷卡 · 秩序</span></span></a>
+            <a href="/user/开放时间.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">开放时间</span><span class="sh-dd-desc">08:00 - 22:00</span></span></a>
+            <a href="/user/馆舍风貌.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆舍风貌</span><span class="sh-dd-desc">建筑 · 文化</span></span></a>
+            <a href="/user/组织机构.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">组织机构</span><span class="sh-dd-desc">部门 · 岗位</span></span></a>
+            <a href="/user/规章制度.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">规章制度</span><span class="sh-dd-desc">借阅 · 管理</span></span></a>
+            <a href="/user/联系我们.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">联系我们</span><span class="sh-dd-desc">电话 · 邮箱</span></span></a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- 导航右侧：我的图书馆 + 搜索 -->
+      <div class="hd-mid">
+        <div class="tb-actions">
+          <a class="tb-btn" href="/user/统一身份认证.html?redirect=/user/图书详情.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="/user/馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="/user/消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="/user/我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="/user/个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 顶部检索条 ============ -->
+  <div class="search-hero">
+  <div class="res-searchbar">
+    <form class="rs-form" id="resSearch" role="search">
+      <div class="rs-type">
+        <select id="resType" aria-label="资源类型">
+          <option value="all">全部纸本资源</option>
+          <option value="book">纸本图书</option>
+          <option value="journal">纸本期刊</option>
+          <option value="thesis">学位论文</option>
+          <option value="media">多媒体资源</option>
+        </select>
+      </div>
+      <span class="rs-sep"></span>
+      <input type="text" id="resKeyword" placeholder="请输入内容" autocomplete="off" aria-label="检索关键词">
+      <button class="rs-submit" type="submit" aria-label="检索">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+      </button>
+      <button class="rs-adv" type="button" id="advToggle" aria-expanded="false" aria-controls="advPanel">
+        高级检索
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </form>
+
+    <!-- 高级检索面板 -->
+    <div class="adv-panel" id="advPanel">
+      <div class="adv-head">
+        <span>高级检索</span>
+        <button class="adv-close" type="button" id="advClose" aria-label="关闭高级检索">&#10005;</button>
+      </div>
+
+      <div class="adv-row">
+        <span class="adv-label">检索范围：</span>
+        <div class="adv-sel w-wide">
+          <select id="advScope" aria-label="检索范围">
+            <option value="all">全部纸本资源</option>
+            <option value="book">纸本图书</option>
+            <option value="journal">纸本期刊</option>
+            <option value="thesis">学位论文</option>
+            <option value="media">多媒体资源</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="adv-sub">检索过滤器</div>
+
+      <div class="adv-filter">
+        <div class="adv-sel w-field">
+          <select aria-label="检索字段">
+            <option>任意字段</option>
+            <option>题名</option>
+            <option>责任者</option>
+            <option>主题词</option>
+            <option>ISBN</option>
+            <option>ISSN</option>
+            <option>索书号</option>
+          </select>
+        </div>
+        <div class="adv-sel w-op">
+          <select aria-label="匹配方式">
+            <option>包含</option>
+            <option>前方一致</option>
+            <option>精确匹配</option>
+          </select>
+        </div>
+        <input class="adv-input" type="text" id="advKeyword" autocomplete="off" aria-label="检索词">
+      </div>
+
+      <div class="adv-filter">
+        <div class="adv-sel w-op">
+          <select aria-label="逻辑关系">
+            <option>和</option>
+            <option>或</option>
+            <option>非</option>
+          </select>
+        </div>
+        <div class="adv-sel w-field">
+          <select aria-label="检索字段">
+            <option>任意字段</option>
+            <option>题名</option>
+            <option>责任者</option>
+            <option>主题词</option>
+            <option>ISBN</option>
+            <option>ISSN</option>
+            <option>索书号</option>
+          </select>
+        </div>
+        <div class="adv-sel w-op">
+          <select aria-label="匹配方式">
+            <option>包含</option>
+            <option>前方一致</option>
+            <option>精确匹配</option>
+          </select>
+        </div>
+        <input class="adv-input" type="text" id="advKeyword2" autocomplete="off" aria-label="第二个检索词">
+        <button class="adv-add" type="button" aria-label="添加检索条件">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+
+      <div class="adv-row">
+        <span class="adv-label">文献类型</span>
+        <div class="adv-sel w-mid">
+          <select aria-label="文献类型">
+            <option>全部类型</option>
+            <option>图书</option>
+            <option>期刊</option>
+            <option>学位论文</option>
+            <option>音像制品</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="adv-row">
+        <span class="adv-label">语种</span>
+        <div class="adv-sel w-mid">
+          <select aria-label="语种">
+            <option>任意语种</option>
+            <option>中文</option>
+            <option>英文</option>
+            <option>日文</option>
+            <option>俄文</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="adv-row">
+        <span class="adv-label">出版日期</span>
+        <div class="adv-sel w-mid">
+          <select aria-label="出版日期">
+            <option>任意年</option>
+            <option>近一年</option>
+            <option>近三年</option>
+            <option>近五年</option>
+            <option>近十年</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="adv-foot">
+        <button class="adv-clear" type="button" id="advClear">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3.2-6.9"/><path d="M21 3.5V10h-6.5"/></svg>
+          清除
+        </button>
+        <button class="adv-submit" type="button" id="advSubmit">检索</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ============ 正文 ============ -->
+  <div class="bd-wrap">
+
+    <div class="bd-layout">
+    <section class="bd-card">
+      <div class="bd-head">
+        <h1>图书详情</h1>
+        <div class="bd-actions">
+          <button class="bd-act" type="button" id="btnCite">
+            <svg class="ico-fill" viewBox="0 0 24 24"><path d="M10.2 5.4c-3.5 0-6.2 2.8-6.2 6.4 0 3.1 2.2 5.5 5.1 5.5.5 0 .9-.05 1.3-.15-.6 1.9-2.2 3.2-4.2 3.6-.5.1-.8.6-.7 1.1.1.5.5.85 1 .85h.15C10.6 22.2 13 18.6 13 13.6c0-4.6-1.2-8.2-2.8-8.2zm10 0c-3.5 0-6.2 2.8-6.2 6.4 0 3.1 2.2 5.5 5.1 5.5.5 0 .9-.05 1.3-.15-.6 1.9-2.2 3.2-4.2 3.6-.5.1-.8.6-.7 1.1.1.5.5.85 1 .85h.15c4-.45 6.4-4.05 6.4-9.05 0-4.6-1.2-8.2-2.8-8.2z"/></svg>
+            引用
+          </button>
+          <button class="bd-act" type="button" id="btnFav">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span id="favText">收藏</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bd-body">
+      <div class="bd-title">
+        <h2>围城</h2>
+        <div class="bd-sub">Besieged city</div>
+      </div>
+
+      <div class="bd-top">
+        <div class="bd-cover">
+          <img class="bd-cover-in" src="/user/assets/covers/work_weicheng_main.jpg" alt="《围城》封面">
+        </div>
+
+        <div class="bd-meta">
+          <div class="bd-pair">
+            <span class="bd-lb">责任者</span>
+            <span class="bd-vl">钱锺书(原著); 施光亨(改写); 王绍新(改写); 韩晖(注释英译)</span>
+          </div>
+          <div class="bd-pair">
+            <span class="bd-lb">出版</span>
+            <span class="bd-vl">北京: 华语教学出版社, 2008</span>
+          </div>
+
+          <div class="bd-pair">
+            <span class="bd-lb">语种</span>
+            <span class="bd-vl">汉语, 英语</span>
+          </div>
+          <div class="bd-pair">
+            <span class="bd-lb">丛编说明</span>
+            <span class="bd-vl">中国名著简读系列</span>
+          </div>
+
+          <div class="bd-pair">
+            <span class="bd-lb">ISBN</span>
+            <span class="bd-vl">978-7-80200-390-3</span>
+          </div>
+          <div class="bd-pair">
+            <span class="bd-lb">主题</span>
+            <span class="bd-vl">汉语--对外汉语教学--课外读物--长篇小说--中国--现代</span>
+          </div>
+
+          <div class="bd-pair">
+            <span class="bd-lb">分类</span>
+            <span class="bd-vl">语言、文字</span>
+          </div>
+          <div class="bd-pair">
+            <span class="bd-lb">中图分类号</span>
+            <span class="bd-vl">H195.5</span>
+          </div>
+
+          <div class="bd-pair">
+            <span class="bd-lb">价格</span>
+            <span class="bd-vl">CNY38.00 (含光盘)</span>
+          </div>
+
+          <div class="bd-pair full">
+            <span class="bd-lb">小说简介</span>
+            <span class="bd-vl">小说以方鸿渐的经历为线索，描绘了抗战时期病态社会中一部分上层知识分子卑琐、无聊的生活，因为作品成功地揭露和辛辣地讽刺了这些社会现象，被誉为新《儒林外史》。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 摘要 / 目录 / 相关电子资源 -->
+      <div class="bd-tabs" role="tablist" aria-label="详细信息">
+        <button class="bd-tab active" type="button" role="tab" data-tab="1" aria-selected="true">摘要</button>
+        <button class="bd-tab" type="button" role="tab" data-tab="1" aria-selected="false">目录</button>
+        <button class="bd-tab" type="button" role="tab" data-tab="1" aria-selected="false">相关电子资源</button>
+      </div>
+
+      <div class="bd-panel" data-panel="1" data-index="0">
+        《围城》是一幅栩栩如生的世井百态图，人生的酸甜苦辣千般滋味均在其中得到了淋漓尽致的体现。钱钟书先生将自己的语言天才并入极其渊博的知识，再添加上一些讽刺主义的幽默调料，以一书而定江山。《围城》主要内涵讲的是1937年夏，抗战初期方鸿渐到欧洲游学四年回到上海，住在已亡未婚妻的家中，与女博士苏文纨、大学生唐晓芙小姐发生了情意纠葛，因此受到丈人家的冷淡。他恋爱失败后，和苏的失意追求者赵辛楣成为好朋友，二人接受内地三闾大学的聘请。一路上历经艰险，也遭遇无数趣事。在三闾大学任教期间，方不知不觉地卷入校内个人恩怨和乡里狭隙观念的明争暗斗中，几位同事都反对他，而他和英语助教孙柔嘉日趋亲密更引起他们的嫉妒。赵辛楣离校从商后，方鸿渐被校方排斥。方与孙结婚回沪，但他俩因琐事争吵，终于导致无可避免的分手。所以说，围在城里的人想逃出来，城外的人想冲进去，对婚姻也罢，职业也罢，人生的愿望大都如此。
+      </div>
+
+      <div class="bd-panel" data-panel="1" data-index="1" hidden>
+        <ul class="bd-catalog">
+          <li>一、城里的月光 · 1</li>
+          <li>二、苏小姐的客厅 · 27</li>
+          <li>三、三闾大学的聘书 · 58</li>
+          <li>四、湘西路上的旅馆 · 96</li>
+          <li>五、孙柔嘉的信 · 134</li>
+          <li>六、回沪 · 178</li>
+        </ul>
+      </div>
+
+      <div class="bd-panel bd-links" data-panel="1" data-index="2" hidden>
+        <a href="/user/数据库导航.html">超星数字图书馆：围城（电子全文）</a>
+        <a href="/user/数据库导航.html">读秀学术搜索：围城 研究资料汇编</a>
+        <a href="/user/数据库导航.html">CNKI：钱锺书《围城》研究文献</a>
+      </div>
+
+      <!-- 馆藏列表 / 你可能感兴趣的书 -->
+      <div class="bd-tabs" role="tablist" aria-label="馆藏与推荐">
+        <button class="bd-tab active" type="button" role="tab" data-tab="2" aria-selected="true">馆藏列表</button>
+        <button class="bd-tab" type="button" role="tab" data-tab="2" aria-selected="false">你可能感兴趣的书</button>
+      </div>
+
+      <div class="bd-panel" data-panel="2" data-index="0">
+        <div class="bd-table-wrap">
+          <table class="bd-table">
+            <thead>
+              <tr>
+                <th>条码号</th>
+                <th>索书号</th>
+                <th>馆藏地</th>
+                <th>状态</th>
+                <th>流通类型</th>
+                <th>应还日期</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>B091103888352G</td>
+                <td>H195.5 /Q44(2)</td>
+                <td>文献馆文科综合书库</td>
+                <td class="bd-state-out">借出</td>
+                <td>中文出借图书</td>
+                <td>2026-12-21</td>
+                <td><button class="bd-reserve" type="button" id="btnReserve">预约</button></td>
+              </tr>
+              <tr>
+                <td>B120504252017/</td>
+                <td>H195.5 /Q44(2)</td>
+                <td>国际文化交流院资料室</td>
+                <td>在馆</td>
+                <td>中文出借图书</td>
+                <td>—</td>
+                <td><button class="bd-shelf" type="button" id="btnShelf">到馆借阅</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bd-pager">
+          <span>共 2 条</span>
+          <select aria-label="每页条数">
+            <option>10条/页</option>
+            <option>20条/页</option>
+            <option>50条/页</option>
+          </select>
+          <button class="bd-arrow" type="button" aria-label="上一页">&#8249;</button>
+          <span class="bd-page-cur">1</span>
+          <button class="bd-arrow" type="button" aria-label="下一页">&#8250;</button>
+          <span>前往</span>
+          <input class="bd-goto" type="text" value="1" aria-label="前往页码">
+          <span>页</span>
+        </div>
+      </div>
+
+      <div class="bd-panel" data-panel="2" data-index="1" hidden>
+        <div class="bd-rec">
+          <a class="bd-rec-item" href="检索结果.html?keyword=%E5%9B%B4%E5%9F%8E">
+            <img class="bd-rec-cover" src="/user/assets/covers/rec_weicheng_yingshi.jpg" alt="《围城（影视文本）》封面">
+            <span>
+              <span class="bd-rec-t">围城（影视文本）</span>
+              <span class="bd-rec-d">钱锺书(原著); 孙雄飞(编剧)</span>
+            </span>
+          </a>
+          <a class="bd-rec-item" href="检索结果.html?keyword=%E9%92%B1%E9%94%BA%E4%B9%A6">
+            <img class="bd-rec-cover" src="/user/assets/covers/work_xiezai.jpg" alt="《写在人生边上》封面">
+            <span>
+              <span class="bd-rec-t">写在人生边上</span>
+              <span class="bd-rec-d">钱锺书 著</span>
+            </span>
+          </a>
+          <a class="bd-rec-item" href="检索结果.html?keyword=%E5%84%92%E6%9E%97%E5%A4%96%E5%8F%B2">
+            <img class="bd-rec-cover" src="/user/assets/covers/rec_rulinwaishi.jpg" alt="《儒林外史》封面">
+            <span>
+              <span class="bd-rec-t">儒林外史</span>
+              <span class="bd-rec-d">吴敬梓 著</span>
+            </span>
+          </a>
+          <a class="bd-rec-item" href="检索结果.html?keyword=%E5%9B%B4%E5%9F%8E">
+            <img class="bd-rec-cover" src="/user/assets/covers/rec_weicheng_yanjiu.jpg" alt="《围城》研究 封面">
+            <span>
+              <span class="bd-rec-t">《围城》研究</span>
+              <span class="bd-rec-d">陆文虎 编</span>
+            </span>
+          </a>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ============ 右侧信息卡 ============ -->
+    <aside class="bd-side">
+
+      <div class="bd-side-card">
+        <h3 class="bd-side-t">作者其他著作</h3>
+        <ul class="bd-works">
+          <li>
+            <a href="/user/图书详情.html">
+              <img class="bd-work-cov" src="/user/assets/covers/work_weicheng.jpg" alt="《围城》封面">
+              <span>
+                <span class="bd-work-t">围城</span>
+                <span class="bd-work-y">人民文学出版社 · 1991</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="检索结果.html?keyword=%E5%86%99%E5%9C%A8%E4%BA%BA%E7%94%9F%E8%BE%B9%E4%B8%8A">
+              <img class="bd-work-cov" src="/user/assets/covers/work_xiezai.jpg" alt="《写在人生边上》封面">
+              <span>
+                <span class="bd-work-t">写在人生边上</span>
+                <span class="bd-work-y">生活·读书·新知三联书店 · 2002</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="检索结果.html?keyword=%E4%BA%BA%E5%85%BD%E9%AC%BC">
+              <img class="bd-work-cov" src="/user/assets/covers/work_renshouguei.jpg" alt="《人·兽·鬼》封面">
+              <span>
+                <span class="bd-work-t">人·兽·鬼</span>
+                <span class="bd-work-y">生活·读书·新知三联书店 · 2002</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="检索结果.html?keyword=%E7%AE%A1%E9%94%A5%E7%AF%87">
+              <img class="bd-work-cov" src="/user/assets/covers/work_guanzhuibian.jpg" alt="《管锥编》封面">
+              <span>
+                <span class="bd-work-t">管锥编</span>
+                <span class="bd-work-y">中华书局 · 1979</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bd-side-card">
+        <h3 class="bd-side-t">借阅趋势</h3>
+        <div class="bd-chart">
+          <div class="bd-bar" style="--h:59%"><span>42</span></div>
+          <div class="bd-bar" style="--h:79%"><span>56</span></div>
+          <div class="bd-bar" style="--h:54%"><span>38</span></div>
+          <div class="bd-bar" style="--h:100%"><span>71</span></div>
+          <div class="bd-bar" style="--h:89%"><span>63</span></div>
+          <div class="bd-bar" style="--h:69%"><span>49</span></div>
+        </div>
+        <div class="bd-x">
+          <span>3月</span><span>4月</span><span>5月</span>
+          <span>6月</span><span>7月</span><span>8月</span>
+        </div>
+        <div class="bd-note">近 6 个月共借阅 319 次</div>
+      </div>
+
+      <div class="bd-side-card">
+        <h3 class="bd-side-t">借阅分布</h3>
+        <ul class="bd-dist">
+          <li><span>学生</span><i style="--w:62%"></i><b>62%</b></li>
+          <li><span>教师</span><i style="--w:24%"></i><b>24%</b></li>
+          <li><span>其他</span><i style="--w:14%"></i><b>14%</b></li>
+        </ul>
+        <div class="bd-note">统计口径：近 12 个月外借记录</div>
+      </div>
+
+    </aside>
+    </div>
+  </div>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="site-footer">
+    <div class="sf-inner">
+      <div class="sf-col">
+        <div class="school-name">信阳航空职业学院</div>
+        <div class="school-slogan">图书馆 · 数字图书与知识服务中心<br>"飞阅书海 · 启智天路"</div>
+        <p style="font-size:12.5px;line-height:1.8;opacity:.85;">馆藏纸质图书 86 万册，电子图书 230 万册，订阅中外文期刊 800 余种。设有航空特色专题书架、考研自习专区、VR 沉浸式阅览室等。</p>
+        <div class="social">
+          <a href="#" title="微信公众号"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
+          <a href="#" title="微博"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></a>
+          <a href="#" title="抖音"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></a>
+          <a href="#" title="QQ群"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
+        </div>
+      </div>
+      <div class="sf-col">
+        <h5>快速链接</h5>
+        <ul>
+          <li><a href="/user/馆藏目录.html">馆藏目录</a></li>
+          <li><a href="/user/馆藏分布.html">馆藏分布</a></li>
+          <li><a href="/user/数据库导航.html">数据库导航</a></li>
+          <li><a href="/user/座位预约系统.html">座位预约</a></li>
+          <li><a href="/user/研修室预约.html">研修室预约</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h5>咨询服务</h5>
+        <ul>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>总服务台：0000-1234567</li>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>学科咨询：0000-1234568</li>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><a href="mailto:lib@xihang.edu.cn">lib@xihang.edu.cn</a></li>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><a href="/user/意见反馈.html">在线咨询（QQ群）</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h5>读者服务</h5>
+        <ul>
+          <li><a href="/user/入馆须知.html">入馆须知</a></li>
+          <li><a href="/user/借阅规则.html">借阅规则</a></li>
+          <li><a href="/user/图书预约.html">图书预约</a></li>
+          <li><a href="/user/图书捐赠.html">图书捐赠</a></li>
+          <li><a href="/user/资源荐购.html">资源荐购</a></li>
+          <li><a href="/user/信息素养.html">信息素养</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h5>关注我们</h5>
+        <ul>
+          <li><a href="#">微信公众号</a></li>
+          <li><a href="#">微博</a></li>
+          <li><a href="#">抖音 / B站</a></li>
+          <li><a href="#">图书馆协会</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sf-bottom">
+      © 2026 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      /* 页签切换：同一 data-tab 分组内切换 */
+      document.querySelectorAll('.bd-tabs').forEach(function (group) {
+        var tabs = group.querySelectorAll('.bd-tab');
+        tabs.forEach(function (tab, index) {
+          tab.addEventListener('click', function () {
+            var key = tab.getAttribute('data-tab');
+            tabs.forEach(function (t) {
+              var on = t === tab;
+              t.classList.toggle('active', on);
+              t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            document.querySelectorAll('.bd-panel[data-panel="' + key + '"]').forEach(function (panel) {
+              panel.hidden = panel.getAttribute('data-index') !== String(index);
+            });
+          });
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var kw = (params.get('keyword') || '').trim();
+
+      /* 检索条：提交到检索结果页 */
+      var resInput = document.getElementById('resKeyword');
+      var resType = document.getElementById('resType');
+      resInput.value = kw;
+      if (resType && params.get('type')) resType.value = params.get('type');
+      document.getElementById('resSearch').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var v = resInput.value.trim();
+        if (!v) { resInput.focus(); return; }
+        var p = new URLSearchParams({
+          keyword: v,
+          field: 'all',
+          fieldName: '全部字段',
+          type: resType.value
+        });
+        window.location.href = '/user/检索结果.html?' + p.toString();
+      });
+
+      /* 高级检索：原位展开 */
+      var bar = document.querySelector('.res-searchbar');
+      var advPanel = document.getElementById('advPanel');
+      var advToggle = document.getElementById('advToggle');
+      var advKeyword = document.getElementById('advKeyword');
+      var advKeyword2 = document.getElementById('advKeyword2');
+
+      function setAdv(open) {
+        bar.classList.toggle('adv-open', open);
+        advToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open && !advKeyword.value) advKeyword.value = kw;
+      }
+      advToggle.addEventListener('click', function () {
+        setAdv(!bar.classList.contains('adv-open'));
+      });
+      document.getElementById('advClose').addEventListener('click', function () { setAdv(false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setAdv(false);
+      });
+
+      document.getElementById('advClear').addEventListener('click', function () {
+        advPanel.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
+        advKeyword.value = '';
+        advKeyword2.value = '';
+        advKeyword.focus();
+      });
+
+      document.getElementById('advSubmit').addEventListener('click', function () {
+        var words = [advKeyword.value.trim(), advKeyword2.value.trim()].filter(Boolean);
+        if (!words.length) { advKeyword.focus(); return; }
+        var p = new URLSearchParams({
+          keyword: words.join(' '),
+          field: 'all',
+          fieldName: '全部字段',
+          type: document.getElementById('advScope').value,
+          mode: 'advanced'
+        });
+        window.location.href = '/user/检索结果.html?' + p.toString();
+      });
+    })();
+  </script>
+  <!-- 引用弹窗 -->
+<div class="ct-mask" id="citeMask" hidden>
+  <div class="ct-dialog" role="dialog" aria-modal="true" aria-labelledby="citeTitle">
+    <div class="ct-head">
+      <h3 id="citeTitle">引用本文</h3>
+      <button class="ct-close" id="citeClose" type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="ct-tabs" id="citeTabs">
+      <button class="ct-tab active" type="button" data-fmt="gbt">GB/T 7714</button>
+      <button class="ct-tab" type="button" data-fmt="apa">APA</button>
+      <button class="ct-tab" type="button" data-fmt="mla">MLA</button>
+    </div>
+    <div class="ct-body" id="citeText"></div>
+    <div class="ct-foot">
+      <button class="ct-copy" id="citeCopy" type="button">复制引文</button>
+    </div>
+  </div>
+</div>
+<div class="bd-toast" id="bdToast"></div>
+<!-- 预约确认弹窗 -->
+<div class="ct-mask" id="resMask" hidden>
+  <div class="ct-dialog" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+    <div class="ct-head">
+      <h3 id="resTitle">确认预约</h3>
+      <button class="ct-close" id="resClose" type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="res-body">
+      <div class="res-book">围城 / 钱锺书</div>
+      <div class="res-rows">
+        <div class="res-row"><span>取书地点</span><b>文献馆文科综合书库</b></div>
+        <div class="res-row"><span>当前排队位置</span><b class="res-q">第 3 位</b></div>
+        <div class="res-row"><span>预计可借</span><b>以到馆通知为准</b></div>
+      </div>
+      <p class="res-tip">确认预约该图书吗？图书到馆后为您保留 3 天，逾期未取将自动取消预约。</p>
+    </div>
+    <div class="ct-foot res-foot">
+      <button class="res-cancel" id="resCancel" type="button">取消</button>
+      <button class="ct-copy" id="resOk" type="button">确认预约</button>
+    </div>
+  </div>
+</div>
+<!-- 在馆不可预约提示弹窗 -->
+<div class="ct-mask" id="shelfMask" hidden>
+  <div class="ct-dialog res-dialog-sm" role="dialog" aria-modal="true" aria-labelledby="shelfTitle">
+    <div class="ct-head">
+      <h3 id="shelfTitle">暂不可预约</h3>
+      <button class="ct-close" id="shelfClose" type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="res-body">
+      <p class="res-tip-lg">该书有在馆复本，无需预约。请到「国际文化交流院资料室」自行借阅，索书号 H195.5 /Q44(2)。</p>
+    </div>
+    <div class="ct-foot">
+      <button class="ct-copy" id="shelfOk" type="button">我知道了</button>
+    </div>
+  </div>
+</div>
+<!-- 预约成功弹窗 -->
+<div class="ct-mask" id="okMask" hidden>
+  <div class="ct-dialog res-dialog-sm" role="dialog" aria-modal="true" aria-labelledby="okTitle">
+    <div class="ct-head">
+      <h3 id="okTitle">预约成功</h3>
+      <button class="ct-close" id="okClose" type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="res-body">
+      <p class="res-tip-lg">已加入预约队列（当前排队第 3 位）。注意到站内消息，图书到馆后会提醒；在「图书预约」中可实时查看排队位置和到馆情况。</p>
+    </div>
+    <div class="ct-foot">
+      <button class="ct-copy" id="okBtn" type="button">我知道了</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ===== 引用 / 收藏 ===== */
+  (() => {
+    const CITE = {
+      gbt: '钱锺书. 围城[M]. 北京: 华语教学出版社, 2008.',
+      apa: 'Qian, Zhongshu. (2008). Wei cheng [Besieged city]. Beijing: Sinolingua Press.',
+      mla: 'Qian, Zhongshu. Wei Cheng. Beijing: Sinolingua Press, 2008.'
+    };
+
+    const toastEl = document.getElementById('bdToast');
+    let toastTimer;
+    const toast = (msg) => {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
+    };
+
+    /* 收藏 */
+    const favBtn = document.getElementById('btnFav');
+    const favText = document.getElementById('favText');
+    /* 仅从「我的收藏」进入时视为已收藏，其他入口默认显示未收藏 */
+    let isFav = new URLSearchParams(location.search).get('from') === 'fav';
+    const syncFav = () => {
+      favBtn.classList.toggle('active', isFav);
+      favText.textContent = isFav ? '已收藏' : '收藏';
+    };
+    favBtn.addEventListener('click', () => {
+      if (isFav) {
+        isFav = false;
+        syncFav();
+        toast('已取消收藏');
+        return;
+      }
+      /* 未登录先跳统一身份认证，登录后回跳本页 */
+      if (!sessionStorage.getItem('libUser')) {
+        toast('请先登录后再收藏');
+        setTimeout(() => {
+          location.href = '/user/统一身份认证.html?redirect=' + encodeURIComponent('/user/图书详情.html');
+        }, 600);
+        return;
+      }
+      isFav = true;
+      syncFav();
+      toast('已加入我的收藏，可到「我的收藏」查看');
+    });
+    syncFav();
+
+    /* 引用 */
+    const mask = document.getElementById('citeMask');
+    const citeText = document.getElementById('citeText');
+    const tabs = document.getElementById('citeTabs');
+    let fmt = 'gbt';
+    const render = () => { citeText.textContent = CITE[fmt]; };
+    const openCite = () => {
+      mask.hidden = false;
+      document.body.style.overflow = 'hidden';
+      render();
+    };
+    const closeCite = () => {
+      mask.hidden = true;
+      document.body.style.overflow = '';
+    };
+    document.getElementById('btnCite').addEventListener('click', openCite);
+    document.getElementById('citeClose').addEventListener('click', closeCite);
+    mask.addEventListener('click', (e) => { if (e.target === mask) closeCite(); });
+    tabs.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ct-tab');
+      if (!btn) return;
+      fmt = btn.getAttribute('data-fmt');
+      Array.prototype.forEach.call(tabs.querySelectorAll('.ct-tab'), t => {
+        t.classList.toggle('active', t === btn);
+      });
+      render();
+    });
+    document.getElementById('citeCopy').addEventListener('click', () => {
+      const text = CITE[fmt];
+      const done = () => toast('引文已复制到剪贴板');
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (err) { toast('复制失败，请手动选择'); }
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !mask.hidden) closeCite();
+    });
+  })();
+</script>
+
+<script src="/user/assets/nav-drawer.js?v=28" defer></script>
+<script>
+  /* ===== 图书预约 ===== */
+  (() => {
+    const toastEl = document.getElementById('bdToast');
+    let timer;
+    const toast = (msg, ms) => {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      toastEl.classList.toggle('wide', !!ms);
+      clearTimeout(timer);
+      timer = setTimeout(() => toastEl.classList.remove('show'), ms || 2200);
+    };
+
+    const mask = document.getElementById('resMask');
+    const openRes = () => { mask.hidden = false; document.body.style.overflow = 'hidden'; };
+    const closeRes = () => { mask.hidden = true; document.body.style.overflow = ''; };
+
+    /* 借出复本：可预约（需登录） */
+    const btnReserve = document.getElementById('btnReserve');
+    /* 从「我的收藏」进入且该书处于已预约状态 */
+    if (new URLSearchParams(location.search).get('res') === '1') {
+      btnReserve.textContent = '已预约';
+      btnReserve.disabled = true;
+    }
+    btnReserve.addEventListener('click', () => {
+      if (!sessionStorage.getItem('libUser')) {
+        toast('请先登录后再预约');
+        setTimeout(() => {
+          location.href = '/user/统一身份认证.html?redirect=' + encodeURIComponent('/user/图书详情.html');
+        }, 600);
+        return;
+      }
+      openRes();
+    });
+
+    /* 在馆复本：不可预约，弹窗引导到馆藏地借阅 */
+    const shelfMask = document.getElementById('shelfMask');
+    const openShelf = () => { shelfMask.hidden = false; document.body.style.overflow = 'hidden'; };
+    const closeShelf = () => { shelfMask.hidden = true; document.body.style.overflow = ''; };
+    document.getElementById('btnShelf').addEventListener('click', openShelf);
+    document.getElementById('shelfOk').addEventListener('click', closeShelf);
+    document.getElementById('shelfClose').addEventListener('click', closeShelf);
+    shelfMask.addEventListener('click', (e) => { if (e.target === shelfMask) closeShelf(); });
+
+    /* 预约成功弹窗 */
+    const RES_KEY = 'libBookReserved_978-7-80200-390-3';
+    const okMask = document.getElementById('okMask');
+    const openOk = () => { okMask.hidden = false; document.body.style.overflow = 'hidden'; };
+    const closeOk = () => { okMask.hidden = true; document.body.style.overflow = ''; };
+    document.getElementById('okBtn').addEventListener('click', closeOk);
+    document.getElementById('okClose').addEventListener('click', closeOk);
+    okMask.addEventListener('click', (e) => { if (e.target === okMask) closeOk(); });
+
+    /* 已预约：按钮置灰并显示「已预约」 */
+    const resBtn = document.getElementById('btnReserve');
+    const markReserved = () => {
+      resBtn.disabled = true;
+      resBtn.textContent = '已预约';
+    };
+    if (localStorage.getItem(RES_KEY)) markReserved();
+
+    document.getElementById('resClose').addEventListener('click', closeRes);
+    document.getElementById('resCancel').addEventListener('click', closeRes);
+    mask.addEventListener('click', (e) => { if (e.target === mask) closeRes(); });
+    document.getElementById('resOk').addEventListener('click', () => {
+      closeRes();
+      localStorage.setItem(RES_KEY, '1');
+      markReserved();
+      openOk();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (!mask.hidden) closeRes();
+      if (!shelfMask.hidden) closeShelf();
+      if (!okMask.hidden) closeOk();
+    });
+  })();
+</script>
+</body>
+</html>

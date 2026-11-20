@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/user/assets/logo.png">
+  <title>座位预约 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="/user/assets/site.css?v=33">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --accent: #f4a261;
+      --gold: #ffc857;
+      --bg-page: #f2f3f5;
+      --surface: #ffffff;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+      --border-light: #eef2f7;
+      --max-w: 1440px;
+    }
+
+    /* ============ 顶部标题（无导航） ============ */
+    .tb-super { flex: none; }
+    .sh-page-title {
+      margin-left: 22px;
+      padding-left: 22px;
+      border-left: 1px solid #dbe2ee;
+      font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--primary);
+      letter-spacing: 1px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .bk-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 0 10px 0 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .bk-nav a {
+      position: relative;
+      padding: 4px 0;
+      color: var(--text);
+      transition: color .18s;
+    }
+    .bk-nav a:hover { color: var(--primary); }
+    .bk-nav a:first-child { margin-left: -5px; }
+    .bk-nav a.is-current { color: var(--primary); font-weight: 600; }
+    .site-header .sh-inner { justify-content: flex-start; }
+    .site-header .hd-mid { margin-left: auto; }
+
+    /* ============ 预约流程主体 ============ */
+    .booking-section {
+      background: #fff;
+      padding: 30px 0 28px;
+      display: flex;
+      flex-direction: column;
+    }
+    .bk-container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 30px;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 步骤面板 */
+    .step-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .step-panel[hidden] { display: none; }
+
+    /* 步骤条 */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 4px 0 22px;
+      list-style: none;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--text-3);
+      font-size: 13.5px;
+      white-space: nowrap;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid #c8cdd6;
+      background: #fff;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .step.is-active { color: var(--primary); font-weight: 600; }
+    .step.is-active .step-num {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .step.is-done .step-num {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: #fff;
+      font-size: 0;
+    }
+    .step.is-done .step-num::after {
+      content: "✓";
+      font-size: 12px;
+    }
+    .step-line {
+      width: 92px;
+      margin: 0 14px;
+      border-top: 1px dashed #d5dae3;
+    }
+
+    /* 标题区 */
+    .bk-title {
+      margin: 0 0 4px;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .bk-sub {
+      margin: 0 0 22px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    /* 场馆卡片 */
+    .venue-grid {
+      display: flex;
+      gap: 26px;
+      overflow-x: auto;
+      padding-bottom: 14px;
+      scroll-snap-type: x proximity;
+    }
+    .venue-grid::-webkit-scrollbar { height: 8px; }
+    .venue-grid::-webkit-scrollbar-track { background: #eef1f6; border-radius: 4px; }
+    .venue-grid::-webkit-scrollbar-thumb { background: #c3cddd; border-radius: 4px; }
+    .venue-grid::-webkit-scrollbar-thumb:hover { background: #a9b8cf; }
+    .venue-card {
+      flex: 0 0 calc((100% - 52px) / 3);
+      scroll-snap-align: start;
+      position: relative;
+      display: block;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color .18s, box-shadow .18s;
+      text-align: left;
+      font: inherit;
+    }
+    .venue-card:hover {
+      border-color: #a9bdf0;
+      box-shadow: 0 6px 18px rgba(30, 64, 175, 0.08);
+    }
+    .venue-card.is-selected {
+      border-color: #4f7df0;
+      background: linear-gradient(180deg, #f8fbff, #eef4ff);
+      box-shadow: 0 10px 24px rgba(47, 98, 232, .14);
+    }
+    .venue-card.is-selected::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #2f62e8 url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 12px 12px no-repeat;
+      box-shadow: 0 2px 8px rgba(47, 98, 232, .35);
+    }
+    .venue-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #eef2f7;
+    }
+    .vc-body { padding: 12px 6px 6px; }
+    .vc-name {
+      margin: 0 0 6px;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .vc-desc {
+      margin: 0 0 8px;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+    .vc-floor {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--text-2);
+    }
+    .vc-meta {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light);
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+    .vc-meta span { display: inline-flex; align-items: center; gap: 5px; }
+    .vc-meta svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .vc-meta .free { color: #16a34a; }
+
+    /* 区域列表 */
+    .area-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+    .area-list::-webkit-scrollbar { width: 8px; }
+    .area-list::-webkit-scrollbar-track { background: #eef1f6; border-radius: 4px; }
+    .area-list::-webkit-scrollbar-thumb { background: #c3cddd; border-radius: 4px; }
+    .area-list::-webkit-scrollbar-thumb:hover { background: #a9b8cf; }
+    .area-item {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      padding: 18px 26px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .area-item:hover {
+      border-color: #a9bdf0;
+      box-shadow: 0 6px 18px rgba(30, 64, 175, 0.08);
+    }
+    .area-item.is-selected {
+      border-color: #4f7df0;
+      background: linear-gradient(180deg, #f8fbff, #eef4ff);
+      box-shadow: 0 10px 24px rgba(47, 98, 232, .12);
+    }
+    .area-item.is-selected .area-name { color: #1e4fd6; }
+    .area-item.is-selected .area-floor {
+      background: #2f62e8;
+      border-color: #2f62e8;
+      color: #fff;
+    }
+    .area-floor {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 4px;
+      background: #eef3ff;
+      color: var(--primary);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .area-main { flex: 1; min-width: 0; }
+    .area-name {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .area-meta {
+      display: block;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+    .area-free {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex: none;
+      font-size: 13px;
+      color: #12a58a;
+      white-space: nowrap;
+    }
+    .area-free svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    /* 时段与座位 */
+    .ts-wrap {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 26px;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .ts-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .ts-slot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      font: inherit;
+      font-size: 13px;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .ts-slot:hover { border-color: #a9bdf0; }
+    .ts-slot.is-selected {
+      border-color: #4f7df0;
+      background: linear-gradient(180deg, #f8fbff, #eef4ff);
+      box-shadow: 0 8px 20px rgba(47, 98, 232, .14);
+      color: #1e4fd6;
+      font-weight: 600;
+    }
+    .ts-slot.is-selected .ts-dot {
+      background: #2f62e8;
+      box-shadow: 0 0 0 3px rgba(47, 98, 232, .16);
+    }
+    .ts-slot.is-selected .ts-slot-right { color: #3a68e0; }
+    .ts-slot.is-disabled {
+      color: #c0c4cc;
+      background: #fafafa;
+      cursor: not-allowed;
+    }
+    .ts-slot-left { display: inline-flex; align-items: center; gap: 8px; }
+    .ts-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+    .ts-slot.is-disabled .ts-dot { background: #d4d7de; }
+    .ts-slot-right { font-size: 12px; color: var(--text-3); }
+    .ts-map {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 10px 14px 12px;
+      border: 1px solid #d8dee9;
+      border-radius: 6px;
+      background: #fbfcfd;
+    }
+    .ts-legend {
+      display: flex;
+      justify-content: flex-end;
+      gap: 18px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    .ts-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .lg { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+    .lg-sel { background: #2563eb; }
+    .lg-win { background: #8b5cf6; }
+    .lg-free { background: #22c55e; }
+    .lg-used { background: #c8ccd4; }
+    .ts-floor {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 8px 10px;
+      border: 2px solid #c9ced8;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .ts-floor::-webkit-scrollbar { width: 8px; height: 8px; }
+    .ts-floor::-webkit-scrollbar-thumb { background: #c3c9d4; border-radius: 4px; }
+    .ts-floor::-webkit-scrollbar-thumb:hover { background: #aab2c0; }
+    .ts-floor::-webkit-scrollbar-track { background: #f1f3f7; border-radius: 4px; }
+    .ts-floor::-webkit-scrollbar-corner { background: #f1f3f7; }
+    .fp {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      min-width: 680px;
+      min-height: 240px;
+    }
+    .desk-zone {
+      position: relative;
+      display: flex;
+      flex: 1 1 auto;
+      gap: 5px;
+      min-height: 158px;
+      padding: 8px 8px 8px 52px;
+      border-radius: 4px;
+      background: #eef8ee;
+    }
+    .fp-plant {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 34px;
+      height: 38px;
+    }
+    .fp-plant-low { top: auto; bottom: 8px; }
+    .fp-plant svg { width: 100%; height: 100%; }
+    .fp-plant-b { position: static; align-self: center; margin-left: 0; }
+    .seat-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 0;
+      padding: 2px 0;
+      min-width: 0;
+    }
+    .desk {
+      flex: none;
+      width: 18px;
+      margin: 6px 0;
+      border: 1px solid #c07a21;
+      border-radius: 2px;
+      background:
+        repeating-linear-gradient(112deg, rgba(255, 255, 255, .28) 0 1px, transparent 1px 4px),
+        linear-gradient(90deg, #c9781f, #efa945 42%, #cd8224);
+    }
+    .seat {
+      flex: none;
+      width: 100%;
+      max-width: 40px;
+      margin: 0 auto;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #b6bfcc;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #ffffff, #eef1f6);
+      box-shadow: 0 1px 0 #cbd3de;
+      color: #4b5563;
+      font: inherit;
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+    }
+    .seat em {
+      font-style: normal;
+      font-size: 10.5px;
+      line-height: 1;
+    }
+    .seat.is-free { background: #dcf5e6; border-color: #7cc99b; color: #17784a; }
+    .seat.is-free:hover { border-color: #22c55e; color: #0f6b40; }
+    .seat.is-window { background: #e6dbff; border-color: #a685f0; color: #5f31c4; }
+    .seat.is-window:hover { border-color: #8b5cf6; color: #4f25a8; }
+    .seat.is-used { background: #e3e6eb; border-color: #ccd1d9; color: #a8aeb9; cursor: not-allowed; box-shadow: none; }
+    .seat.is-selected {
+      background: linear-gradient(180deg, #4b86f5, #1f5ae0);
+      border-color: #1a4ccc;
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(31, 90, 224, .38), inset 0 1px 0 rgba(255, 255, 255, .35);
+    }
+    .seat.is-selected:hover { border-color: #1a4ccc; color: #fff; }
+    .shelf-zone {
+      display: flex;
+      flex: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0;
+      height: clamp(64px, 34%, 118px);
+      padding: 0 2px;
+    }
+    .fp-table {
+      flex: none;
+      width: 34px;
+      height: 34px;
+    }
+    .fp-table svg { width: 100%; height: 100%; }
+    .fp-tables {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex: none;
+    }
+    .fp-bench {
+      flex: none;
+      width: 32px;
+      height: 34px;
+    }
+    .fp-bench svg { width: 100%; height: 100%; }
+    .fp-benches {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex: none;
+    }
+    .shelf {
+      flex: 0 0 28px;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+      background: #8b1a34;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 9.5px;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      white-space: nowrap;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+    }
+
+    /* 时段弹窗 */
+    .ts-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 30, 60, 0.35);
+    }
+    .ts-modal[hidden] { display: none; }
+    .ts-dialog {
+      width: 430px;
+      max-width: calc(100vw - 40px);
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 18px 50px rgba(15, 30, 60, 0.28);
+    }
+    .ts-dialog-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 1px solid #f0f2f5;
+    }
+    .ts-close {
+      border: 0;
+      background: none;
+      font-size: 20px;
+      line-height: 1;
+      color: #9aa1ad;
+      cursor: pointer;
+    }
+    .ts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 16px 18px;
+    }
+    .ts-grid .ts-slot { padding: 10px 12px; font-size: 12.5px; }
+    .ts-dialog-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 18px 18px;
+    }
+
+    /* 步骤 4：确认预约信息 */
+    .cf-wrap {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      align-content: center;
+      gap: 30px;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .cf-left {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+    .cf-card {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-radius: 6px;
+      background: #f4f7fc;
+    }
+    .cf-venue {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .cf-floor {
+      margin-top: 6px;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+    .cf-seat-badge {
+      flex: none;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #4b86f5, #1f5ae0);
+      box-shadow: 0 2px 6px rgba(31, 90, 224, .28);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .cf-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 0 2px;
+    }
+    .cf-row {
+      display: flex;
+      align-items: baseline;
+      font-size: 13px;
+    }
+    .cf-k {
+      flex: none;
+      width: 78px;
+      color: var(--text-3);
+    }
+    .cf-v { color: var(--text-2); }
+    .cf-right {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .cf-no {
+      flex: none;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+    .cf-no strong {
+      margin-left: 8px;
+      font-weight: 500;
+      color: var(--text-2);
+      letter-spacing: .4px;
+    }
+    .cf-notice {
+      flex: none;
+      padding: 14px 20px;
+      border: 1px solid #f2e4b4;
+      border-radius: 6px;
+      background: #fdf8e8;
+    }
+    .cf-notice-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #a8700b;
+    }
+    .cf-notice-title svg {
+      width: 15px;
+      height: 15px;
+      fill: #e0a422;
+    }
+    .cf-notice ul {
+      margin: 0;
+      padding-left: 17px;
+    }
+    .cf-notice li {
+      font-size: 12.5px;
+      line-height: 1.85;
+      color: #6d5c33;
+    }
+    .cf-notice li + li { margin-top: 5px; }
+    /* 预约成功弹窗 */
+    .cf-done {
+      width: 400px;
+      max-width: calc(100vw - 40px);
+      padding: 30px 28px 22px;
+      text-align: center;
+    }
+    .cf-done-icon {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #e8f7ee;
+    }
+    .cf-done-icon svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: #22a35c;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .cf-done-title {
+      margin: 0 0 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .cf-done-text {
+      margin: 0 0 8px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-3);
+    }
+    .cf-done-foot {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .cf-done-foot .btn { width: 100%; justify-content: center; }
+
+    /* 底部操作 */
+    .bk-actions {
+      display: flex;
+      flex: none;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .bk-actions [data-prev] { margin-right: auto; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 26px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-2);
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .btn:hover { border-color: #b9caf3; color: var(--primary); }
+    .btn-primary {
+      border-color: var(--primary-light);
+      background: var(--primary-light);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn[disabled] {
+      opacity: .5;
+      cursor: not-allowed;
+      border-color: var(--border);
+      background: #fff;
+      color: var(--text-3);
+    }
+    .btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* 底部已选摘要 */
+    .booking-summary {
+      position: sticky;
+      bottom: 0;
+      z-index: 30;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 14px rgba(15, 30, 60, 0.05);
+    }
+    .bs-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 30px 14px;
+    }
+    .bs-item { padding: 0 20px; border-left: 1px solid var(--border-light); }
+    .bs-item:first-child { border-left: 0; padding-left: 0; }
+    .bs-label { font-size: 12px; color: var(--text-3); }
+    .bs-value {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      min-height: 18px;
+    }
+    .bs-value.is-empty { font-weight: 400; color: var(--text-3); }
+
+    /* ============ 页脚 ============ */
+    html, body { height: 100%; }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .tb-super { flex: none; }
+    .site-header { flex: none; }
+    .booking-summary { flex: none; }
+    .booking-section {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .bk-footer {
+      flex: none;
+      background: var(--primary);
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      .venue-grid { gap: 18px; }
+      .venue-card { flex: 0 0 84%; }
+      .step-line { width: 40px; margin: 0 8px; }
+      .step { font-size: 12.5px; }
+      .bs-inner { grid-template-columns: repeat(2, 1fr); gap: 10px 0; }
+      .bs-item:nth-child(3) { border-left: 0; padding-left: 0; }
+      .sh-inner { padding: 0 16px; gap: 10px; }
+      .sh-page-title { margin-left: 12px; padding-left: 12px; font-size: 17px; letter-spacing: 0; }
+      .bk-nav { gap: 14px; font-size: 13px; }
+    }
+
+    @media (max-width: 680px) {
+      .sh-icon { width: 40px; height: 40px; }
+      .sh-text { display: none; }
+      .sh-page-title { margin-left: 8px; padding-left: 8px; font-size: 16px; }
+      .bk-nav { gap: 12px; font-size: 12.5px; }
+      .site-header .tb-btn { padding: 5px 10px; font-size: 12px; }
+      .booking-section { overflow-y: auto; }
+      .step-panel { flex: none; }
+      .ts-wrap { grid-template-columns: 1fr; flex: none; gap: 10px; }
+      .ts-slots { flex-direction: row; flex-wrap: wrap; overflow: visible; }
+      .ts-slot { flex: 1 1 46%; }
+      .ts-map { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="/user/首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="/user/首页.html">
+        <span class="sh-icon"><img src="/user/assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <div class="sh-page-title">座位预约系统</div>
+
+      <div class="hd-mid">
+        <nav class="bk-nav">
+          <a href="/user/首页.html">首页</a>
+          <a href="/user/座位预约说明.html">预约规则</a>
+          <a href="/user/我的座位.html">预约记录</a>
+        </nav>
+        <div class="tb-actions">
+          <a class="tb-btn" href="/user/统一身份认证.html?redirect=/user/座位预约系统.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="/user/馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="/user/消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="/user/我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="/user/个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 预约流程 ============ -->
+  <section class="booking-section">
+    <div class="bk-container">
+
+      <ol class="steps" id="steps">
+        <li class="step is-active" data-step="1"><span class="step-num">1</span><span>场馆</span></li>
+        <li class="step-line"></li>
+        <li class="step" data-step="2"><span class="step-num">2</span><span>区域</span></li>
+        <li class="step-line"></li>
+        <li class="step" data-step="3"><span class="step-num">3</span><span>时段、座位</span></li>
+        <li class="step-line"></li>
+        <li class="step" data-step="4"><span class="step-num">4</span><span>确认</span></li>
+      </ol>
+
+      <!-- 步骤 1：选择场馆 -->
+      <div class="step-panel" data-panel="1">
+        <h2 class="bk-title">选择场馆</h2>
+        <p class="bk-sub">请选择您要预约的图书馆场馆</p>
+
+        <div class="venue-grid" id="venueGrid">
+          <button type="button" class="venue-card" data-venue="图书馆总馆">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20university%20library%20building%20exterior%2C%20blue%20glass%20curtain%20wall%2C%20white%20stone%20facade%2C%20clear%20sky%2C%20daylight%2C%20architectural%20photography&image_size=landscape_4_3" alt="图书馆总馆">
+            <div class="vc-body">
+              <h3 class="vc-name">图书馆总馆</h3>
+              <p class="vc-desc">藏书丰富，自习环境安静</p>
+              <p class="vc-floor">可预约楼层：F1、F2、F3</p>
+              <div class="vc-meta">
+                <span><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg>400座</span>
+                <span class="free"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>剩余 96</span>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="venue-card" data-venue="理工分馆">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20library%20branch%20building%20exterior%2C%20glass%20and%20concrete%20facade%2C%20entrance%20stairs%2C%20afternoon%20sunlight%2C%20architectural%20photography&image_size=landscape_4_3" alt="理工分馆">
+            <div class="vc-body">
+              <h3 class="vc-name">理工分馆</h3>
+              <p class="vc-desc">理工科书籍，独立研讨室</p>
+              <p class="vc-floor">可预约楼层：F1、F2、F3</p>
+              <div class="vc-meta">
+                <span><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg>400座</span>
+                <span class="free"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>剩余 96</span>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="venue-card" data-venue="文科分馆">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=contemporary%20campus%20library%20building%2C%20curved%20white%20facade%20with%20large%20windows%2C%20green%20lawn%20forecourt%2C%20bright%20day%2C%20architectural%20photography&image_size=landscape_4_3" alt="文科分馆">
+            <div class="vc-body">
+              <h3 class="vc-name">文科分馆</h3>
+              <p class="vc-desc">文科书籍，独立研讨室</p>
+              <p class="vc-floor">可预约楼层：F1、F2、F3</p>
+              <div class="vc-meta">
+                <span><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg>400座</span>
+                <span class="free"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>剩余 96</span>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="venue-card" data-venue="航空分馆">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20aviation%20themed%20library%20building%2C%20curved%20metal%20and%20glass%20facade%20resembling%20aircraft%20wing%2C%20wide%20steps%2C%20sunny%20sky%2C%20architectural%20photography&image_size=landscape_4_3" alt="航空分馆">
+            <div class="vc-body">
+              <h3 class="vc-name">航空分馆</h3>
+              <p class="vc-desc">航空特色馆藏，专业自习空间</p>
+              <p class="vc-floor">可预约楼层：F1、F2、F3</p>
+              <div class="vc-meta">
+                <span><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg>300座</span>
+                <span class="free"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>剩余 72</span>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="bk-actions">
+          <button type="button" class="btn btn-primary" id="nextBtn" disabled>
+            下一步
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 步骤 2：选择区域 -->
+      <div class="step-panel" data-panel="2" hidden>
+        <h2 class="bk-title">选择区域</h2>
+        <p class="bk-sub" id="areaSub">请选择您要预约的区域</p>
+        <div class="area-list" id="areaList"></div>
+        <div class="bk-actions">
+          <button type="button" class="btn" data-prev>上一步</button>
+          <button type="button" class="btn btn-primary" id="areaNextBtn" disabled>
+            下一步
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 步骤 3：先选时段，再选座位 -->
+      <div class="step-panel" data-panel="3" hidden>
+        <h2 class="bk-title">选择时段、座位</h2>
+        <p class="bk-sub" id="tsSub">请先选择预约时段，再选择具体座位</p>
+        <div class="ts-wrap">
+          <div class="ts-slots" id="slotList"></div>
+          <div class="ts-map">
+            <div class="ts-legend">
+              <span><i class="lg lg-sel"></i>已选</span>
+              <span><i class="lg lg-win"></i>可选靠窗</span>
+              <span><i class="lg lg-free"></i>可选不靠窗</span>
+              <span><i class="lg lg-used"></i>不可选</span>
+            </div>
+            <div class="ts-floor" id="seatMap"></div>
+          </div>
+        </div>
+        <div class="bk-actions">
+          <button type="button" class="btn" data-prev>上一步</button>
+          <button type="button" class="btn btn-primary" id="seatNextBtn" disabled>
+            下一步
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <!-- 选择时段弹窗 -->
+        <div class="ts-modal" id="slotModal" hidden>
+          <div class="ts-dialog">
+            <div class="ts-dialog-head">
+              <span>请选择预约时段</span>
+              <button type="button" class="ts-close" id="slotClose" aria-label="关闭">×</button>
+            </div>
+            <div class="ts-grid" id="slotOptions"></div>
+            <div class="ts-dialog-foot">
+              <button type="button" class="btn" id="slotCancel">取消</button>
+              <button type="button" class="btn btn-primary" id="slotConfirm" disabled>确定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 步骤 4：确认预约信息 -->
+      <div class="step-panel" data-panel="4" hidden>
+        <h2 class="bk-title">确认预约信息</h2>
+        <p class="bk-sub">请核对以下预约信息，确认无误后提交</p>
+        <div class="cf-wrap">
+          <div class="cf-left">
+            <div class="cf-card">
+              <div>
+                <div class="cf-venue" id="cfVenue">—</div>
+                <div class="cf-floor" id="cfFloor">—</div>
+              </div>
+              <div class="cf-seat-badge" id="cfSeatBadge">—</div>
+            </div>
+            <div class="cf-rows">
+              <div class="cf-row"><span class="cf-k">预约日期</span><span class="cf-v" id="cfDate">—</span></div>
+              <div class="cf-row"><span class="cf-k">预约时段</span><span class="cf-v" id="cfSlots">—</span></div>
+              <div class="cf-row"><span class="cf-k">阅览区域</span><span class="cf-v" id="cfArea">—</span></div>
+              <div class="cf-row"><span class="cf-k">座位编号</span><span class="cf-v" id="cfSeat">—</span></div>
+            </div>
+          </div>
+          <div class="cf-right">
+            <div class="cf-no">预约编号<strong id="cfNo">—</strong></div>
+            <div class="cf-notice">
+              <div class="cf-notice-title">
+                <svg viewBox="0 0 24 24"><path d="M12 2.6 22.4 20.9a1 1 0 0 1-.87 1.5H2.47a1 1 0 0 1-.87-1.5L12 2.6Z"/><path d="M11.1 9h1.8l-.3 5.6h-1.2L11.1 9Z" fill="#fdf8e8"/><circle cx="12" cy="17.4" r="1.05" fill="#fdf8e8"/></svg>
+                预约须知
+              </div>
+              <ul>
+                <li>签到时段：预约时间前 15 分钟内必须签到，超时未签到自动取消并记违约 1 次。</li>
+                <li>暂离规则：临时离开请点击「暂离」，座位保留 30 分钟，超时系统自动释放该座位。</li>
+                <li>取消预约：预约生效前 15 分钟内可取消，超时取消视为违约，当日预约需在闭馆前 30 分钟完成。</li>
+                <li>修改预约信息：不支持修改预约信息，仅支持取消预约后重新预约选座。</li>
+                <li>违约处罚：违约会扣减信用分，信用分会影响可同时预约的数量、座位预约、研修室预约。</li>
+                <li>物品保管：离开时请带走个人物品，预约时段结束后 15 分钟内未清理的遗留物品，管理员有权处理。</li>
+                <li>环境规范：禁止携带食物入馆，禁止使用外放设备，保持安静，维护公共设施与秩序。</li>
+                <li>申诉渠道：对违约记录有异议，可于 3 个工作日内系统申诉，申诉结果将在 2 个工作日内反馈。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="bk-actions">
+          <button type="button" class="btn" data-prev id="cfBackBtn">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            返回修改
+          </button>
+          <button type="button" class="btn btn-primary" id="submitBtn">确认提交</button>
+        </div>
+
+        <!-- 预约成功弹窗 -->
+        <div class="ts-modal" id="doneModal" hidden>
+          <div class="ts-dialog cf-done">
+            <div class="cf-done-icon">
+              <svg viewBox="0 0 24 24"><path d="m5 12.5 4.6 4.6L19 7.4"/></svg>
+            </div>
+            <h3 class="cf-done-title">预约成功</h3>
+            <p class="cf-done-text">预约结果已推送至站内消息。</p>
+            <p class="cf-done-text">请读者按时到馆签到，15 分钟内未签到将自动释放座位并记违约。</p>
+            <div class="cf-done-foot">
+              <a class="btn btn-primary" href="/user/我的座位.html">查看预约记录</a>
+              <button type="button" class="btn" id="doneClose">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 已选摘要 ============ -->
+  <div class="booking-summary">
+    <div class="bs-inner">
+      <div class="bs-item">
+        <div class="bs-label">场馆</div>
+        <div class="bs-value is-empty" id="sumVenue">未选择</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-label">区域</div>
+        <div class="bs-value is-empty" id="sumArea">—</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-label">时段</div>
+        <div class="bs-value is-empty" id="sumTime">未选择</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-label">座位</div>
+        <div class="bs-value is-empty" id="sumSeat">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="bk-footer">
+    © 2026 信阳航空职业学院 · 图书馆 版权所有 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </footer>
+
+  <script>
+    (function () {
+      var currentStep = 1;
+      var selectedVenue = '';
+      var selectedArea = '';
+      var nextBtn = document.getElementById('nextBtn');
+      var areaNextBtn = document.getElementById('areaNextBtn');
+      var areaList = document.getElementById('areaList');
+      var areaSub = document.getElementById('areaSub');
+      var sumVenue = document.getElementById('sumVenue');
+      var sumArea = document.getElementById('sumArea');
+      var sumSeat = document.getElementById('sumSeat');
+      var sumTime = document.getElementById('sumTime');
+      var tsSub = document.getElementById('tsSub');
+      var slotList = document.getElementById('slotList');
+      var slotOptions = document.getElementById('slotOptions');
+      var slotModal = document.getElementById('slotModal');
+      var slotConfirm = document.getElementById('slotConfirm');
+      var seatMap = document.getElementById('seatMap');
+      var seatNextBtn = document.getElementById('seatNextBtn');
+      var cfVenue = document.getElementById('cfVenue');
+      var cfFloor = document.getElementById('cfFloor');
+      var cfSeatBadge = document.getElementById('cfSeatBadge');
+      var cfDate = document.getElementById('cfDate');
+      var cfSlots = document.getElementById('cfSlots');
+      var cfArea = document.getElementById('cfArea');
+      var cfSeat = document.getElementById('cfSeat');
+      var cfNo = document.getElementById('cfNo');
+      var doneModal = document.getElementById('doneModal');
+      var cfBackBtn = document.getElementById('cfBackBtn');
+      var submitted = false;
+      var submitBtn = document.getElementById('submitBtn');
+      var selectedAreaFloor = '';
+      var selectedSlots = [];
+      var selectedSeats = [];
+      var steps = document.querySelectorAll('.step');
+      var STORE_KEY = 'seatBookingState';
+
+      // 可预约时段
+      var SLOTS = [
+        { time: '08:00-12:00', left: 10 },
+        { time: '12:00-16:00', left: 6 },
+        { time: '16:00-20:00', left: 0 },
+        { time: '20:00-22:00', left: 8 },
+        { time: '全天（8:00-22:00）', left: -1 }
+      ];
+
+      // 座位数据：10 列 × 4 排（最上排靠窗）
+      var SEATS = (function () {
+        var rows = [
+          ['61', '62', '63', '64', '65', '66', '67', '68', '69', '70'],
+          ['71', '72', '73', '74', '75', '76', '77', '78', '79', '80'],
+          ['81', '82', '83', '84', '85', '86', '87', '88', '89', '90'],
+          ['91', '92', '93', '94', '95', '96', '97', '98', '99', '100']
+        ];
+        var used = { '64': 1, '73': 1, '78': 1, '86': 1, '95': 1 };
+        return rows.map(function (row, idx) {
+          return row.map(function (code) {
+            return { code: code, status: used[code] ? 'used' : (idx === 0 ? 'window' : 'free') };
+          });
+        });
+      })();
+
+      // 各场馆可预约区域
+      var AREAS = {
+        '图书馆总馆': [
+          { floor: '1F', name: '一楼大厅、东区 · 综合阅览区', meta: '开放区 · 适合小组讨论 · 100座', free: 24 },
+          { floor: '1F', name: '一楼大厅、西区 · 电子阅览区', meta: '电脑位 · 电源充足 · 100座', free: 24 },
+          { floor: '1F', name: '一楼 · 新书展示区', meta: '新书推荐 · 开放阅览 · 40座', free: 12 },
+          { floor: '2F', name: '二楼 · 静音自习室', meta: '安静学习 · 备考、学习 · 100座', free: 24 },
+          { floor: '2F', name: '二楼 · 中文社科阅览区', meta: '社科图书 · 开架借阅 · 120座', free: 31 },
+          { floor: '2F', name: '二楼 · 期刊报纸阅览区', meta: '现刊 · 过刊 · 60座', free: 18 },
+          { floor: '3F', name: '三楼 · 考研专区', meta: '考研学习 · 考研 · 100座', free: 24 },
+          { floor: '3F', name: '三楼 · 自然科学阅览区', meta: '理工科图书 · 开架借阅 · 120座', free: 27 },
+          { floor: '3F', name: '三楼 · 研讨交流区', meta: '小组讨论 · 可预约研讨 · 36座', free: 9 }
+        ],
+        '理工分馆': [
+          { floor: '1F', name: '一楼 · 理工阅览区', meta: '专业书刊 · 开架借阅 · 120座', free: 18 },
+          { floor: '1F', name: '一楼 · 航空专题阅览区', meta: '航空专业 · 特色馆藏 · 60座', free: 14 },
+          { floor: '2F', name: '二楼 · 电子阅览室', meta: '电脑位 · 数据库检索 · 80座', free: 12 },
+          { floor: '2F', name: '二楼 · 静音自习室', meta: '安静学习 · 备考、学习 · 100座', free: 21 },
+          { floor: '3F', name: '三楼 · 研讨自习区', meta: '小组讨论 · 静音自习 · 90座', free: 26 },
+          { floor: '3F', name: '三楼 · 考研专区', meta: '考研学习 · 长期自习 · 80座', free: 16 },
+          { floor: '3F', name: '三楼 · 标准文献阅览区', meta: '标准规范 · 工具书 · 40座', free: 7 }
+        ],
+        '文科分馆': [
+          { floor: '1F', name: '一楼 · 文科综合阅览区', meta: '开放区 · 报刊阅览 · 110座', free: 20 },
+          { floor: '1F', name: '一楼 · 文学阅览区', meta: '小说 · 散文 · 80座', free: 25 },
+          { floor: '2F', name: '二楼 · 静音自习室', meta: '安静学习 · 备考、学习 · 100座', free: 24 },
+          { floor: '2F', name: '二楼 · 史哲阅览区', meta: '历史 · 哲学 · 70座', free: 19 },
+          { floor: '2F', name: '二楼 · 艺术阅览区', meta: '美术 · 音乐 · 50座', free: 14 },
+          { floor: '3F', name: '三楼 · 研讨自习区', meta: '小组讨论 · 研讨 · 90座', free: 15 },
+          { floor: '3F', name: '三楼 · 考研专区', meta: '考研学习 · 考研 · 80座', free: 11 }
+        ],
+        '航空分馆': [
+          { floor: '1F', name: '一楼 · 航空特色阅览区', meta: '航空专业 · 特色馆藏 · 90座', free: 16 },
+          { floor: '1F', name: '一楼 · 航空史料展区', meta: '航史资料 · 实物展陈 · 30座', free: 9 },
+          { floor: '2F', name: '二楼 · 模拟训练自习区', meta: '专业自习 · 电源充足 · 80座', free: 13 },
+          { floor: '2F', name: '二楼 · 电子阅览室', meta: '电脑位 · 模拟仿真 · 60座', free: 10 },
+          { floor: '3F', name: '三楼 · 静音自习室', meta: '安静学习 · 备考、学习 · 90座', free: 22 },
+          { floor: '3F', name: '三楼 · 考研专区', meta: '考研学习 · 考研 · 40座', free: 8 }
+        ]
+      };
+
+      // 场馆选择
+      document.querySelectorAll('.venue-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          document.querySelectorAll('.venue-card').forEach(function (c) {
+            c.classList.remove('is-selected');
+          });
+          card.classList.add('is-selected');
+          selectedVenue = card.getAttribute('data-venue');
+          nextBtn.disabled = false;
+          sumVenue.textContent = selectedVenue;
+          sumVenue.classList.remove('is-empty');
+          // 更换场馆后清空已选区域
+          selectedArea = '';
+          selectedAreaFloor = '';
+          selectedSlots = [];
+          selectedSeats = [];
+          sumArea.textContent = '—';
+          sumArea.classList.add('is-empty');
+          refreshSummary();
+          areaNextBtn.disabled = true;
+          saveState();
+        });
+      });
+
+      // 渲染区域列表
+      function renderAreas() {
+        areaSub.textContent = selectedVenue + ' — 请选择区域';
+        areaList.innerHTML = '';
+        (AREAS[selectedVenue] || []).forEach(function (area) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'area-item' + (area.name === selectedArea ? ' is-selected' : '');
+          btn.innerHTML =
+            '<span class="area-floor">' + area.floor + '</span>' +
+            '<span class="area-main">' +
+              '<span class="area-name">' + area.name + '</span>' +
+              '<span class="area-meta">' + area.meta + '</span>' +
+            '</span>' +
+            '<span class="area-free"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>剩余 ' + area.free + '</span>';
+          btn.addEventListener('click', function () {
+            areaList.querySelectorAll('.area-item').forEach(function (el) {
+              el.classList.remove('is-selected');
+            });
+            btn.classList.add('is-selected');
+            selectedArea = area.name;
+            selectedAreaFloor = area.floor;
+            selectedSlots = [];
+            selectedSeats = [];
+            areaNextBtn.disabled = false;
+            sumArea.textContent = selectedArea;
+            sumArea.classList.remove('is-empty');
+            saveState();
+          });
+          areaList.appendChild(btn);
+        });
+        areaNextBtn.disabled = !selectedArea;
+      }
+
+      function goStep(step) {
+        currentStep = step;
+        document.querySelectorAll('.step-panel').forEach(function (panel) {
+          panel.hidden = Number(panel.getAttribute('data-panel')) !== step;
+        });
+        steps.forEach(function (el) {
+          var n = Number(el.getAttribute('data-step'));
+          el.classList.toggle('is-active', n === step);
+          el.classList.toggle('is-done', n < step);
+        });
+        if (step === 2) renderAreas();
+        if (step === 3) enterTimeSeat();
+        if (step === 4) renderConfirm();
+        document.querySelector('.booking-section').scrollTo({ top: 0, behavior: 'smooth' });
+        saveState();
+      }
+
+      /* ===== 步骤 3：时段 + 座位 ===== */
+      function slotState(slot) {
+        if (slot.left === 0) return { disabled: true, text: '已约满' };
+        if (slot.left < 0) return { disabled: true, text: '无剩余' };
+        return { disabled: false, text: '剩余 ' + slot.left };
+      }
+
+      function makeSlot(slot) {
+        var st = slotState(slot);
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ts-slot' +
+          (st.disabled ? ' is-disabled' : '') +
+          (selectedSlots.indexOf(slot.time) > -1 ? ' is-selected' : '');
+        btn.innerHTML = '<span class="ts-slot-left"><i class="ts-dot"></i>' + slot.time + '</span>' +
+          '<span class="ts-slot-right">' + st.text + '</span>';
+        if (!st.disabled) {
+          btn.addEventListener('click', function () { toggleSlot(slot); });
+        }
+        return btn;
+      }
+
+      function toggleSlot(slot) {
+        var i = selectedSlots.indexOf(slot.time);
+        if (i > -1) selectedSlots.splice(i, 1);
+        else selectedSlots.push(slot.time);
+        renderSlots();
+        renderSlotOptions();
+        refreshSummary();
+        saveState();
+      }
+
+      function renderSlots() {
+        slotList.innerHTML = '';
+        SLOTS.forEach(function (slot) { slotList.appendChild(makeSlot(slot)); });
+      }
+
+      function renderSlotOptions() {
+        slotOptions.innerHTML = '';
+        SLOTS.forEach(function (slot) { slotOptions.appendChild(makeSlot(slot)); });
+        slotConfirm.disabled = selectedSlots.length === 0;
+      }
+
+      function plantEl(cls) {
+        var el = document.createElement('div');
+        el.className = cls;
+        el.innerHTML = '<svg viewBox="0 0 24 28" fill="none">' +
+          '<path d="M12 17C7.6 16 5.6 11.6 7.6 7.6c3.4 2 4.4 5.9 4.4 9.4Z" fill="#3fae5b"/>' +
+          '<path d="M12 17c4.4-1 6.4-5.4 4.4-9.4-3.4 2-4.4 5.9-4.4 9.4Z" fill="#2f9a4e"/>' +
+          '<path d="M12 17c-3.4-3.5-3.2-8.3-1.1-11.5 2.3 3 2.4 7.9 1.1 11.5Z" fill="#6ad886"/>' +
+          '<path d="M12 17c3.4-3.5 3.2-8.3 1.1-11.5-2.3 3-2.4 7.9-1.1 11.5Z" fill="#4ec46c"/>' +
+          '<path d="M12 17c-1.6-3.9-1.1-8.4 0-11.3 1.1 2.9 1.6 7.4 0 11.3Z" fill="#7fdd97"/>' +
+          '<rect x="7.6" y="16.6" width="8.8" height="2.4" rx="1" fill="#c07a3d"/>' +
+          '<path d="M8.4 19h7.2l-1 5.3a1.9 1.9 0 0 1-1.9 1.5h-1.4a1.9 1.9 0 0 1-1.9-1.5L8.4 19Z" fill="#d38d4f"/>' +
+          '</svg>';
+        return el;
+      }
+
+      function tableEl(cls) {
+        var el = document.createElement('div');
+        el.className = cls;
+        el.innerHTML = '<svg viewBox="0 0 38 38" fill="none">' +
+          '<rect x="13" y="1" width="12" height="6" rx="3" fill="#f6e7c6" stroke="#b9975f" stroke-width="0.9"/>' +
+          '<rect x="13" y="31" width="12" height="6" rx="3" fill="#f6e7c6" stroke="#b9975f" stroke-width="0.9"/>' +
+          '<rect x="1" y="13" width="6" height="12" rx="3" fill="#f6e7c6" stroke="#b9975f" stroke-width="0.9"/>' +
+          '<rect x="31" y="13" width="6" height="12" rx="3" fill="#f6e7c6" stroke="#b9975f" stroke-width="0.9"/>' +
+          '<circle cx="19" cy="19" r="9.2" fill="#f0dfb6" stroke="#b9975f" stroke-width="1.2"/>' +
+          '<circle cx="19" cy="19" r="4.9" fill="#fdf6e6" stroke="#d3b78a" stroke-width="0.9"/>' +
+          '</svg>';
+        return el;
+      }
+
+      function benchEl(cls) {
+        var el = document.createElement('div');
+        el.className = cls;
+        el.innerHTML = '<svg viewBox="0 0 40 54" fill="none">' +
+          '<rect x="2" y="1" width="15" height="52" rx="3.5" fill="#f6e7c6" stroke="#b9975f" stroke-width="0.9"/>' +
+          '<path d="M9.5 2v50" stroke="#ddc8a0" stroke-width="0.9"/>' +
+          '<rect x="23" y="1" width="15" height="52" rx="3.5" fill="#f6e7c6" stroke="#b9975f" stroke-width="0.9"/>' +
+          '<path d="M30.5 2v50" stroke="#ddc8a0" stroke-width="0.9"/>' +
+          '</svg>';
+        return el;
+      }
+
+      function makeSeat(seat, extraClass) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'seat is-' + seat.status +
+          (selectedSeats.indexOf(seat.code) > -1 ? ' is-selected' : '') +
+          (extraClass ? ' ' + extraClass : '');
+        btn.innerHTML = '<em>' + seat.code + '</em>';
+        btn.title = '座位 ' + seat.code + (seat.status === 'window' ? '（靠窗）' : '');
+        btn.addEventListener('click', function () {
+          if (seat.status === 'used') return;
+          if (!selectedSlots.length) { openSlotModal(); return; }
+          var i = selectedSeats.indexOf(seat.code);
+          selectedSeats = i > -1 ? [] : [seat.code];
+          renderSeats();
+          refreshSummary();
+          saveState();
+        });
+        return btn;
+      }
+
+      function renderSeats() {
+        seatMap.innerHTML = '';
+        var plan = document.createElement('div');
+        plan.className = 'fp';
+
+        // 上半区：阅览桌 + 座位
+        var zone = document.createElement('div');
+        zone.className = 'desk-zone';
+        var p1 = plantEl('fp-plant');
+        var p2 = plantEl('fp-plant fp-plant-low');
+        zone.appendChild(p1);
+        zone.appendChild(p2);
+        for (var c = 0; c < SEATS[0].length; c++) {
+          var col = document.createElement('div');
+          col.className = 'seat-col';
+          for (var r = 0; r < SEATS.length; r++) {
+            col.appendChild(makeSeat(SEATS[r][c]));
+          }
+          zone.appendChild(col);
+          if (c < SEATS[0].length - 1) {
+            var desk = document.createElement('div');
+            desk.className = 'desk';
+            zone.appendChild(desk);
+          }
+        }
+        plan.appendChild(zone);
+
+        // 下半区：左侧 2 张小圆桌（竖排）+ 书架 + 右侧 2 张长椅（旋转 90°、竖排）
+        var zone2 = document.createElement('div');
+        zone2.className = 'shelf-zone';
+        var tables = document.createElement('div');
+        tables.className = 'fp-tables';
+        tables.appendChild(tableEl('fp-table'));
+        tables.appendChild(tableEl('fp-table'));
+        zone2.appendChild(tables);
+        for (var s = 1; s <= 8; s++) {
+          var shelf = document.createElement('div');
+          shelf.className = 'shelf';
+          shelf.textContent = '书架' + (s < 10 ? '0' : '') + s;
+          zone2.appendChild(shelf);
+        }
+        var benches = document.createElement('div');
+        benches.className = 'fp-benches';
+        benches.appendChild(benchEl('fp-bench'));
+        benches.appendChild(benchEl('fp-bench'));
+        zone2.appendChild(benches);
+        zone2.appendChild(plantEl('fp-plant fp-plant-b'));
+        plan.appendChild(zone2);
+
+        seatMap.appendChild(plan);
+      }
+
+      // 渲染确认信息
+      function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+      function makeBookingNo() {
+        var d = new Date();
+        var ymd = d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate());
+        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        var code = '';
+        for (var i = 0; i < 4; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return 'LIB-' + ymd + '-' + code;
+      }
+
+      var bookingNo = makeBookingNo();
+
+      function renderConfirm() {
+        var d = new Date();
+        var shortArea = (selectedArea || '').split('·')[0].trim();
+        cfVenue.textContent = selectedVenue || '—';
+        cfFloor.textContent = [selectedAreaFloor, shortArea].filter(Boolean).join(' · ') || '—';
+        cfDate.textContent = d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+        cfSlots.textContent = selectedSlots.length ? selectedSlots.join('、') : '—';
+        cfArea.textContent = selectedArea || '—';
+        cfSeat.textContent = selectedSeats.length ? selectedSeats.join('、') : '—';
+        cfSeatBadge.textContent = selectedSeats.length ? selectedSeats[0] : '—';
+        cfNo.textContent = bookingNo;
+        submitBtn.disabled = submitted;
+        submitBtn.textContent = submitted ? '已提交' : '确认提交';
+        cfBackBtn.disabled = submitted;
+        doneModal.hidden = true;
+      }
+
+      function refreshSummary() {
+        sumTime.textContent = selectedSlots.length ? selectedSlots.join('、') : '未选择';
+        sumTime.classList.toggle('is-empty', selectedSlots.length === 0);
+        sumSeat.textContent = selectedSeats.length ? selectedSeats.join('、') : '—';
+        sumSeat.classList.toggle('is-empty', selectedSeats.length === 0);
+        seatNextBtn.disabled = selectedSeats.length === 0;
+      }
+
+      function openSlotModal() {
+        renderSlotOptions();
+        slotModal.hidden = false;
+      }
+
+      function saveState() {
+        try {
+          sessionStorage.setItem(STORE_KEY, JSON.stringify({
+            step: currentStep,
+            venue: selectedVenue,
+            area: selectedArea,
+            floor: selectedAreaFloor,
+            slots: selectedSlots,
+            seats: selectedSeats,
+            no: bookingNo,
+            done: submitted
+          }));
+        } catch (e) {}
+      }
+
+      function restoreState() {
+        var raw = null;
+        try { raw = sessionStorage.getItem(STORE_KEY); } catch (e) { return; }
+        if (!raw) return;
+        var s = null;
+        try { s = JSON.parse(raw); } catch (e) { return; }
+        if (!s || !s.venue) return;
+
+        selectedVenue = s.venue;
+        document.querySelectorAll('.venue-card').forEach(function (card) {
+          card.classList.toggle('is-selected', card.getAttribute('data-venue') === selectedVenue);
+        });
+        nextBtn.disabled = false;
+        sumVenue.textContent = selectedVenue;
+        sumVenue.classList.remove('is-empty');
+
+        var areas = AREAS[selectedVenue] || [];
+        var keepArea = false;
+        areas.forEach(function (a) { if (a.name === s.area) keepArea = true; });
+        if (keepArea) {
+          selectedArea = s.area;
+          selectedAreaFloor = s.floor || '';
+          sumArea.textContent = selectedArea;
+          sumArea.classList.remove('is-empty');
+          areaNextBtn.disabled = false;
+        }
+
+        selectedSlots = Array.isArray(s.slots) ? s.slots : [];
+        selectedSeats = Array.isArray(s.seats) ? s.seats : [];
+        if (s.no) bookingNo = s.no;
+        submitted = !!s.done;
+        refreshSummary();
+
+        var step = Number(s.step) || 1;
+        if (step > 1 && !selectedVenue) step = 1;
+        if (step > 2 && !selectedArea) step = 2;
+        goStep(step);
+      }
+
+      function enterTimeSeat() {
+        tsSub.textContent = selectedVenue + ' · ' + selectedArea + ' — 请先选择预约时段，再选择座位';
+        renderSlots();
+        renderSeats();
+        refreshSummary();
+        if (!selectedSlots.length) openSlotModal();
+      }
+
+      slotConfirm.addEventListener('click', function () {
+        if (!selectedSlots.length) return;
+        slotModal.hidden = true;
+      });
+      document.getElementById('slotCancel').addEventListener('click', function () {
+        slotModal.hidden = true;
+      });
+      document.getElementById('slotClose').addEventListener('click', function () {
+        slotModal.hidden = true;
+      });
+      seatNextBtn.addEventListener('click', function () {
+        if (selectedSeats.length) goStep(4);
+      });
+      submitBtn.addEventListener('click', function () {
+        submitted = true;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '已提交';
+        cfBackBtn.disabled = true;
+        doneModal.hidden = false;
+        saveState();
+      });
+      document.getElementById('doneClose').addEventListener('click', function () {
+        window.location.href = '/user/个人中心.html';
+      });
+
+      nextBtn.addEventListener('click', function () {
+        if (selectedVenue) goStep(2);
+      });
+      areaNextBtn.addEventListener('click', function () {
+        if (selectedArea) goStep(3);
+      });
+
+      document.querySelectorAll('[data-next]').forEach(function (btn) {
+        btn.addEventListener('click', function () { goStep(Math.min(currentStep + 1, 4)); });
+      });
+      document.querySelectorAll('[data-prev]').forEach(function (btn) {
+        btn.addEventListener('click', function () { goStep(Math.max(currentStep - 1, 1)); });
+      });
+
+      restoreState();
+    })();
+  </script>
+  <script src="/user/assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>
