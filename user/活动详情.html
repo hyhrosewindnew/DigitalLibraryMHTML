@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="/user/assets/logo.png">
 <title>活动详情 · 报名 - 信阳航空职业学院 · 数字图书馆</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,8 +16,8 @@
   a { text-decoration: none; color: inherit; }
   ul, li { list-style: none; }
   :root {
-    --primary: #1e40af;
-    --sky: #3b82f6;
+    --primary: #0d3b66;
+    --sky: #4a9eff;
     --accent: #f4a261;
     --gold: #ffc857;
     --bg-page: #f2f3f5;
@@ -30,11 +29,11 @@
     --max-w: 1440px;
   }
 
-  .top-bar { background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%); color: #fff; font-size: 13px; padding: 8px 0; }
+  .top-bar { background: linear-gradient(90deg, #0d3b66 0%, #1a5a96 100%); color: #fff; font-size: 13px; padding: 8px 0; }
   .top-bar-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
   .top-bar a { margin-left: 14px; color: #fff; }
   .top-bar a:hover { color: var(--gold); }
-  .header { background: #fff; box-shadow: 0 2px 12px rgba(30, 64, 175,0.06); position: sticky; top: 0; z-index: 100; }
+  .header { background: #fff; box-shadow: 0 2px 12px rgba(13,59,102,0.06); position: sticky; top: 0; z-index: 100; }
   .header-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 30px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
   .logo { display: flex; align-items: center; gap: 14px; }
   .logo .icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--sky)); border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
@@ -42,14 +41,14 @@
   .logo .text p { font-size: 10.5px; color: var(--text-3); letter-spacing: 1.2px; }
   .nav { display: flex; gap: 6px; align-items: center; }
   .nav a { font-size: 15px; color: var(--text); padding: 10px 16px; position: relative; transition: .25s; font-weight: 500; border-radius: 8px; }
-  .nav a:hover { color: var(--primary); background: rgba(30, 64, 175,0.05); }
-  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(59, 130, 246,0.12), rgba(59, 130, 246,0.06)); }
+  .nav a:hover { color: var(--primary); background: rgba(13,59,102,0.05); }
+  .nav a.active { color: var(--primary); background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.06)); }
   .nav a.active::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--sky)); border-radius: 2px; }
   .user-area { display: flex; align-items: center; gap: 14px; }
   .notif-btn { position: relative; background: var(--bg-page); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 18px; }
   .notif-btn .badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; border: 2px solid #fff; }
   .avatar-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 30px; }
-  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8 50%, #3b82f6); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #6d28d9 50%, #4a9eff); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
   .avatar-name { font-size: 13.5px; color: var(--text); font-weight: 500; }
 
   .breadcrumb-wrap { background: #fff; border-bottom: 1px solid var(--border); }
@@ -71,7 +70,7 @@
     position: relative;
     aspect-ratio: 16 / 6;
     overflow: hidden;
-    background: linear-gradient(135deg, #1d4ed8 0%, #a855f7 50%, #ec4899 100%);
+    background: linear-gradient(135deg, #6d28d9 0%, #a855f7 50%, #ec4899 100%);
   }
   .big-poster svg { width: 100%; height: 100%; display: block; }
   .big-poster::after {
@@ -236,7 +235,7 @@
   .signup-card {
     position: sticky;
     top: 100px;
-    background: linear-gradient(135deg, #1d4ed8 0%, #a855f7 50%, #ec4899 100%);
+    background: linear-gradient(135deg, #6d28d9 0%, #a855f7 50%, #ec4899 100%);
     color: #fff;
     border-radius: 14px;
     padding: 24px;
@@ -292,7 +291,7 @@
   .joiner-av {
     width: 28px; height: 28px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #a855f7);
+    background: linear-gradient(135deg, #4a9eff, #a855f7);
     color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px;
@@ -349,7 +348,7 @@
     width: 4px; height: 4px; border-radius: 50%;
     background: var(--sky); opacity: 0; transition: .25s;
   }
-  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(30, 64, 175,0.05); }
+  .nav-item-dropdown:hover > a { color: var(--primary); background: rgba(13,59,102,0.05); }
   .nav-item-dropdown:hover > a::before { opacity: 1; }
 
   .dropdown-menu {
@@ -358,7 +357,7 @@
     min-width: 240px; background: #fff;
     border: 1px solid var(--border);
     border-radius: 14px;
-    box-shadow: 0 12px 32px rgba(30, 64, 175,0.15);
+    box-shadow: 0 12px 32px rgba(13,59,102,0.15);
     padding: 6px;
     opacity: 0; visibility: hidden; pointer-events: none;
     transition: all .2s ease;
@@ -388,13 +387,13 @@
     line-height: 1.4;
   }
   .dropdown-menu a:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246,0.1), rgba(59, 130, 246,0.04)) !important;
+    background: linear-gradient(135deg, rgba(74,158,255,0.1), rgba(74,158,255,0.04)) !important;
     color: var(--primary) !important;
   }
   .dropdown-menu a .dd-ico {
     width: 32px; height: 32px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, rgba(59, 130, 246,0.12), rgba(59, 130, 246,0.04));
+    background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(74,158,255,0.04));
     color: var(--primary); flex-shrink: 0;
   }
   .dropdown-menu a .dd-ico svg { width: 17px; height: 17px; }
@@ -412,15 +411,14 @@
   .dropdown-menu a .dd-tag.warn { background: rgba(220,38,38,0.15); color: #dc2626; }
   /* ============== 下拉结束 ============== */
 </style>
-<link rel="stylesheet" href="/user/assets/site.css?v=33">
 </head>
 <body>
 
-<div class="site-topbar">
-  <div class="site-topbar-inner">
-    <div>欢迎来到 信阳航空职业学院 · 数字图书馆</div>
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div>✈ 欢迎来到 信阳航空职业学院 · 数字图书馆</div>
     <div>
-      <a href="#">学校首页</a>
+      <a href="首页.html">学校首页</a>
       <a href="#">读者协会</a>
       <a href="#">志愿服务</a>
       <a href="#">English</a>
@@ -428,52 +426,75 @@
   </div>
 </div>
 
-<header class="site-header">
-  <div class="sh-inner">
-    <a class="sh-logo" href="/user/首页.html">
-      <span class="sh-icon"><img src="/user/assets/logo.png" alt="信阳航空职业学院校徽"></span>
-      <span class="sh-text">
-        <span class="sh-name">信阳航空职业学院 · 图书馆</span>
-        <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
-      </span>
-    </a>
-    <nav class="sh-nav">
-      <a href="/user/首页.html">首页</a><a href="/user/馆藏目录.html">馆藏检索</a><a href="/user/电子资源导航.html">电子资源</a><div class="sh-dropdown" id="navSpace"><a href="#" onclick="return false;">空间预约</a><div class="sh-dropdown-menu">
-          <a href="/user/座位预约说明.html">
-            <span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg></span>
-            <span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个座位</span></span>
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="icon">📚</div>
+      <div class="text">
+        <h1>信阳航空职业学院</h1>
+        <p>Digital Library · 飞阅书海 · 启智天路</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="首页.html">首页</a>
+      <a href="馆藏检索导航.html">馆藏检索</a>
+      <a href="电子资源导航.html">电子资源</a>
+      <!-- 空间预约下拉 -->
+      <div class="nav-item-dropdown" id="navSpace">
+        <a href="#" onclick="return false;">空间预约</a>
+        <div class="dropdown-menu">
+          <a href="座位预约.html">
+            <div class="dd-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8"/><path d="M3 11h18"/><path d="M8 21v-4M16 21v-4"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">座位预约</div>
+              <div class="dd-desc">实时选座 · 1280 个座位</div>
+            </div>
           </a>
-          <a href="/user/研修室预约说明.html">
-            <span class="sh-dd-ico" style="background:rgba(16,185,129,0.12);color:#047857;"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg></span>
-            <span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span>
-            <span class="sh-dd-tag">热门</span>
+          <a href="研修室预约.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04)); color: #047857;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">研修室预约</div>
+              <div class="dd-desc">27 间 · 小组研讨</div>
+            </div>
+            <span class="dd-tag">热门</span>
           </a>
-          <a href="/user/预约记录.html">
-            <span class="sh-dd-ico" style="background:rgba(59, 130, 246,0.12);color:#1d4ed8;"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
-            <span class="sh-dd-text"><span class="sh-dd-name">我的预约记录</span><span class="sh-dd-desc">16 条记录 · 2 待签到</span></span>
-            <span class="sh-dd-tag warn">2 待签到</span>
+          <a href="我的预约记录.html">
+            <div class="dd-ico" style="background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04)); color: #6d28d9;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="dd-text">
+              <div class="dd-name">我的预约记录</div>
+              <div class="dd-desc">16 条记录 · 2 待签到</div>
+            </div>
+            <span class="dd-tag warn">2 待签到</span>
           </a>
         </div>
-      </div><a href="/user/信息素养.html">信息素养</a><a href="/user/通知公告.html" class="active">公告/资讯</a><a href="/user/资源荐购.html">捐赠/荐购</a>
+      </div>
+      <a href="读者服务导航.html">读者服务</a>
+      <a href="信息素养课程中心.html">信息素养</a>
+      <a href="活动专题.html" class="active">公告/资讯</a>
     </nav>
-    <div class="sh-user">
-      <a class="sh-icon-btn" href="/user/消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
-      <a class="sh-icon-btn fav" href="/user/我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
-      <a class="sh-avatar-wrap" href="/user/个人中心.html">
-        <span class="sh-avatar">陈</span>
-        <span class="sh-avatar-name">陈思远</span>
-      </a>
+    <div class="user-area">
+      <a class="notif-btn" href="消息中心.html" title="消息通知" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">🔔<span class="badge"></span></a>
+      <div class="avatar-wrap">
+        <div class="avatar">陈</div>
+        <span class="avatar-name">陈思远</span>
+      </div>
     </div>
   </div>
 </header>
 
 <div class="breadcrumb-wrap">
   <div class="breadcrumb">
-    <a href="/user/首页.html">首页</a>
+    <a href="首页.html">首页</a>
     <span class="sep">›</span>
-    <a href="/user/活动讲座.html">活动专题</a>
+    <a href="活动专题.html">活动专题</a>
     <span class="sep">›</span>
-    <a href="/user/活动讲座.html">读书分享</a>
+    <a href="活动专题.html">读书分享</a>
     <span class="sep">›</span>
     <span class="current">活动详情 · 报名</span>
   </div>
@@ -491,7 +512,7 @@
           <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
             <defs>
               <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#1d4ed8"/>
+                <stop offset="0%" stop-color="#6d28d9"/>
                 <stop offset="50%" stop-color="#a855f7"/>
                 <stop offset="100%" stop-color="#ec4899"/>
               </linearGradient>
@@ -528,7 +549,7 @@
         <div class="info-grid">
           <div class="item">
             <span class="label">📅 活动时间</span>
-            <span class="value">2026-09-08 至 11-08</span>
+            <span class="value">2025-10-08 至 11-08</span>
           </div>
           <div class="item">
             <span class="label">📍 活动地点</span>
@@ -544,7 +565,7 @@
           </div>
           <div class="item">
             <span class="label">📌 报名截止</span>
-            <span class="value" style="color:#dc2626;">2026-09-30 23:59</span>
+            <span class="value" style="color:#dc2626;">2025-10-30 23:59</span>
           </div>
           <div class="item">
             <span class="label">🎓 学分奖励</span>
@@ -625,7 +646,7 @@
               <div class="post">航空工程学院 · 副院长</div>
             </div>
             <div class="guest-item">
-              <div class="av" style="background:linear-gradient(135deg,#1e40af,#3b82f6);">李</div>
+              <div class="av" style="background:linear-gradient(135deg,#0d3b66,#4a9eff);">李</div>
               <div class="name">李教授</div>
               <div class="post">文学院 · 文学研究所</div>
             </div>
@@ -751,7 +772,7 @@
                 <div style="font-size:13px;font-weight:600;color:var(--text);">活动总方案.pdf</div>
                 <div style="font-size:11.5px;color:var(--text-3);margin-top:2px;">PDF · 2.4 MB</div>
               </div>
-              <button style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">下载</button>
+              <button style="background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">下载</button>
             </div>
             <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor='var(--sky)';" onmouseout="this.style.borderColor='var(--border)';">
               <div style="width:36px;height:36px;background:#e8f1ff;color:#1d6ee0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>
@@ -759,7 +780,7 @@
                 <div style="font-size:13px;font-weight:600;color:var(--text);">报名须知.docx</div>
                 <div style="font-size:11.5px;color:var(--text-3);margin-top:2px;">Word · 86 KB</div>
               </div>
-              <button style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">下载</button>
+              <button style="background:linear-gradient(135deg,#0d3b66,#4a9eff);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">下载</button>
             </div>
           </div>
         </div>
@@ -812,19 +833,19 @@
         <div class="meta-row"><span class="label">活动类型</span><span class="value"><span class="tag tag-purple">校园活动</span></span></div>
         <div class="meta-row"><span class="label">主办方</span><span class="value">图书馆 · 校团委</span></div>
         <div class="meta-row"><span class="label">活动状态</span><span class="value"><span class="tag tag-green">报名进行中</span></span></div>
-        <div class="meta-row"><span class="label">报名截止</span><span class="value">2026-09-30 23:59</span></div>
+        <div class="meta-row"><span class="label">报名截止</span><span class="value">2025-10-30 23:59</span></div>
         <div class="meta-row"><span class="label">面向群体</span><span class="value">全校师生</span></div>
         <div class="meta-row"><span class="label">参与规模</span><span class="value">800 人 / 6 项活动</span></div>
-        <div class="meta-row"><span class="label">联系老师</span><span class="value">王雅静 · 个人中心部</span></div>
+        <div class="meta-row"><span class="label">联系老师</span><span class="value">王雅静 · 读者服务部</span></div>
       </div>
 
       <div class="side-card">
         <h4>👥 最新报名（实时）</h4>
         <div class="joiner-list">
-          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#3b82f6,#1e40af);">陈</div><span class="joiner-name">陈思远</span><span class="joiner-time">刚刚</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#4a9eff,#0d3b66);">陈</div><span class="joiner-name">陈思远</span><span class="joiner-time">刚刚</span></div>
           <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#10b981,#047857);">林</div><span class="joiner-name">林晓彤</span><span class="joiner-time">1 分钟前</span></div>
           <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#f59e0b,#d97706);">王</div><span class="joiner-name">王雅静</span><span class="joiner-time">3 分钟前</span></div>
-          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">赵</div><span class="joiner-name">赵文博</span><span class="joiner-time">5 分钟前</span></div>
+          <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">赵</div><span class="joiner-name">赵文博</span><span class="joiner-time">5 分钟前</span></div>
           <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#ec4899,#be185d);">何</div><span class="joiner-name">何静怡</span><span class="joiner-time">8 分钟前</span></div>
           <div class="joiner-item"><div class="joiner-av" style="background:linear-gradient(135deg,#06b6d4,#0891b2);">许</div><span class="joiner-name">许诗涵</span><span class="joiner-time">12 分钟前</span></div>
         </div>
@@ -897,64 +918,5 @@
   }
 </script>
 
-<footer class="site-footer">
-  <div class="sf-inner">
-    <div class="sf-col">
-      <div class="school-name">信阳航空职业学院</div>
-      <div class="school-slogan">图书馆 · 数字图书与知识服务中心<br>"飞阅书海 · 启智天路"</div>
-      <p style="font-size:12.5px;line-height:1.8;opacity:.85;">馆藏纸质图书 86 万册，电子图书 230 万册，订阅中外文期刊 800 余种。设有航空特色专题书架、考研自习专区、VR 沉浸式阅览室等。</p>
-      <div class="social">
-        <a href="#" title="微信公众号"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
-        <a href="#" title="微博"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></a>
-        <a href="#" title="抖音"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></a>
-        <a href="#" title="QQ群"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
-      </div>
-    </div>
-    <div class="sf-col">
-      <h5>快速链接</h5>
-      <ul>
-        <li><a href="/user/馆藏目录.html">馆藏目录</a></li>
-        <li><a href="/user/馆藏分布.html">馆藏分布</a></li>
-        <li><a href="/user/数据库导航.html">数据库导航</a></li>
-        <li><a href="/user/座位预约系统.html">座位预约</a></li>
-        <li><a href="/user/研修室预约.html">研修室预约</a></li>
-      </ul>
-    </div>
-    <div class="sf-col">
-      <h5>咨询服务</h5>
-      <ul>
-        <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>总服务台：0000-1234567</li>
-        <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>学科咨询：0000-1234568</li>
-        <li><svg class="sf-ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><a href="mailto:lib@xihang.edu.cn">lib@xihang.edu.cn</a></li>
-        <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><a href="/user/意见反馈.html">在线咨询（QQ群）</a></li>
-      </ul>
-    </div>
-    <div class="sf-col">
-      <h5>读者服务</h5>
-      <ul>
-        <li><a href="/user/入馆须知.html">入馆须知</a></li>
-        <li><a href="/user/借阅规则.html">借阅规则</a></li>
-        <li><a href="/user/图书预约.html">图书预约</a></li>
-        <li><a href="/user/图书捐赠.html">图书捐赠</a></li>
-        <li><a href="/user/资源荐购.html">资源荐购</a></li>
-        <li><a href="/user/信息素养.html">信息素养</a></li>
-      </ul>
-    </div>
-    <div class="sf-col">
-      <h5>关注我们</h5>
-      <ul>
-        <li><a href="#">微信公众号</a></li>
-        <li><a href="#">微博</a></li>
-        <li><a href="#">抖音 / B站</a></li>
-        <li><a href="#">图书馆协会</a></li>
-        <li><a href="#">志愿者招募</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="sf-bottom">
-    © 2026 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
-  </div>
-</footer>
-<script src="/user/assets/nav-drawer.js?v=28" defer></script>
 </body>
 </html>
