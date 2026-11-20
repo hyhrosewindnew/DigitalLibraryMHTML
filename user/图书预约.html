@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>图书预约 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+    }
+    * { box-sizing: border-box; }
+    /* 顶部导航右移居中 */
+    .site-header .sh-nav { margin-left: auto; margin-right: 0; }
+    body:not(.has-left-rail) .site-header .hd-mid { margin-left: 0; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(900px 320px at 12% -10%, #dfeaff 0%, rgba(223,234,255,0) 70%),
+        radial-gradient(900px 320px at 88% -6%, #e6edff 0%, rgba(230,237,255,0) 70%),
+        #f2f5fa;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============ 面包屑 ============ */
+    .bc-bar { background: #fff; border-bottom: 1px solid #e8eef8; }
+    .bc-in {
+      max-width: 1440px; margin: 0 auto; padding: 13px 40px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-3);
+    }
+    .bc-in a { color: var(--text-2); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .bc-in a:hover { color: var(--primary); }
+    .bc-in a svg { width: 16px; height: 16px; display: block; fill: currentColor; stroke: none; }
+    .bc-in .bc-home { color: #94a3b8; }
+    .bc-in .bc-home:hover { color: var(--primary); }
+    .bc-in .sep { color: #c3cddd; }
+    .bc-in .current { color: var(--text); font-weight: 500; }
+
+    /* ============ 页面容器 ============ */
+    .pl-wrap {
+      max-width: 1440px; margin: 0 auto;
+      flex: 1 0 auto; width: 100%;
+      padding: 18px 40px 20px;
+      display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px;
+      align-items: start;
+    }
+    .pl-right { display: grid; gap: 16px; width: 100%; }
+    .pl-card {
+      background: #fff; border: 1px solid #e8eef8; border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(23,58,120,.05);
+    }
+
+    /* ============ 列表卡片 ============ */
+    .ln-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px 0; flex-wrap: wrap; border-bottom: 1px solid #edf2fb; }
+    .ln-head h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 0 0 14px; }
+    .ln-head h3 span { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 7px; }
+    .ln-tabs { display: flex; gap: 6px; margin-left: auto; margin-bottom: 10px; flex-wrap: wrap; }
+    .ln-tabs span { padding: 5px 12px; border-radius: 14px; font-size: 12.5px; color: var(--text-2); background: #f2f6fd; cursor: pointer; transition: .15s; }
+    .ln-tabs span:hover { background: #e6eefc; }
+    .ln-tabs span.active { background: var(--primary); color: #fff; }
+    .ln-tabs em { font-style: normal; opacity: .85; margin-left: 2px; }
+    .ln-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 20px; margin-top: -10px; flex-wrap: wrap; }
+    .ln-pager-info { font-size: 12.5px; color: var(--text-3); }
+    .ln-pager-info b { color: var(--text); }
+    .ln-pager-btns { display: flex; gap: 6px; }
+    .pg-btn { min-width: 32px; height: 30px; padding: 0 10px; border: 1px solid #e2eaf6; background: #fff; color: var(--text-2); font-size: 12.5px; border-radius: 6px; cursor: pointer; transition: .15s; }
+    .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .pg-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .pg-btn:disabled { color: #c2ccdb; cursor: not-allowed; background: #f8fafc; }
+
+    .ln-vtabs { display: flex; align-items: center; gap: 26px; }
+    .ln-vtabs button {
+      position: relative; padding: 4px 2px 16px; border: 0; background: none;
+      font-family: inherit; font-size: 14.5px; font-weight: 500; color: var(--text-3);
+      cursor: pointer; transition: color .15s;
+    }
+    .ln-vtabs button:hover { color: var(--primary); }
+    .ln-vtabs button.active { color: var(--primary); font-weight: 600; }
+    .ln-vtabs em { font-style: normal; font-size: 11.5px; color: var(--text-3); margin-left: 3px; }
+    .ln-vtabs button.active em { color: var(--primary); }
+    #view-current, #view-history { display: grid; gap: 16px; }
+    #view-current[hidden], #view-history[hidden] { display: none; }
+    [hidden] { display: none !important; }
+
+    .ln-summary { padding: 14px 20px 12px; font-size: 13px; color: var(--text-2); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .ln-summary b { color: var(--text); font-weight: 600; }
+    .ln-summary .rsv-note { color: var(--text-3); font-size: 12.5px; }
+    .ln-summary .rsv-rule { margin-left: auto; color: var(--primary); font-size: 12.5px; text-decoration: none; }
+    .ln-summary .rsv-rule:hover { text-decoration: underline; }
+
+    .ln-thead, .ln-row { display: grid; grid-template-columns: 46px minmax(0, 1fr) 92px 132px 120px 260px; gap: 14px; align-items: center; }
+    .ln-thead { margin: 0 20px; padding: 9px 14px; background: #f5f9ff; border-radius: 10px; font-size: 12px; color: var(--text-3); }
+    .ln-body { padding: 0 20px 8px; }
+    .ln-row { padding: 20px 14px; border-bottom: 1px dashed #e8eef8; border-radius: 10px; transition: background .15s; }
+    .ln-row:last-child { border-bottom: 0; }
+    .ln-row.no-line { border-bottom: 0; }
+    .ln-row:hover { background: #fbfdff; }
+
+    .ln-cover {
+      width: 46px; height: 60px; border-radius: 8px; flex-shrink: 0;
+      background: linear-gradient(140deg, #eaf2ff, #cfe0fb);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .08);
+      overflow: hidden; transition: .15s;
+    }
+    .ln-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    a.ln-cover:hover { box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .32), 0 3px 10px rgba(37, 99, 235, .18); }
+    .ln-main { min-width: 0; }
+    .ln-title { font-size: 14.5px; font-weight: 600; color: var(--text); }
+    .ln-title a { color: inherit; }
+    .ln-title a:hover { color: var(--primary); }
+    .ln-meta { margin-top: 5px; font-size: 12px; color: var(--text-3); display: flex; flex-wrap: wrap; gap: 3px 14px; }
+    .ln-meta span { position: relative; }
+    .ln-meta span + span::before { content: "·"; position: absolute; left: -9px; color: #cbd5e1; }
+    .ln-pick { margin-top: 6px; font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 4px; }
+    .ln-pick svg { width: 13px; height: 13px; flex: none; fill: none; stroke: #2563eb; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .ln-pick b { font-weight: 600; color: var(--text); }
+
+    .ln-time { font-size: 12.5px; color: var(--text-2); }
+    .ln-due { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .ln-left { margin-top: 5px; font-size: 11.5px; line-height: 1.5; }
+    .ln-left .ok { color: #16a34a; }
+    .ln-left .warn { color: #d97706; }
+    .ln-left .info { color: #2563eb; }
+
+    .ln-pill { display: inline-block; font-size: 11.5px; padding: 3px 10px; border-radius: 11px; font-weight: 500; white-space: nowrap; }
+    .ln-pill.queue { background: rgba(37,99,235,.1); color: #2563eb; }
+    .ln-pill.arrived { background: rgba(245,158,11,.15); color: #d97706; }
+    .ln-pill.ready { background: rgba(22,197,94,.12); color: #16a34a; }
+
+    .ln-act { display: flex; gap: 8px; justify-content: flex-start; align-items: center; align-self: stretch; position: relative; padding-left: 20px; }
+    .ln-act::before {
+      content: ''; position: absolute; left: 0; top: -20px; bottom: -20px;
+      width: 1px; background: #eef3fa;
+    }
+    .ln-thead > span:last-child { position: relative; text-align: center; padding-left: 0; }
+    .ln-thead > span:last-child::before {
+      content: ''; position: absolute; left: 0; top: -6px; bottom: -6px;
+      width: 1px; background: #e4ecf8;
+    }
+    /* 预约记录：无操作列 */
+    .ln-thead.hist, .ln-row.hist { grid-template-columns: 46px minmax(0, 1fr) 120px 150px 110px; }
+    .ln-thead.hist > span:last-child { text-align: left; }
+    .ln-thead.hist > span:last-child::before { display: none; }
+    .ln-pill.done { background: rgba(22,197,94,.12); color: #16a34a; }
+    .ln-pill.expired { background: rgba(107,114,128,.14); color: #6b7280; }
+    .ln-pill.error { background: rgba(220,38,38,.1); color: #dc2626; }
+    .ln-pill.cancel { background: rgba(107,114,128,.12); color: #6b7280; }
+    .ln-btn {
+      padding: 5px 13px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+      font-size: 12.5px; font-family: inherit; border: 1px solid #dbe3ef; background: #fff;
+      color: var(--text-2); text-decoration: none;
+    }
+    .ln-btn.primary { background: rgba(37,99,235,.08); color: #1d4ed8; border-color: rgba(37,99,235,.28); }
+    .ln-btn.primary:hover { background: rgba(37,99,235,.16); }
+    .ln-btn.ghost:hover { color: var(--primary); border-color: #b9cdf0; }
+    .ln-btn:disabled { background: #f5f5f5; color: #a3a3a3; border-color: #d4d4d4; cursor: not-allowed; }
+
+    @media (max-width: 1180px) {
+      .ln-thead, .ln-row { grid-template-columns: 46px minmax(0, 1fr) 132px 120px 260px; }
+      .ln-time { display: none; }
+    }
+    @media (max-width: 980px) {
+      .ln-thead { display: none; }
+      .ln-body { padding: 6px 16px 6px; }
+      .ln-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; padding: 18px 12px; }
+      .ln-main { flex: 1 1 220px; }
+      .ln-act { margin-left: auto; padding-left: 0; align-self: auto; }
+      .ln-act::before { display: none; }
+      .pl-wrap { padding: 16px 24px 20px; }
+      .bc-in { padding: 13px 24px; }
+    }
+    @media (max-width: 620px) {
+      .pl-wrap { padding: 14px 16px 20px; }
+      .bc-in { padding: 12px 16px; }
+    }
+
+    /* ============ 弹窗 ============ */
+    .rv-mask {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 400;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .rv-mask[hidden] { display: none; }
+    .rv-dialog {
+      width: 460px; max-width: 100%; background: #fff; border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(15,35,95,0.28); overflow: hidden;
+      animation: rvIn .22s ease;
+    }
+    @keyframes rvIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .rv-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .rv-head h3 { font-size: 15px; color: var(--text); margin: 0; font-weight: 600; }
+    .rv-close { border: 0; background: transparent; color: var(--text-3); font-size: 16px; cursor: pointer; line-height: 1; }
+    .rv-close:hover { color: var(--primary); }
+    .rv-body { padding: 22px 20px 14px; font-size: 13.5px; line-height: 1.85; color: var(--text); }
+    .rv-book { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .rv-rows { background: #f6f9ff; border: 1px solid #e6eefb; border-radius: 10px; padding: 4px 14px; }
+    .rv-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; font-size: 12.5px; color: var(--text-2); }
+    .rv-row + .rv-row { border-top: 1px dashed #e2ebf9; }
+    .rv-row b { color: var(--text); font-weight: 600; }
+    .rv-row .rv-new { color: var(--primary); }
+    .rv-tip { margin: 14px 0 4px; font-size: 12.5px; color: var(--text-3); line-height: 1.7; }
+    .rv-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 6px 18px 16px; }
+    .rv-foot.center { justify-content: center; }
+    .rv-btn { height: 34px; padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-family: inherit; transition: .2s; }
+    .rv-btn.primary { border: 0; background: var(--primary); color: #fff; font-weight: 600; }
+    .rv-btn.primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+    .rv-btn.danger { border: 0; background: #dc2626; color: #fff; font-weight: 600; }
+    .rv-btn.danger:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(220,38,38,.32); }
+    .rv-btn.ghost { border: 1px solid var(--border); background: #fff; color: var(--text-2); }
+    .rv-btn.ghost:hover { border-color: var(--primary-light); color: var(--primary); }
+    .rv-success { text-align: center; padding: 26px 20px 16px; }
+    .rv-ok-ico {
+      width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(22,163,74,.3);
+    }
+    .rv-ok-ico svg { width: 28px; height: 28px; }
+    .rv-success h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .rv-success p { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+    .rv-success .rv-due-line { color: var(--primary); font-weight: 600; }
+    .rv-code {
+      margin: 4px 0 12px; padding: 18px 0; text-align: center;
+      font-size: 28px; font-weight: 700; letter-spacing: 6px; color: var(--primary);
+      background: #f2f7ff; border: 1px dashed #b9d0f2; border-radius: 10px;
+    }
+    .rv-code-tip { font-size: 12.5px; color: var(--text-3); line-height: 1.7; margin: 0 0 14px; }
+
+    /* ============ 页脚 ============ */
+    .bk-footer { background: var(--primary); color: rgba(255,255,255,.9); text-align: center; padding: 16px 20px; font-size: 12.5px; line-height: 1.7; margin-top: auto; flex: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="首页.html">
+        <span class="sh-icon"><img src="assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <nav class="sh-nav">
+        <a href="首页.html">首页</a>
+
+        <div class="sh-dropdown">
+          <a href="借阅规则.html">借阅</a>
+          <div class="sh-dropdown-menu">
+            <a href="借阅规则.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">借阅规则</span><span class="sh-dd-desc">须知 · 违规处理</span></span></a>
+            <a href="图书预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书预约</span><span class="sh-dd-desc">到馆通知</span></span></a>
+            <a href="图书续借催还.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M21 21v-5h-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">续借 / 催还</span><span class="sh-dd-desc">在线办理</span></span></a>
+            <a href="阅读推荐.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">阅读推荐</span><span class="sh-dd-desc">新书 · 热门</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="馆藏目录.html">资源</a>
+          <div class="sh-dropdown-menu">
+            <a href="馆藏目录.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏目录</span><span class="sh-dd-desc">图书 · 期刊 · OPAC</span></span></a>
+            <a href="数据库导航.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">数据库导航</span><span class="sh-dd-desc">中外文 · 试用</span></span></a>
+            <a href="特色馆藏.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">特色馆藏</span><span class="sh-dd-desc">航空 · 民国文献</span></span></a>
+            <a href="资源动态.html?from=nav"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源动态</span><span class="sh-dd-desc">新书 · 数据库更新</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="座位预约说明.html">空间</a>
+          <div class="sh-dropdown-menu">
+            <a href="座位预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M6 18v3M18 18v3M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个</span></span></a>
+            <a href="研修室预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span></a>
+            <a href="自助服务.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">自助服务</span><span class="sh-dd-desc">借书机 · 打印</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">其他服务</a>
+          <div class="sh-dropdown-menu">
+            <a href="资源荐购.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v8l6 3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源荐购</span><span class="sh-dd-desc">推荐采购</span></span></a>
+            <a href="图书捐赠.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书捐赠</span><span class="sh-dd-desc">接收 · 致谢</span></span></a>
+            <a href="校外访问.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">校外访问</span><span class="sh-dd-desc">VPN · 校外</span></span></a>
+            <a href="论文提交.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M10 13l2 2 4-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">论文提交</span><span class="sh-dd-desc">机构库 · 硕博</span></span></a>
+            <a href="信息素养.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">信息素养</span><span class="sh-dd-desc">课程 · 培训</span></span></a>
+            <a href="科技查新.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2c4 0 7 3 7 7 0 6-7 13-7 13S7 15 7 9c0-4 3-7 7-7z"/><circle cx="14" cy="9" r="2.5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">科技查新</span><span class="sh-dd-desc">立项 · 成果</span></span></a>
+            <a href="知识产权.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 3a9 9 0 0 0 0 18"/><path d="M8 12h8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">知识产权</span><span class="sh-dd-desc">专利 · 版权</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">概况</a>
+          <div class="sh-dropdown-menu">
+            <a href="本馆简介.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">本馆简介</span><span class="sh-dd-desc">历史 · 馆藏 · 空间</span></span></a>
+            <a href="馆藏分布.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏分布</span><span class="sh-dd-desc">楼层 · 分区</span></span></a>
+            <a href="入馆须知.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">入馆须知</span><span class="sh-dd-desc">刷卡 · 秩序</span></span></a>
+            <a href="开放时间.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">开放时间</span><span class="sh-dd-desc">08:00 - 22:00</span></span></a>
+            <a href="馆舍风貌.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆舍风貌</span><span class="sh-dd-desc">建筑 · 文化</span></span></a>
+            <a href="组织机构.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">组织机构</span><span class="sh-dd-desc">部门 · 岗位</span></span></a>
+            <a href="规章制度.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">规章制度</span><span class="sh-dd-desc">借阅 · 管理</span></span></a>
+            <a href="联系我们.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">联系我们</span><span class="sh-dd-desc">电话 · 邮箱</span></span></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="hd-mid">
+        <div class="tb-actions">
+          <a class="tb-btn" href="个人中心.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 面包屑 ============ -->
+  <div class="bc-bar">
+    <div class="bc-in">
+      <a class="bc-home" href="首页.html" title="返回首页">
+        <svg viewBox="0 0 24 24"><path d="M12 3 2.6 11.2a.9.9 0 0 0 .6 1.6H5v7.3c0 .5.4.9.9.9h4.4v-5.5h3.4V21h4.4c.5 0 .9-.4.9-.9v-7.3h1.8a.9.9 0 0 0 .6-1.6z"/></svg>
+      </a>
+      <span class="sep">›</span>
+      <a href="个人中心.html">个人中心</a>
+      <span class="sep">›</span>
+      <span class="current">图书预约</span>
+    </div>
+  </div>
+
+  <!-- ============ 主体 ============ -->
+  <div class="pl-wrap">
+    <div class="pl-right">
+
+      <section class="pl-card">
+        <div class="ln-head">
+          <div class="ln-vtabs" id="rsvViews">
+            <button type="button" class="active" data-view="current">当前预约</button>
+            <button type="button" data-view="history">预约记录</button>
+          </div>
+          <div class="ln-tabs" id="rsvTabs">
+            <span class="active" data-state="all">全部 <em>3</em></span>
+            <span data-state="queue">排队中 <em>1</em></span>
+            <span data-state="arrived">已到馆 <em>1</em></span>
+            <span data-state="ready">待取书 <em>1</em></span>
+          </div>
+          <div class="ln-tabs" id="histTabs" hidden>
+            <span class="active" data-hstate="all">全部 <em>4</em></span>
+            <span data-hstate="done">已取书 <em>1</em></span>
+            <span data-hstate="invalid">已失效 <em>1</em></span>
+            <span data-hstate="cancel">已取消 <em>1</em></span>
+            <span data-hstate="error">馆藏异常 <em>1</em></span>
+          </div>
+        </div>
+
+        <div id="view-current">
+        <div class="ln-summary">
+          <span>正在预约 <b id="rsvCount">3</b> 本 / 预约上限 <b>3</b> 册</span>
+          <span class="rsv-note">待取书状态的图书，逾期未取会失效并自动取消，记违约一次。</span>
+          <a class="rsv-rule" href="图书预约说明.html">预约规则说明 ›</a>
+        </div>
+
+        <div class="ln-thead">
+          <span></span>
+          <span>图书信息</span>
+          <span class="ln-time">预约时间</span>
+          <span>预计到馆 / 取书</span>
+          <span>状态</span>
+          <span>操作</span>
+        </div>
+
+        <div class="ln-body" id="rsvBody">
+
+          <!-- 排队中 -->
+          <div class="ln-row" data-state="queue" data-status="排队中" data-time="2026-11-15">
+            <a class="ln-cover" href="图书详情.html"><img src="assets/covers/cover_aero_engine.jpg" alt="航空发动机构造与维修"></a>
+            <div class="ln-main">
+              <div class="ln-title"><a href="图书详情.html">航空发动机构造与维修</a></div>
+              <div class="ln-meta"><span>李建民</span><span>V23 /L32</span><span>文献馆文科综合书库</span></div>
+            </div>
+            <div class="ln-time">2026-11-15</div>
+            <div>
+              <div class="ln-due">2026-11-26</div>
+              <div class="ln-left"><span class="info">当前排队第 2 位</span></div>
+            </div>
+            <div><span class="ln-pill queue">排队中</span></div>
+            <div class="ln-act">
+              <button class="ln-btn ghost" type="button" onclick="cancelReserve(this)">取消排队</button>
+            </div>
+          </div>
+
+          <!-- 已到馆 -->
+          <div class="ln-row" data-state="arrived" data-status="已到馆" data-time="2026-11-10">
+            <a class="ln-cover" href="图书详情.html"><img src="assets/covers/book2_uav.jpg" alt="无人机飞行控制系统设计与应用"></a>
+            <div class="ln-main">
+              <div class="ln-title"><a href="图书详情.html">无人机飞行控制系统设计与应用</a></div>
+              <div class="ln-meta"><span>张鹏</span><span>V279 /Z12</span><span>自然科学书库</span></div>
+            </div>
+            <div class="ln-time">2026-11-10</div>
+            <div>
+              <div class="ln-due">2026-11-19</div>
+              <div class="ln-left"><span class="warn">已到馆 · 待上架</span></div>
+            </div>
+            <div><span class="ln-pill arrived">已到馆</span></div>
+            <div class="ln-act">
+              <button class="ln-btn ghost" type="button" onclick="cancelReserve(this)">取消预约</button>
+            </div>
+          </div>
+
+          <!-- 待取书 -->
+          <div class="ln-row" data-state="ready" data-status="待取书" data-time="2026-11-08" data-hold="2026-11-22">
+            <a class="ln-cover" href="图书详情.html"><img src="assets/covers/book4_cabin.jpg" alt="民航客舱服务与应急管理"></a>
+            <div class="ln-main">
+              <div class="ln-title"><a href="图书详情.html">民航客舱服务与应急管理</a></div>
+              <div class="ln-meta"><span>王雪梅</span><span>F560.6 /W21</span><span>民航运输书库</span></div>
+              <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>取书地点：<b>总馆1F总服务台</b></span></div>
+            </div>
+            <div class="ln-time">2026-11-08</div>
+            <div>
+              <div class="ln-due">2026-11-18</div>
+              <div class="ln-left"><span class="ok">已到馆 · 保留至 11-22</span></div>
+            </div>
+            <div><span class="ln-pill ready">待取书</span></div>
+            <div class="ln-act">
+              <button class="ln-btn primary" type="button" onclick="showPickupCode(this)">取书码</button>
+              <button class="ln-btn ghost" type="button" onclick="extendHold(this)">申请延期</button>
+              <button class="ln-btn ghost" type="button" onclick="cancelReserve(this)">取消预约</button>
+            </div>
+          </div>
+
+        </div>
+        </div><!-- /view-current -->
+
+        <!-- ========== 预约记录 ========== -->
+        <div id="view-history" hidden>
+          <div class="ln-summary">
+            <span>共 <b>4</b> 条 · 已取书 <b>1</b> · 已失效 <b>1</b> · 已取消 <b>1</b> · 馆藏异常 <b>1</b></span>
+          </div>
+
+          <div class="ln-thead hist">
+            <span></span>
+            <span>图书信息</span>
+            <span>预约时间</span>
+            <span>到馆 / 取书</span>
+            <span>状态</span>
+          </div>
+
+          <div class="ln-body">
+
+            <div class="ln-row hist" data-hstate="done">
+              <a class="ln-cover" href="图书详情.html"><img src="assets/covers/cover_weicheng.jpg" alt="围城"></a>
+              <div class="ln-main">
+                <div class="ln-title"><a href="图书详情.html">围城</a></div>
+                <div class="ln-meta"><span>钱锺书</span><span>H195.5 /Q44(2)</span></div>
+              </div>
+              <div class="ln-time">2026-10-20</div>
+              <div>
+                <div class="ln-due">2026-11-02</div>
+                <div class="ln-left"><span class="ok">已取书</span></div>
+              </div>
+              <div><span class="ln-pill done">已取书</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="invalid">
+              <a class="ln-cover" href="图书详情.html"><img src="assets/covers/book2_uav.jpg" alt="无人机飞行控制系统设计与应用"></a>
+              <div class="ln-main">
+                <div class="ln-title"><a href="图书详情.html">无人机飞行控制系统设计与应用</a></div>
+                <div class="ln-meta"><span>张鹏</span><span>V279 /Z12</span></div>
+              </div>
+              <div class="ln-time">2026-09-12</div>
+              <div>
+                <div class="ln-due">2026-09-26</div>
+                <div class="ln-left"><span class="warn">保留期满未取</span></div>
+              </div>
+              <div><span class="ln-pill expired">已失效</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="cancel">
+              <a class="ln-cover" href="图书详情.html"><img src="assets/covers/book4_cabin.jpg" alt="民航客舱服务与应急管理"></a>
+              <div class="ln-main">
+                <div class="ln-title"><a href="图书详情.html">民航客舱服务与应急管理</a></div>
+                <div class="ln-meta"><span>王雪梅</span><span>F560.6 /W21</span></div>
+              </div>
+              <div class="ln-time">2026-08-30</div>
+              <div>
+                <div class="ln-due">—</div>
+                <div class="ln-left"><span class="info">读者主动取消</span></div>
+              </div>
+              <div><span class="ln-pill cancel">已取消</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="error">
+              <a class="ln-cover" href="图书详情.html"><img src="assets/covers/book7_aviation_intro.jpg" alt="航空概论"></a>
+              <div class="ln-main">
+                <div class="ln-title"><a href="图书详情.html">航空概论</a></div>
+                <div class="ln-meta"><span>刘伟</span><span>V2 /L45</span></div>
+              </div>
+              <div class="ln-time">2026-06-28</div>
+              <div>
+                <div class="ln-due">—</div>
+                <div class="ln-left"><span class="warn">馆藏破损 · 系统取消</span></div>
+              </div>
+              <div><span class="ln-pill error">馆藏异常</span></div>
+            </div>
+
+          </div>
+
+          <div class="ln-pager" id="histPager" hidden>
+            <span class="ln-pager-info"></span>
+            <div class="ln-pager-btns"></div>
+          </div>
+        </div><!-- /view-history -->
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="bk-footer">
+    © 2026 信阳航空职业学院 · 图书馆 版权所有 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </footer>
+
+  <!-- 取消预约确认弹窗 -->
+  <div class="rv-mask" id="rvConfirmMask" hidden>
+    <div class="rv-dialog" role="dialog" aria-modal="true" aria-labelledby="rvConfirmTitle">
+      <div class="rv-head">
+        <h3 id="rvConfirmTitle">取消预约</h3>
+        <button class="rv-close" id="rvConfirmClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-book" id="rvBookName">—</div>
+        <div class="rv-rows">
+          <div class="rv-row"><span>预约状态</span><b id="rvStatus">—</b></div>
+          <div class="rv-row"><span>预约时间</span><b id="rvTime">—</b></div>
+        </div>
+        <p class="rv-tip" id="rvTip">取消后本次预约将失效，现有排队位次不再保留，确定取消吗？</p>
+      </div>
+      <div class="rv-foot">
+        <button class="rv-btn ghost" id="rvCancelBtn" type="button">再想想</button>
+        <button class="rv-btn danger" id="rvConfirmBtn" type="button">确认取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 取消成功提示弹窗 -->
+  <div class="rv-mask" id="rvSuccessMask" hidden>
+    <div class="rv-dialog" role="dialog" aria-modal="true" aria-labelledby="rvSuccessTitle">
+      <div class="rv-head">
+        <h3 id="rvSuccessTitle">操作结果</h3>
+        <button class="rv-close" id="rvSuccessClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body rv-success">
+        <div class="rv-ok-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h4 id="rvSuccessHead">已取消预约</h4>
+        <p id="rvSuccessDesc">该图书已从预约中移除。</p>
+      </div>
+      <div class="rv-foot center">
+        <button class="rv-btn primary" id="rvSuccessBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 申请延期确认弹窗 -->
+  <div class="rv-mask" id="exMask" hidden>
+    <div class="rv-dialog" role="dialog" aria-modal="true" aria-labelledby="exTitle">
+      <div class="rv-head">
+        <h3 id="exTitle">申请延期</h3>
+        <button class="rv-close" id="exClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-book" id="exBookName">—</div>
+        <div class="rv-rows">
+          <div class="rv-row"><span>当前保留至</span><b id="exOldDate">—</b></div>
+          <div class="rv-row"><span>延期后保留至</span><b class="rv-new" id="exNewDate">—</b></div>
+          <div class="rv-row"><span>延期天数</span><b>+3 天</b></div>
+        </div>
+        <p class="rv-tip">每册图书仅可申请延期一次，延期后请在保留期内到馆取书，逾期未取视为放弃预约。</p>
+      </div>
+      <div class="rv-foot">
+        <button class="rv-btn ghost" id="exCancelBtn" type="button">取消</button>
+        <button class="rv-btn primary" id="exConfirmBtn" type="button">确认申请</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 延期成功提示弹窗 -->
+  <div class="rv-mask" id="exSuccessMask" hidden>
+    <div class="rv-dialog" role="dialog" aria-modal="true" aria-labelledby="exSuccessTitle">
+      <div class="rv-head">
+        <h3 id="exSuccessTitle">操作结果</h3>
+        <button class="rv-close" id="exSuccessClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body rv-success">
+        <div class="rv-ok-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h4>延期申请成功</h4>
+        <p>图书保留期已延长至 <span class="rv-due-line" id="exSuccessDate">—</span>，请及时到馆取书。</p>
+      </div>
+      <div class="rv-foot center">
+        <button class="rv-btn primary" id="exSuccessBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 取书码弹窗 -->
+  <div class="rv-mask" id="codeMask" hidden>
+    <div class="rv-dialog" role="dialog" aria-modal="true" aria-labelledby="codeTitle">
+      <div class="rv-head">
+        <h3 id="codeTitle">取书码</h3>
+        <button class="rv-close" id="codeClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-code" aria-label="取书码 8848 1029">8848 1029</div>
+        <p class="rv-code-tip">请到总馆1F总服务台出示取书码，由馆员为您取书。</p>
+        <div class="rv-rows">
+          <div class="rv-row"><span>取书地点</span><b id="codeLoc">总馆1F总服务台</b></div>
+          <div class="rv-row"><span>保留至</span><b id="codeHold">—</b></div>
+        </div>
+      </div>
+      <div class="rv-foot center">
+        <button class="rv-btn primary" id="codeOkBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var body = document.getElementById('rsvBody');
+    var tabs = document.getElementById('rsvTabs');
+    var confirmMask = document.getElementById('rvConfirmMask');
+    var successMask = document.getElementById('rvSuccessMask');
+    var pendingRow = null;
+    var pendingQueue = false;
+    var pendingState = '';
+
+    function rows() { return body.querySelectorAll('.ln-row'); }
+    // 最后一条可见记录不显示底部虚线
+    function markNoLine(scope) {
+      var list = scope.querySelectorAll('.ln-row');
+      var last = null;
+      Array.prototype.forEach.call(list, function (r) { if (r.style.display !== 'none') last = r; });
+      Array.prototype.forEach.call(list, function (r) { r.classList.toggle('no-line', r === last); });
+    }
+
+    function refreshCounts() {
+      var list = rows();
+      var counts = { all: list.length, queue: 0, arrived: 0, ready: 0 };
+      Array.prototype.forEach.call(list, function (r) {
+        counts[r.getAttribute('data-state')]++;
+      });
+      Array.prototype.forEach.call(tabs.querySelectorAll('span'), function (t) {
+        var key = t.getAttribute('data-state');
+        var em = t.querySelector('em');
+        if (em) em.textContent = counts[key];
+      });
+      document.getElementById('rsvCount').textContent = counts.all;
+      markNoLine(body);
+    }
+
+    tabs.addEventListener('click', function (e) {
+      var tab = e.target.closest('span');
+      if (!tab) return;
+      Array.prototype.forEach.call(tabs.querySelectorAll('span'), function (s) { s.classList.remove('active'); });
+      tab.classList.add('active');
+      var state = tab.getAttribute('data-state');
+      Array.prototype.forEach.call(rows(), function (r) {
+        r.style.display = (state === 'all' || r.getAttribute('data-state') === state) ? '' : 'none';
+      });
+      markNoLine(body);
+    });
+
+    // 预约中 / 预约记录 切换
+    var viewBox = document.getElementById('rsvViews');
+    var viewCurrent = document.getElementById('view-current');
+    var viewHistory = document.getElementById('view-history');
+    var histTabs = document.getElementById('histTabs');
+    viewBox.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      var v = btn.getAttribute('data-view');
+      Array.prototype.forEach.call(viewBox.querySelectorAll('button'), function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      viewCurrent.hidden = (v !== 'current');
+      viewHistory.hidden = (v !== 'history');
+      tabs.hidden = (v !== 'current');
+      histTabs.hidden = (v !== 'history');
+    });
+
+    // 预约记录状态筛选
+    var histRows = viewHistory.querySelectorAll('.ln-row.hist');
+    (function initHistCounts() {
+      var c = { all: histRows.length };
+      Array.prototype.forEach.call(histRows, function (r) {
+        var k = r.getAttribute('data-hstate');
+        c[k] = (c[k] || 0) + 1;
+      });
+      Array.prototype.forEach.call(histTabs.querySelectorAll('span'), function (t) {
+        var em = t.querySelector('em');
+        if (em) em.textContent = c[t.getAttribute('data-hstate')] || 0;
+      });
+    })();
+    histTabs.addEventListener('click', function (e) {
+      var tab = e.target.closest('span');
+      if (!tab) return;
+      Array.prototype.forEach.call(histTabs.querySelectorAll('span'), function (s) { s.classList.remove('active'); });
+      tab.classList.add('active');
+      var st = tab.getAttribute('data-hstate');
+      Array.prototype.forEach.call(histRows, function (r) {
+        var show = (st === 'all' || r.getAttribute('data-hstate') === st);
+        r.dataset.fhidden = show ? '0' : '1';
+        r.style.display = show ? '' : 'none';
+      });
+      if (window.__rsvPagerReset) { window.__rsvPagerReset(); return; }
+      markNoLine(viewHistory);
+    });
+
+    // 预约记录分页：每页 10 条
+    (function () {
+      var body = viewHistory.querySelector('.ln-body');
+      var pager = document.getElementById('histPager');
+      if (!body || !pager) return;
+      var info = pager.querySelector('.ln-pager-info');
+      var btns = pager.querySelector('.ln-pager-btns');
+      var PAGE_SIZE = 10;
+      var page = 1;
+
+      function rows() { return Array.prototype.slice.call(body.querySelectorAll('.ln-row')); }
+      function filteredRows() { return rows().filter(function (r) { return r.dataset.fhidden !== '1'; }); }
+
+      function render() {
+        var list = filteredRows();
+        var total = list.length;
+        var tp = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (page > tp) page = tp;
+        var start = (page - 1) * PAGE_SIZE;
+
+        rows().forEach(function (r) {
+          r.classList.remove('no-line');
+          if (r.dataset.fhidden === '1') { r.style.display = 'none'; return; }
+          var i = list.indexOf(r);
+          r.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
+        });
+        var shown = list.slice(start, start + PAGE_SIZE);
+        if (shown.length) shown[shown.length - 1].classList.add('no-line');
+
+        info.innerHTML = '共 <b>' + total + '</b> 条 · 每页 ' + PAGE_SIZE + ' 条';
+        btns.innerHTML = '';
+        pager.hidden = false;
+
+        function mk(label, p, opts) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pg-btn' + (opts && opts.active ? ' active' : '');
+          b.textContent = label;
+          b.disabled = !!(opts && opts.disabled);
+          if (!b.disabled) b.addEventListener('click', function () { page = p; render(); });
+          return b;
+        }
+        btns.appendChild(mk('上一页', page - 1, { disabled: page === 1 }));
+        for (var i = 1; i <= tp; i++) btns.appendChild(mk(String(i), i, { active: i === page }));
+        btns.appendChild(mk('下一页', page + 1, { disabled: page === tp }));
+      }
+
+      window.__rsvPagerReset = function () { page = 1; render(); };
+      render();
+    })();
+
+    window.cancelReserve = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      pendingRow = row;
+      pendingState = row.getAttribute('data-state');
+      pendingQueue = pendingState === 'queue';
+      document.getElementById('rvBookName').textContent = row.querySelector('.ln-title').textContent.trim();
+      document.getElementById('rvStatus').textContent = row.getAttribute('data-status');
+      document.getElementById('rvTime').textContent = row.getAttribute('data-time');
+      document.getElementById('rvConfirmTitle').textContent = pendingQueue ? '取消排队' : '取消预约';
+      document.getElementById('rvTip').textContent = pendingQueue
+        ? '取消后将退出当前预约队列，现有排队位次不再保留，确定取消吗？'
+        : pendingState === 'ready'
+          ? '图书已到馆并为您保留，取消后图书将释放给下一位读者，不产生违约，确定取消吗？'
+          : '图书已到馆但尚未通知取书，此时取消不产生违约，确定取消吗？';
+      confirmMask.hidden = false;
+      document.getElementById('rvConfirmBtn').focus();
+    };
+
+    function closeConfirm() {
+      confirmMask.hidden = true;
+      pendingRow = null;
+    }
+
+    document.getElementById('rvConfirmBtn').addEventListener('click', function () {
+      if (!pendingRow) return;
+      var name = pendingRow.querySelector('.ln-title').textContent.trim();
+      pendingRow.remove();
+      pendingRow = null;
+      confirmMask.hidden = true;
+      refreshCounts();
+      document.getElementById('rvSuccessHead').textContent = pendingQueue ? '已取消排队' : '已取消预约';
+      document.getElementById('rvSuccessDesc').textContent = pendingQueue
+        ? '《' + name + '》已退出预约队列。'
+        : pendingState === 'ready'
+          ? '《' + name + '》已从预约中移除，图书将释放给下一位读者。'
+          : '《' + name + '》已从预约中移除。';
+      successMask.hidden = false;
+      document.getElementById('rvSuccessBtn').focus();
+    });
+
+    document.getElementById('rvCancelBtn').addEventListener('click', closeConfirm);
+    document.getElementById('rvConfirmClose').addEventListener('click', closeConfirm);
+    confirmMask.addEventListener('click', function (e) { if (e.target === confirmMask) closeConfirm(); });
+
+    function closeSuccess() { successMask.hidden = true; }
+    document.getElementById('rvSuccessBtn').addEventListener('click', closeSuccess);
+    document.getElementById('rvSuccessClose').addEventListener('click', closeSuccess);
+    successMask.addEventListener('click', function (e) { if (e.target === successMask) closeSuccess(); });
+
+    /* 申请延期（每册仅可一次） */
+    var exMask = document.getElementById('exMask');
+    var exSuccessMask = document.getElementById('exSuccessMask');
+    var exRow = null;
+    var exBtn = null;
+    var exNewDate = null;
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function fmtDate(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+    function fmtShort(d) { return pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+
+    window.extendHold = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      var p = (row.getAttribute('data-hold') || '').split('-');
+      if (p.length !== 3) return;
+      var hold = new Date(+p[0], +p[1] - 1, +p[2]);
+      var nd = new Date(hold.getFullYear(), hold.getMonth(), hold.getDate() + 3);
+      exRow = row; exBtn = btn; exNewDate = nd;
+      document.getElementById('exBookName').textContent = row.querySelector('.ln-title').textContent.trim();
+      document.getElementById('exOldDate').textContent = fmtDate(hold);
+      document.getElementById('exNewDate').textContent = fmtDate(nd);
+      exMask.hidden = false;
+      document.getElementById('exConfirmBtn').focus();
+    };
+
+    function closeEx() { exMask.hidden = true; exRow = null; exBtn = null; }
+
+    document.getElementById('exConfirmBtn').addEventListener('click', function () {
+      if (!exRow || !exBtn) return;
+      exRow.setAttribute('data-hold', fmtDate(exNewDate));
+      var left = exRow.querySelector('.ln-left');
+      if (left) left.innerHTML = '<span class="ok">已到馆 · 保留至 ' + fmtShort(exNewDate) + '</span>';
+      exBtn.disabled = true;
+      exBtn.textContent = '已申请延期';
+      exBtn.classList.remove('primary');
+      exBtn.classList.add('ghost');
+      document.getElementById('exSuccessDate').textContent = fmtDate(exNewDate);
+      exMask.hidden = true;
+      exRow = null; exBtn = null;
+      exSuccessMask.hidden = false;
+      document.getElementById('exSuccessBtn').focus();
+    });
+
+    document.getElementById('exCancelBtn').addEventListener('click', closeEx);
+    document.getElementById('exClose').addEventListener('click', closeEx);
+    exMask.addEventListener('click', function (e) { if (e.target === exMask) closeEx(); });
+
+    function closeExSuccess() { exSuccessMask.hidden = true; }
+    document.getElementById('exSuccessBtn').addEventListener('click', closeExSuccess);
+    document.getElementById('exSuccessClose').addEventListener('click', closeExSuccess);
+    exSuccessMask.addEventListener('click', function (e) { if (e.target === exSuccessMask) closeExSuccess(); });
+
+    /* 取书码（PC 端仅展示数字码，条形码由移动端出示） */
+    var codeMask = document.getElementById('codeMask');
+    window.showPickupCode = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      var loc = row.querySelector('.ln-pick b');
+      document.getElementById('codeLoc').textContent = loc ? loc.textContent.trim() : '总馆1F总服务台';
+      document.getElementById('codeHold').textContent = row.getAttribute('data-hold') || '—';
+      codeMask.hidden = false;
+      document.getElementById('codeOkBtn').focus();
+    };
+    function closeCode() { codeMask.hidden = true; }
+    document.getElementById('codeOkBtn').addEventListener('click', closeCode);
+    document.getElementById('codeClose').addEventListener('click', closeCode);
+    codeMask.addEventListener('click', function (e) { if (e.target === codeMask) closeCode(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!confirmMask.hidden) closeConfirm();
+      else if (!successMask.hidden) closeSuccess();
+      else if (!exMask.hidden) closeEx();
+      else if (!exSuccessMask.hidden) closeExSuccess();
+      else if (!codeMask.hidden) closeCode();
+    });
+  })();
+  </script>
+
+<script src="assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>

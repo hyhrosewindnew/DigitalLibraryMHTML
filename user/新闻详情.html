@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>详情 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    /* ============ 主题变量 ============ */
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --accent: #f4a261;
+      --gold: #ffc857;
+      --bg-page: #f2f3f5;
+      --surface: #ffffff;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+      --border-light: #eef2f7;
+      --max-w: 1440px;
+    }
+
+    /* ============ 顶部背景图条 ============ */
+    .intro-hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 230px;
+      padding: 58px 0 14px;
+      background: url('assets/intro-banner-feature.png') center 38%/cover no-repeat;
+    }
+    .hero-inner {
+      position: relative;
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 1px 30px 2px 56px;
+      transform: translateY(27px);
+    }
+    .hero-inner::before {
+      content: '';
+      position: absolute;
+      left: 30px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.55);
+    }
+    .bc-wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 18px 30px 8px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .bc-wrap a { color: var(--text-2); transition: .2s; }
+    .bc-wrap a:hover { color: var(--primary); }
+    .bc-wrap .sep { margin: 0 8px; color: var(--text-3); }
+    .bc-wrap .current { color: var(--text); font-weight: 500; }
+    .intro-hero .bc-wrap {
+      width: auto;
+      margin: 0;
+      padding: 0;
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 500;
+    }
+    .intro-hero .bc-wrap a { color: rgba(255, 255, 255, 0.92); }
+    .intro-hero .bc-wrap .home-ico {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: -2px;
+    }
+    .intro-hero .bc-wrap .home-ico svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+    .intro-hero .bc-wrap a:hover { color: #ffc857; }
+    .intro-hero .bc-wrap .sep { color: rgba(255, 255, 255, 0.55); }
+    .intro-hero .bc-wrap .current { color: #fff; }
+    .hero-title {
+      margin: 10px 0 0;
+      padding: 0;
+      color: #fff;
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      line-height: 1.2;
+    }
+
+    /* ============ 主体 ============ */
+    .intro-wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 22px 30px 60px;
+    }
+    .intro-body {
+      margin-top: 0;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      gap: 24px;
+      align-items: start;
+      position: relative;
+    }
+    .intro-aside { grid-column: 1; grid-row: 1; }
+    .intro-main { grid-column: 2; grid-row: 1; }
+    .intro-main {
+      background: #fff;
+      border-radius: 14px;
+      padding: 40px 44px;
+      box-shadow: 0 4px 22px rgba(30, 64, 175, 0.08);
+    }
+
+    /* ============ 详情头部 ============ */
+    .dt-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.45;
+      letter-spacing: .5px;
+      margin: 0 0 14px;
+    }
+    .dt-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .dt-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dt-meta svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+    }
+    .dt-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      border-radius: 10px;
+      letter-spacing: 1px;
+    }
+
+    /* ============ 正文 ============ */
+    .dt-body {
+      font-size: 14.5px;
+      color: var(--text-2);
+      line-height: 1.95;
+    }
+    .dt-body p {
+      margin-bottom: 14px;
+      text-align: justify;
+      text-indent: 2em;
+    }
+    .dt-body h3 {
+      font-size: 17px;
+      color: var(--primary);
+      font-weight: 700;
+      margin: 28px 0 12px;
+      padding-left: 0;
+    }
+    .dt-body ul {
+      padding-left: 24px;
+      margin-bottom: 14px;
+    }
+    .dt-body ul li {
+      font-size: 14.5px;
+      color: var(--text-2);
+      line-height: 1.95;
+      margin-bottom: 6px;
+      list-style: disc;
+    }
+    .dt-body ol {
+      padding-left: 24px;
+      margin-bottom: 14px;
+    }
+    .dt-body ol li {
+      font-size: 14.5px;
+      color: var(--text-2);
+      line-height: 1.95;
+      margin-bottom: 6px;
+    }
+    .dt-body strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .dt-body blockquote {
+      margin: 16px 0 20px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #f6faff, #eef3ff);
+      border-radius: 4px;
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.85;
+    }
+    .dt-body blockquote p { text-indent: 0; margin-bottom: 0; }
+    .dt-img-wrap {
+      margin: 20px 0 24px;
+      text-align: center;
+    }
+    .dt-img-placeholder {
+      aspect-ratio: 16/9;
+      max-width: 720px;
+      margin: 0 auto;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(30, 64, 175, 0.1);
+    }
+    .dt-img-placeholder::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.45) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(30,64,175,0.25) 0%, transparent 45%);
+    }
+    .dt-img-placeholder svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.35;
+    }
+    .dt-img-caption {
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+
+    /* ============ 底部分隔 ============ */
+    .dt-foot-divider {
+      margin: 36px 0 28px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    }
+
+    /* ============ 上一篇/下一篇 ============ */
+    .dt-pager {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .dt-pager a {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 16px 18px;
+      background: #fafcff;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      text-decoration: none;
+      transition: .2s;
+    }
+    .dt-pager a:hover {
+      border-color: var(--sky);
+      background: #f0f6ff;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
+    }
+    .dt-pager .p-label {
+      font-size: 12px;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dt-pager .p-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .dt-pager a:hover .p-title { color: var(--primary); }
+    .dt-pager .disabled {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 16px 18px;
+      background: #f5f7fa;
+      border: 1px dashed var(--border-light);
+      border-radius: 10px;
+      cursor: not-allowed;
+      opacity: .6;
+    }
+    .dt-pager .disabled .p-label,
+    .dt-pager .disabled .p-title { color: var(--text-3); }
+
+    /* ============ 左侧二级导航 ============ */
+    .side-nav {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 22px rgba(30, 64, 175, 0.08);
+      overflow: hidden;
+    }
+    .sn-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 22px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+    }
+    .sn-head svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      flex-shrink: 0;
+    }
+    .sn-list a {
+      display: block;
+      padding: 17px 22px;
+      font-size: 15.5px;
+      color: var(--text-2);
+      text-decoration: none;
+      border-bottom: 1px solid #f1f4f9;
+      transition: .2s;
+    }
+    .sn-list a:last-child { border-bottom: none; }
+    .sn-list a:hover { color: var(--primary); background: #f6f9ff; }
+    .sn-list a.active {
+      color: #fff;
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--primary), #2f6fe4);
+    }
+
+    /* 顶栏：主导航整体右移 */
+    body:not(.has-left-rail) .site-header .sh-inner { justify-content: flex-start; }
+    body:not(.has-left-rail) .site-header .sh-nav { margin-left: auto; }
+    body:not(.has-left-rail) .site-header .hd-mid { margin-left: 0; }
+
+    @media (max-width: 1200px) {
+      .intro-body { grid-template-columns: 1fr; }
+      .intro-aside, .intro-main { grid-column: auto; grid-row: auto; }
+      .intro-main { padding: 28px 24px 32px; }
+    }
+    @media (max-width: 760px) {
+      .intro-hero { min-height: 170px; padding: 22px 0; }
+      .hero-inner { padding: 1px 20px 2px 42px; }
+      .hero-inner::before { left: 20px; width: 3px; }
+      .hero-title { font-size: 28px; }
+      .intro-main { padding: 24px; }
+      .dt-pager { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="首页.html">
+        <span class="sh-icon"><img src="assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <nav class="sh-nav">
+        <a href="首页.html">首页</a>
+
+        <div class="sh-dropdown">
+          <a href="借阅规则.html">借阅</a>
+          <div class="sh-dropdown-menu">
+            <a href="借阅规则.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">借阅规则</span><span class="sh-dd-desc">须知 · 违规处理</span></span></a>
+            <a href="图书预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书预约</span><span class="sh-dd-desc">到馆通知</span></span></a>
+            <a href="图书续借催还.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M21 21v-5h-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">续借 / 催还</span><span class="sh-dd-desc">在线办理</span></span></a>
+            <a href="阅读推荐.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">阅读推荐</span><span class="sh-dd-desc">新书 · 热门</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="馆藏目录.html">资源</a>
+          <div class="sh-dropdown-menu">
+            <a href="馆藏目录.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏目录</span><span class="sh-dd-desc">图书 · 期刊 · OPAC</span></span></a>
+            <a href="数据库导航.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">数据库导航</span><span class="sh-dd-desc">中外文 · 试用</span></span></a>
+            <a href="特色馆藏.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">特色馆藏</span><span class="sh-dd-desc">航空 · 民国文献</span></span></a>
+            <a href="资源动态.html?from=nav"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源动态</span><span class="sh-dd-desc">新书 · 数据库更新</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="座位预约说明.html">空间</a>
+          <div class="sh-dropdown-menu">
+            <a href="座位预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M6 18v3M18 18v3M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个</span></span></a>
+            <a href="研修室预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span></a>
+            <a href="自助服务.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">自助服务</span><span class="sh-dd-desc">借书机 · 打印</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">其他服务</a>
+          <div class="sh-dropdown-menu">
+            <a href="资源荐购.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v8l6 3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源荐购</span><span class="sh-dd-desc">推荐采购</span></span></a>
+            <a href="图书捐赠.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书捐赠</span><span class="sh-dd-desc">接收 · 致谢</span></span></a>
+            <a href="校外访问.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">校外访问</span><span class="sh-dd-desc">VPN · 校外</span></span></a>
+            <a href="论文提交.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M10 13l2 2 4-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">论文提交</span><span class="sh-dd-desc">机构库 · 硕博</span></span></a>
+            <a href="信息素养.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">信息素养</span><span class="sh-dd-desc">课程 · 培训</span></span></a>
+            <a href="科技查新.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2c4 0 7 3 7 7 0 6-7 13-7 13S7 15 7 9c0-4 3-7 7-7z"/><circle cx="14" cy="9" r="2.5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">科技查新</span><span class="sh-dd-desc">立项 · 成果</span></span></a>
+            <a href="知识产权.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 3a9 9 0 0 0 0 18"/><path d="M8 12h8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">知识产权</span><span class="sh-dd-desc">专利 · 版权</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">概况</a>
+          <div class="sh-dropdown-menu">
+            <a href="本馆简介.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">本馆简介</span><span class="sh-dd-desc">历史 · 馆藏 · 空间</span></span></a>
+            <a href="馆藏分布.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏分布</span><span class="sh-dd-desc">楼层 · 分区</span></span></a>
+            <a href="入馆须知.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">入馆须知</span><span class="sh-dd-desc">刷卡 · 秩序</span></span></a>
+            <a href="开放时间.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">开放时间</span><span class="sh-dd-desc">08:00 - 22:00</span></span></a>
+            <a href="馆舍风貌.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆舍风貌</span><span class="sh-dd-desc">建筑 · 文化</span></span></a>
+            <a href="组织机构.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">组织机构</span><span class="sh-dd-desc">部门 · 岗位</span></span></a>
+            <a href="规章制度.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">规章制度</span><span class="sh-dd-desc">借阅 · 管理</span></span></a>
+            <a href="联系我们.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">联系我们</span><span class="sh-dd-desc">电话 · 邮箱</span></span></a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- 导航右侧：我的图书馆 + 搜索 -->
+      <div class="hd-mid">
+        <div class="tb-actions">
+          <a class="tb-btn" href="统一身份认证.html?redirect=通知公告.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 顶部背景图条 ============ -->
+  <div class="intro-hero">
+    <div class="hero-inner">
+    <div class="bc-wrap">
+      <a href="首页.html" class="home-ico" aria-label="首页">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 11h3v9h5v-6h4v6h5v-9h3L12 3z"/></svg>
+      </a>
+      <span class="sep">›</span>
+      <a href="通知公告.html">通知公告</a>
+      <span class="sep">›</span>
+      <span class="current">详情</span>
+    </div>
+    <div class="hero-title">通知公告</div>
+    </div>
+  </div>
+
+  <!-- ============ 主体 ============ -->
+  <div class="intro-wrap">
+
+    <div class="intro-body">
+
+      <!-- 主内容 -->
+      <div class="intro-main">
+
+        <!-- 标题 + 元信息 -->
+        <h1 class="dt-title">图书馆 A 楼闭馆通知：11 月 18 日起维修改造</h1>
+        <div class="dt-meta">
+          <span class="dt-tag">通知</span>
+          <span>
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            2026-11-12
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            阅读 1,256 次
+          </span>
+        </div>
+
+        <!-- 正文 -->
+        <div class="dt-body">
+          <p>各位读者：为推进馆舍维修改善、优化阅读学习环境，经学校批准，图书馆 <strong>A 楼自 2026 年 11 月 18 日（星期三）起闭馆</strong>，恢复开放时间另行通知。</p>
+
+          <blockquote>
+            <p>本次维修改造是图书馆年度重点工程，旨在解决 A 楼馆舍老化问题、升级阅览设施、优化功能分区，为全校师生提供更舒适、更现代化的阅读学习空间。</p>
+          </blockquote>
+
+          <h3>闭馆期间服务安排</h3>
+          <p>A 楼闭馆期间，图书馆各项服务调整如下，请各位读者知悉并相互转告：</p>
+
+          <ul>
+            <li><strong>线上服务：</strong>馆藏目录检索、电子数据库访问、电子书阅读、座位预约系统、自助借还机（B 楼）均 <strong>24 小时正常运行</strong>，不受影响</li>
+            <li><strong>图书借阅：</strong>B 楼四层自 2026 年 11 月 19 日（星期四）起提供图书借阅服务，馆藏覆盖 A 楼原有社科类、文学类图书及航空特色专题书架</li>
+            <li><strong>阅览座位：</strong>B 楼三层、五层正常开放，提供阅览座位 <strong>280 个</strong>，考研自习专区不受影响</li>
+            <li><strong>自修室 / 研修室：</strong>B 楼研修室预约系统正常开放，线上预约、现场签到流程不变</li>
+          </ul>
+
+          <h3>教学科研急需图书保障</h3>
+          <p>考虑到期末复习及毕业论文写作高峰期临近，图书馆特别开设了 <strong>"急需图书绿色通道"</strong>。如有教学科研急需的 A 楼馆藏图书，可通过以下方式申请协助调取：</p>
+
+          <ol>
+            <li><strong>电话申请：</strong>拨打流通管理部 <strong>0000-82191941</strong>（工作日 8:30—17:00）</li>
+            <li><strong>线上预约：</strong>通过图书馆微信公众号后台留言，注明书名、作者及学号</li>
+            <li><strong>现场登记：</strong>到 B 楼四层服务台填写《急需图书调取申请表》</li>
+          </ol>
+          <p>调取的图书将在 <strong>24 小时内</strong> 送到 B 楼服务台，读者凭一卡通即可领取。</p>
+
+          <h3>工程进度与开放时间</h3>
+          <p>本次维修改造主要包括 <strong>外立面翻新、消防设施升级、电梯更新、阅览区灯光改造、空调系统检修、图书分类重排</strong> 等六大工程。预计工期 <strong>45 天</strong>，如遇特殊天气或工程延误，开放时间将顺延。图书馆将在官网首页、微信公众号第一时间发布恢复开放通知，请读者留意。</p>
+
+          <blockquote>
+            <p>"给您带来不便，敬请谅解。我们将全力确保工程质量，按期交付一个更加舒适、智能、温馨的现代化阅读空间。"——图书馆工程改造小组</p>
+          </blockquote>
+
+          <p>特此通知，请广大读者合理安排到馆计划，感谢您的理解与支持！</p>
+          <p style="text-align:right;text-indent:0;color:var(--text-3);font-size:13px;">信阳航空职业学院 · 图书馆<br>2026 年 11 月 12 日</p>
+        </div>
+
+        <!-- 分隔 -->
+        <div class="dt-foot-divider"></div>
+
+        <!-- 上一篇/下一篇 -->
+        <div class="dt-pager">
+          <div class="disabled">
+            <span class="p-label">‹ 已是最新</span>
+            <span class="p-title">当前是第一篇公告</span>
+          </div>
+          <a href="新闻详情.html">
+            <span class="p-label">下一篇 ›</span>
+            <span class="p-title">关于调整阅览座位预约规则的通知</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- 侧栏 -->
+      <aside class="intro-aside">
+        <div class="side-nav">
+          <div class="sn-head">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            导航列表
+          </div>
+          <nav class="sn-list">
+            <a class="active" href="通知公告.html">通知公告</a>
+            <a href="资源动态.html">资源动态</a>
+            <a href="活动讲座.html">活动讲座</a>
+          </nav>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+
+  <!-- ============ 页脚（与首页一致） ============ -->
+  <footer class="site-footer">
+    <div class="sf-inner">
+      <div class="sf-col">
+        <div class="school-name">信阳航空职业学院</div>
+        <div class="school-slogan">图书馆 · 数字图书与知识服务中心<br>"飞阅书海 · 启智天路"</div>
+        <p style="font-size:12.5px;line-height:1.8;opacity:.85;">馆藏纸质图书 86 万册，电子图书 230 万册，订阅中外文期刊 800 余种。设有航空特色专题书架、考研自习专区、VR 沉浸式阅览室等。</p>
+        <div class="social">
+          <a href="#" title="微信公众号"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
+          <a href="#" title="微博"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></a>
+          <a href="#" title="抖音"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></a>
+          <a href="#" title="QQ群"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></a>
+        </div>
+      </div>
+      <div class="sf-col">
+        <h5>快速链接</h5>
+        <ul>
+          <li><a href="馆藏目录.html">馆藏目录</a></li>
+          <li><a href="馆藏分布.html">馆藏分布</a></li>
+          <li><a href="数据库导航.html">数据库导航</a></li>
+          <li><a href="座位预约系统.html">座位预约</a></li>
+          <li><a href="研修室预约.html">研修室预约</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h5>咨询服务</h5>
+        <ul>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>总服务台：0000-1234567</li>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 0-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>学科咨询：0000-1234568</li>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><a href="mailto:lib@xihang.edu.cn">lib@xihang.edu.cn</a></li>
+          <li><svg class="sf-ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><a href="意见反馈.html">在线咨询（QQ群）</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h5>读者服务</h5>
+        <ul>
+          <li><a href="入馆须知.html">入馆须知</a></li>
+          <li><a href="借阅规则.html">借阅规则</a></li>
+          <li><a href="图书预约.html">图书预约</a></li>
+          <li><a href="图书捐赠.html">图书捐赠</a></li>
+          <li><a href="资源荐购.html">资源荐购</a></li>
+          <li><a href="信息素养.html">信息素养</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h5>关注我们</h5>
+        <ul>
+          <li><a href="#">微信公众号</a></li>
+          <li><a href="#">微博</a></li>
+          <li><a href="#">抖音 / B站</a></li>
+          <li><a href="#">图书馆协会</a></li>
+          <li><a href="#">志愿者招募</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sf-bottom">
+      © 2026 信阳航空职业学院 · 图书馆 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+    </div>
+  </footer>
+
+<script src="assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>

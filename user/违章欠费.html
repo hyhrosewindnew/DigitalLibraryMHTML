@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>违章欠费 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --purple: #7c3aed;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+    }
+    * { box-sizing: border-box; }
+    /* 顶部导航右移居中 */
+    .site-header .sh-nav { margin-left: auto; margin-right: 0; }
+    body:not(.has-left-rail) .site-header .hd-mid { margin-left: 0; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(900px 320px at 12% -10%, #dfeaff 0%, rgba(223,234,255,0) 70%),
+        radial-gradient(900px 320px at 88% -6%, #e6edff 0%, rgba(230,237,255,0) 70%),
+        #f2f5fa;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============ 面包屑 ============ */
+    .bc-bar { background: #fff; border-bottom: 1px solid #e8eef8; }
+    .bc-in {
+      max-width: 1440px; margin: 0 auto; padding: 13px 40px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-3);
+    }
+    .bc-in a { color: var(--text-2); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .bc-in a:hover { color: var(--primary); }
+    .bc-in a svg { width: 16px; height: 16px; display: block; fill: currentColor; stroke: none; }
+    .bc-in .bc-home { color: #94a3b8; }
+    .bc-in .bc-home:hover { color: var(--primary); }
+    .bc-in .sep { color: #c3cddd; }
+    .bc-in .current { color: var(--text); font-weight: 500; }
+
+    /* ============ 我的借阅 ============ */
+    .ln-summary { padding: 14px 20px 12px; font-size: 13px; color: var(--text-2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .ln-summary b { color: var(--text); font-weight: 600; }
+    .ln-summary .fee { color: #dc2626; }
+    .ln-rule { margin-left: auto; color: var(--primary); font-size: 12.5px; text-decoration: none; }
+    .ln-rule:hover { text-decoration: underline; }
+
+    .ln-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px 0; flex-wrap: wrap; border-bottom: 1px solid #edf2fb; }
+    .ln-head h3 { font-size: 15.5px; color: var(--text); }
+    .ln-head h3 span { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 7px; }
+    .ln-tabs { display: flex; gap: 6px; margin-left: auto; margin-bottom: 10px; flex-wrap: wrap; }
+    .ln-tabs span { padding: 5px 12px; border-radius: 14px; font-size: 12.5px; color: var(--text-2); background: #f2f6fd; cursor: pointer; transition: .15s; }
+    .ln-tabs span:hover { background: #e6eefc; }
+    .ln-tabs span.active { background: var(--primary); color: #fff; }
+    .ln-tabs em { font-style: normal; opacity: .85; margin-left: 2px; }
+    .ln-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 20px; margin-top: 6px; flex-wrap: wrap; }
+    .ln-pager-info { font-size: 12.5px; color: var(--text-3); }
+    .ln-pager-info b { color: var(--text); }
+    .ln-pager-btns { display: flex; gap: 6px; }
+    .pg-btn { min-width: 32px; height: 30px; padding: 0 10px; border: 1px solid #e2eaf6; background: #fff; color: var(--text-2); font-size: 12.5px; border-radius: 6px; cursor: pointer; transition: .15s; }
+    .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .pg-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .pg-btn:disabled { color: #c2ccdb; cursor: not-allowed; background: #f8fafc; }
+
+    .ln-vtabs { display: flex; align-items: center; gap: 26px; }
+    .ln-vtabs button {
+      position: relative; padding: 4px 2px 16px; border: 0; background: none;
+      font-family: inherit; font-size: 14.5px; font-weight: 500; color: var(--text-3);
+      cursor: pointer; transition: color .15s;
+    }
+    .ln-vtabs button:hover { color: var(--primary); }
+    .ln-vtabs button.active { color: var(--primary); font-weight: 600; }
+    #view-current, #view-history { display: grid; gap: 16px; }
+    #view-current[hidden], #view-history[hidden] { display: none; }
+
+    .ln-thead, .ln-row { display: grid; grid-template-columns: 46px minmax(0, 1fr) 92px 132px 120px 132px; gap: 14px; align-items: center; }
+    #view-history .ln-thead, #view-history .ln-row { grid-template-columns: 46px minmax(0, 1fr) 100px 168px 136px; gap: 30px; }
+    .ln-thead { margin: 0 20px; padding: 9px 14px; background: #f5f9ff; border-radius: 10px; font-size: 12px; color: var(--text-3); }
+    .ln-body { padding: 0 20px 8px; }
+    .ln-row { padding: 20px 14px; border-bottom: 1px dashed #e8eef8; border-radius: 10px; transition: background .15s; }
+    .ln-row:last-child { border-bottom: 0; }
+    .ln-row.no-line { border-bottom: 0; }
+    .ln-row:hover { background: #fbfdff; }
+
+    .ln-cover {
+      width: 46px; height: 60px; border-radius: 8px; flex-shrink: 0;
+      background: linear-gradient(140deg, #eaf2ff, #cfe0fb);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .08);
+      overflow: hidden; transition: .15s;
+    }
+    .ln-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    a.ln-cover:hover { box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .32), 0 3px 10px rgba(37, 99, 235, .18); }
+    .ln-main { min-width: 0; }
+    .ln-title { font-size: 14.5px; font-weight: 600; color: var(--text); }
+    .ln-title a { color: inherit; }
+    .ln-title a:hover { color: var(--primary); }
+    .ln-meta { margin-top: 5px; font-size: 12px; color: var(--text-3); display: flex; flex-wrap: wrap; gap: 3px 14px; }
+    .ln-meta span { position: relative; }
+    .ln-meta span + span::before { content: "·"; position: absolute; left: -9px; color: #cbd5e1; }
+
+    .ln-borrow { font-size: 12.5px; color: var(--text-2); }
+    .ln-due { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .ln-left { margin-top: 6px; font-size: 11.5px; line-height: 1.5; }
+    .ln-left .ok { color: #16a34a; }
+    .ln-left .warn { color: #d97706; }
+    .ln-left .bad { color: #dc2626; }
+    .ln-left .done { color: #9aa6b8; }
+    .ln-left .settle { color: #16a34a; }
+    .ln-bar { margin-top: 6px; height: 4px; border-radius: 3px; background: #eef3fb; overflow: hidden; }
+    .ln-bar i { display: block; height: 100%; border-radius: 3px; }
+
+    .ln-pill { display: inline-block; font-size: 11.5px; padding: 3px 10px; border-radius: 11px; font-weight: 500; white-space: nowrap; }
+    .ln-pill.on { background: rgba(22,197,94,.12); color: #16a34a; }
+    .ln-pill.soon { background: rgba(245,158,11,.15); color: #d97706; }
+    .ln-pill.over { background: rgba(220,38,38,.12); color: #dc2626; }
+    .ln-pill.done { background: rgba(107,114,128,.12); color: #6b7280; }
+    .ln-pill.damaged { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.lost { background: rgba(124,58,237,.12); color: #7c3aed; }
+    .ln-pill.late { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.lostsettle { background: rgba(124,58,237,.12); color: #7c3aed; }
+    .ln-pill.dmgsettle { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.recovered { background: rgba(14,165,233,.12); color: #0284c7; }
+    .ln-pill.writeoff { background: rgba(71,85,105,.12); color: #475569; }
+
+    .ln-act { display: flex; gap: 8px; justify-content: flex-end; }
+    /* 当前借阅：信息与操作之间加分隔竖线 */
+    #view-current .ln-act { position: relative; padding-left: 20px; align-self: stretch; align-items: center; justify-content: flex-start; }
+    #view-current .ln-act::before {
+      content: ''; position: absolute; left: 0; top: -20px; bottom: -20px;
+      width: 1px; background: #eef3fa;
+    }
+    #view-current .ln-thead > span:last-child { position: relative; text-align: center; padding-left: 0; }
+    #view-current .ln-thead > span:last-child::before {
+      content: ''; position: absolute; left: 0; top: -6px; bottom: -6px;
+      width: 1px; background: #e4ecf8;
+    }
+    .ln-btn {
+      padding: 5px 13px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+      font-size: 12.5px; font-family: inherit; border: 1px solid #dbe3ef; background: #fff;
+      color: var(--text-2); text-decoration: none;
+    }
+    .ln-btn.primary { background: rgba(37,99,235,.08); color: #1d4ed8; border-color: rgba(37,99,235,.28); }
+    .ln-btn.primary:hover { background: rgba(37,99,235,.16); }
+    .ln-btn.ghost:hover { color: var(--primary); border-color: #b9cdf0; }
+    .ln-btn:disabled { background: #f5f5f5; color: #a3a3a3; border-color: #d4d4d4; cursor: not-allowed; }
+
+
+    @media (max-width: 980px) {
+      .ln-thead { display: none; }
+      .ln-body { padding: 6px 16px 6px; }
+      .ln-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; padding: 18px 12px; }
+      .ln-main { flex: 1 1 220px; }
+      .ln-row > div:nth-of-type(3) { flex: 0 0 116px; }
+      .ln-row > div:nth-of-type(4) { flex: 0 0 72px; }
+      .ln-act { margin-left: auto; }
+      #view-current .ln-act { padding-left: 0; align-self: auto; }
+      #view-current .ln-act::before { display: none; }
+    }
+
+
+    @media (max-width: 1180px) {
+      .ln-thead, .ln-row { grid-template-columns: 46px minmax(0, 1fr) 132px 120px 132px; }
+      #view-history .ln-thead, #view-history .ln-row { grid-template-columns: 46px minmax(0, 1fr) 132px 120px; }
+      .ln-borrow { display: none; }
+    }
+
+    .pl-wrap { grid-template-columns: 1fr; }
+    .pl-right { width: 100%; }
+
+    /* ============ 页面容器 ============ */
+    .pl-wrap {
+      max-width: 1440px; margin: 0 auto;
+      flex: 1 0 auto;
+      width: 100%;
+      padding: 18px 40px 20px;
+      display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px;
+      align-items: start;
+    }
+
+    /* ============ 左侧：个人信息 ============ */
+    .pl-card {
+      background: #fff; border: 1px solid #e8eef8; border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(23,58,120,.05);
+    }
+    .pl-profile { padding: 23px 22px 14px; text-align: center; }
+    .pl-avatar {
+      width: 74px; height: 74px; margin: 0 auto 10px; border-radius: 50%;
+      background: linear-gradient(160deg, #dbeafe, #eff6ff);
+      border: 3px solid #fff; box-shadow: 0 0 0 1px #e3ecfa, 0 8px 18px rgba(37,99,235,.12);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .pl-avatar svg { width: 74px; height: 74px; }
+    .pl-name-row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .pl-name { font-size: 19px; font-weight: 700; letter-spacing: .02em; }
+    .pl-lv {
+      font-size: 11px; font-weight: 700; color: #fff; font-style: italic;
+      padding: 2px 7px; border-radius: 8px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+    .pl-sub { margin-top: 6px; font-size: 12.5px; color: var(--text-3); }
+
+    .pl-auth { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+    .pl-auth span {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: #64748b;
+      background: #f5f8fd; border: 1px solid #e7eefa; border-radius: 12px; padding: 3px 9px;
+    }
+    .pl-auth span i {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #22c55e; display: inline-block; position: relative;
+    }
+    .pl-auth span i::after {
+      content: ""; position: absolute; left: 3px; top: 2.4px;
+      width: 3px; height: 6px; border: solid #fff; border-width: 0 1.6px 1.6px 0;
+      transform: rotate(42deg);
+    }
+
+    /* 读者卡 */
+    .pl-mcard {
+      margin: 2px 16px 14px; border-radius: 14px; overflow: hidden;
+      background:
+        radial-gradient(120px 120px at 100% 0%, rgba(255,255,255,.22), transparent 70%),
+        linear-gradient(135deg, #6d5df6 0%, #8b5cf6 55%, #a78bfa 100%);
+      box-shadow: 0 10px 22px rgba(109,93,246,.28);
+      color: #fff;
+    }
+    .pl-mcard-top {
+      padding: 14px 16px 10px; display: flex; align-items: center; gap: 7px;
+      font-size: 12.5px; opacity: .95;
+    }
+    .pl-mcard-top svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .pl-mcard-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 16px 9px; font-size: 13px;
+    }
+    .pl-mcard-row b { font-weight: 600; letter-spacing: .06em; }
+    .pl-mcard-foot {
+      margin-top: 4px; padding: 8px 16px; font-size: 12px;
+      background: rgba(255,255,255,.18); display: flex; justify-content: space-between;
+    }
+
+    .pl-links { padding: 2px 12px 24px; display: grid; gap: 2px; }
+    .pl-links a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 10px;
+      font-size: 13.5px; color: var(--text-2); text-decoration: none;
+      transition: all .16s;
+    }
+    .pl-links a svg { width: 16px; height: 16px; stroke: #8ba3c6; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .pl-links a:hover { background: #f2f7ff; color: var(--primary); }
+    .pl-links a:hover svg { stroke: var(--primary); }
+    .pl-links a em { margin-left: auto; font-style: normal; font-size: 11.5px; color: var(--text-3); }
+
+    /* ============ 右侧 ============ */
+    .pl-right { display: grid; gap: 16px; }
+
+    .pl-search { padding: 14px 22px 18px; }
+
+    /* 我的应用 */
+    .pl-apps-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 22px 12px;
+    }
+    .pl-apps-head h3 { margin: 0; font-size: 16px; font-weight: 700; }
+    .pl-apps-head span { font-size: 12.5px; color: var(--text-3); }
+    .pl-apps {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 6px 6px; padding: 0 14px 10px;
+    }
+    .pl-app {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      padding: 18px 6px 18px; border-radius: 12px; text-decoration: none;
+      transition: all .16s;
+    }
+    .pl-app:hover { background: #f6faff; transform: translateY(-2px); }
+    .pl-app-ico {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 3px 10px rgba(30,60,120,.06);
+    }
+    .pl-app-ico svg { width: 20px; height: 20px; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .pl-app-name { font-size: 12.5px; color: #40506a; text-align: center; line-height: 1.3; }
+
+    /* 通知公告 */
+    .pl-notice { display: flex; align-items: center; gap: 14px; padding: 12px 22px; }
+    .pl-notice-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 700; color: #1f3f73; flex: none;
+    }
+    .pl-notice-list {
+      display: flex; gap: 26px; flex: 1; min-width: 0; overflow: hidden;
+    }
+    .pl-notice-list a {
+      font-size: 13px; color: var(--text-2); text-decoration: none;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: color .16s;
+    }
+    .pl-notice-list a:hover { color: var(--primary); }
+    .pl-notice-list em { font-style: normal; color: #a8b4c6; margin-left: 8px; font-size: 12px; }
+    .pl-notice-more { flex: none; font-size: 13px; color: var(--text-3); text-decoration: none; }
+    .pl-notice-more:hover { color: var(--primary); }
+
+    /* toast */
+    .pl-toast {
+      position: fixed; left: 50%; top: 88px; transform: translate(-50%, -14px);
+      background: rgba(23,42,74,.9); color: #fff; font-size: 13.5px;
+      padding: 10px 20px; border-radius: 20px; opacity: 0; pointer-events: none;
+      transition: all .25s; z-index: 999;
+    }
+    .pl-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1200px) {
+      .pl-wrap { grid-template-columns: minmax(0, 1fr); padding: 20px 24px 48px; }
+      .pl-apps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 960px) {
+      .pl-wrap { grid-template-columns: 1fr; }
+      .pl-apps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .pl-notice-list { gap: 18px; }
+      .pl-notice-list a:nth-child(n+3) { display: none; }
+    }
+    @media (max-width: 620px) {
+      .pl-wrap { padding: 16px 16px 40px; }
+      .pl-search { padding: 16px 16px 18px; }
+      .pl-apps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pl-notice-list a:nth-child(n+2) { display: none; }
+    }
+    /* 页脚 */
+    .bk-footer { background: var(--primary); color: rgba(255,255,255,.9); text-align: center; padding: 16px 20px; font-size: 12.5px; line-height: 1.7; margin-top: auto; flex: none; }
+    /* 检索区（与首页保持一致） */
+    .pl-search { padding: 18px 20px 16px; }
+    .pl-search h3 {
+      margin: 0 0 14px; font-size: 15px; font-weight: 700; color: var(--primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pl-search h3 svg { width: 18px; height: 18px; fill: none; stroke: var(--sky); stroke-width: 2; }
+    .search-tabs {
+      display: flex; gap: 4px; margin-bottom: 14px;
+      background: rgba(30,64,175,.05); padding: 4px; border-radius: 10px;
+    }
+    .search-tabs span {
+      flex: 1; text-align: center; padding: 8px 0; font-size: 13px;
+      border-radius: 7px; cursor: pointer; color: #111; transition: .2s; font-weight: 500;
+      white-space: nowrap;
+    }
+    .search-tabs span.active {
+      background: #fff; color: var(--primary); font-weight: 600;
+      box-shadow: 0 2px 8px rgba(30,64,175,.1);
+    }
+    .search-box {
+      display: flex; align-items: center;
+      background: #f7f9fc; border: 2px solid transparent;
+      border-radius: 12px; padding: 0 14px; transition: .2s;
+    }
+    .search-box:focus-within {
+      border-color: var(--sky); background: #fff;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+    }
+    .search-box input {
+      flex: 1; border: none; outline: none; padding: 14px 0;
+      font-size: 14px; background: transparent; font-family: inherit; min-width: 0;
+    }
+    .search-box button {
+      border: none; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+      color: #fff; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; cursor: pointer; font-size: 13px; transition: .2s; font-family: inherit;
+    }
+    .search-box button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,.35); }
+    .search-tips {
+      margin-top: 12px; font-size: 13px; color: #111; font-weight: 600;
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    }
+    .search-tips a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .search-tips a:hover { text-decoration: underline; }
+
+    /* ===== 续借：确认 / 成功 弹窗 ===== */
+    .rn-mask {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 400;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .rn-mask[hidden] { display: none; }
+    .rn-dialog {
+      width: 460px; max-width: 100%; background: #fff; border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(15,35,95,0.28); overflow: hidden;
+      animation: rnIn .22s ease;
+    }
+    @keyframes rnIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .rn-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .rn-head h3 { font-size: 15px; color: var(--text); margin: 0; font-weight: 600; }
+    .rn-close { border: 0; background: transparent; color: var(--text-3); font-size: 16px; cursor: pointer; line-height: 1; }
+    .rn-close:hover { color: var(--primary); }
+    .rn-body { padding: 22px 20px 14px; font-size: 13.5px; line-height: 1.85; color: var(--text); }
+    .rn-book { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .rn-rows { background: #f6f9ff; border: 1px solid #e6eefb; border-radius: 10px; padding: 4px 14px; }
+    .rn-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; font-size: 12.5px; color: var(--text-2); }
+    .rn-row + .rn-row { border-top: 1px dashed #e2ebf9; }
+    .rn-row b { color: var(--text); font-weight: 600; }
+    .rn-row .rn-new { color: var(--primary); }
+    .rn-tip { margin: 14px 0 4px; font-size: 12.5px; color: var(--text-3); line-height: 1.7; }
+    .rn-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 6px 18px 16px; }
+    .rn-foot.center { justify-content: center; }
+    .rn-btn { height: 34px; padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-family: inherit; transition: .2s; }
+    .rn-btn.primary { border: 0; background: var(--primary); color: #fff; font-weight: 600; }
+    .rn-btn.primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+    .rn-btn.ghost { border: 1px solid var(--border); background: #fff; color: var(--text-2); }
+    .rn-btn.ghost:hover { border-color: var(--primary-light); color: var(--primary); }
+    .rn-success { text-align: center; padding: 26px 20px 16px; }
+    .rn-ok-ico {
+      width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(22,163,74,.3);
+    }
+    .rn-ok-ico svg { width: 28px; height: 28px; }
+    .rn-success h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .rn-success p { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+    .rn-success .rn-due-line { color: var(--primary); font-weight: 600; }
+
+    /* ============ 我的收藏 ============ */
+    .ln-head h3 { margin: 0; font-size: 14.5px; color: var(--text); font-weight: 600; }
+    .ln-head h3 span { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 7px; }
+    .ln-time { font-size: 12.5px; color: var(--text-2); }
+    .ln-thead.fav, .ln-row.fav { grid-template-columns: 46px minmax(0, 1fr) 132px 132px 196px; }
+    .ln-thead.fav > span:last-child { position: relative; text-align: center; padding-left: 0; }
+    .ln-thead.fav > span:last-child::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 14px; background: #dbe6f5;
+    }
+    .ln-row.fav .ln-act {
+      position: relative; padding-left: 20px; align-self: stretch;
+      align-items: center; justify-content: flex-start;
+    }
+    .ln-row.fav .ln-act::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 34px; background: #e2eaf6;
+    }
+    .ln-pill.avail { background: rgba(22,197,94,.12); color: #16a34a; }
+    .ln-pill.lent { background: rgba(107,114,128,.14); color: #6b7280; }
+    .ln-pill.held { background: rgba(37,99,235,.1); color: #1d4ed8; }
+    .ln-pill.off { background: rgba(71,85,105,.12); color: #475569; }
+    .ln-btn.danger { color: #b91c1c; border-color: #f2d3d3; background: #fff; }
+    .ln-btn.danger:hover { background: #fef2f2; border-color: #f0b9b9; }
+    .fav-empty { padding: 60px 20px; text-align: center; font-size: 13px; color: var(--text-3); }
+    @media (max-width: 980px) {
+      .ln-row.fav { display: flex; flex-wrap: wrap; gap: 12px 14px; padding: 18px 12px; }
+      .ln-row.fav .ln-act { padding-left: 0; align-self: auto; margin-left: auto; }
+      .ln-row.fav .ln-act::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="首页.html">
+        <span class="sh-icon"><img src="assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <nav class="sh-nav">
+        <a href="首页.html">首页</a>
+
+        <div class="sh-dropdown">
+          <a href="借阅规则.html">借阅</a>
+          <div class="sh-dropdown-menu">
+            <a href="借阅规则.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">借阅规则</span><span class="sh-dd-desc">须知 · 违规处理</span></span></a>
+            <a href="图书预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书预约</span><span class="sh-dd-desc">到馆通知</span></span></a>
+            <a href="图书续借催还.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M21 21v-5h-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">续借 / 催还</span><span class="sh-dd-desc">在线办理</span></span></a>
+            <a href="阅读推荐.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">阅读推荐</span><span class="sh-dd-desc">新书 · 热门</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="馆藏目录.html">资源</a>
+          <div class="sh-dropdown-menu">
+            <a href="馆藏目录.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏目录</span><span class="sh-dd-desc">图书 · 期刊 · OPAC</span></span></a>
+            <a href="数据库导航.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">数据库导航</span><span class="sh-dd-desc">中外文 · 试用</span></span></a>
+            <a href="特色馆藏.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">特色馆藏</span><span class="sh-dd-desc">航空 · 民国文献</span></span></a>
+            <a href="资源动态.html?from=nav"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源动态</span><span class="sh-dd-desc">新书 · 数据库更新</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="座位预约说明.html">空间</a>
+          <div class="sh-dropdown-menu">
+            <a href="座位预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M6 18v3M18 18v3M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个</span></span></a>
+            <a href="研修室预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span></a>
+            <a href="自助服务.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">自助服务</span><span class="sh-dd-desc">借书机 · 打印</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">其他服务</a>
+          <div class="sh-dropdown-menu">
+            <a href="资源荐购.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v8l6 3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源荐购</span><span class="sh-dd-desc">推荐采购</span></span></a>
+            <a href="图书捐赠.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书捐赠</span><span class="sh-dd-desc">接收 · 致谢</span></span></a>
+            <a href="校外访问.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">校外访问</span><span class="sh-dd-desc">VPN · 校外</span></span></a>
+            <a href="论文提交.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M10 13l2 2 4-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">论文提交</span><span class="sh-dd-desc">机构库 · 硕博</span></span></a>
+            <a href="信息素养.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">信息素养</span><span class="sh-dd-desc">课程 · 培训</span></span></a>
+            <a href="科技查新.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2c4 0 7 3 7 7 0 6-7 13-7 13S7 15 7 9c0-4 3-7 7-7z"/><circle cx="14" cy="9" r="2.5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">科技查新</span><span class="sh-dd-desc">立项 · 成果</span></span></a>
+            <a href="知识产权.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 3a9 9 0 0 0 0 18"/><path d="M8 12h8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">知识产权</span><span class="sh-dd-desc">专利 · 版权</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">概况</a>
+          <div class="sh-dropdown-menu">
+            <a href="本馆简介.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">本馆简介</span><span class="sh-dd-desc">历史 · 馆藏 · 空间</span></span></a>
+            <a href="馆藏分布.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏分布</span><span class="sh-dd-desc">楼层 · 分区</span></span></a>
+            <a href="入馆须知.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">入馆须知</span><span class="sh-dd-desc">刷卡 · 秩序</span></span></a>
+            <a href="开放时间.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">开放时间</span><span class="sh-dd-desc">08:00 - 22:00</span></span></a>
+            <a href="馆舍风貌.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆舍风貌</span><span class="sh-dd-desc">建筑 · 文化</span></span></a>
+            <a href="组织机构.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">组织机构</span><span class="sh-dd-desc">部门 · 岗位</span></span></a>
+            <a href="规章制度.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">规章制度</span><span class="sh-dd-desc">借阅 · 管理</span></span></a>
+            <a href="联系我们.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">联系我们</span><span class="sh-dd-desc">电话 · 邮箱</span></span></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="hd-mid">
+        <div class="tb-actions">
+          <a class="tb-btn" href="个人中心.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 面包屑 ============ -->
+  <div class="bc-bar">
+    <div class="bc-in">
+      <a class="bc-home" href="首页.html" title="返回首页">
+        <svg viewBox="0 0 24 24"><path d="M12 3 2.6 11.2a.9.9 0 0 0 .6 1.6H5v7.3c0 .5.4.9.9.9h4.4v-5.5h3.4V21h4.4c.5 0 .9-.4.9-.9v-7.3h1.8a.9.9 0 0 0 .6-1.6z"/></svg>
+      </a>
+      <span class="sep">›</span>
+      <a href="个人中心.html">个人中心</a>
+      <span class="sep">›</span>
+      <span class="current">违章欠费</span>
+    </div>
+  </div>
+
+  <!-- ============ 主体 ============ -->
+  <div class="pl-wrap">
+    <!-- 右侧 -->
+    <div class="pl-right">
+
+      <style>
+        /* ===== 违章欠费 ===== */
+        .pb-sum { font-size: 13px; color: var(--text-2); }
+        .pb-sum b { color: var(--text); font-weight: 600; }
+        .pb-sum b.hot { color: #e5484d; }
+
+        .ln-thead.pb, .ln-row.pb { grid-template-columns: minmax(0, 1fr) 116px 126px 112px 196px; column-gap: 18px; }
+        .ln-thead.pb > span:last-child { position: relative; text-align: center; padding-left: 0; }
+        .ln-thead.pb > span:last-child::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 14px; background: #dbe6f5; }
+        .ln-row.pb { padding-left: 2px; }
+        .ln-row.pb .ln-act { position: relative; padding-left: 20px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; align-self: stretch; }
+        .ln-row.pb .ln-act::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 34px; background: #e2eaf6; }
+        .ln-row.pb .ln-title span { color: var(--text); font-size: 14.5px; font-weight: 600; }
+
+        .pb-bar { width: 5px; height: 40px; border-radius: 3px; background: #f59e0b; justify-self: start; }
+        .pb-bar.red { background: #ef4444; }
+        .pb-bar.purple { background: #8b5cf6; }
+
+        .pb-money b { display: block; font-size: 15px; font-weight: 700; color: #e5484d; }
+        .pb-money span { display: block; margin-top: 3px; font-size: 11.5px; color: #98a6bb; }
+        .pb-money b.green { color: #16a34a; }
+        .pb-money b.purple { color: #7c3aed; }
+        .pb-money b.cyan { color: #0891b2; }
+        .pb-money b.gray { color: #6b7280; }
+
+        /* 缴费记录视图 */
+        .ln-thead.pb.rec, .ln-row.pb.rec { grid-template-columns: minmax(0, 1fr) 104px 84px 100px 92px 96px; }
+        .pb-way { font-size: 13px; color: var(--text-2); }
+        .pb-sum b.ok { color: #16a34a; }
+
+        .ln-pill.warn { background: #fff3e6; color: #d97706; }
+        .ln-pill.danger { background: #fdecec; color: #dc2626; }
+        .ln-pill.blue { background: #e8f1ff; color: #2563eb; }
+        .ln-pill.green { background: #e7f8ee; color: #16a34a; }
+        .ln-pill.purple { background: #f3e9ff; color: #7c3aed; }
+        .ln-pill.cyan { background: #e6f7f9; color: #0891b2; }
+        .ln-pill.gray { background: #eef1f6; color: #6b7280; }
+
+        .pb-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 4px; padding: 16px 12px 20px; border-top: 1px solid #eef3fb; }
+        .pb-foot .pb-sum b { font-size: 20px; color: #e5484d; margin-left: 4px; }
+        .pb-pay-btn { height: 34px; padding: 0 16.5px; margin-right: 10px; border: 1px solid var(--primary-light); border-radius: 11px; background: var(--primary-light); color: #fff; font-size: 13.5px; cursor: pointer; transition: all .18s; }
+        .pb-pay-btn:hover { border-color: var(--primary); background: var(--primary); }
+        .pb-pay-btn:disabled { border-color: #c7d6ea; background: #c7d6ea; cursor: not-allowed; }
+
+        .pb-empty { padding: 56px 0; text-align: center; color: #98a6bb; font-size: 13.5px; }
+
+        /* 扫码支付弹窗 */
+        .qr-dialog { width: 420px; }
+        .qr-body { padding-top: 8px; text-align: center; }
+        .qr-amount { font-size: 13px; color: #7b8aa3; }
+        .qr-amount b { display: block; margin-top: 4px; font-size: 28px; font-weight: 700; color: #1f2d3d; }
+        .qr-box { display: inline-flex; margin: 14px 0 10px; padding: 12px; border: 1px solid #e8eef8; border-radius: 12px; background: #fff; }
+        .qr-scan { margin: 0; font-size: 13px; color: #3b4a61; }
+        .qr-expire { margin: 8px 0 0; font-size: 12px; color: #98a6bb; }
+        .qr-expire a { color: var(--primary); text-decoration: none; }
+        .qr-expire a:hover { text-decoration: underline; }
+        .qr-tip { margin: 10px 0 0; font-size: 12px; color: #98a6bb; }
+
+        /* 详情弹窗 */
+        .pb-dialog { width: 580px; max-width: calc(100vw - 32px); }
+        .pb-hero { text-align: center; padding: 6px 0 18px; }
+        .pb-hero .k { font-size: 13px; color: var(--text-3); }
+        .pb-hero .v { margin: 8px 0 10px; font-size: 30px; font-weight: 700; color: #e5484d; }
+        .pb-sec { margin-top: 6px; padding: 16px 18px; background: #f8fafd; border: 1px solid #edf3fb; border-radius: 12px; }
+        .pb-sec h4 { margin: 0 0 10px; font-size: 13.5px; color: var(--text); font-weight: 600; }
+        .pb-kv { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 6px 0; font-size: 13px; }
+        .pb-kv span { color: #7b8aa3; }
+        .pb-kv b { color: var(--text); font-weight: 500; text-align: right; }
+        .pb-kv b.money { color: #e5484d; font-weight: 600; }
+        .pb-alert { margin-top: 10px; padding: 14px 16px; border-radius: 10px; background: #fdecec; border: 1px solid #f8d4d4; color: #b42318; font-size: 13px; line-height: 1.9; }
+        .pb-alert b { display: block; margin-bottom: 4px; }
+        .pb-tipbox { margin-top: 12px; padding: 10px 14px; border-radius: 10px; background: #fff8e8; border: 1px solid #fbe6b7; color: #a16207; font-size: 12.5px; line-height: 1.7; }
+        .pb-tl { list-style: none; margin: 0; padding: 0; }
+        .pb-tl li { position: relative; padding: 0 0 16px 22px; font-size: 13px; }
+        .pb-tl li:last-child { padding-bottom: 0; }
+        .pb-tl li::before { content: ''; position: absolute; left: 0; top: 4px; width: 8px; height: 8px; border-radius: 50%; background: #c7d6ea; }
+        .pb-tl li::after { content: ''; position: absolute; left: 3.5px; top: 16px; bottom: 0; width: 1px; background: #e2eaf6; }
+        .pb-tl li:last-child::after { display: none; }
+        .pb-tl li.done::before { background: #2563eb; }
+        .pb-tl li.on::before { background: #fff; border: 2px solid #2563eb; }
+        .pb-tl li.warn::before { background: #ef4444; }
+        .pb-tl li.warn .t { color: #dc2626; }
+        .pb-tl .t { color: var(--text); font-weight: 500; }
+        .pb-tl .s { display: block; margin-top: 3px; color: #98a6bb; font-size: 12px; }
+
+        .rn-body.pb-body { max-height: 62vh; overflow: auto; }
+
+        @media (max-width: 980px) {
+          .ln-thead.pb { display: none; }
+          .ln-row.pb { display: flex; flex-wrap: wrap; gap: 12px 14px; padding: 18px 12px; }
+          .ln-row.pb .ln-act { padding-left: 0; }
+          .ln-row.pb .ln-act::before { display: none; }
+          .pb-bar { display: none; }
+          .pb-foot { flex-wrap: wrap; }
+        }
+      </style>
+
+      <section class="pl-card">
+        <div class="ln-head">
+          <div class="ln-vtabs" id="pbTabs" role="tablist">
+            <button type="button" class="active" data-view="due">待处理</button>
+            <button type="button" data-view="rec">已完结</button>
+          </div>
+        </div>
+
+        <!-- 待缴费 -->
+        <div id="viewDue">
+        <div class="ln-summary">
+          <span class="pb-sum">待缴金额 <b class="hot" id="pbDueSum">¥58.20</b> · 待处理 <b id="pbPending">3</b> 笔</span>
+        </div>
+
+        <div class="ln-thead pb">
+          <span>罚单信息</span>
+          <span>产生时间</span>
+          <span>金额</span>
+          <span>状态</span>
+          <span>操作</span>
+        </div>
+
+        <div class="ln-body" id="pbDueList">
+          <div class="ln-row pb" data-key="water">
+            <div class="ln-main">
+              <div class="ln-title"><span>《水污染控制工程设计算例集》</span></div>
+              <div class="ln-meta"><span>滞纳金</span><span>逾期 11 天 · 0.20 元/天</span></div>
+            </div>
+            <div class="ln-time">2026-10-15</div>
+            <div class="pb-money"><b>¥ 2.20</b><span>待缴</span></div>
+            <div><span class="ln-pill warn">待缴费</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="water">详情</button>
+              <button class="ln-btn primary" type="button" data-pay="water">缴费</button>
+            </div>
+          </div>
+
+          <div class="ln-row pb" data-key="ml">
+            <div class="ln-main">
+              <div class="ln-title"><span>《机器学习》</span></div>
+              <div class="ln-meta"><span>遗失赔偿</span><span>图书遗失 · 书价 63.00 元 + 加工费 5.00</span></div>
+            </div>
+            <div class="ln-time">2026-10-17</div>
+            <div class="pb-money"><b>¥ 38.00</b><span>已缴 ¥30.00</span></div>
+            <div><span class="ln-pill blue">部分缴纳</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="ml">详情</button>
+              <button class="ln-btn primary" type="button" data-pay="ml">补缴</button>
+            </div>
+          </div>
+
+          <div class="ln-row pb" data-key="elec">
+            <div class="ln-main">
+              <div class="ln-title"><span>《电子工艺基础与实训》</span></div>
+              <div class="ln-meta"><span>滞纳金</span><span>逾期 90 天 · 已起收费截止日</span></div>
+            </div>
+            <div class="ln-time">2026-10-18</div>
+            <div class="pb-money"><b>¥ 18.00</b><span>待缴</span></div>
+            <div><span class="ln-pill danger">已逾期</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="elec">详情</button>
+              <button class="ln-btn primary" type="button" data-pay="elec">缴费</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pb-empty" id="pbDueEmpty" hidden>暂无待缴罚单</div>
+
+        <div class="pb-foot">
+          <span class="pb-sum">待缴合计<b id="pbFootSum">¥58.20</b></span>
+          <button class="pb-pay-btn" type="button" id="pbPayAll">立即缴费（3）</button>
+        </div>
+        </div>
+
+        <!-- 缴费记录 -->
+        <div id="viewRec" hidden>
+        <div class="ln-summary">
+          <span class="pb-sum">累计实收 <b class="ok" id="pbPaidTotal">¥37.80</b> · 累计减免 <b>¥130.00</b> · 累计退款 <b>¥60.00</b></span>
+        </div>
+
+        <div class="ln-thead pb rec">
+          <span>处理事项</span>
+          <span>金额</span>
+          <span>支付方式</span>
+          <span>完成时间</span>
+          <span>状态</span>
+          <span>操作</span>
+        </div>
+
+        <div class="ln-body" id="pbRecList">
+          <div class="ln-row pb rec" data-key="zhz">
+            <div class="ln-main">
+              <div class="ln-title"><span>《中国哲学简史》</span></div>
+              <div class="ln-meta"><span>损坏赔偿</span><span>装订破损 · 按图书定价 20% 赔偿</span></div>
+            </div>
+            <div class="pb-money"><b class="green">¥ 7.80</b><span>实收</span></div>
+            <div class="pb-way">微信支付</div>
+            <div class="ln-time">2026-09-05</div>
+            <div><span class="ln-pill green">已缴费</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="zhz">详情</button>
+            </div>
+          </div>
+
+          <div class="ln-row pb rec" data-key="headset">
+            <div class="ln-main">
+              <div class="ln-title"><span>损坏头戴式耳机 1 个</span></div>
+              <div class="ln-meta"><span>设备损坏</span><span>采购价 130.00 + 维修费 30（全额减免）</span></div>
+            </div>
+            <div class="pb-money"><b class="purple">¥ 130.00</b><span>减免</span></div>
+            <div class="pb-way">—</div>
+            <div class="ln-time">2026-09-12</div>
+            <div><span class="ln-pill purple">已减免</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="headset">详情</button>
+            </div>
+          </div>
+
+          <div class="ln-row pb rec" data-key="solitude">
+            <div class="ln-main">
+              <div class="ln-title"><span>《百年孤独》</span></div>
+              <div class="ln-meta"><span>遗失赔偿</span><span>图书找回，办理全额退费</span></div>
+            </div>
+            <div class="pb-money"><b class="cyan">¥ 60.00</b><span>退款</span></div>
+            <div class="pb-way">微信支付</div>
+            <div class="ln-time">2026-08-31</div>
+            <div><span class="ln-pill cyan">已退款</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="solitude">详情</button>
+            </div>
+          </div>
+
+          <div class="ln-row pb rec" data-key="capital">
+            <div class="ln-main">
+              <div class="ln-title"><span>《资本论（第一卷）》</span></div>
+              <div class="ln-meta"><span>滞纳金</span><span>系统重复开单，核实后撤销</span></div>
+            </div>
+            <div class="pb-money"><b class="gray">¥ 0.60</b><span>撤销</span></div>
+            <div class="pb-way">—</div>
+            <div class="ln-time">2026-08-27</div>
+            <div><span class="ln-pill gray">已撤销</span></div>
+            <div class="ln-act">
+              <button class="ln-btn" type="button" data-detail="capital">详情</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pb-empty" id="pbRecEmpty" hidden>暂无处理记录</div>
+
+        <div class="ln-pager" id="pbRecPager">
+          <span class="ln-pager-info"></span>
+          <div class="ln-pager-btns"></div>
+        </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+  <footer class="bk-footer">
+    © 2026 信阳航空职业学院 · 图书馆 版权所有 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </footer>
+
+  <div class="pl-toast" id="plToast"></div>
+
+  <style>
+    .pay-list { border: 1px solid #edf3fb; border-radius: 10px; overflow: hidden; }
+    .pay-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; font-size: 13px; border-bottom: 1px dashed #e8eef8; }
+    .pay-item:last-child { border-bottom: 0; }
+    .pay-item span { color: #3b4a61; }
+    .pay-item b { color: #e5484d; font-weight: 600; }
+    .pay-total { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 12px 14px; background: #f7faff; border-radius: 10px; font-size: 13px; color: #5a6b84; }
+    .pay-total b { font-size: 20px; color: #e5484d; }
+    .pay-way { display: flex; align-items: center; gap: 22px; margin-top: 14px; font-size: 13px; color: #3b4a61; }
+    .pay-way > span { color: #7b8aa3; }
+    .pay-way label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .rn-btn.wide { width: 100%; }
+  </style>
+
+  <!-- 罚单详情弹窗 -->
+  <div class="rn-mask" id="pbMask" hidden>
+    <div class="rn-dialog pb-dialog" role="dialog" aria-modal="true" aria-labelledby="pbTitle">
+      <div class="rn-head">
+        <h3 id="pbTitle">罚单详情</h3>
+        <button class="rn-close" id="pbClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rn-body pb-body" id="pbDetail"></div>
+      <div class="rn-foot" id="pbDetailFoot"></div>
+    </div>
+  </div>
+
+  <!-- 缴费弹窗 -->
+  <div class="rn-mask" id="payMask" hidden>
+    <div class="rn-dialog" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+      <div class="rn-head">
+        <h3 id="payTitle">确认缴费</h3>
+        <button class="rn-close" id="payClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rn-body">
+        <div class="pay-list" id="payList"></div>
+        <div class="pay-total"><span>应付合计</span><b id="payTotal">¥ 0.00</b></div>
+        <div class="pay-way">
+          <span>支付方式</span>
+          <label><input type="radio" name="payway" value="微信支付" checked> 微信支付</label>
+          <label><input type="radio" name="payway" value="支付宝"> 支付宝</label>
+          <label><input type="radio" name="payway" value="校园卡"> 校园卡</label>
+        </div>
+      </div>
+      <div class="rn-foot">
+        <button class="rn-btn ghost" id="payCancel" type="button">取消</button>
+        <button class="rn-btn primary" id="payOk" type="button">确认支付</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 扫码支付弹窗 -->
+  <div class="rn-mask" id="qrMask" hidden>
+    <div class="rn-dialog qr-dialog" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+      <div class="rn-head">
+        <h3 id="qrTitle">微信扫码支付</h3>
+        <button class="rn-close" id="qrClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rn-body qr-body">
+        <div class="qr-amount">应付金额<b id="qrAmount">¥0.00</b></div>
+        <div class="qr-box"><canvas id="qrCanvas" width="180" height="180"></canvas></div>
+        <p class="qr-scan" id="qrScan">请使用微信扫一扫，扫描二维码完成支付</p>
+        <p class="qr-expire"><span id="qrTime">15:00</span> 后二维码失效 · <a href="javascript:;" id="qrRefresh">刷新</a></p>
+        <p class="qr-tip">支付完成后将自动跳转，请勿关闭当前页面</p>
+      </div>
+      <div class="rn-foot center">
+        <button class="rn-btn ghost wide" id="qrCancel" type="button">取消支付</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 校园卡支付确认弹窗 -->
+  <div class="rn-mask" id="cardMask" hidden>
+    <div class="rn-dialog" role="dialog" aria-modal="true" aria-labelledby="cardTitle">
+      <div class="rn-head">
+        <h3 id="cardTitle">校园卡支付确认</h3>
+        <button class="rn-close" id="cardClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rn-body">
+        <div class="pb-sec" style="margin-top:0">
+          <h4>校园卡信息</h4>
+          <div class="pb-kv"><span>持卡人</span><b>陈思远 · 学号 2023010156</b></div>
+          <div class="pb-kv"><span>卡号</span><b>6217 **** **** 3821</b></div>
+          <div class="pb-kv"><span>卡内余额</span><b id="cardBalance">¥120.00</b></div>
+          <div class="pb-kv"><span>扣款后余额</span><b id="cardAfter">¥0.00</b></div>
+        </div>
+        <div class="pay-total"><span>本次扣款</span><b id="cardPay">¥ 0.00</b></div>
+        <div class="pb-tipbox">确认后将直接从校园卡余额中扣款，扣款成功后罚单立即结清，借阅、预约及续借权限自动恢复。</div>
+      </div>
+      <div class="rn-foot">
+        <button class="rn-btn ghost" id="cardCancel" type="button">取消</button>
+        <button class="rn-btn primary" id="cardOk" type="button">确认扣款</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 缴费成功弹窗 -->
+  <div class="rn-mask" id="payOkMask" hidden>
+    <div class="rn-dialog" role="dialog" aria-modal="true" aria-labelledby="payOkTitle">
+      <div class="rn-head">
+        <h3 id="payOkTitle">缴费成功</h3>
+        <button class="rn-close" id="payOkClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rn-body">
+        <p class="rn-tip" style="margin-top:4px;font-size:13px;text-align:center">本次已缴 <b id="payOkAmount" style="color:#16a34a">¥0.00</b>，罚单已结清。<br>借阅、预约及续借权限已自动恢复。</p>
+      </div>
+      <div class="rn-foot center">
+        <button class="rn-btn primary wide" id="payOkBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var BILLS = {
+        water: {
+          title: '滞纳金详情', label: '待缴金额', amount: '2.20', pill: ['warn', '待缴费'], due: 2.20,
+          sections: [{ h: '罚单明细', rows: [['借阅单号', 'JY2606200231'], ['应还日期', '2026-10-04'], ['归还日期', '2026-10-15'], ['计费标准', '0.20 元 / 天 / 册'], ['待缴金额', '¥2.20', 1]] }],
+          steps: [['罚单生成', '系统自动 · 2026-10-15 08:30', 'done'], ['催缴通知已发送', '系统自动 · 2026-10-15 08:31', 'done'], ['等待缴费', '请于 2026-10-29 前完成缴费', 'on']],
+          ruleText: '按 0.20 元 / 天 / 册 计收，单册封顶 45 元；结清后借阅、预约及续借权限自动恢复。'
+        },
+        ml: {
+          title: '遗失赔偿详情', label: '待缴金额', amount: '38.00', pill: ['blue', '部分缴纳'], due: 38.00,
+          sections: [{ h: '罚单明细', rows: [['图书定价', '¥63.00'], ['加工费', '¥5.00'], ['赔偿标准', '图书定价 + 加工费'], ['已缴金额', '¥30.00'], ['待缴金额', '¥38.00', 1]] }],
+          steps: [['罚单生成', '系统自动 · 2026-10-17 09:12', 'done'], ['催缴通知已发送', '系统自动 · 2026-10-17 09:13', 'done'], ['部分缴费', '读者本人 · 2026-10-18 10:05', 'done'], ['等待缴费', '请于 2026-10-31 前完成缴费', 'on']],
+          tip: '逾期未缴将暂停借阅、预约及续借权限，结清后自动恢复。'
+        },
+        elec: {
+          title: '滞纳金详情', label: '待缴金额', amount: '18.00', pill: ['danger', '已逾期'], due: 18.00,
+          alert: ['惩罚机制已触发', ['1. 信用分扣除 10 分', '2. 当前借阅权限已冻结', '3. 限制新增预约申请']],
+          sections: [{ h: '罚单明细', rows: [['借阅单号', 'JY2604190018'], ['应还日期', '2026-07-20'], ['归还日期', '2026-10-18'], ['计费标准', '0.20 元 / 天 / 册'], ['待缴金额', '¥18.00', 1]] }],
+          steps: [['罚单生成', '系统自动 · 2026-10-15 14:06', 'done'], ['催缴通知已发送', '系统自动 · 2026-10-15 14:07', 'done'], ['超期未缴，触发惩罚', '系统自动 · 2026-10-18 23:59', 'warn'], ['权限冻结中，请尽快处理', '结清欠款后自动解除限制', 'on']],
+          ruleText: '按 0.20 元 / 天 / 册 计收，单册封顶 45 元；结清后借阅、预约及续借权限自动恢复。'
+        },
+        zhz: {
+          title: '损坏赔偿详情', label: '罚单金额', amount: '7.80', pill: ['green', '已缴费'], due: 0,
+          sections: [
+            { h: '罚单明细', rows: [['图书定价', '¥39.00'], ['损坏程度', '装订破损'], ['赔偿比例', '20%']] },
+            { h: '支付信息', rows: [['支付方式', '微信支付'], ['支付时间', '2026-09-05 11:10'], ['交易状态', '支付成功']] }
+          ],
+          steps: [['罚单生成', '系统自动 · 2026-09-05 11:05', 'done'], ['催缴通知已发送', '系统自动 · 2026-09-05 11:06', 'done'], ['缴费成功', '读者本人 · 2026-09-05 11:10', 'done']]
+        },
+        headset: {
+          title: '设备损坏详情', label: '罚单金额', amount: '130.00', pill: ['purple', '已减免'], due: 0,
+          sections: [{ h: '罚单明细', rows: [['设备名称', '头戴式耳机'], ['采购价', '¥130.00'], ['减免金额', '¥130.00'], ['减免原因', '设备老旧，全额减免']] }],
+          steps: [['罚单生成', '张管理员 · 2026-09-12 10:20', 'done'], ['减免费用', '张管理员 · 2026-09-12 10:22', 'done']]
+        },
+        solitude: {
+          title: '遗失赔偿详情', label: '罚单金额', amount: '60.00', pill: ['cyan', '已退款'], due: 0,
+          sections: [
+            { h: '罚单明细', rows: [['图书定价', '¥55.00'], ['加工费', '¥5.00'], ['退费原因', '图书找回，全额退费']] },
+            { h: '支付信息', rows: [['支付方式', '微信支付'], ['支付时间', '2026-09-01 09:40'], ['退费时间', '2026-09-05 14:20'], ['退款状态', '已全额退款']] }
+          ],
+          steps: [['罚单生成', '系统自动 · 2026-08-31 09:05', 'done'], ['缴费成功', '读者本人 · 2026-09-01 09:40', 'done'], ['办理退费', '系统自动 · 2026-09-05 14:20', 'done']]
+        },
+        capital: {
+          title: '滞纳金详情', label: '罚单金额', amount: '0.60', pill: ['gray', '已撤销'], due: 0,
+          sections: [{ h: '罚单明细', rows: [['借阅单号', 'JY2604280091'], ['撤销原因', '系统重复计费']] }],
+          steps: [['罚单生成', '系统自动 · 2026-08-27 16:22', 'done'], ['撤销罚单', '李主管 · 2026-08-27 16:22', 'done']]
+        }
+      };
+
+      var listDue = document.getElementById('pbDueList');
+      var listRec = document.getElementById('pbRecList');
+      var viewDue = document.getElementById('viewDue');
+      var viewRec = document.getElementById('viewRec');
+      var tabs = document.getElementById('pbTabs');
+      var mask = document.getElementById('pbMask');
+      var detail = document.getElementById('pbDetail');
+      var foot = document.getElementById('pbDetailFoot');
+      var title = document.getElementById('pbTitle');
+      var payMask = document.getElementById('payMask');
+      var qrMask = document.getElementById('qrMask');
+      var cardMask = document.getElementById('cardMask');
+      var payOkMask = document.getElementById('payOkMask');
+      var currentKey = null;
+      var payKeys = [];
+      var paidTotal = 37.80;
+
+      function dueRows() { return Array.prototype.slice.call(listDue.querySelectorAll('.ln-row.pb')); }
+      function recRows() { return Array.prototype.slice.call(listRec.querySelectorAll('.ln-row.pb')); }
+      function money(n) { return '¥' + n.toFixed(2); }
+      function todayStr() {
+        var d = new Date();
+        var p = function (n) { return (n < 10 ? '0' : '') + n; };
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+      }
+
+      function refresh() {
+        var dueCount = dueRows().length;
+        var recCount = recRows().length;
+        var due = 0;
+        dueRows().forEach(function (r) {
+          var b = BILLS[r.getAttribute('data-key')];
+          if (b) due += b.due;
+        });
+        document.getElementById('pbPending').textContent = dueCount;
+        document.getElementById('pbPaidTotal').textContent = money(paidTotal);
+        document.getElementById('pbFootSum').textContent = money(due);
+        document.getElementById('pbDueSum').textContent = money(due);
+        var btn = document.getElementById('pbPayAll');
+        btn.textContent = dueCount ? '立即缴费（' + dueCount + '）' : '暂无待缴';
+        btn.disabled = dueCount === 0;
+        document.getElementById('pbDueEmpty').hidden = dueCount > 0;
+        document.getElementById('pbRecEmpty').hidden = recCount > 0;
+        [listDue, listRec].forEach(function (l) {
+          var rs = Array.prototype.slice.call(l.querySelectorAll('.ln-row.pb'));
+          rs.forEach(function (r) { r.classList.remove('no-line'); });
+          if (rs.length) rs[rs.length - 1].classList.add('no-line');
+        });
+        if (window.__pbRecPagerReset) window.__pbRecPagerReset();
+      }
+
+      function openMask(m) { m.hidden = false; }
+      function closeMask(m) { m.hidden = true; }
+
+      function renderDetail(key) {
+        var b = BILLS[key];
+        currentKey = key;
+        title.textContent = b.title;
+        var h = '<div class="pb-hero"><div class="k">' + b.label + '</div><div class="v">¥ ' + b.amount + '</div><span class="ln-pill ' + b.pill[0] + '">' + b.pill[1] + '</span></div>';
+        if (b.alert) {
+          h += '<div class="pb-alert"><b>⚠ ' + b.alert[0] + '</b>' + b.alert[1].join('<br>') + '</div>';
+        }
+        b.sections.forEach(function (s) {
+          h += '<div class="pb-sec"><h4>' + s.h + '</h4>';
+          s.rows.forEach(function (kv) {
+            h += '<div class="pb-kv"><span>' + kv[0] + '</span><b class="' + (kv[2] ? 'money' : '') + '">' + kv[1] + '</b></div>';
+          });
+          h += '</div>';
+        });
+        h += '<div class="pb-sec"><h4>处理进度</h4><ul class="pb-tl">';
+        b.steps.forEach(function (st) {
+          h += '<li class="' + st[2] + '"><span class="t">' + st[0] + '</span><span class="s">' + st[1] + '</span></li>';
+        });
+        h += '</ul></div>';
+        if (b.ruleText) {
+          h += '<div class="pb-sec"><h4>逾期费规则</h4><div class="pb-kv" style="display:block"><span style="line-height:1.8">' + b.ruleText + '</span></div></div>';
+        }
+        if (b.tip) h += '<div class="pb-tipbox">' + b.tip + '</div>';
+        detail.innerHTML = h;
+
+        foot.innerHTML = '';
+        if (b.due > 0) {
+          var later = document.createElement('button');
+          later.type = 'button';
+          later.className = 'rn-btn ghost';
+          later.textContent = '稍后处理';
+          later.addEventListener('click', function () { closeMask(mask); });
+          var pay = document.createElement('button');
+          pay.type = 'button';
+          pay.className = 'rn-btn primary';
+          var label = (BILLS[key].pill[1] === '部分缴纳') ? '补缴 ' : '立即缴费 ';
+          pay.textContent = label + money(b.due);
+          pay.addEventListener('click', function () { closeMask(mask); openPay([key]); });
+          foot.appendChild(later);
+          foot.appendChild(pay);
+        } else {
+          foot.className = 'rn-foot center';
+          var ok = document.createElement('button');
+          ok.type = 'button';
+          ok.className = 'rn-btn primary wide';
+          ok.textContent = '我知道了';
+          ok.addEventListener('click', function () { closeMask(mask); });
+          foot.appendChild(ok);
+        }
+        foot.className = b.due > 0 ? 'rn-foot' : 'rn-foot center';
+        openMask(mask);
+      }
+
+      function openPay(keys) {
+        payKeys = keys;
+        var total = 0;
+        var nameMap = {
+          water: '滞纳金 ·《水污染控制工程设计算例集》',
+          ml: '遗失赔偿 ·《机器学习》补缴',
+          elec: '滞纳金 ·《电子工艺基础与实训》'
+        };
+        document.getElementById('payList').innerHTML = keys.map(function (k) {
+          total += BILLS[k].due;
+          return '<div class="pay-item"><span>' + nameMap[k] + '</span><b>' + money(BILLS[k].due) + '</b></div>';
+        }).join('');
+        document.getElementById('payTotal').textContent = money(total);
+        document.getElementById('payOk').textContent = '确认支付 ' + money(total);
+        openMask(payMask);
+      }
+
+      // 扫码支付（微信 / 支付宝）：展示二维码，原型停留 5 秒后自动支付成功
+      var qrTimer = null;
+      var qrTick = null;
+      var qrLeft = 900;
+
+      function drawQr(canvas) {
+        var ctx = canvas.getContext('2d');
+        var n = 25;
+        var cell = canvas.width / n;
+        var seed = 20261119;
+        function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+        function inFinder(x, y) {
+          return (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+        }
+        function finder(ox, oy) {
+          ctx.fillStyle = '#1f2d3d';
+          ctx.fillRect(ox * cell, oy * cell, 7 * cell, 7 * cell);
+          ctx.fillStyle = '#fff';
+          ctx.fillRect((ox + 1) * cell, (oy + 1) * cell, 5 * cell, 5 * cell);
+          ctx.fillStyle = '#1f2d3d';
+          ctx.fillRect((ox + 2) * cell, (oy + 2) * cell, 3 * cell, 3 * cell);
+        }
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#1f2d3d';
+        for (var y = 0; y < n; y++) {
+          for (var x = 0; x < n; x++) {
+            if (inFinder(x, y)) continue;
+            if (rnd() > 0.55) ctx.fillRect(x * cell, y * cell, cell, cell);
+          }
+        }
+        finder(0, 0);
+        finder(n - 7, 0);
+        finder(0, n - 7);
+      }
+
+      function renderQrTime() {
+        var m = Math.floor(qrLeft / 60);
+        var s = qrLeft % 60;
+        document.getElementById('qrTime').textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      function stopQrTimer() {
+        if (qrTimer) { clearTimeout(qrTimer); qrTimer = null; }
+        if (qrTick) { clearInterval(qrTick); qrTick = null; }
+      }
+
+      function startQrTimer() {
+        stopQrTimer();
+        qrLeft = 900;
+        renderQrTime();
+        qrTick = setInterval(function () {
+          if (qrLeft > 0) qrLeft--;
+          renderQrTime();
+        }, 1000);
+        qrTimer = setTimeout(function () {
+          stopQrTimer();
+          closeMask(qrMask);
+          finishPay();
+        }, 5000);
+      }
+
+      function openQrPay(way) {
+        var total = 0;
+        payKeys.forEach(function (k) { total += BILLS[k].due; });
+        document.getElementById('qrTitle').textContent = (way === '支付宝' ? '支付宝' : '微信') + '扫码支付';
+        document.getElementById('qrAmount').textContent = money(total);
+        document.getElementById('qrScan').textContent = '请使用' + (way === '支付宝' ? '支付宝' : '微信') + '扫一扫，扫描二维码完成支付';
+        drawQr(document.getElementById('qrCanvas'));
+        startQrTimer();
+        openMask(qrMask);
+      }
+
+      // 校园卡支付确认（卡内余额恒定 120 元，仅原型演示）
+      var CARD_BALANCE = 120.00;
+      function openCardConfirm() {
+        var total = 0;
+        payKeys.forEach(function (k) { total += BILLS[k].due; });
+        document.getElementById('cardPay').textContent = money(total);
+        document.getElementById('cardBalance').textContent = money(CARD_BALANCE);
+        document.getElementById('cardAfter').textContent = money(CARD_BALANCE - total);
+        openMask(cardMask);
+      }
+
+      function finishPay() {
+        var total = 0;
+        var wayEl = document.querySelector('input[name="payway"]:checked');
+        var way = wayEl ? wayEl.value : '微信支付';
+        payKeys.forEach(function (k) {
+          var b = BILLS[k];
+          if (!b || !(b.due > 0)) return;
+          var r = listDue.querySelector('.ln-row.pb[data-key="' + k + '"]');
+          if (!r) return;
+          var amount = b.due;
+          total += amount;
+
+          // 从待缴费移入缴费记录
+          var row = document.createElement('div');
+          row.className = 'ln-row pb rec';
+          row.setAttribute('data-key', k);
+          row.innerHTML =
+            '<div class="ln-main">' + r.querySelector('.ln-main').innerHTML + '</div>' +
+            '<div class="pb-money"><b class="green">¥ ' + amount.toFixed(2) + '</b><span>实收</span></div>' +
+            '<div class="pb-way">' + way + '</div>' +
+            '<div class="ln-time">' + todayStr() + '</div>' +
+            '<div><span class="ln-pill green">已缴费</span></div>' +
+            '<div class="ln-act"><button class="ln-btn" type="button" data-detail="' + k + '">详情</button></div>';
+          listRec.insertBefore(row, listRec.firstChild);
+          r.remove();
+
+          // 同步详情弹窗数据
+          b.due = 0;
+          b.pill = ['green', '已缴费'];
+          b.label = '罚单金额';
+          b.amount = amount.toFixed(2);
+          b.sections = b.sections.map(function (s) {
+            return {
+              h: s.h, rows: s.rows.map(function (kv) {
+                return kv[0] === '待缴金额' ? ['实缴金额', money(amount), 1] : kv;
+              })
+            };
+          }).concat([{ h: '支付信息', rows: [['支付方式', way], ['支付时间', todayStr()], ['交易状态', '支付成功']] }]);
+          b.steps = b.steps.filter(function (st) { return st[2] !== 'on'; });
+          b.steps.push(['缴费成功', '读者本人 · ' + todayStr(), 'done']);
+          b.alert = null;
+          b.tip = null;
+        });
+        paidTotal += total;
+        document.getElementById('payOkAmount').textContent = money(total);
+        closeMask(payMask);
+        refresh();
+        openMask(payOkMask);
+      }
+
+      // 事件绑定
+      tabs.addEventListener('click', function (e) {
+        var t = e.target.closest('button[data-view]');
+        if (!t) return;
+        Array.prototype.forEach.call(tabs.querySelectorAll('button'), function (s) { s.classList.remove('active'); });
+        t.classList.add('active');
+        var v = t.getAttribute('data-view');
+        viewDue.hidden = v !== 'due';
+        viewRec.hidden = v !== 'rec';
+      });
+
+      [listDue, listRec].forEach(function (l) {
+        l.addEventListener('click', function (e) {
+          var d = e.target.closest('[data-detail]');
+          if (d) { renderDetail(d.getAttribute('data-detail')); return; }
+          var p = e.target.closest('[data-pay]');
+          if (p) { openPay([p.getAttribute('data-pay')]); }
+        });
+      });
+
+      document.getElementById('pbClose').addEventListener('click', function () { closeMask(mask); });
+      document.getElementById('payClose').addEventListener('click', function () { closeMask(payMask); });
+      document.getElementById('payCancel').addEventListener('click', function () { closeMask(payMask); });
+      document.getElementById('payOk').addEventListener('click', function () {
+        var way = document.querySelector('input[name="payway"]:checked');
+        if (way && way.value === '校园卡') { openCardConfirm(); return; }
+        if (way && (way.value === '微信支付' || way.value === '支付宝')) { openQrPay(way.value); return; }
+        finishPay();
+      });
+      document.getElementById('qrClose').addEventListener('click', function () { stopQrTimer(); closeMask(qrMask); });
+      document.getElementById('qrCancel').addEventListener('click', function () { stopQrTimer(); closeMask(qrMask); });
+      document.getElementById('qrRefresh').addEventListener('click', function () {
+        drawQr(document.getElementById('qrCanvas'));
+        startQrTimer();
+      });
+      document.getElementById('cardClose').addEventListener('click', function () { closeMask(cardMask); });
+      document.getElementById('cardCancel').addEventListener('click', function () { closeMask(cardMask); });
+      document.getElementById('cardOk').addEventListener('click', function () { closeMask(cardMask); finishPay(); });
+      document.getElementById('payOkClose').addEventListener('click', function () { closeMask(payOkMask); });
+      document.getElementById('payOkBtn').addEventListener('click', function () { closeMask(payOkMask); });
+
+      document.getElementById('pbPayAll').addEventListener('click', function () {
+        var keys = dueRows().map(function (r) { return r.getAttribute('data-key'); });
+        if (keys.length) openPay(keys);
+      });
+
+      [mask, payMask, qrMask, cardMask, payOkMask].forEach(function (m) {
+        m.addEventListener('click', function (e) {
+          if (e.target !== m) return;
+          if (m === qrMask) stopQrTimer();
+          closeMask(m);
+        });
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        [qrMask, cardMask, payOkMask, payMask, mask].forEach(function (m) { if (!m.hidden) closeMask(m); });
+        stopQrTimer();
+      });
+
+      // 已完结分页：每页 10 条
+      (function () {
+        var pager = document.getElementById('pbRecPager');
+        if (!pager) return;
+        var info = pager.querySelector('.ln-pager-info');
+        var btns = pager.querySelector('.ln-pager-btns');
+        var PAGE_SIZE = 10;
+        var page = 1;
+
+        function render() {
+          var all = recRows();
+          var total = all.length;
+          var tp = Math.max(1, Math.ceil(total / PAGE_SIZE));
+          if (page > tp) page = tp;
+          var start = (page - 1) * PAGE_SIZE;
+          all.forEach(function (r, i) {
+            r.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
+            r.classList.remove('no-line');
+          });
+          var shown = all.slice(start, start + PAGE_SIZE);
+          if (shown.length) shown[shown.length - 1].classList.add('no-line');
+
+          info.innerHTML = '共 <b>' + total + '</b> 条 · 每页 ' + PAGE_SIZE + ' 条';
+          btns.innerHTML = '';
+
+          function mk(label, p, opts) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'pg-btn' + (opts && opts.active ? ' active' : '');
+            b.textContent = label;
+            b.disabled = !!(opts && opts.disabled);
+            if (!b.disabled) b.addEventListener('click', function () { page = p; render(); });
+            return b;
+          }
+          btns.appendChild(mk('上一页', page - 1, { disabled: page === 1 }));
+          for (var i = 1; i <= tp; i++) btns.appendChild(mk(String(i), i, { active: i === page }));
+          btns.appendChild(mk('下一页', page + 1, { disabled: page === tp }));
+        }
+
+        window.__pbRecPagerReset = function () { page = 1; render(); };
+        render();
+      })();
+
+      refresh();
+    })();
+  </script>
+
+<script src="assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>

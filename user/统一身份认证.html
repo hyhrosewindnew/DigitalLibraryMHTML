@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>统一身份认证 - 信阳航空职业学院</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    body { background: #eef2f8; }
+
+    /* 顶部品牌条 */
+    .sso-top {
+      background: #fff;
+      border-bottom: 1px solid #e4e7ed;
+    }
+    .sso-top-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 13px 30px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+    .sso-logo { width: 42px; height: 42px; object-fit: contain; }
+    .sso-brand {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e40af;
+      letter-spacing: .5px;
+    }
+    .sso-brand span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11.5px;
+      font-weight: 400;
+      color: #909399;
+      letter-spacing: 1.2px;
+    }
+    .sso-top-right {
+      margin-left: auto;
+      font-size: 12.5px;
+      color: #909399;
+    }
+    .sso-top-right a { color: #1e40af; }
+    .sso-top-right a:hover { text-decoration: underline; }
+
+    /* 登录区 */
+    .sso-main {
+      min-height: calc(100vh - 69px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 70px;
+      background:
+        radial-gradient(900px 420px at 78% 8%, rgba(59, 130, 246, .14), transparent 70%),
+        linear-gradient(160deg, #e9eefb, #f7f9fd 60%);
+    }
+    .sso-card {
+      width: 400px;
+      max-width: 100%;
+      padding: 34px 34px 28px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 16px 44px rgba(20, 44, 96, .12);
+    }
+    .sso-card h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #303133;
+      text-align: center;
+    }
+    .sso-card .sso-sub {
+      margin-top: 8px;
+      margin-bottom: 24px;
+      font-size: 12.5px;
+      color: #909399;
+      text-align: center;
+    }
+    .sso-field { margin-bottom: 16px; }
+    .sso-field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 12.5px;
+      color: #606266;
+    }
+    .sso-field input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      font: inherit;
+      font-size: 13.5px;
+      color: #303133;
+      background: #fff;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .sso-field input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+    .sso-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2px 0 20px;
+      font-size: 12.5px;
+      color: #606266;
+    }
+    .sso-row label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .sso-row input[type="checkbox"] { width: 13px; height: 13px; accent-color: #2563eb; }
+    .sso-row a { color: #2563eb; }
+    .sso-row a:hover { text-decoration: underline; }
+    .sso-submit {
+      width: 100%;
+      height: 42px;
+      border: 0;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #3b74f0, #1f56d6);
+      color: #fff;
+      font: inherit;
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      cursor: pointer;
+      transition: filter .18s;
+    }
+    .sso-submit:hover { filter: brightness(1.06); }
+    .sso-error {
+      display: none;
+      margin-bottom: 14px;
+      padding: 8px 12px;
+      border: 1px solid #f3c6c6;
+      border-radius: 4px;
+      background: #fdf1f1;
+      color: #c0392b;
+      font-size: 12.5px;
+    }
+    .sso-error.show { display: block; }
+    .sso-tip {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed #e4e7ed;
+      font-size: 12px;
+      line-height: 1.75;
+      color: #909399;
+      text-align: center;
+    }
+    .sso-back {
+      display: block;
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: #606266;
+      text-align: center;
+    }
+    .sso-back:hover { color: #1e40af; }
+  </style>
+</head>
+<body>
+
+  <div class="sso-top">
+    <div class="sso-top-inner">
+      <img class="sso-logo" src="assets/logo.png" alt="信阳航空职业学院">
+      <div class="sso-brand">
+        统一身份认证平台
+        <span>信阳航空职业学院 · 数字图书馆</span>
+      </div>
+      <div class="sso-top-right">
+        遇到问题？<a href="联系我们.html">联系网络信息中心</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sso-main">
+    <form class="sso-card" id="ssoForm" novalidate>
+      <h1>统一身份认证</h1>
+      <p class="sso-sub">请使用学号 / 工号登录，登录后可预约座位与研修室</p>
+
+      <div class="sso-error" id="ssoError"></div>
+
+      <div class="sso-field">
+        <label for="ssoId">学号 / 工号</label>
+        <input id="ssoId" name="username" type="text" placeholder="请输入学号或工号" autocomplete="username">
+      </div>
+      <div class="sso-field">
+        <label for="ssoPwd">密码</label>
+        <input id="ssoPwd" name="password" type="password" placeholder="请输入密码" autocomplete="current-password">
+      </div>
+
+      <div class="sso-row">
+        <label><input type="checkbox" id="ssoRemember"> 记住账号</label>
+        <a href="#">忘记密码？</a>
+      </div>
+
+      <button type="submit" class="sso-submit">登 录</button>
+
+      <p class="sso-tip">
+        账号由学校网络信息中心统一管理，与 OA、教务系统同一套账号密码。<br>
+        如账号异常，请携带证件至行政楼 305 重置。
+      </p>
+      <a class="sso-back" href="首页.html">← 返回图书馆首页</a>
+    </form>
+  </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('ssoForm');
+      var idInput = document.getElementById('ssoId');
+      var pwdInput = document.getElementById('ssoPwd');
+      var errBox = document.getElementById('ssoError');
+      var remember = document.getElementById('ssoRemember');
+
+      // 登录后回跳目标（仅允许站内相对地址）
+      var redirect = '';
+      try {
+        redirect = new URLSearchParams(location.search).get('redirect') || '';
+      } catch (e) {}
+      if (/^https?:|^\/\//i.test(redirect)) redirect = '';
+
+      function showError(msg) {
+        errBox.textContent = msg;
+        errBox.classList.add('show');
+      }
+
+      // 记住的账号
+      try {
+        var saved = localStorage.getItem('libUserId');
+        if (saved) { idInput.value = saved; remember.checked = true; }
+      } catch (e) {}
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var id = idInput.value.trim();
+        var pwd = pwdInput.value;
+        if (!id) { showError('请输入学号 / 工号'); idInput.focus(); return; }
+        if (!pwd) { showError('请输入密码'); pwdInput.focus(); return; }
+
+        errBox.classList.remove('show');
+        try {
+          sessionStorage.setItem('libUser', id);
+          if (remember.checked) localStorage.setItem('libUserId', id);
+          else localStorage.removeItem('libUserId');
+        } catch (e2) {}
+
+        location.href = redirect || '首页.html';
+      });
+    })();
+  </script>
+</body>
+</html>

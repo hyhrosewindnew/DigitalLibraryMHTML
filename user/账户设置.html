@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>账户设置 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --purple: #7c3aed;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+    }
+    * { box-sizing: border-box; }
+    /* 顶部导航右移居中 */
+    .site-header .sh-nav { margin-left: auto; margin-right: 0; }
+    body:not(.has-left-rail) .site-header .hd-mid { margin-left: 0; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(900px 320px at 12% -10%, #dfeaff 0%, rgba(223,234,255,0) 70%),
+        radial-gradient(900px 320px at 88% -6%, #e6edff 0%, rgba(230,237,255,0) 70%),
+        #f2f5fa;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============ 面包屑 ============ */
+    .bc-bar { background: #fff; border-bottom: 1px solid #e8eef8; }
+    .bc-in {
+      max-width: 1440px; margin: 0 auto; padding: 13px 40px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-3);
+    }
+    .bc-in a { color: var(--text-2); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .bc-in a:hover { color: var(--primary); }
+    .bc-in a svg { width: 16px; height: 16px; display: block; fill: currentColor; stroke: none; }
+    .bc-in .bc-home { color: #94a3b8; }
+    .bc-in .bc-home:hover { color: var(--primary); }
+    .bc-in .sep { color: #c3cddd; }
+    .bc-in .current { color: var(--text); font-weight: 500; }
+
+    /* ============ 我的借阅 ============ */
+    .ln-summary { padding: 14px 20px 12px; font-size: 13px; color: var(--text-2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .ln-summary b { color: var(--text); font-weight: 600; }
+    .ln-summary .fee { color: #dc2626; }
+    .ln-rule { margin-left: auto; color: var(--primary); font-size: 12.5px; text-decoration: none; }
+    .ln-rule:hover { text-decoration: underline; }
+
+    .ln-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px 0; flex-wrap: wrap; border-bottom: 1px solid #edf2fb; }
+    .ln-head h3 { font-size: 15.5px; color: var(--text); }
+    .ln-head h3 span { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 7px; }
+    .ln-tabs { display: flex; gap: 6px; margin-left: auto; margin-bottom: 10px; flex-wrap: wrap; }
+    .ln-tabs span { padding: 5px 12px; border-radius: 14px; font-size: 12.5px; color: var(--text-2); background: #f2f6fd; cursor: pointer; transition: .15s; }
+    .ln-tabs span:hover { background: #e6eefc; }
+    .ln-tabs span.active { background: var(--primary); color: #fff; }
+    .ln-tabs em { font-style: normal; opacity: .85; margin-left: 2px; }
+    .ln-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 20px; margin-top: 6px; flex-wrap: wrap; }
+    .ln-pager-info { font-size: 12.5px; color: var(--text-3); }
+    .ln-pager-info b { color: var(--text); }
+    .ln-pager-btns { display: flex; gap: 6px; }
+    .pg-btn { min-width: 32px; height: 30px; padding: 0 10px; border: 1px solid #e2eaf6; background: #fff; color: var(--text-2); font-size: 12.5px; border-radius: 6px; cursor: pointer; transition: .15s; }
+    .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .pg-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .pg-btn:disabled { color: #c2ccdb; cursor: not-allowed; background: #f8fafc; }
+
+    .ln-vtabs { display: flex; align-items: center; gap: 26px; }
+    .ln-vtabs button {
+      position: relative; padding: 4px 2px 16px; border: 0; background: none;
+      font-family: inherit; font-size: 14.5px; font-weight: 500; color: var(--text-3);
+      cursor: pointer; transition: color .15s;
+    }
+    .ln-vtabs button:hover { color: var(--primary); }
+    .ln-vtabs button.active { color: var(--primary); font-weight: 600; }
+    #view-current, #view-history { display: grid; gap: 16px; }
+    #view-current[hidden], #view-history[hidden] { display: none; }
+
+    .ln-thead, .ln-row { display: grid; grid-template-columns: 46px minmax(0, 1fr) 92px 132px 120px 132px; gap: 14px; align-items: center; }
+    #view-history .ln-thead, #view-history .ln-row { grid-template-columns: 46px minmax(0, 1fr) 100px 168px 136px; gap: 30px; }
+    .ln-thead { margin: 0 20px; padding: 9px 14px; background: #f5f9ff; border-radius: 10px; font-size: 12px; color: var(--text-3); }
+    .ln-body { padding: 0 20px 8px; }
+    .ln-row { padding: 20px 14px; border-bottom: 1px dashed #e8eef8; border-radius: 10px; transition: background .15s; }
+    .ln-row:last-child { border-bottom: 0; }
+    .ln-row.no-line { border-bottom: 0; }
+    .ln-row:hover { background: #fbfdff; }
+
+    .ln-cover {
+      width: 46px; height: 60px; border-radius: 8px; flex-shrink: 0;
+      background: linear-gradient(140deg, #eaf2ff, #cfe0fb);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .08);
+      overflow: hidden; transition: .15s;
+    }
+    .ln-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    a.ln-cover:hover { box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .32), 0 3px 10px rgba(37, 99, 235, .18); }
+    .ln-main { min-width: 0; }
+    .ln-title { font-size: 14.5px; font-weight: 600; color: var(--text); }
+    .ln-title a { color: inherit; }
+    .ln-title a:hover { color: var(--primary); }
+    .ln-meta { margin-top: 5px; font-size: 12px; color: var(--text-3); display: flex; flex-wrap: wrap; gap: 3px 14px; }
+    .ln-meta span { position: relative; }
+    .ln-meta span + span::before { content: "·"; position: absolute; left: -9px; color: #cbd5e1; }
+
+    .ln-borrow { font-size: 12.5px; color: var(--text-2); }
+    .ln-due { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .ln-left { margin-top: 6px; font-size: 11.5px; line-height: 1.5; }
+    .ln-left .ok { color: #16a34a; }
+    .ln-left .warn { color: #d97706; }
+    .ln-left .bad { color: #dc2626; }
+    .ln-left .done { color: #9aa6b8; }
+    .ln-left .settle { color: #16a34a; }
+    .ln-bar { margin-top: 6px; height: 4px; border-radius: 3px; background: #eef3fb; overflow: hidden; }
+    .ln-bar i { display: block; height: 100%; border-radius: 3px; }
+
+    .ln-pill { display: inline-block; font-size: 11.5px; padding: 3px 10px; border-radius: 11px; font-weight: 500; white-space: nowrap; }
+    .ln-pill.on { background: rgba(22,197,94,.12); color: #16a34a; }
+    .ln-pill.soon { background: rgba(245,158,11,.15); color: #d97706; }
+    .ln-pill.over { background: rgba(220,38,38,.12); color: #dc2626; }
+    .ln-pill.done { background: rgba(107,114,128,.12); color: #6b7280; }
+    .ln-pill.damaged { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.lost { background: rgba(124,58,237,.12); color: #7c3aed; }
+    .ln-pill.late { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.lostsettle { background: rgba(124,58,237,.12); color: #7c3aed; }
+    .ln-pill.dmgsettle { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.recovered { background: rgba(14,165,233,.12); color: #0284c7; }
+    .ln-pill.writeoff { background: rgba(71,85,105,.12); color: #475569; }
+
+    .ln-act { display: flex; gap: 8px; justify-content: flex-end; }
+    /* 当前借阅：信息与操作之间加分隔竖线 */
+    #view-current .ln-act { position: relative; padding-left: 20px; align-self: stretch; align-items: center; justify-content: flex-start; }
+    #view-current .ln-act::before {
+      content: ''; position: absolute; left: 0; top: -20px; bottom: -20px;
+      width: 1px; background: #eef3fa;
+    }
+    #view-current .ln-thead > span:last-child { position: relative; text-align: center; padding-left: 0; }
+    #view-current .ln-thead > span:last-child::before {
+      content: ''; position: absolute; left: 0; top: -6px; bottom: -6px;
+      width: 1px; background: #e4ecf8;
+    }
+    .ln-btn {
+      padding: 5px 13px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+      font-size: 12.5px; font-family: inherit; border: 1px solid #dbe3ef; background: #fff;
+      color: var(--text-2); text-decoration: none;
+    }
+    .ln-btn.primary { background: rgba(37,99,235,.08); color: #1d4ed8; border-color: rgba(37,99,235,.28); }
+    .ln-btn.primary:hover { background: rgba(37,99,235,.16); }
+    .ln-btn.ghost:hover { color: var(--primary); border-color: #b9cdf0; }
+    .ln-btn:disabled { background: #f5f5f5; color: #a3a3a3; border-color: #d4d4d4; cursor: not-allowed; }
+
+
+    @media (max-width: 980px) {
+      .ln-thead { display: none; }
+      .ln-body { padding: 6px 16px 6px; }
+      .ln-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; padding: 18px 12px; }
+      .ln-main { flex: 1 1 220px; }
+      .ln-row > div:nth-of-type(3) { flex: 0 0 116px; }
+      .ln-row > div:nth-of-type(4) { flex: 0 0 72px; }
+      .ln-act { margin-left: auto; }
+      #view-current .ln-act { padding-left: 0; align-self: auto; }
+      #view-current .ln-act::before { display: none; }
+    }
+
+
+    @media (max-width: 1180px) {
+      .ln-thead, .ln-row { grid-template-columns: 46px minmax(0, 1fr) 132px 120px 132px; }
+      #view-history .ln-thead, #view-history .ln-row { grid-template-columns: 46px minmax(0, 1fr) 132px 120px; }
+      .ln-borrow { display: none; }
+    }
+
+    .pl-wrap { grid-template-columns: 1fr; }
+    .pl-right { width: 100%; }
+
+    /* ============ 页面容器 ============ */
+    .pl-wrap {
+      max-width: 1440px; margin: 0 auto;
+      flex: 1 0 auto;
+      width: 100%;
+      padding: 18px 40px 20px;
+      display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 18px;
+      align-items: start;
+    }
+
+    /* ============ 左侧：个人信息 ============ */
+    .pl-card {
+      background: #fff; border: 1px solid #e8eef8; border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(23,58,120,.05);
+    }
+    .pl-profile { padding: 23px 22px 14px; text-align: center; }
+    .pl-avatar {
+      width: 74px; height: 74px; margin: 0 auto 10px; border-radius: 50%;
+      background: linear-gradient(160deg, #dbeafe, #eff6ff);
+      border: 3px solid #fff; box-shadow: 0 0 0 1px #e3ecfa, 0 8px 18px rgba(37,99,235,.12);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .pl-avatar svg { width: 74px; height: 74px; }
+    .pl-name-row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .pl-name { font-size: 19px; font-weight: 700; letter-spacing: .02em; }
+    .pl-lv {
+      font-size: 11px; font-weight: 700; color: #fff; font-style: italic;
+      padding: 2px 7px; border-radius: 8px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+    .pl-sub { margin-top: 6px; font-size: 12.5px; color: var(--text-3); }
+
+    .pl-auth { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+    .pl-auth span {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: #64748b;
+      background: #f5f8fd; border: 1px solid #e7eefa; border-radius: 12px; padding: 3px 9px;
+    }
+    .pl-auth span i {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #22c55e; display: inline-block; position: relative;
+    }
+    .pl-auth span i::after {
+      content: ""; position: absolute; left: 3px; top: 2.4px;
+      width: 3px; height: 6px; border: solid #fff; border-width: 0 1.6px 1.6px 0;
+      transform: rotate(42deg);
+    }
+
+    /* 读者卡 */
+    .pl-mcard {
+      margin: 2px 16px 14px; border-radius: 14px; overflow: hidden;
+      background:
+        radial-gradient(120px 120px at 100% 0%, rgba(255,255,255,.22), transparent 70%),
+        linear-gradient(135deg, #6d5df6 0%, #8b5cf6 55%, #a78bfa 100%);
+      box-shadow: 0 10px 22px rgba(109,93,246,.28);
+      color: #fff;
+    }
+    .pl-mcard-top {
+      padding: 14px 16px 10px; display: flex; align-items: center; gap: 7px;
+      font-size: 12.5px; opacity: .95;
+    }
+    .pl-mcard-top svg { width: 15px; height: 15px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .pl-mcard-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 16px 9px; font-size: 13px;
+    }
+    .pl-mcard-row b { font-weight: 600; letter-spacing: .06em; }
+    .pl-mcard-foot {
+      margin-top: 4px; padding: 8px 16px; font-size: 12px;
+      background: rgba(255,255,255,.18); display: flex; justify-content: space-between;
+    }
+
+    .pl-links { padding: 2px 12px 24px; display: grid; gap: 2px; }
+    .pl-links a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 10px;
+      font-size: 13.5px; color: var(--text-2); text-decoration: none;
+      transition: all .16s;
+    }
+    .pl-links a svg { width: 16px; height: 16px; stroke: #8ba3c6; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .pl-links a:hover { background: #f2f7ff; color: var(--primary); }
+    .pl-links a:hover svg { stroke: var(--primary); }
+    .pl-links a em { margin-left: auto; font-style: normal; font-size: 11.5px; color: var(--text-3); }
+
+    /* ============ 右侧 ============ */
+    .pl-right { display: grid; gap: 16px; }
+
+    .pl-search { padding: 14px 22px 18px; }
+
+    /* 我的应用 */
+    .pl-apps-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 22px 12px;
+    }
+    .pl-apps-head h3 { margin: 0; font-size: 16px; font-weight: 700; }
+    .pl-apps-head span { font-size: 12.5px; color: var(--text-3); }
+    .pl-apps {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 6px 6px; padding: 0 14px 10px;
+    }
+    .pl-app {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      padding: 18px 6px 18px; border-radius: 12px; text-decoration: none;
+      transition: all .16s;
+    }
+    .pl-app:hover { background: #f6faff; transform: translateY(-2px); }
+    .pl-app-ico {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 3px 10px rgba(30,60,120,.06);
+    }
+    .pl-app-ico svg { width: 20px; height: 20px; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .pl-app-name { font-size: 12.5px; color: #40506a; text-align: center; line-height: 1.3; }
+
+    /* 通知公告 */
+    .pl-notice { display: flex; align-items: center; gap: 14px; padding: 12px 22px; }
+    .pl-notice-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 700; color: #1f3f73; flex: none;
+    }
+    .pl-notice-list {
+      display: flex; gap: 26px; flex: 1; min-width: 0; overflow: hidden;
+    }
+    .pl-notice-list a {
+      font-size: 13px; color: var(--text-2); text-decoration: none;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      transition: color .16s;
+    }
+    .pl-notice-list a:hover { color: var(--primary); }
+    .pl-notice-list em { font-style: normal; color: #a8b4c6; margin-left: 8px; font-size: 12px; }
+    .pl-notice-more { flex: none; font-size: 13px; color: var(--text-3); text-decoration: none; }
+    .pl-notice-more:hover { color: var(--primary); }
+
+    /* toast */
+    .pl-toast {
+      position: fixed; left: 50%; top: 88px; transform: translate(-50%, -14px);
+      background: rgba(23,42,74,.9); color: #fff; font-size: 13.5px;
+      padding: 10px 20px; border-radius: 20px; opacity: 0; pointer-events: none;
+      transition: all .25s; z-index: 999;
+    }
+    .pl-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1200px) {
+      .pl-wrap { grid-template-columns: minmax(0, 1fr); padding: 20px 24px 48px; }
+      .pl-apps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 960px) {
+      .pl-wrap { grid-template-columns: 1fr; }
+      .pl-apps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .pl-notice-list { gap: 18px; }
+      .pl-notice-list a:nth-child(n+3) { display: none; }
+    }
+    @media (max-width: 620px) {
+      .pl-wrap { padding: 16px 16px 40px; }
+      .pl-search { padding: 16px 16px 18px; }
+      .pl-apps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pl-notice-list a:nth-child(n+2) { display: none; }
+    }
+    /* 页脚 */
+    .bk-footer { background: var(--primary); color: rgba(255,255,255,.9); text-align: center; padding: 16px 20px; font-size: 12.5px; line-height: 1.7; margin-top: auto; flex: none; }
+    /* 检索区（与首页保持一致） */
+    .pl-search { padding: 18px 20px 16px; }
+    .pl-search h3 {
+      margin: 0 0 14px; font-size: 15px; font-weight: 700; color: var(--primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pl-search h3 svg { width: 18px; height: 18px; fill: none; stroke: var(--sky); stroke-width: 2; }
+    .search-tabs {
+      display: flex; gap: 4px; margin-bottom: 14px;
+      background: rgba(30,64,175,.05); padding: 4px; border-radius: 10px;
+    }
+    .search-tabs span {
+      flex: 1; text-align: center; padding: 8px 0; font-size: 13px;
+      border-radius: 7px; cursor: pointer; color: #111; transition: .2s; font-weight: 500;
+      white-space: nowrap;
+    }
+    .search-tabs span.active {
+      background: #fff; color: var(--primary); font-weight: 600;
+      box-shadow: 0 2px 8px rgba(30,64,175,.1);
+    }
+    .search-box {
+      display: flex; align-items: center;
+      background: #f7f9fc; border: 2px solid transparent;
+      border-radius: 12px; padding: 0 14px; transition: .2s;
+    }
+    .search-box:focus-within {
+      border-color: var(--sky); background: #fff;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+    }
+    .search-box input {
+      flex: 1; border: none; outline: none; padding: 14px 0;
+      font-size: 14px; background: transparent; font-family: inherit; min-width: 0;
+    }
+    .search-box button {
+      border: none; background: linear-gradient(135deg, var(--primary) 0%, var(--sky) 100%);
+      color: #fff; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; cursor: pointer; font-size: 13px; transition: .2s; font-family: inherit;
+    }
+    .search-box button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,.35); }
+    .search-tips {
+      margin-top: 12px; font-size: 13px; color: #111; font-weight: 600;
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    }
+    .search-tips a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .search-tips a:hover { text-decoration: underline; }
+
+    /* ===== 续借：确认 / 成功 弹窗 ===== */
+    .rn-mask {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 400;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .rn-mask[hidden] { display: none; }
+    .rn-dialog {
+      width: 460px; max-width: 100%; background: #fff; border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(15,35,95,0.28); overflow: hidden;
+      animation: rnIn .22s ease;
+    }
+    @keyframes rnIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .rn-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .rn-head h3 { font-size: 15px; color: var(--text); margin: 0; font-weight: 600; }
+    .rn-close { border: 0; background: transparent; color: var(--text-3); font-size: 16px; cursor: pointer; line-height: 1; }
+    .rn-close:hover { color: var(--primary); }
+    .rn-body { padding: 22px 20px 14px; font-size: 13.5px; line-height: 1.85; color: var(--text); }
+    .rn-book { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .rn-rows { background: #f6f9ff; border: 1px solid #e6eefb; border-radius: 10px; padding: 4px 14px; }
+    .rn-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; font-size: 12.5px; color: var(--text-2); }
+    .rn-row + .rn-row { border-top: 1px dashed #e2ebf9; }
+    .rn-row b { color: var(--text); font-weight: 600; }
+    .rn-row .rn-new { color: var(--primary); }
+    .rn-tip { margin: 14px 0 4px; font-size: 12.5px; color: var(--text-3); line-height: 1.7; }
+    .rn-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 6px 18px 16px; }
+    .rn-foot.center { justify-content: center; }
+    .rn-btn { height: 34px; padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-family: inherit; transition: .2s; }
+    .rn-btn.primary { border: 0; background: var(--primary); color: #fff; font-weight: 600; }
+    .rn-btn.primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+    .rn-btn.ghost { border: 1px solid var(--border); background: #fff; color: var(--text-2); }
+    .rn-btn.ghost:hover { border-color: var(--primary-light); color: var(--primary); }
+    .rn-success { text-align: center; padding: 26px 20px 16px; }
+    .rn-ok-ico {
+      width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(22,163,74,.3);
+    }
+    .rn-ok-ico svg { width: 28px; height: 28px; }
+    .rn-success h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .rn-success p { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+    .rn-success .rn-due-line { color: var(--primary); font-weight: 600; }
+
+    /* ============ 我的收藏 ============ */
+    .ln-head h3 { margin: 0; font-size: 14.5px; color: var(--text); font-weight: 600; }
+    .ln-head h3 span { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 7px; }
+    .ln-time { font-size: 12.5px; color: var(--text-2); }
+    .ln-thead.fav, .ln-row.fav { grid-template-columns: 46px minmax(0, 1fr) 132px 132px 196px; }
+    .ln-thead.fav > span:last-child { position: relative; text-align: center; padding-left: 0; }
+    .ln-thead.fav > span:last-child::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 14px; background: #dbe6f5;
+    }
+    .ln-row.fav .ln-act {
+      position: relative; padding-left: 20px; align-self: stretch;
+      align-items: center; justify-content: flex-start;
+    }
+    .ln-row.fav .ln-act::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 34px; background: #e2eaf6;
+    }
+    .ln-pill.avail { background: rgba(22,197,94,.12); color: #16a34a; }
+    .ln-pill.lent { background: rgba(107,114,128,.14); color: #6b7280; }
+    .ln-pill.held { background: rgba(37,99,235,.1); color: #1d4ed8; }
+    .ln-pill.off { background: rgba(71,85,105,.12); color: #475569; }
+    .ln-btn.danger { color: #b91c1c; border-color: #f2d3d3; background: #fff; }
+    .ln-btn.danger:hover { background: #fef2f2; border-color: #f0b9b9; }
+    .fav-empty { padding: 60px 20px; text-align: center; font-size: 13px; color: var(--text-3); }
+    @media (max-width: 980px) {
+      .ln-row.fav { display: flex; flex-wrap: wrap; gap: 12px 14px; padding: 18px 12px; }
+      .ln-row.fav .ln-act { padding-left: 0; align-self: auto; margin-left: auto; }
+      .ln-row.fav .ln-act::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="首页.html">
+        <span class="sh-icon"><img src="assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <nav class="sh-nav">
+        <a href="首页.html">首页</a>
+
+        <div class="sh-dropdown">
+          <a href="借阅规则.html">借阅</a>
+          <div class="sh-dropdown-menu">
+            <a href="借阅规则.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">借阅规则</span><span class="sh-dd-desc">须知 · 违规处理</span></span></a>
+            <a href="图书预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书预约</span><span class="sh-dd-desc">到馆通知</span></span></a>
+            <a href="图书续借催还.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M21 21v-5h-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">续借 / 催还</span><span class="sh-dd-desc">在线办理</span></span></a>
+            <a href="阅读推荐.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">阅读推荐</span><span class="sh-dd-desc">新书 · 热门</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="馆藏目录.html">资源</a>
+          <div class="sh-dropdown-menu">
+            <a href="馆藏目录.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏目录</span><span class="sh-dd-desc">图书 · 期刊 · OPAC</span></span></a>
+            <a href="数据库导航.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">数据库导航</span><span class="sh-dd-desc">中外文 · 试用</span></span></a>
+            <a href="特色馆藏.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">特色馆藏</span><span class="sh-dd-desc">航空 · 民国文献</span></span></a>
+            <a href="资源动态.html?from=nav"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源动态</span><span class="sh-dd-desc">新书 · 数据库更新</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="座位预约说明.html">空间</a>
+          <div class="sh-dropdown-menu">
+            <a href="座位预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M6 18v3M18 18v3M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个</span></span></a>
+            <a href="研修室预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span></a>
+            <a href="自助服务.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">自助服务</span><span class="sh-dd-desc">借书机 · 打印</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">其他服务</a>
+          <div class="sh-dropdown-menu">
+            <a href="资源荐购.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v8l6 3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源荐购</span><span class="sh-dd-desc">推荐采购</span></span></a>
+            <a href="图书捐赠.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书捐赠</span><span class="sh-dd-desc">接收 · 致谢</span></span></a>
+            <a href="校外访问.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">校外访问</span><span class="sh-dd-desc">VPN · 校外</span></span></a>
+            <a href="论文提交.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M10 13l2 2 4-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">论文提交</span><span class="sh-dd-desc">机构库 · 硕博</span></span></a>
+            <a href="信息素养.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">信息素养</span><span class="sh-dd-desc">课程 · 培训</span></span></a>
+            <a href="科技查新.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2c4 0 7 3 7 7 0 6-7 13-7 13S7 15 7 9c0-4 3-7 7-7z"/><circle cx="14" cy="9" r="2.5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">科技查新</span><span class="sh-dd-desc">立项 · 成果</span></span></a>
+            <a href="知识产权.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 3a9 9 0 0 0 0 18"/><path d="M8 12h8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">知识产权</span><span class="sh-dd-desc">专利 · 版权</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">概况</a>
+          <div class="sh-dropdown-menu">
+            <a href="本馆简介.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">本馆简介</span><span class="sh-dd-desc">历史 · 馆藏 · 空间</span></span></a>
+            <a href="馆藏分布.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏分布</span><span class="sh-dd-desc">楼层 · 分区</span></span></a>
+            <a href="入馆须知.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">入馆须知</span><span class="sh-dd-desc">刷卡 · 秩序</span></span></a>
+            <a href="开放时间.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">开放时间</span><span class="sh-dd-desc">08:00 - 22:00</span></span></a>
+            <a href="馆舍风貌.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆舍风貌</span><span class="sh-dd-desc">建筑 · 文化</span></span></a>
+            <a href="组织机构.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">组织机构</span><span class="sh-dd-desc">部门 · 岗位</span></span></a>
+            <a href="规章制度.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">规章制度</span><span class="sh-dd-desc">借阅 · 管理</span></span></a>
+            <a href="联系我们.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">联系我们</span><span class="sh-dd-desc">电话 · 邮箱</span></span></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="hd-mid">
+        <div class="tb-actions">
+          <a class="tb-btn" href="个人中心.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 面包屑 ============ -->
+  <div class="bc-bar">
+    <div class="bc-in">
+      <a class="bc-home" href="首页.html" title="返回首页">
+        <svg viewBox="0 0 24 24"><path d="M12 3 2.6 11.2a.9.9 0 0 0 .6 1.6H5v7.3c0 .5.4.9.9.9h4.4v-5.5h3.4V21h4.4c.5 0 .9-.4.9-.9v-7.3h1.8a.9.9 0 0 0 .6-1.6z"/></svg>
+      </a>
+      <span class="sep">›</span>
+      <a href="个人中心.html">个人中心</a>
+      <span class="sep">›</span>
+      <span class="current">账户设置</span>
+    </div>
+  </div>
+
+  <!-- ============ 主体 ============ -->
+  <div class="pl-wrap">
+    <!-- 左侧：个人信息 -->
+    <aside>
+      <div class="pl-card" id="profileCard">
+        <div class="pl-profile">
+          <div class="pl-avatar">
+            <svg viewBox="0 0 88 88" aria-hidden="true">
+              <circle cx="44" cy="44" r="44" fill="#e8f1ff"/>
+              <path d="M44 22c8 0 13 5.4 13 13v6c0 7.6-5.6 13-13 13s-13-5.4-13-13v-6c0-7.6 5-13 13-13z" fill="#f6c9a8"/>
+              <path d="M31 34c0-8 5.6-14 13-14s13 6 13 14c0 1.6-.3 3-.8 4.3-1.6-4.6-6.4-7.3-12.2-7.3s-10.6 2.7-12.2 7.3c-.5-1.3-.8-2.7-.8-4.3z" fill="#5b4636"/>
+              <path d="M22 84c2.6-12.6 11.4-20 22-20s19.4 7.4 22 20z" fill="#2f6fe0"/>
+              <path d="M37 64c2.2 3.4 4.6 5 7 5s4.8-1.6 7-5l-2.4-3H39.4z" fill="#f3f6fb"/>
+            </svg>
+          </div>
+          <div class="pl-name-row">
+            <span class="pl-name">陈思远</span>
+            <span class="pl-lv">LV.3</span>
+          </div>
+          <div class="pl-sub">航空工程学院 · 飞行器制造 2301</div>
+          <div class="pl-auth">
+            <span><i></i>学号认证</span>
+            <span><i></i>手机认证</span>
+            <span><i></i>邮箱认证</span>
+            <span><i></i>借阅权限正常</span>
+          </div>
+        </div>
+
+        <div class="pl-mcard">
+          <div class="pl-mcard-top">
+            <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            我的读者卡
+          </div>
+          <div class="pl-mcard-row"><span>读者号</span><b>2023010156</b></div>
+          <div class="pl-mcard-row"><span>学号 / 工号</span><b>2023010156</b></div>
+          <div class="pl-mcard-foot">
+            <span>有效期至</span><b>2027-06-30</b>
+          </div>
+        </div>
+
+        <div class="pl-links">
+          <a href="我的借阅.html"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>我的借阅<em>在借 3</em></a>
+          <a href="预约记录.html"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>我的预约<em>2 条</em></a>
+          <a href="我的收藏.html"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>我的收藏<em>4</em></a>
+          <a href="资源荐购系统.html?view=mine"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 12.2A2 2 0 0 0 9.4 17h8.2a2 2 0 0 0 2-1.6L21 7H6"/></svg>资源荐购<em>1 条</em></a>
+          <a href="违章欠费.html"><svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>违章欠费<em>0 元</em></a>
+          <a href="消息通知.html"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>消息通知<em>2 未读</em></a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 右侧 -->
+    <div class="pl-right">
+
+      <style>
+        /* ===== 账户设置 ===== */
+        .ac-card { background: #fff; border: 1px solid #eef1f6; border-radius: 10px; padding: 20px 22px; }
+        .ac-title { margin: 0 0 16px; padding-left: 10px; border-left: 3px solid var(--primary-light); font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+        .ac-title span { margin-left: 8px; font-size: 12.5px; font-weight: 400; color: var(--text-3); }
+
+        .ac-main { display: grid; gap: 16px; }
+        .ac-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
+        .ac-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+        .ac-field label { font-size: 13px; font-weight: 500; color: var(--text); }
+        .ac-field input, .ac-field select {
+          width: 100%; box-sizing: border-box; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+          background: #fff; color: var(--text); font-family: inherit; font-size: 13.5px; outline: none; transition: .2s;
+        }
+        .ac-field input:focus, .ac-field select:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(59,130,246,.13); }
+        .ac-field input:disabled { background: #f7f9fc; color: var(--text-3); cursor: not-allowed; }
+        .ac-tip { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 2px 0 0; padding: 10px 14px; background: #f7f9fc; border-radius: 8px; font-size: 12.5px; color: var(--text-2); }
+        .ac-tip svg { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--sky); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .ac-sec { list-style: none; margin: 0; padding: 0; }
+        .ac-sec li { display: flex; align-items: center; gap: 14px; padding: 14px 2px; border-bottom: 1px dashed #eef2f7; }
+        .ac-sec li:first-child { padding-top: 2px; }
+        .ac-sec li:last-child { border-bottom: 0; padding-bottom: 2px; }
+        .ac-sec-ico { width: 34px; height: 34px; border-radius: 10px; flex: none; background: #eef5ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+        .ac-sec-ico svg { width: 17px; height: 17px; fill: none; stroke: var(--primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .ac-sec-main { flex: 1; min-width: 0; }
+        .ac-sec-main b { display: block; font-size: 13.5px; font-weight: 600; color: var(--text); }
+        .ac-sec-main span { display: block; margin-top: 3px; font-size: 12px; color: var(--text-3); }
+        .ac-btn-sm { flex: none; border: 1px solid #cfdcf1; background: #fff; color: var(--primary); font-family: inherit; font-size: 12.5px; padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: .15s; }
+        .ac-btn-sm:hover { border-color: var(--primary); background: #f5f9ff; }
+
+        .ac-switches { display: grid; }
+        .ac-sw { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 2px; border-bottom: 1px dashed #eef2f7; font-size: 13px; color: var(--text-2); cursor: pointer; }
+        .ac-sw:first-child { padding-top: 2px; }
+        .ac-sw:last-child { border-bottom: 0; padding-bottom: 2px; }
+        .ac-sw small { display: block; margin-top: 3px; font-size: 12px; color: var(--text-3); }
+        .ac-switch { position: relative; width: 38px; height: 22px; flex: none; }
+        .ac-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 2; }
+        .ac-switch span { position: absolute; inset: 0; border-radius: 12px; background: #dbe3ee; transition: .2s; }
+        .ac-switch span::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.15); transition: .2s; }
+        .ac-switch input:checked + span { background: var(--primary); }
+        .ac-switch input:checked + span::after { transform: translateX(16px); }
+
+        .ac-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .ac-btn { height: 38px; padding: 0 24px; border-radius: 4px; font-family: inherit; font-size: 13.5px; cursor: pointer; transition: all .18s; }
+        .ac-btn.ghost { border: 1px solid var(--border); background: #fff; color: var(--text-2); }
+        .ac-btn.ghost:hover { border-color: #b9caf3; color: var(--primary); }
+        .ac-btn.primary { border: 1px solid var(--primary-light); background: var(--primary-light); color: #fff; }
+        .ac-btn.primary:hover { background: var(--primary); border-color: var(--primary); }
+
+        .ac-dlg-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+        .ac-dlg-field label { font-size: 13px; font-weight: 500; color: var(--text); }
+        .ac-dlg-field input { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text); outline: none; transition: .2s; }
+        .ac-dlg-field input:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(59,130,246,.13); }
+        .ac-dlg-tip { margin: 2px 0 0; font-size: 12px; color: var(--text-3); }
+
+        @media (max-width: 680px) {
+          .ac-form { grid-template-columns: minmax(0, 1fr); }
+        }
+      </style>
+
+      <div class="ac-main">
+          <section class="ac-card">
+            <h3 class="ac-title">基本信息</h3>
+            <div class="ac-form">
+              <div class="ac-field"><label for="acName">姓名</label><input id="acName" value="陈思远" disabled></div>
+              <div class="ac-field"><label for="acNo">读者号</label><input id="acNo" value="2023010156" disabled></div>
+              <div class="ac-field"><label for="acPhone">手机号</label><input id="acPhone" value="138****6621"></div>
+              <div class="ac-field"><label for="acMail">邮箱</label><input id="acMail" value="chensiyuan@xyhkxy.edu.cn"></div>
+              <div class="ac-field"><label for="acDept">院系</label><input id="acDept" value="航空工程学院" disabled></div>
+              <div class="ac-field"><label for="acMajor">专业</label><input id="acMajor" value="飞行器制造 2301" disabled></div>
+              <p class="ac-tip">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+                <span>手机号与邮箱用于接收借阅到期、预约到馆等通知，修改后需重新验证。</span>
+              </p>
+            </div>
+          </section>
+
+          <section class="ac-card">
+            <h3 class="ac-title">账号安全</h3>
+            <ul class="ac-sec">
+              <li>
+                <i class="ac-sec-ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>
+                <div class="ac-sec-main"><b>登录密码</b><span>最近修改于 2026-06-28 · 建议每 6 个月更换一次</span></div>
+                <button class="ac-btn-sm" type="button" id="acPwdBtn">修改</button>
+              </li>
+              <li>
+                <i class="ac-sec-ico"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></i>
+                <div class="ac-sec-main"><b>手机绑定</b><span>已绑定 138****6621</span></div>
+                <button class="ac-btn-sm" type="button" data-tip="更换手机号需到馆内服务台验证身份">更换</button>
+              </li>
+              <li>
+                <i class="ac-sec-ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></i>
+                <div class="ac-sec-main"><b>邮箱绑定</b><span>已绑定 chensiyuan@xyhkxy.edu.cn</span></div>
+                <button class="ac-btn-sm" type="button" data-tip="验证邮件已发送至当前邮箱，请在 24 小时内完成修改">更换</button>
+              </li>
+              <li>
+                <i class="ac-sec-ico"><svg viewBox="0 0 24 24"><path d="M21 11.5a7.5 7.5 0 0 1-11 6.6L5 19.5l1.4-4.5A7.5 7.5 0 1 1 21 11.5z"/><path d="M9 11h.01M15 11h.01"/></svg></i>
+                <div class="ac-sec-main"><b>微信绑定</b><span>未绑定，绑定后可扫码登录与接收提醒</span></div>
+                <button class="ac-btn-sm" type="button" data-tip="原型演示：暂未接入微信绑定">去绑定</button>
+              </li>
+              <li>
+                <i class="ac-sec-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></i>
+                <div class="ac-sec-main"><b>登录设备</b><span>当前 2 台设备在线：Windows 客户端、iPhone</span></div>
+                <button class="ac-btn-sm" type="button" data-tip="原型演示：登录设备管理暂未开放">管理</button>
+              </li>
+            </ul>
+          </section>
+
+          <section class="ac-card">
+            <h3 class="ac-title">通知设置 <span>关闭后将不再接收对应提醒</span></h3>
+            <div class="ac-switches">
+              <label class="ac-sw"><span>借阅到期与续借提醒<small>到期前 3 天、1 天各提醒一次</small></span><i class="ac-switch"><input type="checkbox" checked><span></span></i></label>
+              <label class="ac-sw"><span>预约图书到馆提醒<small>到馆后立即通知，取书期限 3 天</small></span><i class="ac-switch"><input type="checkbox" checked><span></span></i></label>
+              <label class="ac-sw"><span>座位与研修室预约提醒<small>签到前 30 分钟、暂离超时提醒</small></span><i class="ac-switch"><input type="checkbox" checked><span></span></i></label>
+              <label class="ac-sw"><span>违章欠费与积分变动<small>产生欠费或信誉分变化时通知</small></span><i class="ac-switch"><input type="checkbox" checked><span></span></i></label>
+              <label class="ac-sw"><span>系统公告与活动推送<small>开馆时间调整、讲座与展览信息</small></span><i class="ac-switch"><input type="checkbox"><span></span></i></label>
+            </div>
+          </section>
+
+          <div class="ac-actions">
+            <button class="ac-btn ghost" type="button" id="acReset">恢复默认</button>
+            <button class="ac-btn primary" type="button" id="acSave">保存修改</button>
+          </div>
+      </div>
+
+    </div>
+  </div>
+  <footer class="bk-footer">
+    © 2026 信阳航空职业学院 · 图书馆 版权所有 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </footer>
+
+  <div class="pl-toast" id="plToast"></div>
+
+  <div class="rn-mask" id="acPwdMask" hidden>
+    <div class="rn-dialog" role="dialog" aria-modal="true" aria-labelledby="acPwdTitle">
+      <div class="rn-head">
+        <h3 id="acPwdTitle">修改登录密码</h3>
+        <button class="rn-close" id="acPwdClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rn-body">
+        <div class="ac-dlg-field"><label for="acOldPwd">原密码</label><input id="acOldPwd" type="password" placeholder="请输入当前登录密码"></div>
+        <div class="ac-dlg-field"><label for="acNewPwd">新密码</label><input id="acNewPwd" type="password" placeholder="8-20 位，需包含字母和数字"></div>
+        <div class="ac-dlg-field"><label for="acNewPwd2">确认新密码</label><input id="acNewPwd2" type="password" placeholder="请再次输入新密码"></div>
+        <p class="ac-dlg-tip">修改成功后需使用新密码重新登录。</p>
+      </div>
+      <div class="rn-foot">
+        <button class="rn-btn ghost" id="acPwdCancel" type="button">取消</button>
+        <button class="rn-btn primary" id="acPwdOk" type="button">确认修改</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var toastEl = document.getElementById('plToast');
+    var timer = null;
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(timer);
+      timer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+    }
+
+    var mask = document.getElementById('acPwdMask');
+    function closePwd() {
+      mask.hidden = true;
+      ['acOldPwd', 'acNewPwd', 'acNewPwd2'].forEach(function (id) { document.getElementById(id).value = ''; });
+    }
+    document.getElementById('acPwdBtn').addEventListener('click', function () { mask.hidden = false; });
+    document.getElementById('acPwdClose').addEventListener('click', closePwd);
+    document.getElementById('acPwdCancel').addEventListener('click', closePwd);
+    mask.addEventListener('click', function (e) { if (e.target === mask) closePwd(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !mask.hidden) closePwd();
+    });
+
+    document.getElementById('acPwdOk').addEventListener('click', function () {
+      var oldPwd = document.getElementById('acOldPwd').value.trim();
+      var p1 = document.getElementById('acNewPwd').value.trim();
+      var p2 = document.getElementById('acNewPwd2').value.trim();
+      if (!oldPwd) { toast('请输入原密码'); return; }
+      if (p1.length < 8 || p1.length > 20) { toast('新密码需为 8-20 位'); return; }
+      if (!/[a-zA-Z]/.test(p1) || !/\d/.test(p1)) { toast('新密码需同时包含字母和数字'); return; }
+      if (p1 !== p2) { toast('两次输入的新密码不一致'); return; }
+      closePwd();
+      toast('密码修改成功，请重新登录');
+    });
+
+    document.querySelectorAll('.ac-sec [data-tip]').forEach(function (b) {
+      b.addEventListener('click', function () { toast(b.getAttribute('data-tip')); });
+    });
+
+    document.getElementById('acSave').addEventListener('click', function () {
+      toast('账户设置已保存');
+    });
+
+    document.getElementById('acReset').addEventListener('click', function () {
+      document.getElementById('acPhone').value = '138****6621';
+      document.getElementById('acMail').value = 'chensiyuan@xyhkxy.edu.cn';
+      document.querySelectorAll('.ac-switch input').forEach(function (i, idx) {
+        i.checked = idx !== 4;
+      });
+      toast('已恢复默认设置');
+    });
+  })();
+  </script>
+
+<script src="assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>

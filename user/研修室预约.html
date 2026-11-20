@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>研修室预约 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+    }
+    * { box-sizing: border-box; }
+    /* 顶部导航右移居中 */
+    .site-header .sh-nav { margin-left: auto; margin-right: 0; }
+    body:not(.has-left-rail) .site-header .hd-mid { margin-left: 0; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(900px 320px at 12% -10%, #dfeaff 0%, rgba(223,234,255,0) 70%),
+        radial-gradient(900px 320px at 88% -6%, #e6edff 0%, rgba(230,237,255,0) 70%),
+        #f2f5fa;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============ 面包屑 ============ */
+    .bc-bar { background: #fff; border-bottom: 1px solid #e8eef8; }
+    .bc-in {
+      max-width: 1440px; margin: 0 auto; padding: 13px 40px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-3);
+    }
+    .bc-in a { color: var(--text-2); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .bc-in a:hover { color: var(--primary); }
+    .bc-in a svg { width: 16px; height: 16px; display: block; fill: currentColor; stroke: none; }
+    .bc-in .bc-home { color: #94a3b8; }
+    .bc-in .bc-home:hover { color: var(--primary); }
+    .bc-in .sep { color: #c3cddd; }
+    .bc-in .current { color: var(--text); font-weight: 500; }
+
+    /* ============ 页面容器 ============ */
+    .pl-wrap {
+      max-width: 1440px; margin: 0 auto;
+      flex: 1 0 auto; width: 100%;
+      padding: 18px 40px 20px;
+      display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px;
+      align-items: start;
+    }
+    .pl-right { display: grid; gap: 16px; width: 100%; }
+    .pl-card {
+      background: #fff; border: 1px solid #e8eef8; border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(23,58,120,.05);
+    }
+
+    /* ============ 列表卡片 ============ */
+    .ln-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px 0; flex-wrap: wrap; border-bottom: 1px solid #edf2fb; }
+    .ln-head h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 0 0 14px; }
+    .ln-head h3 span { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 7px; }
+    .ln-tabs { display: flex; gap: 6px; margin-left: auto; margin-bottom: 10px; flex-wrap: wrap; }
+    .ln-tabs span { padding: 5px 12px; border-radius: 14px; font-size: 12.5px; color: var(--text-2); background: #f2f6fd; cursor: pointer; transition: .15s; }
+    .ln-tabs span:hover { background: #e6eefc; }
+    .ln-tabs span.active { background: var(--primary); color: #fff; }
+    .ln-tabs em { font-style: normal; opacity: .85; margin-left: 2px; }
+    .ln-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 20px; margin-top: -10px; flex-wrap: wrap; }
+    .ln-pager-info { font-size: 12.5px; color: var(--text-3); }
+    .ln-pager-info b { color: var(--text); }
+    .ln-pager-btns { display: flex; gap: 6px; }
+    .pg-btn { min-width: 32px; height: 30px; padding: 0 10px; border: 1px solid #e2eaf6; background: #fff; color: var(--text-2); font-size: 12.5px; border-radius: 6px; cursor: pointer; transition: .15s; }
+    .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .pg-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .pg-btn:disabled { color: #c2ccdb; cursor: not-allowed; background: #f8fafc; }
+
+    .ln-vtabs { display: flex; align-items: center; gap: 26px; }
+    .ln-vtabs button {
+      position: relative; padding: 4px 2px 16px; border: 0; background: none;
+      font-family: inherit; font-size: 14.5px; font-weight: 500; color: var(--text-3);
+      cursor: pointer; transition: color .15s;
+    }
+    .ln-vtabs button:hover { color: var(--primary); }
+    .ln-vtabs button.active { color: var(--primary); font-weight: 600; }
+    .ln-vtabs em { font-style: normal; font-size: 11.5px; color: var(--text-3); margin-left: 3px; }
+    .ln-vtabs button.active em { color: var(--primary); }
+    #view-current, #view-history { display: grid; gap: 16px; }
+    #view-current[hidden], #view-history[hidden] { display: none; }
+    [hidden] { display: none !important; }
+
+    .ln-summary { padding: 14px 20px 12px; font-size: 13px; color: var(--text-2); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .ln-summary b { color: var(--text); font-weight: 600; }
+    .ln-summary .rsv-note { color: var(--text-3); font-size: 12.5px; }
+    .ln-summary .rsv-rule { margin-left: auto; color: var(--primary); font-size: 12.5px; text-decoration: none; }
+    .ln-summary .rsv-rule:hover { text-decoration: underline; }
+    .ln-summary .rsv-go {
+      color: var(--primary); font-size: 12.5px; text-decoration: none;
+      white-space: nowrap; flex: none; margin-left: 14px;
+    }
+    .ln-summary .rsv-go:hover { text-decoration: underline; }
+
+    .ln-thead, .ln-row { display: grid; grid-template-columns: 46px minmax(0, 1fr) 92px 132px 72px 120px 260px; gap: 14px; align-items: center; }
+    .ln-thead { margin: 0 20px; padding: 9px 14px; background: #f5f9ff; border-radius: 10px; font-size: 12px; color: var(--text-3); }
+    .ln-body { padding: 0 20px 8px; }
+    .ln-row { padding: 20px 14px; border-bottom: 1px dashed #e8eef8; border-radius: 10px; transition: background .15s; position: relative; }
+    .ln-row:last-child { border-bottom: 0; }
+    .ln-row.no-line { border-bottom: 0; }
+    .ln-row:hover { background: #fbfdff; }
+
+    /* 预约成员悬浮提示 */
+    .mem-tip {
+      position: absolute; left: 74px; top: calc(100% - 12px); z-index: 20;
+      background: #fff; border: 1px solid #e4ecf8; border-radius: 10px;
+      box-shadow: 0 10px 26px rgba(23,58,120,.14);
+      padding: 10px 12px; white-space: nowrap;
+      opacity: 0; visibility: hidden; transform: translateY(4px);
+      transition: opacity .16s, transform .16s, visibility .16s;
+      pointer-events: none;
+    }
+    .ln-row:hover .mem-tip { opacity: 1; visibility: visible; transform: none; }
+    /* 最后一行向上展开，避免超出卡片 */
+    .ln-row.no-line .mem-tip { top: auto; bottom: calc(100% - 12px); transform: translateY(-4px); }
+    .ln-row.no-line:hover .mem-tip { transform: none; }
+    .mem-tip-h { font-size: 11px; color: var(--text-3); margin-bottom: 8px; }
+    .mem-list { display: grid; grid-template-columns: repeat(2, max-content); gap: 10px 24px; }
+    .mem-line { display: flex; align-items: center; gap: 6px; }
+    .mem-tag { font-size: 10px; border-radius: 6px; padding: 1px 5px; line-height: 1.5; }
+    .mem-tag.self { color: #1d4ed8; background: rgba(37,99,235,.1); }
+    .mem-tag.member { color: #6b7280; background: #f8fafc; border: 1px solid #eef2f7; }
+    .mem-name { font-size: 12.5px; font-weight: 600; color: var(--text); }
+    .mem-role { font-size: 10px; border-radius: 6px; padding: 1px 5px; line-height: 1.5; }
+    .mem-role.stu { color: #16a34a; background: rgba(22,197,94,.12); }
+    .mem-role.teacher { color: #7c3aed; background: rgba(124,58,237,.1); }
+    .mem-role.staff { color: #d97706; background: rgba(245,158,11,.14); }
+    .mem-sub { margin-top: 3px; font-size: 11px; color: var(--text-3); }
+
+    .ln-cover {
+      width: 46px; height: 60px; border-radius: 8px; flex-shrink: 0;
+      background: linear-gradient(140deg, #eaf2ff, #cfe0fb);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .08);
+      overflow: hidden; transition: .15s;
+    }
+    .ln-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    a.ln-cover:hover { box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .32), 0 3px 10px rgba(37, 99, 235, .18); }
+    .ln-main { min-width: 0; }
+    .ln-title { font-size: 14.5px; font-weight: 600; color: var(--text); }
+    .ln-title a { color: inherit; }
+    .ln-title a:hover { color: var(--primary); }
+    .ln-meta { margin-top: 5px; font-size: 12px; color: var(--text-3); display: flex; flex-wrap: wrap; gap: 3px 14px; }
+    .ln-meta span { position: relative; }
+    .ln-meta span + span::before { content: "·"; position: absolute; left: -9px; color: #cbd5e1; }
+    .ln-pick { margin-top: 6px; font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 4px; }
+    .ln-pick svg { width: 13px; height: 13px; flex: none; fill: none; stroke: #2563eb; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .ln-pick b { font-weight: 600; color: var(--text); }
+
+    .ln-time { font-size: 12.5px; color: var(--text-2); }
+    .ln-people { font-size: 12.5px; color: var(--text-2); }
+    .ln-due { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .ln-left { margin-top: 5px; font-size: 11.5px; line-height: 1.5; }
+    .ln-left .ok { color: #16a34a; }
+    .ln-left .warn { color: #d97706; }
+    .ln-left .info { color: #2563eb; }
+
+    .ln-pill { display: inline-block; font-size: 11.5px; padding: 3px 10px; border-radius: 11px; font-weight: 500; white-space: nowrap; }
+    .ln-pill.queue { background: rgba(37,99,235,.1); color: #2563eb; }
+    .ln-pill.arrived { background: rgba(245,158,11,.15); color: #d97706; }
+    .ln-pill.ready { background: rgba(22,197,94,.12); color: #16a34a; }
+
+    .ln-act { display: flex; gap: 8px; justify-content: flex-start; align-items: center; align-self: stretch; position: relative; padding-left: 20px; }
+    .ln-act::before {
+      content: ''; position: absolute; left: 0; top: -20px; bottom: -20px;
+      width: 1px; background: #eef3fa;
+    }
+    .ln-thead > span:last-child { position: relative; text-align: center; padding-left: 0; }
+    .ln-thead > span:last-child::before {
+      content: ''; position: absolute; left: 0; top: -6px; bottom: -6px;
+      width: 1px; background: #e4ecf8;
+    }
+    /* 预约记录：无操作列 */
+    .ln-thead.hist, .ln-row.hist { grid-template-columns: 46px minmax(0, 1fr) 118px 205px 72px 132px; column-gap: 26px; }
+    .ln-thead.hist > span:last-child { text-align: left; }
+    .ln-thead.hist > span:last-child::before { display: none; }
+    .ln-pill.done { background: rgba(22,197,94,.12); color: #16a34a; }
+    .ln-pill.expired { background: rgba(107,114,128,.14); color: #6b7280; }
+    .ln-pill.cancel { background: rgba(107,114,128,.12); color: #6b7280; }
+    .ln-pill.noshow { background: rgba(220,38,38,.1); color: #dc2626; }
+    .ln-pill.away { background: rgba(245,158,11,.15); color: #d97706; }
+    .ln-pill.watch { background: rgba(220,38,38,.1); color: #dc2626; }
+    .ln-pill.awaytimeout { background: rgba(245,158,11,.15); color: #d97706; }
+    .ln-pill.nocheckout { background: rgba(245,158,11,.15); color: #b45309; }
+    .ln-pill.watchno { background: rgba(220,38,38,.1); color: #dc2626; }
+    .ln-pill.understaffed { background: rgba(107,114,128,.12); color: #6b7280; }
+    .ln-btn.danger { border: 1px solid rgba(220,38,38,.3); background: rgba(220,38,38,.06); color: #dc2626; }
+    .ln-btn.danger:hover { background: rgba(220,38,38,.12); }
+    .ln-btn {
+      padding: 5px 13px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+      font-size: 12.5px; font-family: inherit; border: 1px solid #dbe3ef; background: #fff;
+      color: var(--text-2); text-decoration: none;
+    }
+    .ln-btn.primary { background: rgba(37,99,235,.08); color: #1d4ed8; border-color: rgba(37,99,235,.28); }
+    .ln-btn.primary:hover { background: rgba(37,99,235,.16); }
+    .ln-btn.ghost:hover { color: var(--primary); border-color: #b9cdf0; }
+    .ln-btn:disabled { background: #f5f5f5; color: #a3a3a3; border-color: #d4d4d4; cursor: not-allowed; }
+
+    @media (max-width: 1180px) {
+      .ln-thead, .ln-row { grid-template-columns: 46px minmax(0, 1fr) 132px 72px 120px 260px; }
+      .ln-time { display: none; }
+    }
+    @media (max-width: 980px) {
+      .ln-thead { display: none; }
+      .ln-body { padding: 6px 16px 6px; }
+      .ln-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; padding: 18px 12px; }
+      .ln-main { flex: 1 1 220px; }
+      .ln-act { margin-left: auto; padding-left: 0; align-self: auto; }
+      .ln-act::before { display: none; }
+      .pl-wrap { padding: 16px 24px 20px; }
+      .bc-in { padding: 13px 24px; }
+    }
+    @media (max-width: 620px) {
+      .pl-wrap { padding: 14px 16px 20px; }
+      .bc-in { padding: 12px 16px; }
+    }
+
+    /* ============ 弹窗 ============ */
+    .rv-mask {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 400;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .rv-mask[hidden] { display: none; }
+    .rv-dialog {
+      width: 460px; max-width: 100%; background: #fff; border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(15,35,95,0.28); overflow: hidden;
+      animation: rvIn .22s ease;
+    }
+    @keyframes rvIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .rv-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .rv-head h3 { font-size: 15px; color: var(--text); margin: 0; font-weight: 600; }
+    .rv-close { border: 0; background: transparent; color: var(--text-3); font-size: 16px; cursor: pointer; line-height: 1; }
+    .rv-close:hover { color: var(--primary); }
+    .rv-body { padding: 22px 20px 14px; font-size: 13.5px; line-height: 1.85; color: var(--text); }
+    .rv-book { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .rv-rows { background: #f6f9ff; border: 1px solid #e6eefb; border-radius: 10px; padding: 4px 14px; }
+    .rv-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; font-size: 12.5px; color: var(--text-2); }
+    .rv-row + .rv-row { border-top: 1px dashed #e2ebf9; }
+    .rv-row b { color: var(--text); font-weight: 600; }
+    .rv-row .rv-new { color: var(--primary); }
+    .rv-tip { margin: 14px 0 4px; font-size: 12.5px; color: var(--text-3); line-height: 1.7; }
+    .rv-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 6px 18px 16px; }
+    .rv-foot.center { justify-content: center; display: block; }
+    .rv-foot.center .rv-btn { width: 100%; }
+    .rv-btn { height: 34px; padding: 0 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-family: inherit; transition: .2s; }
+    .rv-btn.primary { border: 0; background: var(--primary); color: #fff; font-weight: 600; }
+    .rv-btn.primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+    .rv-btn.danger { border: 0; background: #dc2626; color: #fff; font-weight: 600; }
+    .rv-btn.danger:hover { background: #b91c1c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(220,38,38,.32); }
+    .rv-btn.ghost { border: 1px solid var(--border); background: #fff; color: var(--text-2); }
+    .rv-btn.ghost:hover { border-color: var(--primary-light); color: var(--primary); }
+    .rv-success { text-align: center; padding: 26px 20px 16px; }
+    .rv-ok-ico {
+      width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(22,163,74,.3);
+    }
+    .rv-ok-ico svg { width: 28px; height: 28px; }
+    .rv-success h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .rv-success p { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+    .rv-success .rv-due-line { color: var(--primary); font-weight: 600; }
+    .rv-code-tip { font-size: 12.5px; color: var(--text-3); line-height: 1.7; margin: 0 0 14px; }
+
+    /* ============ 页脚 ============ */
+    .bk-footer { background: var(--primary); color: rgba(255,255,255,.9); text-align: center; padding: 16px 20px; font-size: 12.5px; line-height: 1.7; margin-top: auto; flex: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="首页.html">
+        <span class="sh-icon"><img src="assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <nav class="sh-nav">
+        <a href="首页.html">首页</a>
+
+        <div class="sh-dropdown">
+          <a href="借阅规则.html">借阅</a>
+          <div class="sh-dropdown-menu">
+            <a href="借阅规则.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">借阅规则</span><span class="sh-dd-desc">须知 · 违规处理</span></span></a>
+            <a href="图书预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书预约</span><span class="sh-dd-desc">到馆通知</span></span></a>
+            <a href="图书续借催还.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M21 21v-5h-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">续借 / 催还</span><span class="sh-dd-desc">在线办理</span></span></a>
+            <a href="阅读推荐.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V6.5A2.5 2.5 0 0 0 17.5 4H6.5A2.5 2.5 0 0 0 4 6.5z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">阅读推荐</span><span class="sh-dd-desc">新书 · 热门</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="馆藏目录.html">资源</a>
+          <div class="sh-dropdown-menu">
+            <a href="馆藏目录.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏目录</span><span class="sh-dd-desc">图书 · 期刊 · OPAC</span></span></a>
+            <a href="数据库导航.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">数据库导航</span><span class="sh-dd-desc">中外文 · 试用</span></span></a>
+            <a href="特色馆藏.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">特色馆藏</span><span class="sh-dd-desc">航空 · 民国文献</span></span></a>
+            <a href="资源动态.html?from=nav"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源动态</span><span class="sh-dd-desc">新书 · 数据库更新</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="座位预约说明.html">空间</a>
+          <div class="sh-dropdown-menu">
+            <a href="座位预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M6 18v3M18 18v3M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">座位预约</span><span class="sh-dd-desc">实时选座 · 1280 个</span></span></a>
+            <a href="研修室预约说明.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">研修室预约</span><span class="sh-dd-desc">27 间 · 小组研讨</span></span></a>
+            <a href="自助服务.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">自助服务</span><span class="sh-dd-desc">借书机 · 打印</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">其他服务</a>
+          <div class="sh-dropdown-menu">
+            <a href="资源荐购.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v8l6 3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">资源荐购</span><span class="sh-dd-desc">推荐采购</span></span></a>
+            <a href="图书捐赠.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">图书捐赠</span><span class="sh-dd-desc">接收 · 致谢</span></span></a>
+            <a href="校外访问.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">校外访问</span><span class="sh-dd-desc">VPN · 校外</span></span></a>
+            <a href="论文提交.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M10 13l2 2 4-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">论文提交</span><span class="sh-dd-desc">机构库 · 硕博</span></span></a>
+            <a href="信息素养.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">信息素养</span><span class="sh-dd-desc">课程 · 培训</span></span></a>
+            <a href="科技查新.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2c4 0 7 3 7 7 0 6-7 13-7 13S7 15 7 9c0-4 3-7 7-7z"/><circle cx="14" cy="9" r="2.5"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">科技查新</span><span class="sh-dd-desc">立项 · 成果</span></span></a>
+            <a href="知识产权.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 3a9 9 0 0 0 0 18"/><path d="M8 12h8"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">知识产权</span><span class="sh-dd-desc">专利 · 版权</span></span></a>
+          </div>
+        </div>
+
+        <div class="sh-dropdown">
+          <a href="#">概况</a>
+          <div class="sh-dropdown-menu">
+            <a href="本馆简介.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">本馆简介</span><span class="sh-dd-desc">历史 · 馆藏 · 空间</span></span></a>
+            <a href="馆藏分布.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆藏分布</span><span class="sh-dd-desc">楼层 · 分区</span></span></a>
+            <a href="入馆须知.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">入馆须知</span><span class="sh-dd-desc">刷卡 · 秩序</span></span></a>
+            <a href="开放时间.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">开放时间</span><span class="sh-dd-desc">08:00 - 22:00</span></span></a>
+            <a href="馆舍风貌.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4v18M19 21V11l-7-4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">馆舍风貌</span><span class="sh-dd-desc">建筑 · 文化</span></span></a>
+            <a href="组织机构.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">组织机构</span><span class="sh-dd-desc">部门 · 岗位</span></span></a>
+            <a href="规章制度.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M14 2v6h6"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">规章制度</span><span class="sh-dd-desc">借阅 · 管理</span></span></a>
+            <a href="联系我们.html"><span class="sh-dd-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span class="sh-dd-text"><span class="sh-dd-name">联系我们</span><span class="sh-dd-desc">电话 · 邮箱</span></span></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="hd-mid">
+        <div class="tb-actions">
+          <a class="tb-btn" href="个人中心.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 面包屑 ============ -->
+  <div class="bc-bar">
+    <div class="bc-in">
+      <a class="bc-home" href="首页.html" title="返回首页">
+        <svg viewBox="0 0 24 24"><path d="M12 3 2.6 11.2a.9.9 0 0 0 .6 1.6H5v7.3c0 .5.4.9.9.9h4.4v-5.5h3.4V21h4.4c.5 0 .9-.4.9-.9v-7.3h1.8a.9.9 0 0 0 .6-1.6z"/></svg>
+      </a>
+      <span class="sep">›</span>
+      <a href="个人中心.html">个人中心</a>
+      <span class="sep">›</span>
+      <span class="current">研修室预约</span>
+    </div>
+  </div>
+
+  <!-- ============ 主体 ============ -->
+    <div class="pl-wrap">
+    <div class="pl-right">
+
+      <style>
+        .rm-ico {
+          width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(135deg, rgba(217,154,11,.12), rgba(217,154,11,.04));
+          box-shadow: inset 0 0 0 1px rgba(217,154,11,.16);
+          color: #c2870a;
+        }
+        .rm-ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .rm-empty { padding: 50px 20px; text-align: center; font-size: 13px; color: var(--text-3); }
+      </style>
+
+      <section class="pl-card">
+        <div class="ln-head">
+          <div class="ln-vtabs" id="rsvViews">
+            <button type="button" class="active" data-view="current">当前预约</button>
+            <button type="button" data-view="history">预约记录</button>
+          </div>
+          <div class="ln-tabs" id="rsvTabs">
+            <span class="active" data-state="all">全部 <em>4</em></span>
+            <span data-state="upcoming">待签到 <em>1</em></span>
+            <span data-state="using">使用中 <em>1</em></span>
+            <span data-state="away">暂离中 <em>1</em></span>
+            <span data-state="watch">被监督中 <em>1</em></span>
+          </div>
+          <div class="ln-tabs" id="histTabs" hidden>
+            <span class="active" data-hstate="all">全部 <em>7</em></span>
+            <span data-hstate="done">已完成 <em>1</em></span>
+            <span data-hstate="cancel">已取消 <em>1</em></span>
+            <span data-hstate="noshow">未签到 <em>1</em></span>
+            <span data-hstate="awaytimeout">暂离超时 <em>1</em></span>
+            <span data-hstate="nocheckout">未签离 <em>1</em></span>
+            <span data-hstate="watchno">被监督未返回 <em>1</em></span>
+            <span data-hstate="understaffed">人数不足取消 <em>1</em></span>
+          </div>
+        </div>
+
+        <div id="view-current">
+        <div class="ln-summary">
+          <span>当前预约 <b id="rsvCount">4</b> 个 / 每日最多 <b>2</b> 场（原型只做展示不同状态，不代表这些状态可以同时存在）</span>
+          <span class="rsv-note">开始前 30 分钟可签到；开始 15 分钟后未签到将自动取消并记违约。</span>
+          <a class="rsv-rule" href="研修室预约说明.html">预约规则说明 ›</a>
+          <a class="rsv-go" href="研修室预约系统.html">去预约 ›</a>
+        </div>
+
+        <div class="ln-thead">
+          <span></span>
+          <span>研修室信息</span>
+          <span class="ln-time">预约时间</span>
+          <span>使用时段</span>
+          <span>预约人数</span>
+          <span>状态</span>
+          <span>操作</span>
+        </div>
+
+        <div class="ln-body" id="rsvBody">
+
+          <!-- 待签到 -->
+          <div class="ln-row" data-state="upcoming" data-status="待签到">
+            <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+            <div class="ln-main">
+              <div class="ln-title">研修室305</div>
+              <div class="ln-meta"><span>6 人间</span><span>3 人起约</span><span>配有投屏</span></div>
+              <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆3F研讨区</b></span></div>
+            </div>
+            <div class="ln-time">2026-11-19</div>
+            <div>
+              <div class="ln-due">2026-11-20 14:00-16:00</div>
+              <div class="ln-left"><span class="info">距开始 22 小时</span></div>
+            </div>
+            <div class="ln-people">4 人</div>
+            <div><span class="ln-pill ready">待签到</span></div>
+            <div class="ln-act">
+              <button class="ln-btn ghost" type="button" onclick="cancelReserve(this)">取消预约</button>
+              <button class="ln-btn primary" type="button" onclick="showCheckin(this)">扫码签到</button>
+            </div>
+            <div class="mem-tip">
+              <div class="mem-tip-h">预约成员（4 人）</div>
+              <div class="mem-list">
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag self">本人</span><b class="mem-name">陈思远</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023010156 · 民航运输服务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">林晓</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023020118 · 空中乘务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">赵一鸣</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023030241 · 无人机应用技术</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">周雨桐</b><span class="mem-role teacher">教师</span></div><div class="mem-sub">工号 T2018017 · 航空工程学院</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 使用中 -->
+          <div class="ln-row" data-state="using" data-status="使用中">
+            <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+            <div class="ln-main">
+              <div class="ln-title">研修室102</div>
+              <div class="ln-meta"><span>4 人间</span><span>2 人起约</span><span>配有白板</span></div>
+              <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+            </div>
+            <div class="ln-time">2026-11-19</div>
+            <div>
+              <div class="ln-due">08:00-12:00</div>
+              <div class="ln-left"><span class="ok">已签到 · 使用中</span></div>
+            </div>
+            <div class="ln-people">3 人</div>
+            <div><span class="ln-pill queue">使用中</span></div>
+            <div class="ln-act">
+              <button class="ln-btn ghost" type="button" onclick="endUse(this)">结束使用</button>
+              <button class="ln-btn primary" type="button" onclick="roomLeave(this)">暂离保留</button>
+            </div>
+            <div class="mem-tip">
+              <div class="mem-tip-h">预约成员（3 人）</div>
+              <div class="mem-list">
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag self">本人</span><b class="mem-name">陈思远</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023010156 · 民航运输服务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">王梓涵</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023010227 · 民航运输服务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">刘畅</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023040133 · 机场运行服务与管理</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 暂离中 -->
+          <div class="ln-row" data-state="away" data-status="暂离中">
+            <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+            <div class="ln-main">
+              <div class="ln-title">研修室210</div>
+              <div class="ln-meta"><span>8 人间</span><span>4 人起约</span><span>配有投屏</span></div>
+              <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+            </div>
+            <div class="ln-time">2026-11-19</div>
+            <div>
+              <div class="ln-due">10:00-12:00</div>
+              <div class="ln-left"><span class="warn">暂离中 · 14:20 前返回</span></div>
+            </div>
+            <div class="ln-people">6 人</div>
+            <div><span class="ln-pill away">暂离中</span></div>
+            <div class="ln-act">
+              <button class="ln-btn ghost" type="button" onclick="endUse(this)">直接结束</button>
+              <button class="ln-btn primary" type="button" onclick="roomReturn(this)">结束暂离</button>
+            </div>
+            <div class="mem-tip">
+              <div class="mem-tip-h">预约成员（6 人）</div>
+              <div class="mem-list">
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag self">本人</span><b class="mem-name">陈思远</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023010156 · 民航运输服务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">孙悦</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023020325 · 空中乘务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">郑凯</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023030189 · 无人机应用技术</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">何静</b><span class="mem-role staff">职工</span></div><div class="mem-sub">工号 20200056 · 图书馆流通部</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">高远</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023050174 · 飞机机电设备维修</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">徐蕾</b><span class="mem-role teacher">教师</span></div><div class="mem-sub">工号 T2020042 · 航空管理学院</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 被监督中 -->
+          <div class="ln-row no-line" data-state="watch" data-status="被监督中">
+            <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+            <div class="ln-main">
+              <div class="ln-title">研修室208</div>
+              <div class="ln-meta"><span>6 人间</span><span>3 人起约</span><span>配有投屏</span></div>
+              <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+            </div>
+            <div class="ln-time">2026-11-19</div>
+            <div>
+              <div class="ln-due">14:00-16:00</div>
+              <div class="ln-left"><span class="warn">暂离超时 · 房间即将释放</span></div>
+            </div>
+            <div class="ln-people">5 人</div>
+            <div><span class="ln-pill watch">被监督中</span></div>
+            <div class="ln-act">
+              <button class="ln-btn ghost" type="button" onclick="giveUpRoom(this)">放弃房间</button>
+              <button class="ln-btn danger" type="button" onclick="returnFromWatch(this)">立即返回</button>
+            </div>
+            <div class="mem-tip">
+              <div class="mem-tip-h">预约成员（5 人）</div>
+              <div class="mem-list">
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag self">本人</span><b class="mem-name">陈思远</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023010156 · 民航运输服务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">李思彤</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023020264 · 空中乘务</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">马骏</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023050102 · 飞机机电设备维修</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">吴桐</b><span class="mem-role stu">学生</span></div><div class="mem-sub">学号 2023030311 · 无人机应用技术</div></div>
+                <div class="mem-item"><div class="mem-line"><span class="mem-tag member">成员</span><b class="mem-name">唐诗雨</b><span class="mem-role teacher">教师</span></div><div class="mem-sub">工号 T2019023 · 航空工程学院</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rm-empty" id="rmEmpty" hidden>暂无当前预约，去「空间预约」选择研修室吧。</div>
+
+        </div>
+        </div><!-- /view-current -->
+        <!-- ========== 预约记录 ========== -->
+        <div id="view-history" hidden>
+          <div class="ln-summary">
+            <span>共 <b>7</b> 条 · 已完成 <b>1</b> · 已取消 <b>1</b> · 未签到 <b>1</b> · 暂离超时 <b>1</b> · 未签离 <b>1</b> · 被监督未返回 <b>1</b> · 人数不足取消 <b>1</b></span>
+          </div>
+
+          <div class="ln-thead hist">
+            <span></span>
+            <span>研修室信息</span>
+            <span>预约时间</span>
+            <span>使用时段</span>
+            <span>预约人数</span>
+            <span>状态</span>
+          </div>
+
+          <div class="ln-body">
+
+            <div class="ln-row hist" data-hstate="done">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室305</div>
+                <div class="ln-meta"><span>6 人间</span><span>3 人起约</span><span>配有投屏</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆3F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-11-14</div>
+              <div>
+                <div class="ln-due">14:00-16:00</div>
+                <div class="ln-left"><span class="ok">正常使用 2h 后签退</span></div>
+              </div>
+              <div class="ln-people">5 人</div>
+              <div><span class="ln-pill done">已完成</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="cancel">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室102</div>
+                <div class="ln-meta"><span>4 人间</span><span>2 人起约</span><span>配有白板</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-11-08</div>
+              <div>
+                <div class="ln-due">10:00-12:00</div>
+                <div class="ln-left"><span class="info">您于 11-07 15:20 主动取消</span></div>
+              </div>
+              <div class="ln-people">2 人</div>
+              <div><span class="ln-pill cancel">已取消</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="noshow">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室210</div>
+                <div class="ln-meta"><span>8 人间</span><span>4 人起约</span><span>配有投屏</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-11-02</div>
+              <div>
+                <div class="ln-due">15:00-17:00</div>
+                <div class="ln-left"><span class="warn">超时 15min 未签到，自动取消并记违约</span></div>
+              </div>
+              <div class="ln-people">6 人</div>
+              <div><span class="ln-pill noshow">未签到</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="awaytimeout">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室305</div>
+                <div class="ln-meta"><span>6 人间</span><span>3 人起约</span><span>配有投屏</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆3F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-10-26</div>
+              <div>
+                <div class="ln-due">16:00-18:00</div>
+                <div class="ln-left"><span class="warn">暂离超过 30min 未返回，房间已释放并记违约</span></div>
+              </div>
+              <div class="ln-people">4 人</div>
+              <div><span class="ln-pill awaytimeout">暂离超时</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="nocheckout">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室102</div>
+                <div class="ln-meta"><span>4 人间</span><span>2 人起约</span><span>配有白板</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-10-20</div>
+              <div>
+                <div class="ln-due">08:00-10:00</div>
+                <div class="ln-left"><span class="warn">使用结束未签离，系统自动签退并记违约</span></div>
+              </div>
+              <div class="ln-people">3 人</div>
+              <div><span class="ln-pill nocheckout">未签离</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="watchno">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室208</div>
+                <div class="ln-meta"><span>6 人间</span><span>3 人起约</span><span>配有投屏</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-10-15</div>
+              <div>
+                <div class="ln-due">19:00-21:00</div>
+                <div class="ln-left"><span class="warn">被监督后 15min 内未返回，房间已释放并记违约</span></div>
+              </div>
+              <div class="ln-people">5 人</div>
+              <div><span class="ln-pill watchno">被监督未返回</span></div>
+            </div>
+
+            <div class="ln-row hist" data-hstate="understaffed">
+              <span class="rm-ico"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01"/></svg></span>
+              <div class="ln-main">
+                <div class="ln-title">研修室210</div>
+                <div class="ln-meta"><span>8 人间</span><span>4 人起约</span><span>配有投屏</span></div>
+                <div class="ln-pick"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>位置：<b>总馆2F研讨区</b></span></div>
+              </div>
+              <div class="ln-time">2026-10-09</div>
+              <div>
+                <div class="ln-due">14:00-16:00</div>
+                <div class="ln-left"><span class="warn">实际到场 2 人不足 4 人起约，取消并记违约</span></div>
+              </div>
+              <div class="ln-people">2 人</div>
+              <div><span class="ln-pill understaffed">人数不足取消</span></div>
+            </div>
+
+          </div>
+
+          <div class="ln-pager" id="histPager" hidden>
+            <span class="ln-pager-info"></span>
+            <div class="ln-pager-btns"></div>
+          </div>
+        </div><!-- /view-history -->
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ============ 取消确认弹窗 ============ -->
+  <div class="rv-mask" id="rvConfirmMask" hidden>
+    <div class="rv-dialog" style="width:420px;">
+      <div class="rv-head">
+        <h3>取消预约</h3>
+        <button class="rv-close" id="rvConfirmClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-book" id="rvRoomName">研修室305</div>
+        <div class="rv-rows">
+          <div class="rv-row"><span>使用时段</span><b id="rvRoomTime">2026-11-20 14:00-16:00</b></div>
+          <div class="rv-row"><span>预约状态</span><b class="rv-new">待签到</b></div>
+        </div>
+        <p class="rv-tip">取消后该时段将释放给其他读者，本月累计取消 3 次将暂停预约权限 30 天。</p>
+      </div>
+      <div class="rv-foot">
+        <button class="rv-btn ghost" id="rvCancelBtn" type="button">再想想</button>
+        <button class="rv-btn danger" id="rvConfirmBtn" type="button">确认取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 取消成功弹窗 ============ -->
+  <div class="rv-mask" id="rvSuccessMask" hidden>
+    <div class="rv-dialog" style="width:390px;">
+      <div class="rv-head">
+        <h3>操作成功</h3>
+        <button class="rv-close" id="rvSuccessClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-success">
+        <div class="rv-ok-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h4 id="rvSuccessTitle">已取消预约</h4>
+        <p id="rvSuccessDesc">该时段已释放，可重新选择研修室预约。</p>
+      </div>
+      <div class="rv-foot center">
+        <button class="rv-btn primary" id="rvSuccessBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 通用操作确认弹窗 ============ -->
+  <div class="rv-mask" id="actMask" hidden>
+    <div class="rv-dialog" style="width:400px;">
+      <div class="rv-head">
+        <h3 id="actTitle">确认操作</h3>
+        <button class="rv-close" id="actClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-book" id="actRoom"></div>
+        <p class="rv-tip" id="actDesc" style="margin-top:0;"></p>
+      </div>
+      <div class="rv-foot">
+        <button class="rv-btn ghost" id="actCancel" type="button">再想想</button>
+        <button class="rv-btn primary" id="actOk" type="button">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 立即返回提示弹窗 ============ -->
+  <div class="rv-mask" id="watchMask" hidden>
+    <div class="rv-dialog" style="width:400px;">
+      <div class="rv-head">
+        <h3>返回提示</h3>
+        <button class="rv-close" id="watchClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-book" id="watchRoom">研修室208</div>
+        <p class="rv-tip" style="margin-top:0;">请使用手机小程序扫描研修室门上的二维码完成返回；未在倒计时内返回，房间将被释放。</p>
+      </div>
+      <div class="rv-foot center">
+        <button class="rv-btn primary" id="watchOk" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 签到码弹窗 ============ -->
+  <div class="rv-mask" id="codeMask" hidden>
+    <div class="rv-dialog" style="width:400px;">
+      <div class="rv-head">
+        <h3>扫码签到</h3>
+        <button class="rv-close" id="codeClose" type="button" aria-label="关闭">✕</button>
+      </div>
+      <div class="rv-body">
+        <div class="rv-book" id="codeRoomName">研修室305</div>
+        <p class="rv-code-tip">请使用手机小程序扫描研修室门上的二维码完成签到；开始 15 分钟后未签到将自动取消并记违约一次。</p>
+      </div>
+      <div class="rv-foot center">
+        <button class="rv-btn primary" id="codeOkBtn" type="button">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var body = document.getElementById('rsvBody');
+    var tabs = document.getElementById('rsvTabs');
+    var histTabs = document.getElementById('histTabs');
+    var confirmMask = document.getElementById('rvConfirmMask');
+    var successMask = document.getElementById('rvSuccessMask');
+    var codeMask = document.getElementById('codeMask');
+    var pendingRow = null;
+
+    function rows() { return body.querySelectorAll('.ln-row'); }
+
+    function refreshCounts() {
+      var list = rows();
+      var counts = { all: list.length, upcoming: 0, using: 0, away: 0, watch: 0 };
+      Array.prototype.forEach.call(list, function (r) {
+        counts[r.getAttribute('data-state')]++;
+      });
+      Array.prototype.forEach.call(tabs.querySelectorAll('span'), function (t) {
+        var em = t.querySelector('em');
+        if (em) em.textContent = counts[t.getAttribute('data-state')];
+      });
+      document.getElementById('rsvCount').textContent = counts.all;
+      document.getElementById('rmEmpty').hidden = counts.all > 0;
+      markNoLine(body);
+    }
+
+    tabs.addEventListener('click', function (e) {
+      var tab = e.target.closest('span');
+      if (!tab) return;
+      Array.prototype.forEach.call(tabs.querySelectorAll('span'), function (s) { s.classList.remove('active'); });
+      tab.classList.add('active');
+      var state = tab.getAttribute('data-state');
+      activeState = state;
+      applyFilter();
+    });
+
+    // 当前预约 / 预约记录 切换
+    var viewBox = document.getElementById('rsvViews');
+    var viewCurrent = document.getElementById('view-current');
+    var viewHistory = document.getElementById('view-history');
+    viewBox.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      var v = btn.getAttribute('data-view');
+      Array.prototype.forEach.call(viewBox.querySelectorAll('button'), function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      viewCurrent.hidden = (v !== 'current');
+      viewHistory.hidden = (v !== 'history');
+      tabs.hidden = (v !== 'current');
+      histTabs.hidden = (v !== 'history');
+    });
+
+    // 预约记录状态筛选
+    histTabs.addEventListener('click', function (e) {
+      var tab = e.target.closest('span');
+      if (!tab) return;
+      Array.prototype.forEach.call(histTabs.querySelectorAll('span'), function (s) { s.classList.remove('active'); });
+      tab.classList.add('active');
+      var st = tab.getAttribute('data-hstate');
+      Array.prototype.forEach.call(viewHistory.querySelectorAll('.ln-row.hist'), function (r) {
+        var show = (st === 'all' || r.getAttribute('data-hstate') === st);
+        r.dataset.fhidden = show ? '0' : '1';
+        r.style.display = show ? '' : 'none';
+      });
+      if (window.__roomPagerReset) { window.__roomPagerReset(); return; }
+      markNoLine(viewHistory);
+    });
+
+    // 预约记录分页：每页 10 条
+    (function () {
+      var body = viewHistory.querySelector('.ln-body');
+      var pager = document.getElementById('histPager');
+      if (!body || !pager) return;
+      var info = pager.querySelector('.ln-pager-info');
+      var btns = pager.querySelector('.ln-pager-btns');
+      var PAGE_SIZE = 10;
+      var page = 1;
+
+      function rows() { return Array.prototype.slice.call(body.querySelectorAll('.ln-row')); }
+      function filteredRows() { return rows().filter(function (r) { return r.dataset.fhidden !== '1'; }); }
+
+      function render() {
+        var list = filteredRows();
+        var total = list.length;
+        var tp = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (page > tp) page = tp;
+        var start = (page - 1) * PAGE_SIZE;
+
+        rows().forEach(function (r) {
+          r.classList.remove('no-line');
+          if (r.dataset.fhidden === '1') { r.style.display = 'none'; return; }
+          var i = list.indexOf(r);
+          r.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
+        });
+        var shown = list.slice(start, start + PAGE_SIZE);
+        if (shown.length) shown[shown.length - 1].classList.add('no-line');
+
+        info.innerHTML = '共 <b>' + total + '</b> 条 · 每页 ' + PAGE_SIZE + ' 条';
+        btns.innerHTML = '';
+        pager.hidden = false;
+
+        function mk(label, p, opts) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pg-btn' + (opts && opts.active ? ' active' : '');
+          b.textContent = label;
+          b.disabled = !!(opts && opts.disabled);
+          if (!b.disabled) b.addEventListener('click', function () { page = p; render(); });
+          return b;
+        }
+        btns.appendChild(mk('上一页', page - 1, { disabled: page === 1 }));
+        for (var i = 1; i <= tp; i++) btns.appendChild(mk(String(i), i, { active: i === page }));
+        btns.appendChild(mk('下一页', page + 1, { disabled: page === tp }));
+      }
+
+      window.__roomPagerReset = function () { page = 1; render(); };
+      render();
+    })();
+
+    function openMask(m) { m.hidden = false; }
+    function closeMask(m) { m.hidden = true; }
+
+    window.cancelReserve = function (btn) {
+      pendingRow = btn.closest('.ln-row');
+      document.getElementById('rvRoomName').textContent = pendingRow.querySelector('.ln-title').textContent;
+      document.getElementById('rvRoomTime').textContent = pendingRow.querySelector('.ln-due').textContent;
+      openMask(confirmMask);
+    };
+    function closeConfirm() { closeMask(confirmMask); pendingRow = null; }
+    document.getElementById('rvConfirmBtn').addEventListener('click', function () {
+      if (pendingRow) pendingRow.remove();
+      closeMask(confirmMask);
+      pendingRow = null;
+      refreshCounts();
+      openMask(successMask);
+    });
+    document.getElementById('rvCancelBtn').addEventListener('click', closeConfirm);
+    document.getElementById('rvConfirmClose').addEventListener('click', closeConfirm);
+    confirmMask.addEventListener('click', function (e) { if (e.target === confirmMask) closeConfirm(); });
+
+    function closeSuccess() { closeMask(successMask); }
+    document.getElementById('rvSuccessBtn').addEventListener('click', closeSuccess);
+    document.getElementById('rvSuccessClose').addEventListener('click', closeSuccess);
+    successMask.addEventListener('click', function (e) { if (e.target === successMask) closeSuccess(); });
+
+    window.showCheckin = function (btn) {
+      document.getElementById('codeRoomName').textContent = btn.closest('.ln-row').querySelector('.ln-title').textContent;
+      openMask(codeMask);
+    };
+    function closeCode() { closeMask(codeMask); }
+    document.getElementById('codeOkBtn').addEventListener('click', closeCode);
+    document.getElementById('codeClose').addEventListener('click', closeCode);
+    codeMask.addEventListener('click', function (e) { if (e.target === codeMask) closeCode(); });
+
+    // 通用确认弹窗
+    var actMask = document.getElementById('actMask');
+    var actOnOk = null;
+    function askConfirm(row, title, desc, okText, danger, onOk) {
+      document.getElementById('actTitle').textContent = title;
+      document.getElementById('actRoom').textContent = row.querySelector('.ln-title').textContent;
+      document.getElementById('actDesc').textContent = desc;
+      var ok = document.getElementById('actOk');
+      ok.textContent = okText;
+      ok.className = danger ? 'rv-btn danger' : 'rv-btn primary';
+      actOnOk = onOk;
+      openMask(actMask);
+    }
+    function closeAct() { closeMask(actMask); actOnOk = null; }
+    document.getElementById('actOk').addEventListener('click', function () {
+      var fn = actOnOk;
+      closeAct();
+      if (fn) fn();
+    });
+    document.getElementById('actCancel').addEventListener('click', closeAct);
+    document.getElementById('actClose').addEventListener('click', closeAct);
+    actMask.addEventListener('click', function (e) { if (e.target === actMask) closeAct(); });
+
+    // 结束使用
+    window.endUse = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      askConfirm(row, '结束使用确认', '结束后研修室将立即释放，本次使用结束。', '确认结束', false, function () {
+        row.remove();
+        refreshCounts();
+        document.getElementById('rvSuccessTitle').textContent = '已结束使用';
+        document.getElementById('rvSuccessDesc').textContent = '研修室已释放，欢迎下次预约。';
+        openMask(successMask);
+      });
+    };
+
+    // 行状态切换
+    var activeState = 'all';
+    function applyFilter() {
+      Array.prototype.forEach.call(rows(), function (r) {
+        r.style.display = (activeState === 'all' || r.getAttribute('data-state') === activeState) ? '' : 'none';
+      });
+      markNoLine(body);
+    }
+    // 最后一条可见记录不显示底部虚线
+    function markNoLine(scope) {
+      var list = scope.querySelectorAll('.ln-row');
+      var last = null;
+      Array.prototype.forEach.call(list, function (r) { if (r.style.display !== 'none') last = r; });
+      Array.prototype.forEach.call(list, function (r) { r.classList.toggle('no-line', r === last); });
+    }
+    function setRowState(row, state) {
+      var pill = row.querySelector('.ln-pill');
+      var left = row.querySelector('.ln-left');
+      var act = row.querySelector('.ln-act');
+      row.setAttribute('data-state', state);
+      row.setAttribute('data-status', state === 'away' ? '暂离中' : '使用中');
+      if (state === 'away') {
+        pill.className = 'ln-pill away';
+        pill.textContent = '暂离中';
+        left.innerHTML = '<span class="warn">暂离中 · 30 分钟内返回</span>';
+        act.innerHTML = '<button class="ln-btn ghost" type="button" onclick="endUse(this)">直接结束</button>' +
+          '<button class="ln-btn primary" type="button" onclick="roomReturn(this)">结束暂离</button>';
+      } else {
+        pill.className = 'ln-pill queue';
+        pill.textContent = '使用中';
+        left.innerHTML = '<span class="ok">已签到 · 使用中</span>';
+        act.innerHTML = '<button class="ln-btn ghost" type="button" onclick="endUse(this)">结束使用</button>' +
+          '<button class="ln-btn primary" type="button" onclick="roomLeave(this)">暂离保留</button>';
+      }
+      refreshCounts();
+      applyFilter();
+    }
+    window.roomLeave = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      askConfirm(row, '暂离确认', '暂离后房间保留 30 分钟，请在倒计时内返回，超时将释放并记违约。', '确认暂离', false, function () {
+        setRowState(row, 'away');
+      });
+    };
+    window.roomReturn = function (btn) { setRowState(btn.closest('.ln-row'), 'using'); };
+
+    // 立即返回提示
+    var watchMask = document.getElementById('watchMask');
+    window.returnFromWatch = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      document.getElementById('watchRoom').textContent = row.querySelector('.ln-title').textContent;
+      openMask(watchMask);
+    };
+    function closeWatch() { closeMask(watchMask); }
+    document.getElementById('watchOk').addEventListener('click', closeWatch);
+    document.getElementById('watchClose').addEventListener('click', closeWatch);
+    watchMask.addEventListener('click', function (e) { if (e.target === watchMask) closeWatch(); });
+
+    // 放弃房间
+    window.giveUpRoom = function (btn) {
+      var row = btn.closest('.ln-row');
+      if (!row) return;
+      askConfirm(row, '放弃房间', '放弃后该房间将立即释放给其他读者。', '确认放弃', true, function () {
+        row.remove();
+        refreshCounts();
+        document.getElementById('rvSuccessTitle').textContent = '已放弃房间';
+        document.getElementById('rvSuccessDesc').textContent = '该房间已释放给其他读者。';
+        openMask(successMask);
+      });
+    };
+
+    /* 成员浮层：最多 3 行、最多 4 列 */
+    Array.prototype.forEach.call(document.querySelectorAll('.mem-tip'), function (tip) {
+      var n = tip.querySelectorAll('.mem-item').length;
+      var cols = Math.min(4, Math.max(2, Math.ceil(n / 3)));
+      tip.querySelector('.mem-list').style.gridTemplateColumns = 'repeat(' + cols + ', max-content)';
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!confirmMask.hidden) closeConfirm();
+      if (!successMask.hidden) closeSuccess();
+      if (!codeMask.hidden) closeCode();
+      if (!actMask.hidden) closeAct();
+      if (!watchMask.hidden) closeWatch();
+    });
+  })();
+  </script>
+  <footer class="bk-footer">
+    © 2026 信阳航空职业学院 · 图书馆 版权所有 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </footer>
+
+<script src="assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>

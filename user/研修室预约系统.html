@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <title>研修室预约 - 信阳航空职业学院 · 数字图书馆</title>
+  <link rel="stylesheet" href="assets/site.css?v=33">
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #2563eb;
+      --sky: #3b82f6;
+      --accent: #f4a261;
+      --gold: #ffc857;
+      --bg-page: #f2f3f5;
+      --surface: #ffffff;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --border: #e4e7ed;
+      --border-light: #eef2f7;
+      --max-w: 1440px;
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-page);
+    }
+    .tb-super { flex: none; }
+    .site-header { flex: none; }
+    .booking-summary { flex: none; }
+
+    /* ============ 顶部标题 ============ */
+    .tb-super { flex: none; }
+    .sh-page-title {
+      margin-left: 22px;
+      padding-left: 22px;
+      border-left: 1px solid #dbe2ee;
+      font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--primary);
+      letter-spacing: 1px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .bk-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 0 10px 0 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .bk-nav a {
+      position: relative;
+      padding: 4px 0;
+      color: var(--text);
+      transition: color .18s;
+    }
+    .bk-nav a:hover { color: var(--primary); }
+    .bk-nav a:first-child { margin-left: -5px; }
+    .bk-nav a.is-current { color: var(--primary); font-weight: 600; }
+    .site-header .sh-inner { justify-content: flex-start; }
+    .site-header .hd-mid { margin-left: auto; }
+
+    /* ============ 预约流程主体 ============ */
+    .booking-section {
+      background: #fff;
+      padding: 30px 0 28px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+    .bk-container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 30px;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .step-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .step-panel[hidden] { display: none; }
+
+    /* 步骤条 */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      list-style: none;
+      margin: 0 0 28px;
+      padding: 0;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-3);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #eef1f7;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all .2s;
+    }
+    .step.is-active .step-num {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, .25);
+    }
+    .step.is-active { color: var(--primary); font-weight: 600; }
+    .step.is-done .step-num {
+      background: #22c55e;
+      color: #fff;
+      font-size: 15px;
+      box-shadow: none;
+    }
+    .step.is-done { color: var(--text-2); }
+    .step-line {
+      width: 64px;
+      height: 2px;
+      background: #e4e7ed;
+      margin: 0 12px;
+      margin-bottom: 22px;
+    }
+
+    /* 通用按钮 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 26px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text-2);
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: inherit;
+    }
+    .btn:hover { border-color: #b9caf3; color: var(--primary); }
+    .btn-primary {
+      border-color: var(--primary-light);
+      background: var(--primary-light);
+      color: #fff;
+    }
+    .btn-primary:hover { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .btn[disabled] {
+      opacity: .5;
+      cursor: not-allowed;
+      border-color: var(--border);
+      background: #fff;
+      color: var(--text-3);
+    }
+    .btn-primary[disabled] {
+      border-color: var(--border);
+      background: #fff;
+      color: var(--text-3);
+    }
+    .btn-ghost { background: transparent; }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      gap: 12px;
+    }
+
+    /* ============ 步骤 1：日期 ============ */
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+    .panel-desc {
+      color: var(--text-2);
+      font-size: 14px;
+      margin: 0 0 24px;
+    }
+    .date-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 2px 2px 8px;
+      scrollbar-width: none;
+    }
+    .date-list::-webkit-scrollbar { display: none; }
+    .date-card {
+      flex: 1 1 0;
+      min-width: 60px;
+      max-width: 110px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .18s;
+      background: #fff;
+    }
+    .date-card:hover { border-color: var(--sky); transform: translateY(-2px); }
+    .date-card.is-active:hover { border-color: var(--primary); transform: none; }
+    .date-card.is-active {
+      border-color: var(--primary);
+      background: #e8f0ff;
+    }
+    .date-card .dc-week { font-size: 14px; color: var(--text-2); white-space: nowrap; font-weight: 500; }
+    .date-card.is-active .dc-week { color: var(--primary); font-weight: 700; }
+    .date-card.is-today:not(.is-active) { border-color: var(--border); }
+    .date-card.is-today .dc-week { color: var(--text); font-weight: 600; }
+
+    /* ============ 步骤 2：研修室 ============ */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      background: #f7f9fc;
+      border-radius: 12px;
+    }
+    .filter-bar .f-label { font-size: 13px; color: var(--text-2); font-weight: 600; }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      margin-top: 22px;
+      margin-bottom: 16px;
+    }
+    .filter-row .f-label { font-size: 13px; color: var(--text-2); font-weight: 600; margin-left: 0; }
+    .filter-select {
+      padding: 8px 34px 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text);
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      min-width: 120px;
+      transition: border-color .16s;
+    }
+    .filter-select:focus { outline: none; border-color: var(--sky); }
+
+    .chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all .16s;
+    }
+    .chip:hover { border-color: var(--sky); color: var(--primary); }
+    .chip.is-active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 15px;
+      max-height: 280px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      align-content: start;
+      padding: 4px 8px 12px 0;
+    }
+    .room-grid::-webkit-scrollbar { width: 6px; }
+    .room-grid::-webkit-scrollbar-thumb { background: #c8d2e3; border-radius: 3px; }
+    .room-card {
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all .18s;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .room-card:hover { border-color: var(--sky); box-shadow: 0 8px 20px rgba(30, 64, 175, .1); transform: translateY(-2px); }
+    .room-card.is-active {
+      border-color: var(--primary);
+      background: #f4f8ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+      transform: none;
+    }
+    .room-card.is-active:hover { border-color: var(--primary); transform: none; }
+    .room-card.is-active .rc-name { color: var(--primary); }
+    .rc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .rc-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .rc-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .rc-status.partial { background: #ecfdf5; color: #059669; }
+    .rc-status.full { background: #fef2f2; color: #dc2626; }
+    .rc-status.off { background: #f1f2f4; color: #909399; }
+    /* 已满 / 不可用：置灰且不可点击 */
+    .room-card.is-full,
+    .room-card.is-off { cursor: not-allowed; background: #f8f9fb; border-color: #e9ecf2; }
+    .room-card.is-full:hover,
+    .room-card.is-off:hover { border-color: #e9ecf2; box-shadow: none; transform: none; }
+    .room-card.is-full .rc-name,
+    .room-card.is-off .rc-name { color: var(--text-3); }
+    .room-card.is-off .eq-tag { background: #eff1f4; color: #a0a6b0; }
+    .room-card.is-off .avbar-seg { background: #e5e8ee; }
+    .room-card.is-off .rc-legend { color: #a0a6b0; }
+    .rc-meta { font-size: 12px; color: var(--text-3); display: flex; gap: 12px; flex-wrap: wrap; }
+    .rc-eq { display: flex; flex-wrap: wrap; gap: 6px; }
+    .eq-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: var(--text-2);
+    }
+    .room-card.is-active .eq-tag { background: #fff; }
+    .rc-bar {
+      display: flex;
+      gap: 3px;
+      height: 14px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .avbar-seg { flex: 1; background: #86efac; border-radius: 2px; }
+    .avbar-seg.is-occ { background: #fca5a5; }
+    .rc-hours {
+      position: relative;
+      height: 12px;
+      margin-top: 4px;
+    }
+    .rc-hours span {
+      position: absolute;
+      top: 0;
+      font-size: 10px;
+      line-height: 1;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+    .rc-legend {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .avdot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+    .avdot-free { background: #86efac; }
+    .avdot-occ { background: #fca5a5; }
+
+    /* ============ 子标题 ============ */
+    .sub-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 18px 0 10px;
+      padding-left: 8px;
+      border-left: 3px solid var(--primary);
+    }
+
+    /* ============ 设备配置卡 ============ */
+    .eq-config {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #f4f6fa;
+    }
+    .eq-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: #f6f9fe;
+      border: 1px solid #e8eefb;
+      border-radius: 10px;
+      font-size: 12.5px;
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+    .eq-icon { font-size: 15px; line-height: 1; }
+
+    /* ============ 使用人数统计 ============ */
+    .people-hint {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #f7f9fc;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 10px;
+    }
+    .people-hint b { color: var(--primary); font-size: 15px; }
+    .people-hint.is-warn { background: #fff8f0; color: #b45309; }
+    .people-hint.is-warn b { color: #d97706; }
+    .people-hint .ph-limit { margin-left: auto; color: var(--text-3); font-size: 12px; }
+
+    /* ============ 使用目的标签 ============ */
+    .purpose-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ============ 参与人员 ============ */
+    .member-list { display: flex; flex-direction: column; gap: 10px; }
+    .member-scroll {
+      display: grid;
+      /* 列数由人数决定（最多 6 列），人少时自动均分占满整行 */
+      grid-template-columns: repeat(var(--mcols, 4), minmax(0, 1fr));
+      gap: 8px;
+      max-height: 276px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+      align-content: start;
+    }
+    .member-scroll::-webkit-scrollbar { width: 6px; }
+    .member-scroll::-webkit-scrollbar-thumb { background: #c8d2e3; border-radius: 3px; }
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: #f7f9fc;
+      border-radius: 10px;
+      min-width: 0;
+    }
+    .member-self { background: #eff5ff; }
+    .m-avatar {
+      width: 30px; height: 30px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .member-self .m-avatar { background: #7c3aed; }
+    .member-item.is-teacher .m-avatar { background: #16a34a; }
+    .member-item.is-staff .m-avatar { background: #d97706; }
+    .m-info { flex: 1; min-width: 0; }
+    .m-name {
+      font-size: 12px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .m-sid {
+      font-size: 11px; color: var(--text-3); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .m-major {
+      font-size: 11px; color: var(--text-3); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .m-del {
+      background: none; border: none;
+      font-size: 16px; color: var(--text-3);
+      cursor: pointer; padding: 0 2px;
+      flex: 0 0 auto;
+    }
+    .member-add {
+      padding: 12px;
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text-2);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all .16s;
+    }
+    .member-add:hover { border-color: var(--sky); color: var(--primary); }
+    .member-add:disabled { background: #f7f8fa; color: var(--text-3); cursor: not-allowed; border-color: #e9ecf2; }
+    .member-add:disabled:hover { border-color: #e9ecf2; color: var(--text-3); }
+
+    /* ============ 添加成员弹窗 ============ */
+    .modal.member-modal { max-width: 460px; text-align: left; }
+    .modal.member-modal h3 { text-align: left; margin-bottom: 6px; }
+    .mm-search { margin: 16px 0 12px; }
+    .mm-search input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: all .16s;
+    }
+    .mm-search input:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+    .mm-results {
+      max-height: 264px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 2px;
+    }
+    .mm-empty {
+      padding: 28px 0;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+    .mm-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .14s;
+    }
+    .mm-item:hover { border-color: #bfdbfe; background: #f8fbff; }
+    .mm-item.is-picked { border-color: var(--sky); background: #eff6ff; }
+    .mm-item.is-added { opacity: .55; cursor: not-allowed; }
+    .mm-item.is-added:hover { border-color: var(--border-light); background: transparent; }
+    .mm-item .m-avatar { width: 32px; height: 32px; font-size: 12px; background: #dbeafe; color: var(--primary); }
+    .mm-info { flex: 1; min-width: 0; }
+    .mm-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .mm-role, .m-role {
+      margin-left: 8px;
+      font-size: 10px; font-weight: 400; line-height: 15px;
+      padding: 0 6px;
+      border-radius: 20px;
+      vertical-align: 1px;
+      display: inline-block;
+    }
+    .mm-role.is-student, .m-role.is-student { background: #e0edff; color: #1d4ed8; }
+    .mm-role.is-teacher, .m-role.is-teacher { background: #dcfce7; color: #15803d; }
+    .mm-role.is-staff, .m-role.is-staff { background: #fef3c7; color: #b45309; }
+    .mm-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .mm-pick { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+    .mm-item.is-picked .mm-pick { color: var(--sky); font-weight: 600; }
+    .member-modal .modal-actions { justify-content: flex-end; margin-top: 18px; }
+
+    /* ============ 预约须知 ============ */
+    .notice-box {
+      margin: 18px 0 0;
+      padding: 16px 20px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+    }
+    .notice-box h4 { margin: 0 0 8px; font-size: 14px; color: #92400e; }
+    .notice-box ul { margin: 0; padding-left: 20px; font-size: 12.5px; color: #78350f; line-height: 1.8; }
+
+    /* ============ 步骤 3：时段 ============ */
+    .room-info-card {
+      border: 1px solid #eef1f6;
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 4px;
+    }
+    .ri-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .ri-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .ri-type {
+      font-size: 11.5px;
+      color: var(--primary);
+      background: #eef4ff;
+      border: 1px solid #dbe7ff;
+      padding: 2px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .ri-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .ri-item { padding: 0 16px; min-width: 0; }
+    .ri-item:first-child { padding-left: 0; }
+    .ri-item + .ri-item { border-left: 1px solid #f0f2f7; }
+    .ri-label { font-size: 12px; color: var(--text-3); line-height: 1.2; }
+    .ri-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-top: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .slot-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .slot {
+      padding: 14px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      background: #fff;
+      transition: all .16s;
+      user-select: none;
+    }
+    .slot:hover:not(.disabled):not(.in-range) { border-color: var(--sky); }
+    .slot.disabled {
+      background: #f4f5f7;
+      color: var(--text-3);
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+    .slot.in-range { background: #dbeafe; border-color: var(--sky); color: var(--primary); }
+    .slot.is-selected { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .slot .st-time { font-weight: 600; }
+    .slot .st-state { font-size: 11px; margin-top: 2px; opacity: .85; }
+    .range-summary {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #eff5ff;
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .range-summary .rs-hours { font-weight: 700; }
+
+    /* ============ 步骤 4：信息 ============ */
+    .info-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 560px;
+    }
+    .form-row { display: flex; flex-direction: column; gap: 6px; }
+    .form-row label { font-size: 14px; font-weight: 600; color: var(--text); }
+    .form-row label .req { color: #ef4444; }
+    .form-row .hint { font-size: 12px; color: var(--text-3); }
+    .form-row input, .form-row select, .form-row textarea {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color .16s;
+    }
+    .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--primary); }
+    .form-row textarea { resize: vertical; min-height: 72px; }
+
+    /* ============ 步骤 5：确认 ============ */
+    .confirm-card {
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 24px;
+      background: linear-gradient(180deg, #fbfcff, #fff);
+      display: grid;
+      grid-template-columns: 0.95fr 1.55fr 1.15fr 0.75fr;
+      column-gap: 28px;
+    }
+    .cf-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border-light);
+      font-size: 14px;
+      min-width: 0;
+    }
+    .cf-row-wide { grid-column: 1 / -1; }
+    .cf-row-span2 { grid-column: span 2; }
+    .cf-row:last-child { border-bottom: none; }
+    .cf-label { width: 80px; color: var(--text-3); flex: none; white-space: nowrap; }
+    .cf-row-wide .cf-label { white-space: normal; }
+    .cf-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      margin-left: 4px;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      line-height: 1;
+      vertical-align: 1px;
+    }
+    .cf-value { color: var(--text); font-weight: 500; flex: 1; }
+
+    /* 确认页参与人员卡片（一行 4 个） */
+    .cf-members {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-left: 7px;
+      max-height: 178px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .cf-members::-webkit-scrollbar { width: 6px; }
+    .cf-members::-webkit-scrollbar-thumb { background: #d7dde8; border-radius: 3px; }
+    .cf-members::-webkit-scrollbar-track { background: transparent; }
+    .cf-member {
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      min-width: 0;
+    }
+    .cfm-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .cfm-avatar {
+      width: 22px; height: 22px; flex: none;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: var(--primary);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cf-member.is-student .cfm-avatar { background: #2563eb; color: #fff; }
+    .cf-member.is-teacher .cfm-avatar { background: #16a34a; color: #fff; }
+    .cf-member.is-staff .cfm-avatar { background: #d97706; color: #fff; }
+    .cf-member.is-self .cfm-avatar { background: #7c3aed; color: #fff; }
+    .cfm-name {
+      font-size: 13px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cfm-name em { font-style: normal; font-size: 11px; font-weight: 400; color: var(--text-3); }
+    .cfm-role {
+      margin-left: auto; flex: none;
+      font-size: 10px; line-height: 16px;
+      padding: 0 6px;
+      border-radius: 20px;
+    }
+    .cfm-role.is-student { background: #e0edff; color: #1d4ed8; }
+    .cfm-role.is-teacher { background: #dcfce7; color: #15803d; }
+    .cfm-role.is-staff { background: #fef3c7; color: #b45309; }
+    .cfm-role.is-self { background: #ede9fe; color: #7c3aed; }
+    .cfm-line {
+      font-size: 11px; color: var(--text-3); line-height: 1.6;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cf-no {
+      margin-top: 18px;
+      padding: 12px 16px;
+      background: #eff5ff;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--primary);
+    }
+    .cf-no b { font-size: 15px; }
+
+    /* 成功弹窗 */
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 40, 70, .5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-mask.show { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 420px;
+      width: 100%;
+      padding: 32px 28px;
+      text-align: center;
+    }
+    .modal-ico {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #e8f7ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .modal-ico svg {
+      width: 25px; height: 25px;
+      fill: none;
+      stroke: #22a35c;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .modal .modal-actions { display: flex; gap: 12px; justify-content: center; margin-top: 22px; }
+    #doneModal .modal {
+      width: 400px;
+      max-width: calc(100vw - 40px);
+      border-radius: 6px;
+      padding: 30px 28px 22px;
+      box-shadow: 0 18px 50px rgba(15, 30, 60, .28);
+    }
+    #doneModal { background: rgba(15, 30, 60, .35); }
+    #doneModal .modal h3 { margin: 0 0 10px; font-size: 18px; font-weight: 700; color: var(--text); }
+    #doneModal .modal p { margin: 0 0 8px; color: var(--text-3); font-size: 13px; line-height: 1.7; }
+    #doneModal .modal-actions { flex-direction: column; gap: 10px; margin-top: 18px; }
+    #doneModal .modal-actions .btn { width: 100%; justify-content: center; }
+
+    /* ============ 已选摘要 ============ */
+    .booking-summary {
+      background: #fff;
+      border-top: 1px solid var(--border-light);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, .04);
+      z-index: 50;
+    }
+    .bs-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 30px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .bs-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 80px;
+      flex: 1;
+      padding: 0 24px;
+    }
+    .bs-item:first-child { padding-left: 0; }
+    .bs-item + .bs-item { border-left: 1px solid #eef1f6; }
+    .bs-label { font-size: 12px; color: var(--text-3); }
+    .bs-value { font-size: 14px; color: var(--text); font-weight: 700; }
+    .bs-value.is-empty { color: var(--text-3); font-weight: 400; }
+
+    /* 页脚 */
+    .bk-footer {
+      flex: none;
+      background: var(--primary);
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 760px) {
+      .bk-container { padding: 0 16px; }
+      .step-line { width: 28px; margin: 0 6px; margin-bottom: 22px; }
+      .step span:not(.step-num) { font-size: 12px; }
+      .room-grid { grid-template-columns: 1fr; }
+      .member-scroll { grid-template-columns: 1fr; }
+      .cf-members { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ri-grid { grid-template-columns: repeat(2, 1fr); row-gap: 12px; }
+      .ri-item:nth-child(odd) { padding-left: 0; border-left: none; }
+      .slot-list { grid-template-columns: repeat(2, 1fr); }
+      .bs-inner { padding: 10px 16px; }
+      .bs-item { padding: 0 12px; }
+      .cf-label { width: 84px; }
+      .confirm-card { grid-template-columns: 1fr; }
+      .cf-row-wide, .cf-row-span2 { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 最最顶部 ============ -->
+  <div class="tb-super">
+    <span class="tb-welcome">欢迎来到 信阳航空职业学院 · 数字图书馆</span>
+    <span class="tb-super-links">
+      <a href="首页.html">学校首页</a><span>|</span>
+      <a href="#">读者协会</a><span>|</span>
+      <a href="#">志愿服务</a><span>|</span>
+      <a href="#">English</a>
+    </span>
+  </div>
+
+  <header class="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="首页.html">
+        <span class="sh-icon"><img src="assets/logo.png" alt="信阳航空职业学院校徽"></span>
+        <span class="sh-text">
+          <span class="sh-name">信阳航空职业学院 · 图书馆</span>
+          <span class="sh-slogan">XINYANG AVIATION VOCATIONAL COLLEGE AND LIBRARY</span>
+        </span>
+      </a>
+      <div class="sh-page-title">研修室预约系统</div>
+
+      <div class="hd-mid">
+        <nav class="bk-nav">
+          <a href="首页.html">首页</a>
+          <a href="研修室预约说明.html">预约规则</a>
+          <a href="研修室预约.html">预约记录</a>
+        </nav>
+        <div class="tb-actions">
+          <a class="tb-btn" href="统一身份认证.html?redirect=研修室预约系统.html" data-auth="1">我的图书馆</a>
+          <a class="tb-btn tb-btn-gold tb-search-ico" href="馆藏目录.html" title="馆藏检索" aria-label="馆藏检索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a>
+        </div>
+      </div>
+      <div class="sh-user">
+        <a class="sh-icon-btn" href="消息通知.html" title="消息通知"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i class="sh-badge"></i></a>
+        <a class="sh-icon-btn fav" href="我的收藏.html" title="我的收藏"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><i class="sh-fav-badge">4</i></a>
+        <a class="sh-avatar-wrap" href="个人中心.html">
+          <span class="sh-avatar">陈</span>
+          <span class="sh-avatar-name">陈思远</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 预约流程 ============ -->
+  <section class="booking-section">
+    <div class="bk-container">
+
+      <ol class="steps" id="steps">
+        <li class="step is-active" data-step="1"><span class="step-num">1</span><span>选择日期、研修室</span></li>
+        <li class="step-line"></li>
+        <li class="step" data-step="2"><span class="step-num">2</span><span>选择时段</span></li>
+        <li class="step-line"></li>
+        <li class="step" data-step="3"><span class="step-num">3</span><span>填写信息</span></li>
+        <li class="step-line"></li>
+        <li class="step" data-step="4"><span class="step-num">4</span><span>确认预约</span></li>
+      </ol>
+
+      <!-- 步骤 1：选择日期 + 研修室 -->
+      <div class="step-panel" data-panel="1">
+        <h2 class="panel-title">选择日期、研修室</h2>
+        <p class="panel-desc">先选择使用日期，再挑选合适的研修室。</p>
+
+        <div class="date-list" id="dateList"></div>
+
+        <div class="filter-row">
+          <span class="f-label">类型：</span>
+          <select class="filter-select" id="typeFilter"></select>
+          <span class="f-label" style="margin-left:24px;">人数：</span>
+          <select class="filter-select" id="capFilter"></select>
+          <span class="f-label" style="margin-left:24px;">设备：</span>
+          <select class="filter-select" id="eqFilter"></select>
+        </div>
+        <div class="room-grid" id="roomGrid"></div>
+        <div class="actions">
+          <span></span>
+          <button type="button" class="btn btn-primary" id="roomNextBtn" disabled>下一步</button>
+        </div>
+      </div>
+
+      <!-- 步骤 2：选择时段 -->
+      <div class="step-panel" data-panel="2" hidden>
+        <h2 class="panel-title">选择使用时段</h2>
+        <p class="panel-desc">每个时段 2 小时，每人每日最多预约 2 个时段；仅可选择连续时段，灰色为已占用。</p>
+        <div class="room-info-card">
+          <div class="ri-head">
+            <span class="ri-title" id="sriName">—</span>
+            <span class="ri-type" id="sriType">—</span>
+          </div>
+          <div class="ri-grid">
+            <div class="ri-item">
+              <div class="ri-label">位置</div>
+              <div class="ri-value" id="sriFloor">—</div>
+            </div>
+            <div class="ri-item">
+              <div class="ri-label">容量</div>
+              <div class="ri-value" id="sriCap">—</div>
+            </div>
+            <div class="ri-item">
+              <div class="ri-label">面积</div>
+              <div class="ri-value" id="sriArea">—</div>
+            </div>
+            <div class="ri-item">
+              <div class="ri-label">开放时间</div>
+              <div class="ri-value">08:00–22:00</div>
+            </div>
+          </div>
+          <div class="eq-config" id="sriEq"></div>
+        </div>
+
+        <h3 class="sub-title">选择时段</h3>
+        <div class="slot-list" id="slotList"></div>
+        <div class="range-summary" id="rangeSummary" hidden>
+          <span id="rangeText">已选时段</span>
+          <span class="rs-hours" id="rangeHours">共 0 小时</span>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" data-back="1">上一步</button>
+          <button type="button" class="btn btn-primary" id="slotNextBtn" disabled>下一步</button>
+        </div>
+      </div>
+
+      <!-- 步骤 3：填写信息 -->
+      <div class="step-panel" data-panel="3" hidden>
+        <h2 class="panel-title">填写预约信息</h2>
+        <p class="panel-desc">请填写使用目的并添加参与人员，使用人数按人员列表自动统计（含本人）。</p>
+
+        <h3 class="sub-title">使用目的</h3>
+        <div class="purpose-chips" id="purposeChips"></div>
+
+        <h3 class="sub-title">参与人员</h3>
+        <div class="people-hint" id="peopleHint"></div>
+        <div class="member-list" id="memberList"></div>
+
+        <div class="actions">
+          <button type="button" class="btn" data-back="2">上一步</button>
+          <button type="button" class="btn btn-primary" id="infoNextBtn" disabled>下一步</button>
+        </div>
+      </div>
+
+      <!-- 步骤 4：确认预约 -->
+      <div class="step-panel" data-panel="4" hidden>
+        <h2 class="panel-title">确认预约信息</h2>
+        <p class="panel-desc">请核对以下信息，确认无误后提交预约。</p>
+        <div class="confirm-card">
+          <div class="cf-row"><div class="cf-label">预约日期</div><div class="cf-value" id="cfDate">—</div></div>
+          <div class="cf-row"><div class="cf-label">研修室</div><div class="cf-value" id="cfRoom">—</div></div>
+          <div class="cf-row"><div class="cf-label">使用时段</div><div class="cf-value" id="cfTime">—</div></div>
+          <div class="cf-row"><div class="cf-label">使用目的</div><div class="cf-value" id="cfPurpose">—</div></div>
+          <div class="cf-row cf-row-wide"><div class="cf-label">参与人员<span class="cf-badge" id="cfMembersCount">0</span></div><div class="cf-value" id="cfMembers">—</div></div>
+        </div>
+        <div class="notice-box">
+          <h4>📋 预约须知</h4>
+          <ul>
+            <li>预约成功后 15 分钟内扫码开门，逾期自动释放并记违约；无法按时使用请提前取消，违约 3 次暂停权限 7 天；</li>
+            <li>单次最多预约 2 个时段（4 小时）；请保持室内整洁、爱护设备，结束后随手关灯关空调。</li>
+          </ul>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" data-back="3">返回修改</button>
+          <button type="button" class="btn btn-primary" id="submitBtn">提交预约</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 已选摘要 ============ -->
+  <div class="booking-summary">
+    <div class="bs-inner">
+      <div class="bs-item"><div class="bs-label">日期</div><div class="bs-value is-empty" id="sumDate">未选择</div></div>
+      <div class="bs-item"><div class="bs-label">研修室</div><div class="bs-value is-empty" id="sumRoom">—</div></div>
+      <div class="bs-item"><div class="bs-label">时段</div><div class="bs-value is-empty" id="sumTime">未选择</div></div>
+      <div class="bs-item"><div class="bs-label">人数</div><div class="bs-value is-empty" id="sumPeople">—</div></div>
+    </div>
+  </div>
+
+  <!-- ============ 成功弹窗 ============ -->
+  <div class="modal-mask" id="doneModal">
+    <div class="modal">
+      <div class="modal-ico"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.6 4.6L19 7.4"/></svg></div>
+      <h3>预约成功</h3>
+      <div id="doneText"></div>
+      <div class="modal-actions">
+        <a class="btn btn-primary" href="研修室预约.html">查看预约记录</a>
+        <button type="button" class="btn" id="doneClose">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 添加成员弹窗 ============ -->
+  <div class="modal-mask" id="memberModal">
+    <div class="modal member-modal">
+      <h3>添加参与成员</h3>
+      <div class="mm-search">
+        <input type="text" id="mmKeyword" placeholder="输入学号/工号或姓名搜索" autocomplete="off">
+      </div>
+      <div class="mm-results" id="mmResults"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="mmCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="mmConfirm" disabled>添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="bk-footer">
+    © 2026 信阳航空职业学院 · 图书馆 版权所有 | 豫ICP备XXXXXXXX号 | 本站支持 IPv6
+  </footer>
+
+  <script>
+    (function () {
+      /* ==================== 数据 ==================== */
+      // 研修室类型定义（含设备配置）；人数上下限统一以每间研修室的 capacity 为准
+      var ROOM_TYPES = {
+        group:   { name: '小组研讨间', area: '25㎡',  eq: ['投影仪','白板','电源','WIFI'] },
+        media:   { name: '多媒体研讨间', area: '40㎡',  eq: ['大屏','视频会议','空调','电源','WIFI'] },
+        interview:{ name: '面试/录播间', area: '12㎡',  eq: ['补光灯','静音','稳定网络'] },
+        teacher: { name: '教师研讨室', area: '35㎡',  eq: ['会议桌椅','投影仪','白板','空调'] },
+        special: { name: '专题研讨室', area: '30㎡',  eq: ['投影仪','白板','航空专题资料','WIFI'] }
+      };
+
+      // 研修室列表
+      var ROOMS = [
+        { id: 'G201', name: '小组研讨间 G201', type: 'group',   floor: '总馆 2F 东侧', capacity: '4-6 人' },
+        { id: 'G202', name: '小组研讨间 G202', type: 'group',   floor: '总馆 2F 东侧', capacity: '4-6 人' },
+        { id: 'G203', name: '小组研讨间 G203', type: 'group',   floor: '总馆 2F 东侧', capacity: '4-6 人' },
+        { id: 'G205', name: '小组研讨间 G205', type: 'group',   floor: '总馆 2F 东侧', capacity: '4-6 人' },
+        { id: 'M301', name: '多媒体研讨间 M301', type: 'media', floor: '总馆 3F', capacity: '8-12 人' },
+        { id: 'M302', name: '多媒体研讨间 M302', type: 'media', floor: '总馆 3F', capacity: '8-12 人' },
+        { id: 'M305', name: '多媒体研讨间 M305', type: 'media', floor: '总馆 3F', capacity: '8-12 人', disabled: true },
+        { id: 'I311', name: '面试录播间 I311', type: 'interview', floor: '总馆 3F 北侧', capacity: '1-2 人' },
+        { id: 'I312', name: '面试录播间 I312', type: 'interview', floor: '总馆 3F 北侧', capacity: '1-2 人', disabled: true },
+        { id: 'T401', name: '教师研讨室 T401', type: 'teacher', floor: '总馆 4F', capacity: '6-10 人' },
+        { id: 'T402', name: '教师研讨室 T402', type: 'teacher', floor: '总馆 4F', capacity: '6-10 人' },
+        { id: 'S208', name: '航空专题研讨室 S208', type: 'special', floor: '分馆 2F', capacity: '4-8 人' }
+      ];
+
+      // 2 小时时段块 08:00 - 22:00
+      var SLOTS = [
+        { start: '08', end: '10' },
+        { start: '10', end: '12' },
+        { start: '12', end: '14' },
+        { start: '14', end: '16' },
+        { start: '16', end: '18' },
+        { start: '18', end: '20' },
+        { start: '20', end: '22' }
+      ];
+      var SLOT_HOURS = SLOTS.map(function (s) { return s.start; });
+
+      // 可选的使用目的
+      var PURPOSES = ['小组讨论','学术研讨','课题研究','复习考试','社团活动','其他'];
+      // 设备图标
+      var EQ_ICONS = {
+        '投影仪': '📽️', '白板': '📝', '电源': '🔌', 'WIFI': '📶',
+        '大屏': '🖥️', '视频会议': '📹', '空调': '❄️',
+        '补光灯': '💡', '静音': '🔇', '稳定网络': '🌐',
+        '会议桌椅': '🪑', '航空专题资料': '📚'
+      };
+
+      // 模拟的成员库（可按学号/工号或姓名搜索）
+      var MEMBER_DB = [
+        { name: '林晓雨', sid: '2023010231', dept: '航空工程学院 · 飞行器制造 2301' },
+        { name: '周子豪', sid: '2023010118', dept: '航空工程学院 · 飞行器维修 2302' },
+        { name: '陈思远', sid: '2023010156', dept: '航空工程学院 · 飞行器制造 2301' },
+        { name: '王一诺', sid: '2023020407', dept: '航空管理学院 · 民航运输 2301' },
+        { name: '刘博文', sid: '2023020412', dept: '航空管理学院 · 民航运输 2302' },
+        { name: '赵梦琪', sid: '2023030521', dept: '机电工程学院 · 飞机机电 2301' },
+        { name: '孙浩然', sid: '2023030534', dept: '机电工程学院 · 飞机电子 2302' },
+        { name: '李佳宁', sid: '2023040603', dept: '信息工程学院 · 大数据 2301' },
+        { name: '吴梓涵', sid: '2023040617', dept: '信息工程学院 · 软件技术 2302' },
+        { name: '郑宇航', sid: '2023050725', dept: '空乘学院 · 空中乘务 2301' },
+        { name: '黄诗涵', sid: '2023050738', dept: '空乘学院 · 空中乘务 2302' },
+        { name: '徐嘉豪', sid: '2022010846', dept: '航空工程学院 · 飞行器制造 2201' },
+        { name: '马晓彤', sid: '2022010852', dept: '航空工程学院 · 飞行器维修 2202' },
+        { name: '高子轩', sid: '2022020961', dept: '航空管理学院 · 航空物流 2201' },
+        { name: '王建国', sid: '19980035', dept: '图书馆 · 信息咨询部', idType: '工号', role: '职工' },
+        { name: '赵明远', sid: '20050128', dept: '图书馆 · 读者服务部', idType: '工号', role: '职工' },
+        { name: '刘慧敏', sid: '20110247', dept: '航空工程学院 · 飞行器制造教研室', idType: '工号', role: '教师' },
+        { name: '张国强', sid: '20080119', dept: '航空工程学院 · 飞行器维修教研室', idType: '工号', role: '教师' },
+        { name: '李雪梅', sid: '20120463', dept: '航空管理学院 · 民航运输教研室', idType: '工号', role: '教师' },
+        { name: '陈志远', sid: '20160582', dept: '机电工程学院 · 飞机机电教研室', idType: '工号', role: '教师' },
+        { name: '杨丽华', sid: '20130791', dept: '信息工程学院 · 软件技术教研室', idType: '工号', role: '教师' },
+        { name: '何俊杰', sid: '20170825', dept: '空乘学院 · 空中乘务教研室', idType: '工号', role: '教师' },
+        { name: '周雅琴', sid: '20190936', dept: '航空工程学院 · 航空发动机教研室', idType: '工号', role: '教师' },
+        { name: '孙立新', sid: '20150316', dept: '图书馆 · 技术支持部', idType: '工号', role: '职工' }
+      ];
+      var SELF = { name: '陈思远', sid: '2023010156', major: '飞行器制造 2301', role: '学生' };
+
+      /* ==================== 状态 ==================== */
+      var STORE_KEY = 'roomBookingState';
+      var state = {
+        step: 1,
+        date: '',           // 'YYYY-MM-DD'
+        dateLabel: '',
+        roomId: '',
+        typeFilter: 'all',
+        capFilter: 'all',    // 人数档位筛选
+        eqFilter: 'all',     // 设备筛选
+        slots: [],           // 选中的时段索引数组（连续，最多 2 个）
+        rangeStart: -1,
+        rangeEnd: -1,
+        people: 1,           // 使用人数（本人 + 成员，自动统计）
+        purpose: '小组讨论',  // 使用目的（默认选中小组讨论）
+        members: []          // 参与成员 [{name, sid}]
+      };
+
+      function saveState() {
+        try { sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+      }
+      function loadState() {
+        try {
+          var s = sessionStorage.getItem(STORE_KEY);
+          if (s) Object.assign(state, JSON.parse(s));
+        } catch (e) {}
+        // 兜底：确保 members 为数组，人数按成员列表重新统计
+        if (!state.purpose) state.purpose = '小组讨论';
+        if (!Array.isArray(state.members)) state.members = [];
+        state.people = 1 + state.members.length;
+      }
+
+      /* ==================== 工具 ==================== */
+      var $ = function (id) { return document.getElementById(id); };
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+      function fmtDate(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+      var WEEK = ['周日','周一','周二','周三','周四','周五','周六'];
+
+      // 模拟某房间某日的占用情况（按房间 id + 日期生成确定性占用）
+      function getOccupied(roomId, date) {
+        var seed = 0;
+        for (var i = 0; i < roomId.length; i++) seed += roomId.charCodeAt(i);
+        seed += new Date(date).getDate();
+        var occ = {};
+        // 部分房间当日全天约满
+        if (seed % 5 === 0) {
+          SLOTS.forEach(function (s, i) { occ[i] = true; });
+          return occ;
+        }
+        // 7 个 2 小时时段，部分被占
+        [1, 2, 4, 5].forEach(function (k) {
+          if ((seed + k) % 4 !== 0) occ[k] = true;
+        });
+        return occ;
+      }
+
+      // 人数上下限完全取自研修室的容量（如 "8-12 人"）
+      function roomRange(room) {
+        var min = 1, max = 20;
+        if (room && room.capacity) {
+          var m = String(room.capacity).match(/(\d+)\s*-\s*(\d+)/);
+          if (m) {
+            min = parseInt(m[1], 10);
+            max = parseInt(m[2], 10);
+          }
+        }
+        return { min: min, max: max };
+      }
+
+      // 研修室是否可预约：后台停用 或 当日时段已满 均不可选
+      function roomStatus(room) {
+        if (!room) return { off: true, full: false };
+        if (room.disabled) return { off: true, full: false };
+        var occ = getOccupied(room.id, state.date);
+        return { off: false, full: Object.keys(occ).length >= SLOTS.length };
+      }
+      function roomSelectable(room) {
+        var s = roomStatus(room);
+        return !s.off && !s.full;
+      }
+
+      /* ==================== 步骤条 ==================== */
+      var stepEls = document.querySelectorAll('.step');
+      function updateSteps() {
+        stepEls.forEach(function (el) {
+          var n = parseInt(el.getAttribute('data-step'), 10);
+          var done = n < state.step;
+          el.classList.toggle('is-active', n === state.step);
+          el.classList.toggle('is-done', done);
+          var num = el.querySelector('.step-num');
+          if (num) num.textContent = done ? '✓' : n;
+        });
+        document.querySelectorAll('.step-panel').forEach(function (p) {
+          var n = parseInt(p.getAttribute('data-panel'), 10);
+          p.hidden = n !== state.step;
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      function goStep(n) {
+        state.step = n;
+        saveState();
+        updateSteps();
+        renderStep(n);
+      }
+
+      /* ==================== 渲染各步骤 ==================== */
+      function renderStep(n) {
+        if (n === 1) { renderDates(); renderRooms(); }
+        if (n === 2) renderSlots();
+        if (n === 3) renderInfo();
+        if (n === 4) renderConfirm();
+        updateSummary();
+        updateSummary();
+      }
+
+      // 步骤 1：日期
+      function renderDates() {
+        var list = $('dateList');
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        // 本周一 & 下周一
+        var dayOfWeek = today.getDay(); // 0=周日
+        var diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        var thisMonday = new Date(today);
+        thisMonday.setDate(today.getDate() + diff);
+        thisMonday.setHours(0, 0, 0, 0);
+        var nextMonday = new Date(thisMonday);
+        nextMonday.setDate(thisMonday.getDate() + 7);
+        var nextNextMonday = new Date(nextMonday);
+        nextNextMonday.setDate(nextMonday.getDate() + 7);
+
+        var html = '';
+        for (var i = 0; i < 8; i++) {
+          var d = new Date(today);
+          d.setDate(today.getDate() + i);
+          d.setHours(0, 0, 0, 0);
+          var key = fmtDate(d);
+          var isToday = i === 0;
+          var active = state.date === key;
+          var label;
+          if (isToday) {
+            label = '今天';
+          } else if (d >= thisMonday && d < nextMonday) {
+            label = WEEK[d.getDay()];
+          } else if (d >= nextMonday && d < nextNextMonday) {
+            label = '下周' + WEEK[d.getDay()];
+          } else {
+            label = (d.getMonth() + 1) + '/' + d.getDate();
+          }
+          html += '<div class="date-card' + (active ? ' is-active' : '') + (isToday ? ' is-today' : '') + '" data-date="' + key + '" data-day="' + d.getDate() + '">' +
+            '<div class="dc-week">' + label + '</div>' +
+          '</div>';
+        }
+        list.innerHTML = html;
+        list.querySelectorAll('.date-card').forEach(function (c) {
+          c.addEventListener('click', function () {
+            state.date = c.getAttribute('data-date');
+            state.dateLabel = state.date.slice(5) + ' ' + c.querySelector('.dc-week').textContent;
+            // 日期变更后清空房间/时段
+            state.roomId = '';
+            state.slots = [];
+            state.rangeStart = state.rangeEnd = -1;
+            saveState();
+            renderDates();
+            renderRooms();
+            updateSummary();
+          });
+        });
+        // 步骤 1 下一步需同时选日期和研修室
+        var rn = $('roomNextBtn');
+        if (rn) rn.disabled = !(state.date && state.roomId);
+      }
+
+      // 步骤 2：研修室
+      function renderRooms() {
+        // 类型筛选
+        var typeSel = $('typeFilter');
+        var types = [{ key: 'all', name: '全部' }].concat(
+          Object.keys(ROOM_TYPES).map(function (k) { return { key: k, name: ROOM_TYPES[k].name }; })
+        );
+        typeSel.innerHTML = types.map(function (t) {
+          return '<option value="' + t.key + '"' + (state.typeFilter === t.key ? ' selected' : '') + '>' + t.name + '</option>';
+        }).join('');
+        typeSel.onchange = function () {
+          state.typeFilter = typeSel.value;
+          saveState();
+          renderRooms();
+        };
+
+        // 人数档位筛选
+        var capSel = $('capFilter');
+        var caps = [{ key: 'all', name: '全部' }, { key: '2-4', name: '2-4人' }, { key: '5-8', name: '5-8人' }, { key: '8+', name: '8人以上' }];
+        capSel.innerHTML = caps.map(function (c) {
+          return '<option value="' + c.key + '"' + (state.capFilter === c.key ? ' selected' : '') + '>' + c.name + '</option>';
+        }).join('');
+        capSel.onchange = function () {
+          state.capFilter = capSel.value;
+          saveState();
+          renderRooms();
+        };
+
+        // 设备筛选
+        var eqSel = $('eqFilter');
+        var eqs = ['all','投影仪','白板','大屏','视频会议','空调','WIFI'];
+        eqSel.innerHTML = eqs.map(function (e) {
+          return '<option value="' + e + '"' + (state.eqFilter === e ? ' selected' : '') + '>' + (e === 'all' ? '全部' : e) + '</option>';
+        }).join('');
+        eqSel.onchange = function () {
+          state.eqFilter = eqSel.value;
+          saveState();
+          renderRooms();
+        };
+
+        var grid = $('roomGrid');
+        var list = ROOMS.filter(function (r) {
+          var t = ROOM_TYPES[r.type];
+          // 类型
+          if (state.typeFilter !== 'all' && r.type !== state.typeFilter) return false;
+          // 人数档位
+          if (state.capFilter !== 'all') {
+            var max = roomRange(r).max;
+            if (state.capFilter === '2-4' && !(max >= 2 && max <= 6)) return false;
+            if (state.capFilter === '5-8' && !(max >= 5 && max <= 8)) return false;
+            if (state.capFilter === '8+' && max < 8) return false;
+          }
+          // 设备
+          if (state.eqFilter !== 'all' && t.eq.indexOf(state.eqFilter) === -1) return false;
+          return true;
+        });
+
+        // 若已选房间变为不可选（停用/已满），清空选择
+        var cur = ROOMS.find(function (r) { return r.id === state.roomId; });
+        if (state.roomId && !roomSelectable(cur)) {
+          state.roomId = '';
+          state.slots = [];
+          state.rangeStart = state.rangeEnd = -1;
+          saveState();
+        }
+
+        grid.innerHTML = list.map(function (r) {
+          var t = ROOM_TYPES[r.type];
+          var occ = getOccupied(r.id, state.date);
+          var st = roomStatus(r);
+          var active = !st.off && !st.full && state.roomId === r.id;
+          var cls = st.off ? ' is-off' : (st.full ? ' is-full' : '');
+          var statusCls = st.off ? 'off' : (st.full ? 'full' : 'partial');
+          var statusTxt = st.off ? '不可用' : (st.full ? '已满' : '部分可用');
+          // 时段可用条
+          var bar = SLOTS.map(function (s, i) {
+            return '<span class="avbar-seg' + (occ[i] ? ' is-occ' : '') + '"></span>';
+          }).join('');
+          var eqIcons = t.eq.map(function (e) {
+            return '<span class="eq-tag">' + e + '</span>';
+          }).join('');
+          // 时段刻度：8 10 12 14 16 18 20 22
+          var hours = SLOT_HOURS.map(function (h) { return parseInt(h, 10); });
+          hours.push(parseInt(SLOTS[SLOTS.length - 1].end, 10));
+          var hoursHtml = hours.map(function (h, i) {
+            var pos;
+            if (i === 0) {
+              pos = 'left:0';
+            } else if (i === hours.length - 1) {
+              pos = 'left:100%;transform:translateX(-100%)';
+            } else {
+              pos = 'left:' + (i / (hours.length - 1) * 100).toFixed(2) + '%;transform:translateX(-50%)';
+            }
+            return '<span style="' + pos + '">' + h + '</span>';
+          }).join('');
+          return '<div class="room-card' + (active ? ' is-active' : '') + cls + '" data-id="' + r.id + '">' +
+            '<div class="rc-top"><div class="rc-name">' + r.name + '</div>' +
+              '<span class="rc-status ' + statusCls + '">' + statusTxt + '</span></div>' +
+            '<div class="rc-meta"><span>📍 ' + r.floor + '</span><span>👥 ' + r.capacity + '</span><span>📐 ' + t.area + '</span></div>' +
+            '<div class="rc-eq">' + eqIcons + '</div>' +
+            '<div class="rc-bar">' + bar + '</div>' +
+            '<div class="rc-hours">' + hoursHtml + '</div>' +
+            '<div class="rc-legend">' + (st.off ? '<span>该研修室暂停对外开放</span>' :
+              '<span><i class="avdot avdot-free"></i>空闲</span><span><i class="avdot avdot-occ"></i>已预约</span>') + '</div>' +
+          '</div>';
+        }).join('');
+
+        grid.querySelectorAll('.room-card').forEach(function (c) {
+          c.addEventListener('click', function () {
+            if (c.classList.contains('is-off') || c.classList.contains('is-full')) return;
+            var room = ROOMS.find(function (r) { return r.id === c.getAttribute('data-id'); });
+            if (!roomSelectable(room)) return;
+            state.roomId = c.getAttribute('data-id');
+            state.slots = [];
+            state.rangeStart = state.rangeEnd = -1;
+            saveState();
+            renderRooms();
+            updateSummary();
+          });
+        });
+        $('roomNextBtn').disabled = !(state.date && state.roomId);
+      }
+
+      // 步骤 2：时段（范围选择，2 小时块）
+      function renderSlots() {
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        if (!room || !roomSelectable(room)) { goStep(1); return; }
+        var t = ROOM_TYPES[room.type];
+        $('sriName').textContent = room.name;
+        $('sriType').textContent = t.name;
+        $('sriFloor').textContent = room.floor;
+        $('sriCap').textContent = room.capacity;
+        $('sriArea').textContent = t.area;
+
+        // 设备配置
+        var eqBox = $('sriEq');
+        if (eqBox) {
+          eqBox.innerHTML = t.eq.map(function (e) {
+            return '<span class="eq-card"><span class="eq-icon">' + (EQ_ICONS[e] || '🔧') + '</span>' + e + '</span>';
+          }).join('');
+        }
+
+        var occ = getOccupied(room.id, state.date);
+        var list = $('slotList');
+        list.innerHTML = SLOTS.map(function (s, i) {
+          var disabled = !!occ[i];
+          var inRange = state.slots.indexOf(i) >= 0;
+          var cls = 'slot' + (disabled ? ' disabled' : '') + (inRange ? ' is-selected' : '');
+          return '<div class="' + cls + '" data-i="' + i + '">' +
+            '<div class="st-time">' + s.start + ':00-' + s.end + ':00</div>' +
+            '<div class="st-state">' + (disabled ? '已占用' : '可预约') + '</div>' +
+          '</div>';
+        }).join('');
+
+        list.querySelectorAll('.slot').forEach(function (s) {
+          s.addEventListener('click', function () {
+            var i = parseInt(s.getAttribute('data-i'), 10);
+            if (s.classList.contains('disabled')) return;
+            if (state.rangeStart === -1) {
+              state.rangeStart = i;
+              state.rangeEnd = i;
+            } else if (state.rangeEnd === state.rangeStart) {
+              var lo = Math.min(state.rangeStart, i);
+              var hi = Math.max(state.rangeStart, i);
+              var valid = true;
+              for (var k = lo; k <= hi; k++) { if (occ[k]) { valid = false; break; } }
+              if (!valid || (hi - lo + 1) > 2) {
+                state.rangeStart = i;
+                state.rangeEnd = i;
+              } else {
+                state.rangeStart = lo;
+                state.rangeEnd = hi;
+              }
+            } else {
+              state.rangeStart = i;
+              state.rangeEnd = i;
+            }
+            state.slots = [];
+            for (var j = state.rangeStart; j <= state.rangeEnd; j++) state.slots.push(j);
+            saveState();
+            renderSlots();
+            updateSummary();
+          });
+        });
+
+        var sum = $('rangeSummary');
+        if (state.slots.length) {
+          sum.hidden = false;
+          $('rangeText').textContent = SLOTS[state.rangeStart].start + ':00 - ' + SLOTS[state.rangeEnd].end + ':00';
+          $('rangeHours').textContent = '共 ' + (state.slots.length * 2) + ' 小时 · ' + state.slots.length + ' 个时段';
+        } else {
+          sum.hidden = true;
+        }
+        $('slotNextBtn').disabled = state.slots.length === 0;
+      }
+
+      // 步骤 3：信息
+      function renderInfo() {
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        var rng = roomRange(room);
+        var minP = rng.min;
+        var maxP = rng.max;
+        while (state.members.length + 1 > maxP) state.members.pop();
+        state.people = 1 + state.members.length;
+
+        // 人数统计提示
+        var hint = $('peopleHint');
+        var under = state.people < minP;
+        hint.className = 'people-hint' + (under ? ' is-warn' : '');
+        hint.innerHTML = '<span>当前使用人数 <b>' + state.people + '</b> 人</span>' +
+          (under ? '<span>未达最低 ' + minP + ' 人，请继续添加成员</span>' : '') +
+          '<span class="ph-limit">最低 ' + minP + ' 人 · 上限 ' + maxP + ' 人</span>';
+
+        // 使用目的
+        var pbox = $('purposeChips');
+        pbox.innerHTML = PURPOSES.map(function (p) {
+          return '<span class="chip' + (state.purpose === p ? ' is-active' : '') + '" data-purpose="' + p + '">' + p + '</span>';
+        }).join('');
+        pbox.querySelectorAll('.chip').forEach(function (c) {
+          c.addEventListener('click', function () {
+            state.purpose = c.getAttribute('data-purpose');
+            saveState();
+            renderInfo();
+            checkInfoValid();
+            updateSummary();
+          });
+        });
+
+        // 参与人员
+        var mbox = $('memberList');
+        var selfRoleCls = SELF.role === '教师' ? ' is-teacher' : (SELF.role === '职工' ? ' is-staff' : ' is-student');
+        var rows = '<div class="member-item member-self"><div class="m-avatar">本</div>' +
+          '<div class="m-info"><div class="m-name">本人：' + SELF.name +
+          '<span class="m-role' + selfRoleCls + '">' + SELF.role + '</span></div>' +
+          '<div class="m-sid">学号：' + SELF.sid + '</div>' +
+          '<div class="m-major">专业：' + SELF.major + '</div></div></div>';
+        state.members.forEach(function (m, idx) {
+          // 兼容旧数据：缺专业/身份时从成员库补全
+          var db = MEMBER_DB.find(function (x) { return x.sid === m.sid; });
+          var major = m.major || (db ? db.dept.split(' · ').pop() : '—');
+          var idType = m.idType || (db && db.idType) || '学号';
+          var role = m.role || (db && db.role) || '学生';
+          var roleCls = role === '教师' ? ' is-teacher' : (role === '职工' ? ' is-staff' : ' is-student');
+          var majorLabel = idType === '工号' ? '部门' : '专业';
+          rows += '<div class="member-item' + roleCls + '"><div class="m-avatar">' + m.name.charAt(0) + '</div>' +
+            '<div class="m-info"><div class="m-name">成员：' + m.name +
+            '<span class="m-role' + roleCls + '">' + role + '</span></div>' +
+            '<div class="m-sid">' + idType + '：' + m.sid + '</div>' +
+            '<div class="m-major">' + majorLabel + '：' + major + '</div></div>' +
+            '<button class="m-del" data-idx="' + idx + '">×</button></div>';
+        });
+        var full = state.people >= maxP;
+        // 列数 = 人数（最多 4 列）：1 人占满整行，2-4 人均分，超过 4 人换行
+        var cols = Math.min(state.people, 4);
+        var html = '<div class="member-scroll" style="--mcols:' + cols + '">' + rows + '</div>' +
+          '<button class="member-add" id="addMemberBtn"' + (full ? ' disabled' : '') + '>' +
+          (full ? '已达人数上限（' + maxP + ' 人）' : '+ 添加参与成员') + '</button>';
+        mbox.innerHTML = html;
+
+        mbox.querySelectorAll('.m-del').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var idx = parseInt(b.getAttribute('data-idx'), 10);
+            state.members.splice(idx, 1);
+            saveState();
+            renderInfo();
+            checkInfoValid();
+            updateSummary();
+          });
+        });
+        $('addMemberBtn').addEventListener('click', function () {
+          if (state.people >= maxP) return;
+          openMemberModal();
+        });
+
+        checkInfoValid();
+      }
+
+      function checkInfoValid() {
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        var cnt = 1 + state.members.length;
+        var rng = roomRange(room);
+        var minP = rng.min;
+        var maxP = rng.max;
+        var valid = !!(state.purpose) && cnt >= minP && cnt <= maxP;
+        $('infoNextBtn').disabled = !valid;
+        return valid;
+      }
+
+      /* ==================== 添加成员弹窗 ==================== */
+      var mmSelected = null;   // 当前选中的成员学号
+
+      function openMemberModal() {
+        mmSelected = null;
+        $('mmKeyword').value = '';
+        renderMemberResults();
+        $('memberModal').classList.add('show');
+        setTimeout(function () { $('mmKeyword').focus(); }, 50);
+      }
+
+      function closeMemberModal() {
+        $('memberModal').classList.remove('show');
+        mmSelected = null;
+      }
+
+      function renderMemberResults() {
+        var kw = ($('mmKeyword').value || '').trim().toLowerCase();
+        var added = state.members.map(function (m) { return m.sid; });
+        var list = MEMBER_DB.filter(function (m) {
+          if (m.sid === SELF.sid) return false;              // 本人不在可选列表
+          if (!kw) return true;
+          return m.name.toLowerCase().indexOf(kw) !== -1 || m.sid.indexOf(kw) !== -1;
+        });
+
+        var box = $('mmResults');
+        if (!list.length) {
+          box.innerHTML = '<div class="mm-empty">没有找到匹配的成员，请换个关键词试试</div>';
+          mmSelected = null;
+          $('mmConfirm').disabled = true;
+          return;
+        }
+
+        box.innerHTML = list.map(function (m) {
+          var has = added.indexOf(m.sid) !== -1;
+          var picked = mmSelected === m.sid;
+          var role = m.role || '学生';
+          var roleCls = role === '教师' ? 'is-teacher' : (role === '职工' ? 'is-staff' : 'is-student');
+          return '<div class="mm-item' + (has ? ' is-added' : (picked ? ' is-picked' : '')) + '" data-sid="' + m.sid + '">' +
+            '<div class="m-avatar">' + m.name.charAt(0) + '</div>' +
+            '<div class="mm-info"><div class="mm-name">' + m.name +
+            '<span class="mm-role ' + roleCls + '">' + role + '</span></div>' +
+            '<div class="mm-sub">' + (m.idType || '学号') + ' ' + m.sid + ' · ' + m.dept + '</div></div>' +
+            '<span class="mm-pick">' + (has ? '已添加' : (picked ? '已选择' : '选择')) + '</span></div>';
+        }).join('');
+
+        box.querySelectorAll('.mm-item').forEach(function (it) {
+          it.addEventListener('click', function () {
+            if (it.classList.contains('is-added')) return;
+            mmSelected = it.getAttribute('data-sid');
+            renderMemberResults();
+          });
+        });
+        $('mmConfirm').disabled = !mmSelected;
+      }
+
+      function confirmAddMember() {
+        if (!mmSelected) return;
+        var m = MEMBER_DB.find(function (x) { return x.sid === mmSelected; });
+        if (!m) return;
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        if (1 + state.members.length >= roomRange(room).max) { closeMemberModal(); return; }
+        state.members.push({ name: m.name, sid: m.sid, major: m.dept.split(' · ').pop(), idType: m.idType || '学号', role: m.role || '学生' });
+        saveState();
+        closeMemberModal();
+        renderInfo();
+        checkInfoValid();
+        updateSummary();
+      }
+
+      // 参与人员卡片
+      function memberCard(p, selfTag) {
+        var role = p.role || '学生';
+        var roleCls = role === '教师' ? 'is-teacher' : (role === '职工' ? 'is-staff' : 'is-student');
+        var roleText = role;
+        if (selfTag) { roleCls = 'is-self'; roleText = '本人'; }
+        var idType = p.idType || '学号';
+        var extraLabel = idType === '工号' ? '部门' : '专业';
+        return '<div class="cf-member ' + roleCls + '">' +
+          '<div class="cfm-top"><span class="cfm-avatar">' + p.name.charAt(0) + '</span>' +
+            '<span class="cfm-name">' + p.name + (selfTag ? '<em>（' + selfTag + '）</em>' : '') + '</span>' +
+            '<span class="cfm-role ' + roleCls + '">' + roleText + '</span></div>' +
+          '<div class="cfm-line">' + idType + '：' + p.sid + '</div>' +
+          '<div class="cfm-line">' + extraLabel + '：' + (p.major || '—') + '</div>' +
+        '</div>';
+      }
+
+      // 步骤 4：确认
+      function renderConfirm() {
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        $('cfDate').textContent = state.date + ' ' + (state.dateLabel.split(' ')[1] || '');
+        $('cfRoom').textContent = room ? (room.name + ' · ' + room.floor) : '—';
+        $('cfTime').textContent = state.slots.length ? SLOTS[state.rangeStart].start + ':00 - ' + SLOTS[state.rangeEnd].end + ':00（' + (state.slots.length * 2) + ' 小时）' : '—';
+        $('cfMembersCount').textContent = (1 + state.members.length);
+        $('cfPurpose').textContent = state.purpose || '—';
+        var memberHtml = '<div class="cf-members">' + memberCard(SELF, '本人') +
+          state.members.map(function (m) {
+            var db = MEMBER_DB.find(function (x) { return x.sid === m.sid; });
+            return memberCard({
+              name: m.name,
+              sid: m.sid,
+              major: m.major || (db ? db.dept.split(' · ').pop() : ''),
+              idType: m.idType || (db && db.idType) || '学号',
+              role: m.role || (db && db.role) || '学生'
+            });
+          }).join('') + '</div>';
+        $('cfMembers').innerHTML = memberHtml;
+      }
+
+      /* ==================== 摘要栏 ==================== */
+      function updateSummary() {
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        var sd = $('sumDate');
+        sd.textContent = state.dateLabel || '未选择';
+        sd.classList.toggle('is-empty', !state.date);
+
+        var sr = $('sumRoom');
+        sr.textContent = room ? room.name : '—';
+        sr.classList.toggle('is-empty', !room);
+
+        var st = $('sumTime');
+        if (state.slots.length) {
+          st.textContent = SLOT_HOURS[state.rangeStart] + ':00-' + pad(parseInt(SLOT_HOURS[state.rangeEnd], 10) + 1) + ':00';
+          st.classList.remove('is-empty');
+        } else {
+          st.textContent = '未选择';
+          st.classList.add('is-empty');
+        }
+
+        var sp = $('sumPeople');
+        if (state.step >= 3) {
+          var cnt = 1 + (Array.isArray(state.members) ? state.members.length : 0);
+          sp.textContent = cnt + ' 人';
+        } else {
+          sp.textContent = '—';
+        }
+        sp.classList.toggle('is-empty', state.step < 3);
+      }
+
+      /* ==================== 事件绑定 ==================== */
+      // 下一步按钮
+      $('roomNextBtn').addEventListener('click', function () {
+        var room = ROOMS.find(function (r) { return r.id === state.roomId; });
+        if (state.date && state.roomId && roomSelectable(room)) goStep(2);
+      });
+      $('slotNextBtn').addEventListener('click', function () { if (state.slots.length) goStep(3); });
+      $('infoNextBtn').addEventListener('click', function () {
+        if (checkInfoValid()) goStep(4);
+      });
+
+      // 上一步
+      document.querySelectorAll('[data-back]').forEach(function (b) {
+        b.addEventListener('click', function () { goStep(parseInt(b.getAttribute('data-back'), 10)); });
+      });
+
+      // 提交
+      $('submitBtn').addEventListener('click', function () {
+        $('doneText').innerHTML = '<p>预约结果已推送至站内消息。</p>' +
+          '<p>请于开始时间后 15 分钟内到房间门口扫码开门，逾期自动释放并记违约。</p>';
+        $('doneModal').classList.add('show');
+      });
+      $('doneClose').addEventListener('click', function () {
+        $('doneModal').classList.remove('show');
+        // 提交成功后不可再修改，关闭弹窗直接跳转个人中心
+        state = { step: 1, date: '', dateLabel: '', roomId: '', typeFilter: 'all', slots: [], rangeStart: -1, rangeEnd: -1, people: 1, purpose: '小组讨论', members: [], remark: '' };
+        saveState();
+        window.location.href = '个人中心.html';
+      });
+      $('doneModal').addEventListener('click', function (e) {
+        if (e.target === $('doneModal')) $('doneClose').click();
+      });
+
+      // 添加成员弹窗
+      $('mmKeyword').addEventListener('input', function () {
+        mmSelected = null;
+        renderMemberResults();
+      });
+      $('mmKeyword').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') confirmAddMember();
+      });
+      $('mmConfirm').addEventListener('click', confirmAddMember);
+      $('mmCancel').addEventListener('click', closeMemberModal);
+      $('memberModal').addEventListener('click', function (e) {
+        if (e.target === $('memberModal')) closeMemberModal();
+      });
+
+      /* ==================== 初始化 ==================== */
+      loadState();
+      if (state.step < 1 || state.step > 4) state.step = 1;
+      updateSteps();
+      renderStep(state.step);
+    })();
+  </script>
+  <script src="assets/nav-drawer.js?v=28" defer></script>
+</body>
+</html>
